@@ -1,0 +1,48 @@
+﻿<Window x:Class="MSPCManagerHelper.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MSPCManagerHelper" Height="480" Width="854"
+        ResizeMode="CanMinimize" WindowStartupLocation="CenterScreen"
+        Background="White">
+    <Window.Resources>
+        <!-- 圆角按钮样式 -->
+        <Style TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="LightGray"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="DarkGray"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Center" Margin="60,0,0,0" Height="210" Width="270">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <TextBlock x:Name="VersionTextBlock" Text="检测中..." Margin="0,0,10,0"/>
+                <Button x:Name="RefreshButton" Content="刷新" Click="RefreshButton_Click" Width="40" Height="20" FontSize="12"/>
+            </StackPanel>
+            <ComboBox x:Name="MainComboBox" Width="260" Margin="0,20,0,20" SelectionChanged="MainComboBox_SelectionChanged" Height="25">
+                <ComboBoxItem IsEnabled="False" IsSelected="True">请选择 (带 * 的功能需要以管理员身份运行)</ComboBoxItem>
+                <ComboBoxItem HorizontalContentAlignment="Center">主项目</ComboBoxItem>
+                <ComboBoxItem HorizontalContentAlignment="Center">安装项目</ComboBoxItem>
+                <ComboBoxItem HorizontalContentAlignment="Center">卸载项目</ComboBoxItem>
+                <ComboBoxItem HorizontalContentAlignment="Center">其它项目</ComboBoxItem>
+            </ComboBox>
+            <ComboBox x:Name="FeatureComboBox" Width="260" Margin="0,0,0,20" Height="25"/>
+            <Button x:Name="FeatureExecuteButton" Content="执行" Width="100" Margin="0,0,0,20" Click="FeatureExecuteButton_Click" Height="25"/>
+            <Button x:Name="CancelFeatureButton" Content="取消" Width="100" Click="CancelFeatureButton_Click" IsEnabled="False" Height="25"/>
+        </StackPanel>
+        <TextBox x:Name="ResultTextBox" HorizontalAlignment="Right" VerticalAlignment="Top" Width="450" Height="400" Margin="0,20,20,0" IsReadOnly="True" TextWrapping="Wrap"/>
+    </Grid>
+</Window>

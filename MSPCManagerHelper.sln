@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35125.118
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSPCManagerHelper", "MSPCManagerHelper.csproj", "{43BA07D0-FA82-4B94-80F1-BB0583ED9B8F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{43BA07D0-FA82-4B94-80F1-BB0583ED9B8F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43BA07D0-FA82-4B94-80F1-BB0583ED9B8F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43BA07D0-FA82-4B94-80F1-BB0583ED9B8F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43BA07D0-FA82-4B94-80F1-BB0583ED9B8F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {97FB15EB-19AC-4A0A-8318-AE77408FD942}
+	EndGlobalSection
+EndGlobal
