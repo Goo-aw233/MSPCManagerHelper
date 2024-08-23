@@ -3,16 +3,18 @@ from tkinter import ttk, messagebox
 from getVersionNumber import detect_version
 from checkSystemRequirements import check_system_requirements
 from Translator import Translator
+from otherFeature import OtherFeature
 
 class MSPCManagerHelper(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("MSPCManagerHelper Preview v24816 - we11A")
+        self.title("MSPCManagerHelper Preview v24823 - we11A")
         self.geometry("854x480")
         self.resizable(False, False)
         self.configure(bg="white")
 
         self.translator = Translator('en-us')
+        self.other_feature = OtherFeature(self.translator)
         self.create_widgets()
 
     def create_widgets(self):
@@ -44,18 +46,18 @@ class MSPCManagerHelper(tk.Tk):
         self.main_combobox = ttk.Combobox(self, values=[self.translator.translate("select_option"), self.translator.translate("main_project"), self.translator.translate("install_project"), self.translator.translate("uninstall_project"), self.translator.translate("other_project")], state="readonly")
         self.main_combobox.current(0)
         self.main_combobox.bind("<<ComboboxSelected>>", self.update_feature_combobox)
-        self.main_combobox.place(x=55, y=260, width=300, height=25)
+        self.main_combobox.place(x=55, y=260, width=380, height=25)
 
         # 第二个组合框
         self.feature_combobox = ttk.Combobox(self, state="readonly")
-        self.feature_combobox.place(x=55, y=310, width=300, height=25)
+        self.feature_combobox.place(x=55, y=310, width=380, height=25)
 
         # 执行按钮
-        self.execute_button = tk.Button(self, text=self.translator.translate("execute"), command=self.execute_feature, width=10, height=1)
+        self.execute_button = tk.Button(self, text=self.translator.translate("main_execute_button"), command=self.execute_feature, width=10, height=1)
         self.execute_button.place(x=55, y=360)
 
         # 取消按钮
-        self.cancel_button = tk.Button(self, text=self.translator.translate("cancel"), command=self.cancel_feature, state="disabled", width=10, height=1)
+        self.cancel_button = tk.Button(self, text=self.translator.translate("main_cancel_button"), command=self.cancel_feature, state="disabled", width=10, height=1)
         self.cancel_button.place(x=165, y=360)
 
         # 结果输出框
@@ -66,6 +68,25 @@ class MSPCManagerHelper(tk.Tk):
         self.refresh_version()
         self.check_system_requirements()
 
+        # 创建右键菜单
+        self.create_context_menu()
+        self.update_context_menu()  # 确保调用 update_context_menu 方法
+        self.result_textbox.bind("<Button-3>", self.show_context_menu)
+
+    def update_context_menu(self):
+        self.context_menu.entryconfig(0, label=self.translator.translate("main_copy"))
+
+    def create_context_menu(self):
+        self.context_menu = tk.Menu(self, tearoff=0)
+        self.context_menu.add_command(label=self.translator.translate("main_copy"), command=self.copy_to_clipboard)
+
+    def copy_to_clipboard(self):
+        self.clipboard_clear()
+        self.clipboard_append(self.result_textbox.get("1.0", tk.END))
+
+    def show_context_menu(self, event):
+        self.context_menu.tk_popup(event.x_root, event.y_root)
+
     def change_language(self, event):
         selected_language = self.language_combobox.get()
         if selected_language == "English (United States)":
@@ -74,6 +95,7 @@ class MSPCManagerHelper(tk.Tk):
             self.translator = Translator('zh-cn')
         elif selected_language == "中文 (繁體)":
             self.translator = Translator('zh-tw')
+        self.other_feature = OtherFeature(self.translator)  # 更新 OtherFeature 语言实例
         self.update_texts()
         self.refresh_version()
         self.check_system_requirements()
@@ -81,10 +103,11 @@ class MSPCManagerHelper(tk.Tk):
     def update_texts(self):
         self.version_label.config(text=self.translator.translate("current_version"))
         self.refresh_button.config(text=self.translator.translate("refresh"))
+        self.update_context_menu()  # 更新右键菜单的文本
         self.system_requirement_label.config(text=self.translator.translate("system_requirements_checking"))
         self.hint_label.config(text=self.translator.translate("notice_select_option"))
-        self.execute_button.config(text=self.translator.translate("execute"))
-        self.cancel_button.config(text=self.translator.translate("cancel"))
+        self.execute_button.config(text=self.translator.translate("main_execute_button"))
+        self.cancel_button.config(text=self.translator.translate("main_cancel_button"))
         self.main_combobox.config(values=[self.translator.translate("select_option"), self.translator.translate("main_project"), self.translator.translate("install_project"), self.translator.translate("uninstall_project"), self.translator.translate("other_project")])
         self.main_combobox.current(0)
         self.update_feature_combobox(None)
@@ -92,10 +115,10 @@ class MSPCManagerHelper(tk.Tk):
     def update_feature_combobox(self, event):
         selection = self.main_combobox.get()
         options = {
-            self.translator.translate("main_project"): [self.translator.translate("fix_pc_manager"), self.translator.translate("get_pc_manager_logs")],
+            self.translator.translate("main_project"): [self.translator.translate("repair_pc_manager"), self.translator.translate("get_pc_manager_logs")],
             self.translator.translate("install_project"): [self.translator.translate("download_from_winget"), self.translator.translate("download_from_store"), self.translator.translate("install_for_all_users"), self.translator.translate("install_for_current_user")],
             self.translator.translate("uninstall_project"): [self.translator.translate("uninstall_for_all_users"), self.translator.translate("uninstall_for_current_user"), self.translator.translate("uninstall_beta")],
-            self.translator.translate("other_project"): [self.translator.translate("view_installed_antivirus"), self.translator.translate("developer_options"), self.translator.translate("fix_edge_runtime"), self.translator.translate("pc_manager_faq"), self.translator.translate("install_edge_runtime"), self.translator.translate("join_preview_program"), self.translator.translate("restart_pc_manager_service"), self.translator.translate("switch_region_to_china")]
+            self.translator.translate("other_project"): [self.translator.translate("view_installed_antivirus"), self.translator.translate("developer_options"), self.translator.translate("repair_edge_wv2_setup"), self.translator.translate("pc_manager_faq"), self.translator.translate("install_wv2_runtime"), self.translator.translate("join_preview_program"), self.translator.translate("restart_pc_manager_service"), self.translator.translate("switch_region_to_china")]
         }
         self.feature_combobox['values'] = options.get(selection, [])
         self.feature_combobox.set("")
@@ -106,8 +129,19 @@ class MSPCManagerHelper(tk.Tk):
         else:
             self.result_textbox.config(state="normal")
             self.result_textbox.delete("1.0", tk.END)  # 清空 TextBox 的内容
-            self.result_textbox.insert(tk.END,
-                                       f"{self.translator.translate('executing')} {self.feature_combobox.get()} {self.translator.translate('operation')}\n")
+            feature = self.feature_combobox.get()
+            executing_message = f"{self.translator.translate('main_executing')} {feature} {self.translator.translate('main_operation')}"
+            self.result_textbox.insert(tk.END, executing_message + "\n")
+            result = ""
+            if feature == self.translator.translate("view_installed_antivirus"):
+                result = self.other_feature.view_installed_antivirus()
+            elif feature == self.translator.translate("developer_options"):
+                result = self.other_feature.developer_options()
+            elif feature == self.translator.translate("repair_edge_wv2_setup"):
+                result = self.other_feature.repair_edge_wv2_setup()
+            # 其他功能的调用可以在这里继续添加
+            self.result_textbox.insert(tk.END, result)
+            # self.result_textbox.insert(tk.END, f"{self.translator.translate('task_completed')}\n")
             self.result_textbox.config(state="disabled")
             self.cancel_button.config(state="normal")
 
