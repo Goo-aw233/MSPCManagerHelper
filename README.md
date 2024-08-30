@@ -17,3 +17,31 @@ This is the "MSPCManagerHelper", an auxiliary tool of the **Microsoft Coporation
 
 > [!NOTE]
 > Parts of MSPCManagerHelper refer to links from third-party (i.e., non-official Microsoft) web pages. These pages appear to provide accurate and safe information to help you solve your problem. However, please remain aware of ads promoted on these pages that are often categorized as PUPs (Potentially Unwanted Products). Before downloading and installing a file or application, please thoroughly research any products promoted on the page.
+
+## 💻 Development
+
+1. Download Python 3.11 from [Python](https://www.python.org/downloads).
+
+2. Clone the repository
+
+```
+git clone https://github.com/Goo-aw233/MSPCManagerHelper.git
+cd MSPCManagerHelper
+```
+
+3. Create and activate the virtual environment
+
+```
+python -m venv <path\to\MSPCManagerHelper>
+<path\to\MSPCManagerHelper>\Scripts\activate
+```
+
+4. Install the pip packages
+
+```
+pip install -r requirements.txt
+```
+
+5. Build the EXE
+
+You can build it yourself by running `build.bat` in the root directory.

@@ -17,3 +17,31 @@ Select your region and language to continue.
 
 > [!NOTE]
 > 請注意，本輔助工具部分內容引用了來自第三方（即非 Microsoft 官方）網頁的連結。這些網頁似乎提供了準確、安全的資訊以幫助你解決問題。但是，請仍然留意網頁中推廣的通常被歸類為 PUP（Potentially Unwanted Products，潛在有害產品）的廣告。在您下載及安裝文件或應用前，請徹底地研究網頁中推廣的任何產品。
+
+## 💻 開發
+
+1. 從 [Python](https://www.python.org/downloads) 下載 Python 3.11 版本。
+
+2. 將倉庫 Clone 至本地
+
+```
+git clone https://github.com/Goo-aw233/MSPCManagerHelper.git
+cd MSPCManagerHelper
+```
+
+3. 創建並啟用虛擬環境
+
+```
+python -m venv <path\to\MSPCManagerHelper>
+<path\to\MSPCManagerHelper>\Scripts\activate
+```
+
+4. 安裝依賴包
+
+```
+pip install -r requirements.txt
+```
+
+5. 構建 EXE
+
+直接運行根目錄下的 `build.bat` 即可自己構建。
