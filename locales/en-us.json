@@ -1,11 +1,11 @@
 {
     "@checkSystemRequirements.py": "checkSystemRequirements.py",
-    "version_check": "Current Windows version does not meet the minimum requirements for Microsoft PC Manager: \nWindows 10 version 19042 or Windows Server 2021",
-    "system_requirements_met": "The current system meets the minimum requirements for Microsoft PC Manager",
+    "failure_to_meet_system_requirements": "Current Windows version does not meet the minimum requirements for Microsoft PC Manager: \nWindows 10 version 19042 or Windows Server 2021",
+    "meet_system_requirements": "Current system meets the minimum system requirements of Microsoft PC Manager",
 
     "@getVersionNumber": "getVersionNumber.py",
     "cannot_read_pcm_version": "Cannot read Microsoft PC Manager version information",
-    "current_version": "Current Microsoft PC Manager version: ",
+    "current_pcm_version": "Current Microsoft PC Manager version: ",
 
     "@installationFeature.py": "installationFeature.py",
 

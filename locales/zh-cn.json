@@ -1,11 +1,11 @@
 {
     "@checkSystemRequirements.py": "checkSystemRequirements.py",
-    "version_check": "当前 Windows 版本不满足微软电脑管家最低要求：\nWindows 10 版本 19042 或 Windows Server 2021",
-    "system_requirements_met": "当前系统符合微软电脑管家最低系统要求",
+    "failure_to_meet_system_requirements": "当前 Windows 版本不满足微软电脑管家最低要求：\nWindows 10 版本 19042 或 Windows Server 2021",
+    "meet_system_requirements": "当前系统符合微软电脑管家最低系统要求",
 
     "@getVersionNumber": "getVersionNumber.py",
     "cannot_read_pcm_version": "无法读取微软电脑管家版本信息",
-    "current_version": "当前微软电脑管家版本号为：",
+    "current_pcm_version": "当前微软电脑管家版本号为：",
 
     "@installationFeature.py": "installationFeature.py",
 
