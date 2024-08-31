@@ -1,3 +1,6 @@
+import queue
+import subprocess
+import threading
 import tkinter as tk
 from tkinter import ttk, messagebox
 from getVersionNumber import detect_version
@@ -8,14 +11,19 @@ from otherFeature import OtherFeature
 class MSPCManagerHelper(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("MSPCManagerHelper Preview v24831 - we11B")
+        self.title("MSPCManagerHelper Preview v24831 - we11D")
         self.geometry("854x480")
         self.resizable(False, False)
         self.configure(bg="white")
 
+        # 初始化功能
         self.translator = Translator('en-us')
         self.other_feature = OtherFeature(self.translator)
         self.create_widgets()
+        self.result_queue = queue.Queue()
+        self.cancelled = False
+        self.current_process = None
+        self.current_pid = None
 
     # 创建窗口部件
     def create_widgets(self):
@@ -144,35 +152,57 @@ class MSPCManagerHelper(tk.Tk):
         if self.main_combobox.get() == self.translator.translate("select_option") or not self.feature_combobox.get():
             messagebox.showwarning(self.translator.translate("warning"), self.translator.translate("select_function"))
         else:
+            self.execute_button.config(state="disabled")
+            self.cancel_button.config(state="normal")
             self.result_textbox.config(state="normal")
             self.result_textbox.delete("1.0", tk.END)  # 清空 TextBox 的内容
             feature = self.feature_combobox.get()
             executing_message = f"{self.translator.translate('main_executing')} {feature} {self.translator.translate('main_operation')}"
             self.result_textbox.insert(tk.END, executing_message + "\n")
-            result = ""
-            # mainFeature.py 中的语言功能调用
-            # installationFeature.py 中的语言功能调用
-            # uninstallationFeature.py 中的语言功能调用
-            # otherFeature.py 中的语言功能调用
-            if feature == self.translator.translate("view_installed_antivirus"):
-                result = self.other_feature.view_installed_antivirus()
-            elif feature == self.translator.translate("developer_options"):
-                result = self.other_feature.developer_options()
-            elif feature == self.translator.translate("repair_edge_wv2_setup"):
-                result = self.other_feature.repair_edge_wv2_setup()
-            elif feature == self.translator.translate("pc_manager_faq"):
-                result = self.other_feature.pc_manager_faq()
-            # 其他功能的调用可以在这里继续添加
+
+            def run_feature():
+                result = ""
+                if feature == self.translator.translate("view_installed_antivirus"):
+                    result = self.other_feature.view_installed_antivirus()
+                elif feature == self.translator.translate("developer_options"):
+                    result = self.other_feature.developer_options()
+                elif feature == self.translator.translate("repair_edge_wv2_setup"):
+                    result = self.other_feature.repair_edge_wv2_setup()
+                elif feature == self.translator.translate("pc_manager_faq"):
+                    result = self.other_feature.pc_manager_faq()
+                elif feature == self.translator.translate("install_wv2_runtime"):
+                    result = self.other_feature.install_wv2_runtime(self)
+                elif feature == self.translator.translate("join_preview_program"):
+                    result = self.other_feature.join_preview_program()
+                elif feature == self.translator.translate("restart_pc_manager_service"):
+                    result = self.other_feature.restart_pc_manager_service()
+                elif feature == self.translator.translate("switch_region_to_china"):
+                    result = self.other_feature.switch_region_to_china()
+                    # 其他功能...
+                self.result_queue.put(result)
+            threading.Thread(target=run_feature).start()
+            self.after(100, self.process_queue)
+
+    # 处理队列中的结果
+    def process_queue(self):
+        try:
+            result = self.result_queue.get_nowait()
             self.result_textbox.insert(tk.END, result)
-            # self.result_textbox.insert(tk.END, f"{self.translator.translate('task_completed')}\n")
             self.result_textbox.config(state="disabled")
-            self.cancel_button.config(state="normal")
+            self.execute_button.config(state="normal")
+            self.cancel_button.config(state="disabled")
+        except queue.Empty:
+            self.after(100, self.process_queue)
 
     # 取消功能
     def cancel_feature(self):
+        self.cancelled = True
+        if self.current_pid:
+            subprocess.run(["taskkill", "/PID", str(self.current_pid), "/F"], encoding='utf-8')  # 确保使用正确的编码
         self.result_textbox.config(state="normal")
         self.result_textbox.insert(tk.END, f"{self.translator.translate('user_cancelled')}\n")
         self.result_textbox.config(state="disabled")
+        self.execute_button.config(state="normal")
         self.cancel_button.config(state="disabled")
 
     # 设置字体样式
@@ -205,7 +235,7 @@ class MSPCManagerHelper(tk.Tk):
         if version:
             self.version_label.config(text=f"{self.translator.translate('current_pcm_version')}{version}")
         else:
-            self.version_label.config(text=self.translator.translate("cannot_read_version"))
+            self.version_label.config(text=self.translator.translate("cannot_read_pcm_version"))
 
     # 检测系统要求
     def check_system_requirements(self):

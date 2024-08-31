@@ -1,6 +1,9 @@
 import json
 import os
+import shutil
 import subprocess
+import requests
+import tempfile
 import webbrowser
 import winreg
 
@@ -79,6 +82,106 @@ class OtherFeature:
             return self.translator.translate("pc_manager_faq_opened")
         except Exception as e:
             return f"{self.translator.translate('pc_manager_faq_error')}: {str(e)}"
+
+    def install_wv2_runtime(self, app):
+        temp_dir = os.path.join(tempfile.gettempdir(), "MSPCManagerHelper")
+        installer_path = os.path.join(temp_dir, "MicrosoftEdgeWebView2Setup.exe")
+        download_url = "https://go.microsoft.com/fwlink/p/?LinkId=2124703"
+
+        try:
+            # 检查临时目录是否存在
+            if os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir)  # 删除临时目录
+
+            # 创建临时目录
+            os.makedirs(temp_dir, exist_ok=True)
+
+            # 下载文件
+            response = requests.get(download_url)
+            if response.status_code == 200:
+                with open(installer_path, 'wb') as file:
+                    file.write(response.content)
+            else:
+                return self.translator.translate("wv2_download_error")
+
+            # 运行安装程序
+            app.current_process = subprocess.Popen([installer_path, "/install"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # stdout, stderr = app.current_process.communicate()  # 等待安装程序退出
+            app.current_process.communicate()  # 等待安装程序退出
+
+            if app.cancelled:
+                return self.translator.translate("installation_cancelled")
+
+            if app.current_process.returncode == 0:
+                return self.translator.translate("wv2_runtime_install_success")
+            elif app.current_process.returncode == 2147747880:
+                return f"{self.translator.translate('wv2_installer_exit_code')}: {app.current_process.returncode}\n{self.translator.translate('wv2_runtime_already_installed')}"
+            else:
+                return f"{self.translator.translate('wv2_installer_exit_code')}: {app.current_process.returncode}\n{self.translator.translate('wv2_installer_error')}"
+        except Exception as e:
+            return f"{self.translator.translate('wv2_download_error')}: {str(e)}"
+        finally:
+            # 删除临时目录
+            if os.path.exists(temp_dir):
+                shutil.rmtree(temp_dir)
+            app.current_process = None
+
+    def join_preview_program(self):
+        try:
+            # 打开指定的 URL
+            webbrowser.open("https://forms.office.com/r/v1LX7SKWTs")
+            return self.translator.translate("pc_manager_faq_opened")
+        except Exception as e:
+            return f"{self.translator.translate('pc_manager_faq_error')}: {str(e)}"
+
+    def restart_pc_manager_service(self):
+        try:
+            # 设置隐藏窗口的标志
+            creationflags = subprocess.CREATE_NO_WINDOW
+
+            # 停止服务
+            stop_result = subprocess.run(
+                ["sc.exe", "stop", "PCManager Service Store"],
+                capture_output=True, text=True, creationflags=creationflags
+            )
+            if stop_result.returncode != 0:
+                if stop_result.returncode == 5:
+                    return f"{self.translator.translate('pc_manager_service_error_code_5')}\n{self.translator.translate('stop_pc_manager_service_error')}"
+                else:
+                    return f"{self.translator.translate('stop_pc_manager_service_error')}\n{self.translator.translate('pc_manager_service_error_code')}: {stop_result.returncode}"
+            print(self.translator.translate("stopping_pc_manager_service"))
+
+            # 启动服务
+            start_result = subprocess.run(
+                ["sc.exe", "start", "PCManager Service Store"],
+                capture_output=True, text=True, creationflags=creationflags
+            )
+            if start_result.returncode != 0:
+                if start_result.returncode == 5:
+                    return f"{self.translator.translate('pc_manager_service_error_code_5')}\n{self.translator.translate('start_pc_manager_service_error')}"
+                else:
+                    return f"{self.translator.translate('start_pc_manager_service_error')}\n{self.translator.translate('pc_manager_service_error_code')}: {start_result.returncode}"
+            print(self.translator.translate("starting_pc_manager_service"))
+
+            return self.translator.translate("service_restarted_successfully")
+        except Exception as e:
+            return f"{self.translator.translate('service_restart_error')}: {str(e)}\n{self.translator.translate('pc_manager_service_error_code')}: {e.errno if hasattr(e, 'errno') else 'N/A'}"
+
+    def switch_region_to_china(self):
+        try:
+            reg_path = r"SOFTWARE\WOW6432Node\MSPCManager Store"
+            value_name = "InstallRegionCode"
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg_path, 0, winreg.KEY_ALL_ACCESS) as key:
+                try:
+                    winreg.DeleteValue(key, value_name)
+                except FileNotFoundError:
+                    pass  # 如果值不存在，忽略错误
+
+                winreg.SetValueEx(key, value_name, 0, winreg.REG_SZ, "CN")
+
+            return self.translator.translate("switch_region_to_china_completed")
+        except OSError as e:
+            return f"{self.translator.translate('switch_region_to_china_error')}: {str(e)}"
 
 # 示例 Translator 类
 class Translator:
