@@ -8,7 +8,7 @@ from otherFeature import OtherFeature
 class MSPCManagerHelper(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("MSPCManagerHelper Preview v24831 - we11A")
+        self.title("MSPCManagerHelper Preview v24831 - we11B")
         self.geometry("854x480")
         self.resizable(False, False)
         self.configure(bg="white")

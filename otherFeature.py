@@ -11,13 +11,16 @@ class OtherFeature:
 
     def view_installed_antivirus(self):
         try:
+            # 设置隐藏窗口的标志
+            creationflags = subprocess.CREATE_NO_WINDOW
+
             # 执行 PowerShell 命令
             result = subprocess.run(
                 ["powershell", "-Command",
                  ("Get-WmiObject -Namespace 'Root\\SecurityCenter2' -Class 'AntivirusProduct' | "
                   "Select-Object displayName, pathToSignedProductExe, pathToSignedReportingExe, productState | "
                   "Format-List")],
-                capture_output=True, text=True, check=True
+                capture_output=True, text=True, check=True, creationflags=creationflags
             )
             output = result.stdout.strip()
             if not output:
