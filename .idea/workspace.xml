@@ -11,6 +11,10 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/MainWindow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.bat" beforeDir="false" afterPath="$PROJECT_DIR$/build.bat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/build.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/locales/en-us.json" beforeDir="false" afterPath="$PROJECT_DIR$/locales/en-us.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/locales/zh-cn.json" beforeDir="false" afterPath="$PROJECT_DIR$/locales/zh-cn.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/locales/zh-tw.json" beforeDir="false" afterPath="$PROJECT_DIR$/locales/zh-tw.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/otherFeature.py" beforeDir="false" afterPath="$PROJECT_DIR$/otherFeature.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
