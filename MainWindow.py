@@ -8,7 +8,7 @@ from otherFeature import OtherFeature
 class MSPCManagerHelper(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("MSPCManagerHelper Preview v24830 - we11A")
+        self.title("MSPCManagerHelper Preview v24831 - we11A")
         self.geometry("854x480")
         self.resizable(False, False)
         self.configure(bg="white")
@@ -65,7 +65,7 @@ class MSPCManagerHelper(tk.Tk):
 
         # 结果输出框
         self.result_textbox = tk.Text(self, wrap="word", state="disabled", bg="lightgray")
-        self.result_textbox.place(x=455, y=80, width=385, height=360)
+        self.result_textbox.place(x=435, y=80, width=400, height=310)
 
         # 初始检测版本号和系统要求
         self.refresh_version()
@@ -87,8 +87,13 @@ class MSPCManagerHelper(tk.Tk):
 
     # 复制结果到剪贴板
     def result_textbox_copy_to_clipboard(self):
+        try:
+            selected_text = self.result_textbox.selection_get()
+        except tk.TclError:
+            selected_text = self.result_textbox.get("1.0", tk.END)
+
         self.clipboard_clear()
-        self.clipboard_append(self.result_textbox.get("1.0", tk.END))
+        self.clipboard_append(selected_text)
 
     # 显示右键菜单
     def show_result_textbox_context_menu(self, event):
@@ -192,7 +197,7 @@ class MSPCManagerHelper(tk.Tk):
         self.feature_combobox.config(font=font_style)
         self.result_textbox.config(font=font_style)
         # 重新设置 result_textbox 的大小
-        self.result_textbox.place(x=455, y=80, width=385, height=360)
+        self.result_textbox.place(x=435, y=80, width=400, height=310)
 
     # 刷新版本号
     def refresh_version(self):
