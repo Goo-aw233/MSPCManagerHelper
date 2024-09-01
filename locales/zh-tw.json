@@ -29,6 +29,7 @@
     "wv2_runtime_already_installed": "Microsoft Edge WebView2 Runtime 已針對系統安裝，請嘗試重新以系統管理員身份執行。",
     "wv2_installer_exit_code": "Microsoft Edge WebView2 Runtime 安裝程序退出代碼",
     "wv2_download_error": "Microsoft Edge WebView2 Runtime 下載錯誤。",
+    "wv2_download_error_info": "Microsoft Edge WebView2 Runtime 下載錯誤資訊",
     "wv2_installer_error": "Microsoft Edge WebView2 Runtime 安裝錯誤。",
     "wv2_installation_cancelled": "使用者已取消 Microsoft Edge WebView2 Runtime 安裝。",
     "wv2_no_active_installation": "沒有活動的 Microsoft Edge WebView2 Runtime 安裝。",
