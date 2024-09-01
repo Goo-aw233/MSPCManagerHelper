@@ -40,6 +40,7 @@ python -m venv <path\to\MSPCManagerHelper>
 
 ```
 pip install -r requirements.txt
+pip install requests
 ```
 
 5. 构建 EXE
