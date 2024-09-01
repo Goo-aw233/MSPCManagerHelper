@@ -1,5 +1,6 @@
-import queue
+import os
 import subprocess
+import queue
 import threading
 import tkinter as tk
 from tkinter import ttk, messagebox
@@ -11,7 +12,7 @@ from otherFeature import OtherFeature
 class MSPCManagerHelper(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("MSPCManagerHelper Preview v24831 - we11D")
+        self.title("MSPCManagerHelper Preview v2491 - we11C")
         self.geometry("854x480")
         self.resizable(False, False)
         self.configure(bg="white")
@@ -51,7 +52,7 @@ class MSPCManagerHelper(tk.Tk):
 
         # 提示信息
         self.hint_label = tk.Label(self, text=self.translator.translate("notice_select_option"), bg="white")
-        self.hint_label.place(x=35, y=210)
+        self.hint_label.place(x=35, y=205)
 
         # 第一个组合框
         self.main_combobox = ttk.Combobox(self, values=[self.translator.translate("select_option"), self.translator.translate("main_project"), self.translator.translate("install_project"), self.translator.translate("uninstall_project"), self.translator.translate("other_project")], state="readonly")
@@ -144,6 +145,21 @@ class MSPCManagerHelper(tk.Tk):
             self.translator.translate("uninstall_project"): [self.translator.translate("uninstall_for_all_users"), self.translator.translate("uninstall_for_current_user"), self.translator.translate("uninstall_beta")],
             self.translator.translate("other_project"): [self.translator.translate("view_installed_antivirus"), self.translator.translate("developer_options"), self.translator.translate("repair_edge_wv2_setup"), self.translator.translate("pc_manager_faq"), self.translator.translate("install_wv2_runtime"), self.translator.translate("join_preview_program"), self.translator.translate("restart_pc_manager_service"), self.translator.translate("switch_region_to_china")]
         }
+
+        # 获取当前选择的语言
+        current_language = self.language_combobox.get()
+
+        # 需要隐藏的选项
+        hidden_options = [self.translator.translate("pc_manager_faq"),
+                          self.translator.translate("join_preview_program"),
+                          self.translator.translate("switch_region_to_china")]
+
+        # 如果当前语言是 en-us 或 zh-tw 或其它语言，隐藏特定选项
+        if current_language in ["English (United States)", "中文 (繁體)"]:
+            for key in options:
+                options[key] = [option for option in options[key] if option not in hidden_options]
+
+        # 更新功能组合框的值
         self.feature_combobox['values'] = options.get(selection, [])
         self.feature_combobox.set("")
 
@@ -159,6 +175,7 @@ class MSPCManagerHelper(tk.Tk):
             feature = self.feature_combobox.get()
             executing_message = f"{self.translator.translate('main_executing')} {feature} {self.translator.translate('main_operation')}"
             self.result_textbox.insert(tk.END, executing_message + "\n")
+            self.result_textbox.config(state="disabled")
 
             def run_feature():
                 result = ""
@@ -187,6 +204,7 @@ class MSPCManagerHelper(tk.Tk):
     def process_queue(self):
         try:
             result = self.result_queue.get_nowait()
+            self.result_textbox.config(state="normal")
             self.result_textbox.insert(tk.END, result)
             self.result_textbox.config(state="disabled")
             self.execute_button.config(state="normal")
@@ -194,16 +212,37 @@ class MSPCManagerHelper(tk.Tk):
         except queue.Empty:
             self.after(100, self.process_queue)
 
+    # 获取进程 PID
+    def get_pid(self):
+        pid = []
+        # 使用 tasklist.exe 获取所有进程信息并按行分割输出
+        for line in os.popen('tasklist.exe').read().splitlines():
+            if 'MicrosoftEdgeWebView2Setup.exe' in line or 'MicrosoftEdgeUpdate.exe' in line:
+                # 分割行并提取 PID
+                split = line.split()
+                if 'Console' in split:
+                    pid.append(split[1])  # PID 通常是第二个元素
+        return pid
+
+    # 结束进程
+    def kill_process_by_pid(self):
+        tf = True
+        while tf:  # 循环 taskkill.exe，直到指定进程被 taskkill.exe 关闭
+            for i in self.get_pid():
+                subprocess.run(['taskkill.exe', '/PID', i, '/F'], creationflags=subprocess.CREATE_NO_WINDOW)
+                tf = False
+
     # 取消功能
     def cancel_feature(self):
         self.cancelled = True
-        if self.current_pid:
-            subprocess.run(["taskkill", "/PID", str(self.current_pid), "/F"], encoding='utf-8')  # 确保使用正确的编码
-        self.result_textbox.config(state="normal")
-        self.result_textbox.insert(tk.END, f"{self.translator.translate('user_cancelled')}\n")
-        self.result_textbox.config(state="disabled")
-        self.execute_button.config(state="normal")
+        self.execute_button.config(state="disabled")
         self.cancel_button.config(state="disabled")
+
+        def kill_process_thread():
+            self.kill_process_by_pid()  # 结束指定进程
+            self.after(0, lambda: self.execute_button.config(state="normal"))
+
+        threading.Thread(target=kill_process_thread).start()
 
     # 设置字体样式
     def set_font_style(self):

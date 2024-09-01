@@ -106,11 +106,10 @@ class OtherFeature:
 
             # 运行安装程序
             app.current_process = subprocess.Popen([installer_path, "/install"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            # stdout, stderr = app.current_process.communicate()  # 等待安装程序退出
-            app.current_process.communicate()  # 等待安装程序退出
+            stdout, stderr = app.current_process.communicate()
 
             if app.cancelled:
-                return self.translator.translate("installation_cancelled")
+                return self.translator.translate("wv2_installation_cancelled")
 
             if app.current_process.returncode == 0:
                 return self.translator.translate("wv2_runtime_install_success")
@@ -119,7 +118,7 @@ class OtherFeature:
             else:
                 return f"{self.translator.translate('wv2_installer_exit_code')}: {app.current_process.returncode}\n{self.translator.translate('wv2_installer_error')}"
         except Exception as e:
-            return f"{self.translator.translate('wv2_download_error')}: {str(e)}"
+            return f"{self.translator.translate('wv2_download_error_info')}: {str(e)}"
         finally:
             # 删除临时目录
             if os.path.exists(temp_dir):
