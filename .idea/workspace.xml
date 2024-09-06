@@ -5,18 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1f128932-7364-4a90-996d-57e7148a4f03" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/MSPCManagerHelper.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/MainWindow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.zh-cn.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.zh-cn.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.zh-tw.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.zh-tw.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.bat" beforeDir="false" afterPath="$PROJECT_DIR$/build.bat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/build.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/checkSystemRequirements.py" beforeDir="false" afterPath="$PROJECT_DIR$/checkSystemRequirements.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getVersionNumber.py" beforeDir="false" afterPath="$PROJECT_DIR$/getVersionNumber.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/locales/en-us.json" beforeDir="false" afterPath="$PROJECT_DIR$/locales/en-us.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/locales/zh-cn.json" beforeDir="false" afterPath="$PROJECT_DIR$/locales/zh-cn.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/locales/zh-tw.json" beforeDir="false" afterPath="$PROJECT_DIR$/locales/zh-tw.json" afterDir="false" />
@@ -42,6 +39,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Python.MainWindow.executor": "Run",
+    "Python.mainWindow.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main"
   }
