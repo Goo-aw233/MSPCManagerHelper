@@ -1,6 +1,6 @@
 import winreg
 
-def detect_version():
+def get_current_Windows_version():
     try:
         # 尝试从 HKLM 读取版本号
         with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Appx\\AppxAllUserStore\\Applications") as key:

@@ -4,15 +4,15 @@ import queue
 import threading
 import tkinter as tk
 from tkinter import ttk, messagebox
-from getVersionNumber import detect_version
+from getVersionNumber import get_current_Windows_version
 from checkSystemRequirements import check_system_requirements
-from Translator import Translator
+from translator import Translator
 from otherFeature import OtherFeature
 
 class MSPCManagerHelper(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("MSPCManagerHelper Preview v2491 - we11C")
+        self.title("MSPCManagerHelper Preview v2496 - we11A")
         self.geometry("854x480")
         self.resizable(False, False)
         self.configure(bg="white")
@@ -72,6 +72,10 @@ class MSPCManagerHelper(tk.Tk):
         self.cancel_button = tk.Button(self, text=self.translator.translate("main_cancel_button"), command=self.cancel_feature, state="disabled", width=10, height=1)
         self.cancel_button.place(x=145, y=360)
 
+        # 以管理员身份运行按钮
+        self.run_as_administrator_button = tk.Button(self, text=self.translator.translate("run_as_administrator"), command=self.run_as_administrator, width=20, height=1)
+        self.run_as_administrator_button.place(x=255, y=360)
+
         # 结果输出框
         self.result_textbox = tk.Text(self, wrap="word", state="disabled", bg="lightgray")
         self.result_textbox.place(x=435, y=80, width=400, height=310)
@@ -80,16 +84,16 @@ class MSPCManagerHelper(tk.Tk):
         self.refresh_version()
         self.check_system_requirements()
 
-        # 创建右键菜单
+        # 创建 result_textbox 右键菜单
         self.create_result_textbox_context_menu()
         self.update_result_textbox_context_menu()  # 确保调用 update_result_textbox_context_menu 方法
         self.result_textbox.bind("<Button-3>", self.show_result_textbox_context_menu)
 
-    # 设置字体样式
+    # 更新右键菜单中的“复制”选项标签文本
     def update_result_textbox_context_menu(self):
         self.context_menu.entryconfig(0, label=self.translator.translate("main_copy"))
 
-    # 创建右键菜单
+    # 创建 result_textbox 右键菜单具体项目
     def create_result_textbox_context_menu(self):
         self.context_menu = tk.Menu(self, tearoff=0)
         self.context_menu.add_command(label=self.translator.translate("main_copy"), command=self.result_textbox_copy_to_clipboard)
@@ -107,6 +111,10 @@ class MSPCManagerHelper(tk.Tk):
     # 显示右键菜单
     def show_result_textbox_context_menu(self, event):
         self.context_menu.tk_popup(event.x_root, event.y_root)
+
+    # 以管理员身份运行
+    def run_as_administrator(self):
+        pass
 
     # 更改语言
     def change_language(self, event):
@@ -132,6 +140,7 @@ class MSPCManagerHelper(tk.Tk):
         self.hint_label.config(text=self.translator.translate("notice_select_option"))
         self.execute_button.config(text=self.translator.translate("main_execute_button"))
         self.cancel_button.config(text=self.translator.translate("main_cancel_button"))
+        self.run_as_administrator_button.config(text=self.translator.translate("run_as_administrator"))  # 更新以管理员身份运行按钮的文本
         self.main_combobox.config(values=[self.translator.translate("select_option"), self.translator.translate("main_project"), self.translator.translate("install_project"), self.translator.translate("uninstall_project"), self.translator.translate("other_project")])
         self.main_combobox.current(0)
         self.update_feature_combobox(None)
@@ -143,7 +152,7 @@ class MSPCManagerHelper(tk.Tk):
             self.translator.translate("main_project"): [self.translator.translate("repair_pc_manager"), self.translator.translate("get_pc_manager_logs")],
             self.translator.translate("install_project"): [self.translator.translate("download_from_winget"), self.translator.translate("download_from_store"), self.translator.translate("install_for_all_users"), self.translator.translate("install_for_current_user")],
             self.translator.translate("uninstall_project"): [self.translator.translate("uninstall_for_all_users"), self.translator.translate("uninstall_for_current_user"), self.translator.translate("uninstall_beta")],
-            self.translator.translate("other_project"): [self.translator.translate("view_installed_antivirus"), self.translator.translate("developer_options"), self.translator.translate("repair_edge_wv2_setup"), self.translator.translate("pc_manager_faq"), self.translator.translate("install_wv2_runtime"), self.translator.translate("join_preview_program"), self.translator.translate("restart_pc_manager_service"), self.translator.translate("switch_region_to_china")]
+            self.translator.translate("other_project"): [self.translator.translate("view_installed_antivirus"), self.translator.translate("developer_options"), self.translator.translate("repair_edge_wv2_setup"), self.translator.translate("pc_manager_faq"), self.translator.translate("install_wv2_runtime"), self.translator.translate("join_preview_program"), self.translator.translate("restart_pc_manager_service"), self.translator.translate("switch_region_to_cn")]
         }
 
         # 获取当前选择的语言
@@ -152,7 +161,7 @@ class MSPCManagerHelper(tk.Tk):
         # 需要隐藏的选项
         hidden_options = [self.translator.translate("pc_manager_faq"),
                           self.translator.translate("join_preview_program"),
-                          self.translator.translate("switch_region_to_china")]
+                          self.translator.translate("switch_region_to_cn")]
 
         # 如果当前语言是 en-us 或 zh-tw 或其它语言，隐藏特定选项
         if current_language in ["English (United States)", "中文 (繁體)"]:
@@ -193,8 +202,8 @@ class MSPCManagerHelper(tk.Tk):
                     result = self.other_feature.join_preview_program()
                 elif feature == self.translator.translate("restart_pc_manager_service"):
                     result = self.other_feature.restart_pc_manager_service()
-                elif feature == self.translator.translate("switch_region_to_china"):
-                    result = self.other_feature.switch_region_to_china()
+                elif feature == self.translator.translate("switch_region_to_cn"):
+                    result = self.other_feature.switch_region_to_cn()
                     # 其他功能...
                 self.result_queue.put(result)
             threading.Thread(target=run_feature).start()
@@ -249,7 +258,7 @@ class MSPCManagerHelper(tk.Tk):
         font_styles = {
             "English (United States)": ("Segoe UI", 10),
             "中文 (简体)": ("微软雅黑", 10),
-            "中文 (繁體)": ("微软雅黑", 10),
+            "中文 (繁體)": ("微軟正黑體", 10),
             # 在这里添加更多语言及其对应的字体样式
         }
 
@@ -270,7 +279,7 @@ class MSPCManagerHelper(tk.Tk):
 
     # 刷新版本号
     def refresh_version(self):
-        version = detect_version()
+        version = get_current_Windows_version()
         if version:
             self.version_label.config(text=f"{self.translator.translate('current_pcm_version')}{version}")
         else:

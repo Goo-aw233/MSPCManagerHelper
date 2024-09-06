@@ -1,5 +1,5 @@
 import winreg
-from Translator import Translator
+from translator import Translator
 
 def check_system_requirements(locale):
     translator = Translator(locale)
