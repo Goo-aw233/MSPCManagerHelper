@@ -45,4 +45,4 @@ pip install requests
 
 5. Build the EXE
 
-You can build it yourself by running `build.bat` in the root directory.
+You can build it yourself by running `build.bat` or `build.sh` in the root directory.

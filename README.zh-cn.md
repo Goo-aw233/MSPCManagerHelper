@@ -45,4 +45,4 @@ pip install requests
 
 5. 构建 EXE
 
-直接运行根目录下的 `build.bat` 即可自己构建。
+直接运行根目录下的 `build.bat` 或 `build.sh`即可自己构建。
