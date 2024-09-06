@@ -41,8 +41,9 @@
     "start_pc_manager_service_error": "Error starting Microsoft PC Manager service.",
     "pc_manager_service_error_code": "Error Code",
     "pc_manager_service_error_code_5": "The operation failed, please try run as administrator and then retry.",
-    "switch_region_to_china_error": "Error Switching Microsoft PC Manager Region To China",
-    "switch_region_to_china_completed": "Switch Microsoft PC Manager Region To China Completed.",
+    "current_pcm_region": "Current Microsoft PC Manager Region",
+    "switch_region_to_cn_error": "Error Switching Microsoft PC Manager Region To China",
+    "switch_region_to_cn_completed": "Switch Microsoft PC Manager Region To China Completed.",
 
     "@unnstallationFeaure.py": "unnstallationFeaure.py",
 
@@ -52,6 +53,8 @@
     "select_option": "Please Select",
     "main_execute_button": "Execute",
     "main_cancel_button": "Cancel",
+    "run_as_administrator": "Run As Administrator",
+    "run_as_administrator_error": "Failed to run as administrator",
     "main_project": "Main Project",
     "install_project": "Install Project",
     "uninstall_project": "Uninstall Project",
@@ -72,7 +75,7 @@
     "install_wv2_runtime": "Install Microsoft Edge WebView2 Runtime",
     "join_preview_program": "Join Microsoft PC Manager Preview Program",
     "restart_pc_manager_service": "Restart Microsoft PC Manager Service",
-    "switch_region_to_china": "Switch Microsoft PC Manager Region To China",
+    "switch_region_to_cn": "Switch Microsoft PC Manager Region To China",
     "warning": "Warning",
     "select_function": "Please Select a Function To Execute",
     "main_executing": "Executing",
@@ -80,6 +83,7 @@
     "user_cancelled": "User has cancelled the task.",
     "task_completed": "Operation completed.",
     "unknown_operation": "Unknown operation.",
+    "main_error": "Error",
     "main_copy": "Copy",
     "system_requirements_checking": "Checking system requirements..."
 }

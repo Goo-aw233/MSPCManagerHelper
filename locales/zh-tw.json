@@ -41,8 +41,9 @@
     "start_pc_manager_service_error": "啟動 Microsoft 電腦管家服務時出錯。",
     "pc_manager_service_error_code": "錯誤代碼",
     "pc_manager_service_error_code_5": "操作失敗，請嘗試重新以系統管理員身份執行。",
-    "switch_region_to_china_error": "切換 Microsoft 電腦管家地區至中國時出錯",
-    "switch_region_to_china_completed": "切換 Microsoft 電腦管家地區至中國完成。",
+    "current_pcm_region": "當前 Microsoft 電腦管家地區",
+    "switch_region_to_cn_error": "切換 Microsoft 電腦管家地區至中國時出錯",
+    "switch_region_to_cn_completed": "切換 Microsoft 電腦管家地區至中國完成。",
 
     "@unnstallationFeaure.py": "unnstallationFeaure.py",
 
@@ -52,6 +53,8 @@
     "select_option": "請選擇",
     "main_execute_button": "執行",
     "main_cancel_button": "取消",
+    "run_as_administrator": "以系統管理員身份執行",
+    "run_as_administrator_error": "以系統管理員身份執行失敗",
     "main_project": "主要項目",
     "install_project": "安裝項目",
     "uninstall_project": "解除安裝項目",
@@ -72,7 +75,7 @@
     "install_wv2_runtime": "安裝 Microsoft Edge WebView2 Runtime",
     "join_preview_program": "加入 Microsoft 電腦管家測試人員計劃",
     "restart_pc_manager_service": "重啟 Microsoft 電腦管家服務",
-    "switch_region_to_china": "切換 Microsoft 電腦管家地區至中國",
+    "switch_region_to_cn": "切換 Microsoft 電腦管家地區至中國",
     "warning": "警告",
     "select_function": "請選擇要執行的功能",
     "main_executing": "正在執行",
@@ -80,6 +83,7 @@
     "user_cancelled": "使用者已取消任務。",
     "task_completed": "操作完成。",
     "unknown_operation": "未知的操作。",
+    "main_error": "發生錯誤",
     "main_copy": "複製",
     "system_requirements_checking": "系統要求檢測中..."
 }
