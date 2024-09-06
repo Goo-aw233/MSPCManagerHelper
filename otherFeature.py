@@ -166,7 +166,7 @@ class OtherFeature:
         except Exception as e:
             return f"{self.translator.translate('service_restart_error')}: {str(e)}\n{self.translator.translate('pc_manager_service_error_code')}: {e.errno if hasattr(e, 'errno') else 'N/A'}"
 
-    def switch_region_to_china(self):
+    def switch_region_to_cn(self):
         try:
             reg_path = r"SOFTWARE\WOW6432Node\MSPCManager Store"
             value_name = "InstallRegionCode"
@@ -178,9 +178,19 @@ class OtherFeature:
 
                 winreg.SetValueEx(key, value_name, 0, winreg.REG_SZ, "CN")
 
-            return self.translator.translate("switch_region_to_china_completed")
+            message = self.translator.translate("switch_region_to_cn_completed")
         except OSError as e:
-            return f"{self.translator.translate('switch_region_to_china_error')}: {str(e)}"
+            message = f"{self.translator.translate('switch_region_to_cn_error')}: {str(e)}"
+
+        # 读取 InstallRegionCode 的值
+        try:
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg_path, 0, winreg.KEY_READ) as key:
+                region_code = winreg.QueryValueEx(key, value_name)[0]
+                message += f"\n{self.translator.translate('current_pcm_region')}: {region_code}"
+        except OSError as e:
+            message += f"\n{self.translator.translate('current_pcm_region_error')}: {str(e)}"
+
+        return message
 
 # 示例 Translator 类
 class Translator:
