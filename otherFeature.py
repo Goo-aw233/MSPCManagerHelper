@@ -1,4 +1,3 @@
-import json
 import os
 import shutil
 import subprocess
@@ -6,7 +5,6 @@ import requests
 import tempfile
 import webbrowser
 import winreg
-
 
 class OtherFeature:
     def __init__(self, translator):
@@ -19,7 +17,7 @@ class OtherFeature:
 
             # 执行 PowerShell 命令
             result = subprocess.run(
-                ["powershell", "-Command",
+                ["powershell.exe", "-Command",
                  ("Get-WmiObject -Namespace 'Root\\SecurityCenter2' -Class 'AntivirusProduct' | "
                   "Select-Object displayName, pathToSignedProductExe, pathToSignedReportingExe, productState | "
                   "Format-List")],
@@ -125,13 +123,13 @@ class OtherFeature:
                 shutil.rmtree(temp_dir)
             app.current_process = None
 
-    def join_preview_program(self):
-        try:
-            # 打开指定的 URL
-            webbrowser.open("https://forms.office.com/r/v1LX7SKWTs")
-            return self.translator.translate("pc_manager_faq_opened")
-        except Exception as e:
-            return f"{self.translator.translate('pc_manager_faq_error')}: {str(e)}"
+    # def join_preview_program(self):
+    #     try:
+    #         # 打开指定的 URL
+    #         webbrowser.open("https://forms.office.com/r/v1LX7SKWTs")
+    #         return self.translator.translate("join_preview_program_opened")
+    #     except Exception as e:
+    #         return f"{self.translator.translate('join_preview_program_error')}: {str(e)}"
 
     def restart_pc_manager_service(self):
         try:
@@ -146,6 +144,8 @@ class OtherFeature:
             if stop_result.returncode != 0:
                 if stop_result.returncode == 5:
                     return f"{self.translator.translate('pc_manager_service_error_code_5')}\n{self.translator.translate('stop_pc_manager_service_error')}"
+                elif stop_result.returncode == 1060:
+                    return f"{self.translator.translate('pc_manager_service_error_code_1060')}\n{self.translator.translate('stop_pc_manager_service_error')}"
                 else:
                     return f"{self.translator.translate('stop_pc_manager_service_error')}\n{self.translator.translate('pc_manager_service_error_code')}: {stop_result.returncode}"
             print(self.translator.translate("stopping_pc_manager_service"))
@@ -158,6 +158,8 @@ class OtherFeature:
             if start_result.returncode != 0:
                 if start_result.returncode == 5:
                     return f"{self.translator.translate('pc_manager_service_error_code_5')}\n{self.translator.translate('start_pc_manager_service_error')}"
+                elif start_result.returncode == 1060:
+                    return f"{self.translator.translate('pc_manager_service_error_code_1060')}\n{self.translator.translate('start_pc_manager_service_error')}"
                 else:
                     return f"{self.translator.translate('start_pc_manager_service_error')}\n{self.translator.translate('pc_manager_service_error_code')}: {start_result.returncode}"
             print(self.translator.translate("starting_pc_manager_service"))
@@ -167,16 +169,17 @@ class OtherFeature:
             return f"{self.translator.translate('service_restart_error')}: {str(e)}\n{self.translator.translate('pc_manager_service_error_code')}: {e.errno if hasattr(e, 'errno') else 'N/A'}"
 
     def switch_region_to_cn(self):
+        pcm_reg_path = r"SOFTWARE\WOW6432Node\MSPCManager Store"
+        pcm_region_value_name = "InstallRegionCode"
+
         try:
-            reg_path = r"SOFTWARE\WOW6432Node\MSPCManager Store"
-            value_name = "InstallRegionCode"
-            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg_path, 0, winreg.KEY_ALL_ACCESS) as key:
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, pcm_reg_path, 0, winreg.KEY_ALL_ACCESS) as key:
                 try:
-                    winreg.DeleteValue(key, value_name)
+                    winreg.DeleteValue(key, pcm_region_value_name)
                 except FileNotFoundError:
                     pass  # 如果值不存在，忽略错误
 
-                winreg.SetValueEx(key, value_name, 0, winreg.REG_SZ, "CN")
+                winreg.SetValueEx(key, pcm_region_value_name, 0, winreg.REG_SZ, "CN")
 
             message = self.translator.translate("switch_region_to_cn_completed")
         except OSError as e:
@@ -184,25 +187,10 @@ class OtherFeature:
 
         # 读取 InstallRegionCode 的值
         try:
-            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg_path, 0, winreg.KEY_READ) as key:
-                region_code = winreg.QueryValueEx(key, value_name)[0]
-                message += f"\n{self.translator.translate('current_pcm_region')}: {region_code}"
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, pcm_reg_path, 0, winreg.KEY_READ) as key:
+                pcm_region_code = winreg.QueryValueEx(key, pcm_region_value_name)[0]
+                message += f"\n{self.translator.translate('current_pcm_region')}: {pcm_region_code}"
         except OSError as e:
             message += f"\n{self.translator.translate('current_pcm_region_error')}: {str(e)}"
 
         return message
-
-# 示例 Translator 类
-class Translator:
-    def __init__(self, locale):
-        self.locale = locale
-        self.translations = self.load_translations()
-
-    def load_translations(self):
-        base_path = os.path.dirname(__file__)
-        file_path = os.path.join(base_path, 'locales', f'{self.locale}.json')
-        with open(file_path, 'r', encoding='utf-8') as file:
-            return json.load(file)
-
-    def translate(self, key):
-        return self.translations.get(key, key)
