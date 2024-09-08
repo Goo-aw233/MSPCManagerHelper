@@ -156,6 +156,7 @@ cython_debug/
 
 # MyPy
 diff/
+bak/
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
