@@ -1,6 +1,6 @@
 <h1 align="center">MSPCManagerHelper</h1>
 
-## 🖹 Choose your language
+## 🖹 Choose Your Language
 
 Select your region and language to continue.
 
@@ -10,7 +10,7 @@ Select your region and language to continue.
 
 ## 👏 Introduction
 
-This is the "MSPCManagerHelper", an auxiliary tool of the **Microsoft Coporation** computer assistance software "Microsoft PC Manager", which is designed to help users solve problems by providing fast and convenient solutions. Welcome to <https://pcmanager.microsoft.com> to download and experience the latest version of Microsoft PC Manager! 😉
+This is a utility `MSPCManagerHelper` designed for **Microsoft Corporation** `Microsoft PC Manager`, this tool is designed to help users to solve the problems encountered to provide fast and convenient solutions. Welcome to <https://pcmanager.microsoft.com> to download and try the latest version of Microsoft PC Manager! 😉
 
 > [!IMPORTANT]
 > We are not organized by Microsoft Coporation or its subsidiaries to write this document, and are not employees of Microsoft Coporation or its subsidiaries.
@@ -41,8 +41,17 @@ python -m venv <path\to\MSPCManagerHelper>
 ```
 pip install -r requirements.txt
 pip install requests
+python -m pip install --upgrade pip
 ```
+
+Or by running `install_requirements.bat`.
 
 5. Build the EXE
 
-You can build it yourself by running `build.bat` or `build.sh` in the root directory.
+Build yourself by running `build` directly from the root directory.
+
+- Build for Windows x64:
+`build_x64.bat` or `build_x64.sh`
+
+- Build for Windows ARM64:
+`build_ARM64.bat` or `build_ARM64.sh`.

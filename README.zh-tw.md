@@ -6,11 +6,11 @@ Select your region and language to continue.
 
 選擇你的語言地區以繼續。
 
-[English (United States)](./README.md) | [簡體中文 (中國)](./README.zh-cn.md)
+[English (United States)](./README.md) | [簡體中文 (中國大陸)](./README.zh-cn.md)
 
 ## 👏 簡介
 
-這是 **Microsoft 官方**出品的電腦輔助軟體“Microsoft 電腦管家”的輔助工具“Microsoft 電腦管家助手”，本工具旨在幫助使用者解決遇到問題時提供快速、便捷的解決方案。歡迎前往 <https://pcmanager.microsoft.com> 下載並體驗最新版 Microsoft 電腦管家！😉
+這是由 **Microsoft 官方**出品的`Microsoft 電腦管家`的實用工具`Microsoft 電腦管家助手`，本工具旨在幫助用戶解決遇到問題時提供快速、便捷的解決方案。歡迎前往 <https://pcmanager.microsoft.com> 下載並體驗最新版 Microsoft 電腦管家！😉
 
 > [!IMPORTANT]
 > 這並不是微軟及其子公司官方組織編寫的輔助工具，輔助工具編寫者並非微軟及其子公司的員工，本輔助工具中的內容也與微軟及其子公司本身無關。
@@ -22,7 +22,7 @@ Select your region and language to continue.
 
 1. 從 [Python](https://www.python.org/downloads) 下載 Python 3.11 版本。
 
-2. 將倉庫 Clone 至本地
+2. 將倉庫 Clone 至本機
 
 ```
 git clone https://github.com/Goo-aw233/MSPCManagerHelper.git
@@ -36,13 +36,22 @@ python -m venv <path\to\MSPCManagerHelper>
 <path\to\MSPCManagerHelper>\Scripts\activate
 ```
 
-4. 安裝依賴包
+4. 安裝套件包
 
 ```
 pip install -r requirements.txt
 pip install requests
+python -m pip install --upgrade pip
 ```
+
+或者透過執行 `install_requirements.bat` 來安裝。
 
 5. 構建 EXE
 
-直接運行根目錄下的 `build.bat` 或 `build.sh` 即可自己構建。
+直接執行根目錄下的 `build` 即可自己構建。
+
+- 為 Windows x64 構建：
+`build_x64.bat` 或 `build_x64.sh`
+
+- 為 Windows ARM64 構建：
+`build_ARM64.bat` 或 `build_ARM64.sh`

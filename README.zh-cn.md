@@ -10,7 +10,7 @@ Select your region and language to continue.
 
 ## 👏 简介
 
-这是 **Microsoft 官方**出品的电脑辅助软件“微软电脑管家”的辅助工具“微软电脑管家助手”，本工具旨在帮助用户解决遇到问题时提供快速、便捷的解决方案。欢迎前往 <https://pcmanager.microsoft.com> 下载并体验最新版微软电脑管家！😉
+这是由 **Microsoft 官方**出品的`微软电脑管家`的实用工具`微软电脑管家助手`，本工具旨在帮助用户解决遇到问题时提供快速、便捷的解决方案。欢迎前往 <https://pcmanager.microsoft.com> 下载并体验最新版微软电脑管家！😉
 
 > [!IMPORTANT]
 > 这并不是微软及其子公司官方组织编写的辅助工具，辅助工具编写者并非微软及其子公司的员工，本辅助工具中的内容也与微软及其子公司本身无关。
@@ -41,8 +41,16 @@ python -m venv <path\to\MSPCManagerHelper>
 ```
 pip install -r requirements.txt
 pip install requests
+python -m pip install --upgrade pip
 ```
 
-5. 构建 EXE
+或者通过运行 `install_requirements.bat` 来安装。
 
-直接运行根目录下的 `build.bat` 或 `build.sh`即可自己构建。
+5. 构建 EXE
+直接运行根目录下的 `build` 即可自己构建。
+
+- 为 Windows x64 构建：
+`build_x64.bat` 或 `build_x64.sh`
+
+- 为 Windows ARM64 构建：
+`build_ARM64.bat` 或 `build_ARM64.sh`
