@@ -1,4 +1,5 @@
 import os
+import re
 import subprocess
 from tkinter import messagebox
 
@@ -69,11 +70,10 @@ class UninstallationFeature:
             # 弹出窗口询问是否清理配置和文件
             tf = True
             while tf:
-                for line in os.popen('tasklist.exe').read().splitlines():
-                    if 'Uninst' in line:
-                        pass
-                    else:
-                        tf = False
+                if re.search(r'Uninst\w+\.exe', os.popen('tasklist.exe').read()):
+                    pass
+                else:
+                    tf = False
             if not messagebox.askyesno(self.translator.translate("cleanup_pcm_beta_config_and_files_notice"),
                                        self.translator.translate("cleanup_pcm_beta_config_and_files")):
                 return self.translator.translate("pcm_beta_uninstalled")
