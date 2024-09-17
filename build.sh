@@ -1,3 +1,16 @@
 #!/bin/bash
 
-pyinstaller --onefile --windowed --name "MSPCManagerHelper_Preview_v2498_-_we11C" --add-data "locales:locales" MainWindow.py
+arch=$(uname -m)
+
+echo "$arch"
+echo ""
+
+if [ "$arch" == "x86_64" ]; then
+    pyinstaller --onefile --windowed --name "MSPCManagerHelper_Preview_v24917_-_we11B_x64" --add-data "locales:locales" --add-binary "tools/procdump/procdump64.exe:." --clean --version-file=version_x64.txt mainWindow.py
+elif [ "$arch" == "aarch64" ]; then
+    pyinstaller --onefile --windowed --name "MSPCManagerHelper_Preview_v24917_-_we11B_ARM64" --add-data "locales:locales" --add-binary "tools/procdump/procdump64a.exe:." --clean --version-file=version_ARM64.txt mainWindow.py
+else
+    echo "UNKNOWN: $arch"
+fi
+
+read -n 1 -s -r -p "Press any key to continue..."
