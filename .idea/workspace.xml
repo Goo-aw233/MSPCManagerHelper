@@ -5,12 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1f128932-7364-4a90-996d-57e7148a4f03" name="更改" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.zh-cn.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.zh-cn.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.zh-tw.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.zh-tw.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.bat" beforeDir="false" afterPath="$PROJECT_DIR$/build.bat" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.sh" beforeDir="false" afterPath="$PROJECT_DIR$/build.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/getVersionNumber.py" beforeDir="false" afterPath="$PROJECT_DIR$/getVersionNumber.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getWindowsImage.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/installationFeature.py" beforeDir="false" afterPath="$PROJECT_DIR$/installationFeature.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/locales/en-us.json" beforeDir="false" afterPath="$PROJECT_DIR$/locales/en-us.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/locales/zh-cn.json" beforeDir="false" afterPath="$PROJECT_DIR$/locales/zh-cn.json" afterDir="false" />
@@ -18,8 +20,7 @@
       <change beforePath="$PROJECT_DIR$/mainFeature.py" beforeDir="false" afterPath="$PROJECT_DIR$/mainFeature.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mainWindow.py" beforeDir="false" afterPath="$PROJECT_DIR$/mainWindow.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/otherFeature.py" beforeDir="false" afterPath="$PROJECT_DIR$/otherFeature.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/runAsAdministrator.py" beforeDir="false" afterPath="$PROJECT_DIR$/runAsAdministrator.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/unnstallationFeaure.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/uninstallationFeature.py" beforeDir="false" afterPath="$PROJECT_DIR$/uninstallationFeature.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -38,19 +39,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Python.MainWindow.executor": "Run",
-    "Python.getWindowsImage.executor": "Run",
-    "Python.installationFeature.executor": "Run",
-    "Python.mainWindow.executor": "Run",
-    "Python.runAsAdministrator.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "last_opened_file_path": "C:/Users/GuCATs/source/repos/MSPCManagerHelper/diff/uninstallationFeature.py",
-    "two.files.diff.last.used.file": "C:/Users/GuCATs/source/repos/MSPCManagerHelper/diff/uninstallationFeature.py"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Python.MainWindow.executor&quot;: &quot;Run&quot;,
+    &quot;Python.getWindowsImage.executor&quot;: &quot;Run&quot;,
+    &quot;Python.installationFeature.executor&quot;: &quot;Run&quot;,
+    &quot;Python.mainWindow.executor&quot;: &quot;Run&quot;,
+    &quot;Python.runAsAdministrator.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/GuCATs/source/repos/MSPCManagerHelper/bak/mainWindow.py&quot;,
+    &quot;two.files.diff.last.used.file&quot;: &quot;C:/Users/GuCATs/source/repos/MSPCManagerHelper/bak/mainWindow.py&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
