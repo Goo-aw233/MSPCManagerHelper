@@ -25,9 +25,7 @@ class InstallationFeature:
                 try:
                     # 如果安装了 Microsoft Store，运行命令
                     subprocess.run(
-                        ['powershell.exe', '-Command', 'Start-Process ms-windows-store://pdp/?ProductId=9PM860492SZD'],
-                        creationflags=subprocess.CREATE_NO_WINDOW
-                    )
+                        ['powershell.exe', '-Command', 'Start-Process ms-windows-store://pdp/?ProductId=9PM860492SZD'], creationflags=subprocess.CREATE_NO_WINDOW)
                     return self.translator.translate("download_from_store_app_opened")
                 except Exception as e:
                     return f"{self.translator.translate('download_from_store_app_error')}: {str(e)}"
@@ -70,7 +68,7 @@ class InstallationFeature:
 
         if response_for_all_users_dependency:  # 选择依赖包
             all_users_dependency_package_path = filedialog.askopenfilename(
-                filetypes=[("Msix/MsixBundle", "*.msix;*.msixbundle"),
+                filetypes=[("Msix", "*.msix"),
                            ("*", "*")])
             if not all_users_dependency_package_path:
                 return self.translator.translate("install_for_all_users_no_file_selected")
@@ -89,8 +87,7 @@ class InstallationFeature:
                 all_users_dism_command.insert(-1, f'/DependencyPackagePath:{all_users_dependency_package_path}')
 
             # 使用 Dism.exe 安装应用
-            result = subprocess.run(all_users_dism_command, capture_output=True, text=True,
-                                    creationflags=subprocess.CREATE_NO_WINDOW)
+            result = subprocess.run(all_users_dism_command, capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
 
             if result.returncode == 0:
                 return self.translator.translate("install_for_all_users_success")
@@ -117,7 +114,7 @@ class InstallationFeature:
         current_user_dependency_package_path = None
         if response_for_current_user_dependency:  # 选择依赖包
             current_user_dependency_package_path = filedialog.askopenfilename(
-                filetypes=[("Msix/MsixBundle", "*.msix;*.msixbundle"),
+                filetypes=[("Msix", "*.msix"),
                            ("*", "*")])
             if not current_user_dependency_package_path:
                 return self.translator.translate("install_for_current_user_no_file_selected")
@@ -158,7 +155,7 @@ class InstallationFeature:
         update_dependency_package_path = None
         if response_for_update_dependency:  # 选择依赖包
             update_dependency_package_path = filedialog.askopenfilename(
-                filetypes=[("Msix/MsixBundle", "*.msix;*.msixbundle"),
+                filetypes=[("Msix", "*.msix"),
                            ("*", "*")])
             if not update_dependency_package_path:
                 return self.translator.translate("update_from_application_package_no_file_selected")
@@ -181,21 +178,21 @@ class InstallationFeature:
         except Exception as e:
             return self.translator.translate("update_from_application_package_error") + f": {str(e)}"
 
-    # def install_from_appxmanifest(self):
-    #     return self.translator.translate("feature_unavailable")
+    def install_from_appxmanifest(self):
+        return self.translator.translate("feature_unavailable")
 
     def install_wv2_runtime(self, app):
-        temp_dir = os.path.join(tempfile.gettempdir(), "MSPCManagerHelper")
-        installer_path = os.path.join(temp_dir, "MicrosoftEdgeWebView2Setup.exe")
+        wv2_installer_temp_dir = os.path.join(tempfile.gettempdir(), "MSPCManagerHelper")
+        installer_path = os.path.join(wv2_installer_temp_dir, "MicrosoftEdgeWebView2Setup.exe")
         download_url = "https://go.microsoft.com/fwlink/p/?LinkId=2124703"
 
         try:
             # 检查临时目录是否存在
-            if os.path.exists(temp_dir):
-                shutil.rmtree(temp_dir)  # 删除临时目录
+            if os.path.exists(wv2_installer_temp_dir):
+                shutil.rmtree(wv2_installer_temp_dir)  # 删除临时目录
 
             # 创建临时目录
-            os.makedirs(temp_dir, exist_ok=True)
+            os.makedirs(wv2_installer_temp_dir, exist_ok=True)
 
             # 下载文件
             response = requests.get(download_url)
@@ -226,6 +223,6 @@ class InstallationFeature:
             return f"{self.translator.translate('wv2_download_error_info')}: {str(e)}"
         finally:
             # 删除临时目录
-            if os.path.exists(temp_dir):
-                shutil.rmtree(temp_dir)
+            if os.path.exists(wv2_installer_temp_dir):
+                shutil.rmtree(wv2_installer_temp_dir)
             app.current_process = None
