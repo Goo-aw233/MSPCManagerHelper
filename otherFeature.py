@@ -1,6 +1,7 @@
 import subprocess
 import webbrowser
 import winreg
+from tkinter import filedialog
 
 class OtherFeature:
     def __init__(self, translator):
@@ -90,13 +91,13 @@ class OtherFeature:
             # 查询服务状态
             query_result = subprocess.run(
                 ["sc.exe", "query", "PCManager Service Store"],
-                capture_output=True, text=True, check=True
+                capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
             if "RUNNING" in query_result.stdout:
                 # 停止服务
                 stop_result = subprocess.run(
                     ["sc.exe", "stop", "PCManager Service Store"],
-                    capture_output=True, text=True
+                    capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
                 )
                 if stop_result.returncode != 0:
                     error_message = self.translator.translate("stop_pc_manager_service_error")
@@ -116,7 +117,7 @@ class OtherFeature:
             # 启动服务
             start_result = subprocess.run(
                 ["sc.exe", "start", "PCManager Service Store"],
-                capture_output=True, text=True
+                capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
             if start_result.returncode != 0:
                 error_message = self.translator.translate("start_pc_manager_service_error")
@@ -164,3 +165,25 @@ class OtherFeature:
             message += f"\n{self.translator.translate('current_pcm_region_error')}: {str(e)}"
 
         return message
+
+    def add_pcm_to_widgets(self):
+        return self.translator.translate("feature_unavailable")
+
+    def compute_file_hash(self):
+        try:
+            path_to_compute_file = filedialog.askopenfilename(filetypes=[("*", "*")])
+            if not path_to_compute_file:
+                return self.translator.translate("no_compute_file_selected")
+
+            # 使用 PowerShell 的 Get-FileHash 命令校验文件的 SHA256
+            result = subprocess.run(
+                ["powershell.exe", "-Command",
+                 f"Get-FileHash -Path '{path_to_compute_file}' -Algorithm SHA256 | Select-Object -ExpandProperty Hash"],
+                capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
+            )
+            file_sha256_hash = result.stdout.strip()
+            return f"{self.translator.translate('compute_file_sha256_hash_is')}: {file_sha256_hash}"
+        except subprocess.CalledProcessError as e:
+            return f"{self.translator.translate('compute_file_sha256_hash_error')}: {e.stderr.strip()}"
+        except Exception as e:
+            return f"{self.translator.translate('compute_file_sha256_hash_error')}: {str(e)}"
