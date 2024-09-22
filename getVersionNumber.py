@@ -1,6 +1,6 @@
 import winreg
 
-def get_current_windows_version():
+def get_current_pc_manager_version():
     version = None
     pcm_beta_installed = None
 
