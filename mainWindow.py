@@ -4,11 +4,11 @@ import queue
 import threading
 import tkinter as tk
 from tkinter import ttk, messagebox
+from advancedStartup import AdvancedStartup
 from checkSystemRequirements import check_system_requirements
-from getVersionNumber import get_current_windows_version
+from getVersionNumber import get_current_pc_manager_version
 from installationFeature import InstallationFeature
 from mainFeature import MainFeature
-from runAsAdministrator import Administrator
 from translator import Translator
 from otherFeature import OtherFeature
 from uninstallationFeature import UninstallationFeature
@@ -16,10 +16,12 @@ from uninstallationFeature import UninstallationFeature
 class MSPCManagerHelper(tk.Tk):
     def __init__(self):
         super().__init__()
-        if Administrator.is_admin():
-            self.title("MSPCManagerHelper Preview v24917 - we11B (Administrator)")
-        else:
-            self.title("MSPCManagerHelper Preview v24917 - we11B")
+        title = "MSPCManagerHelper Preview v24922 - we11A"
+        if AdvancedStartup.is_debugdevmode():
+            title += " DebugDevMode"
+        if AdvancedStartup.is_admin():
+            title += " (Administrator)"
+        self.title(title)
         self.geometry("854x480")
         self.resizable(False, False)
         self.configure(bg="white")
@@ -97,12 +99,15 @@ class MSPCManagerHelper(tk.Tk):
         # 以管理员身份运行按钮
         self.run_as_administrator_button = tk.Button(self, text=self.translator.translate("run_as_administrator"), command=self.run_as_administrator, width=20, height=1)
         self.run_as_administrator_button.place(x=255, y=360)
-        if Administrator.is_admin():
+        if AdvancedStartup.is_admin():
             self.run_as_administrator_button.config(state="disabled")
 
         # 结果输出框
         self.result_textbox = tk.Text(self, wrap="word", state="disabled", bg="lightgray")
         self.result_textbox.place(x=435, y=80, width=400, height=310)
+
+        # 输出 uninstallation_feature 到 result_textbox
+        self.uninstallation_feature.result_textbox = self.result_textbox
 
         # 初始检测版本号和系统要求
         self.refresh_version()
@@ -139,7 +144,7 @@ class MSPCManagerHelper(tk.Tk):
     # 以管理员身份运行
     def run_as_administrator(self):
         params = __file__
-        Administrator.run_as_admin(params)
+        AdvancedStartup.run_as_admin(params)
 
     # 更改语言
     def change_language(self, event):
@@ -173,7 +178,8 @@ class MSPCManagerHelper(tk.Tk):
                                           self.translator.translate("main_project"),
                                           self.translator.translate("install_project"),
                                           self.translator.translate("uninstall_project"),
-                                          self.translator.translate("other_project")])
+                                          self.translator.translate("other_project"),
+                                          ])
         self.main_combobox.current(0)
         self.update_feature_combobox(None)
 
@@ -182,31 +188,38 @@ class MSPCManagerHelper(tk.Tk):
         selection = self.main_combobox.get()
         options = {
             self.translator.translate("main_project"): [self.translator.translate("repair_pc_manager"),
-                                                        self.translator.translate("get_pc_manager_logs")],
+                                                        self.translator.translate("get_pc_manager_logs"),
+                                                        self.translator.translate("debug_dev_mode")
+                                                        ],
             self.translator.translate("install_project"): [self.translator.translate("download_from_winget"),
                                                            self.translator.translate("download_from_store"),
                                                            self.translator.translate("install_for_all_users"),
                                                            self.translator.translate("install_for_current_user"),
                                                            self.translator.translate("update_from_application_package"),
-                                                           # self.translator.translate("install_from_appxmanifest"),
-                                                           self.translator.translate("install_wv2_runtime")],
+                                                           self.translator.translate("install_from_appxmanifest"),
+                                                           self.translator.translate("install_wv2_runtime")
+                                                           ],
             self.translator.translate("uninstall_project"): [self.translator.translate("uninstall_for_all_users"),
                                                              self.translator.translate("uninstall_for_current_user"),
-                                                             self.translator.translate("uninstall_beta")],
+                                                             self.translator.translate("uninstall_beta")
+                                                             ],
             self.translator.translate("other_project"): [self.translator.translate("view_installed_antivirus"),
                                                          self.translator.translate("developer_options"),
                                                          self.translator.translate("repair_edge_wv2_setup"),
                                                          self.translator.translate("pc_manager_faq"),
                                                          # self.translator.translate("join_preview_program"),
                                                          self.translator.translate("restart_pc_manager_service"),
-                                                         self.translator.translate("switch_region_to_cn")]
+                                                         self.translator.translate("switch_region_to_cn"),
+                                                         self.translator.translate("add_pcm_to_widgets"),
+                                                         self.translator.translate("compute_file_hash")
+                                                         ]
         }
 
         # 获取当前选择的语言
         current_language = self.language_combobox.get()
 
         # 需要隐藏的选项
-        hidden_options = [self.translator.translate("pc_manager_faq"),
+        language_hidden_options = [self.translator.translate("pc_manager_faq"),
                           # self.translator.translate("join_preview_program"),
                           self.translator.translate("switch_region_to_cn")]
 
@@ -214,7 +227,22 @@ class MSPCManagerHelper(tk.Tk):
         if current_language in [self.translator.translate("lang_en-us"),
                                 self.translator.translate("lang_zh-tw")]:
             for key in options:
-                options[key] = [option for option in options[key] if option not in hidden_options]
+                options[key] = [option for option in options[key] if option not in language_hidden_options]
+
+        # 如果不是 devmode，隐藏特定选项
+        if not AdvancedStartup.is_devmode():
+            for key in options:
+                options[key] = [option for option in options[key] if
+                                option not in [self.translator.translate("install_from_appxmanifest"),
+                                                self.translator.translate("add_pcm_to_widgets")]]
+
+        # 如果不是 debugdevmode，隐藏特定选项
+        if not AdvancedStartup.is_debugdevmode():
+            for key in options:
+                options[key] = [option for option in options[key] if
+                                option not in [self.translator.translate("debug_dev_mode"),
+                                                self.translator.translate("install_from_appxmanifest"),
+                                                self.translator.translate("add_pcm_to_widgets")]]
 
         # 更新功能组合框的值
         self.feature_combobox['values'] = options.get(selection, [])
@@ -242,6 +270,8 @@ class MSPCManagerHelper(tk.Tk):
                     result = self.main_feature.repair_pc_manager()
                 elif feature == self.translator.translate("get_pc_manager_logs"):
                     result = self.main_feature.get_pc_manager_logs()
+                elif feature == self.translator.translate("debug_dev_mode"):
+                    result = self.main_feature.debug_dev_mode()
 
                 # InstallationFeature
                 elif feature == self.translator.translate("download_from_winget"):
@@ -254,8 +284,8 @@ class MSPCManagerHelper(tk.Tk):
                     result = self.installation_feature.install_for_current_user()
                 elif feature == self.translator.translate("update_from_application_package"):
                     result = self.installation_feature.update_from_application_package()
-                # elif feature == self.translator.translate("install_from_appxmanifest"):
-                #     result = self.installation_feature.install_from_appxmanifest()
+                elif feature == self.translator.translate("install_from_appxmanifest"):
+                    result = self.installation_feature.install_from_appxmanifest()
                 elif feature == self.translator.translate("install_wv2_runtime"):
                     result = self.installation_feature.install_wv2_runtime(self)
 
@@ -282,6 +312,11 @@ class MSPCManagerHelper(tk.Tk):
                     result = self.other_feature.restart_pc_manager_service()
                 elif feature == self.translator.translate("switch_region_to_cn"):
                     result = self.other_feature.switch_region_to_cn()
+                elif feature == self.translator.translate("add_pcm_to_widgets"):
+                    result = self.other_feature.add_pcm_to_widgets()
+                elif feature == self.translator.translate("compute_file_hash"):
+                    result = self.other_feature.compute_file_hash()
+
                 self.result_queue.put(result)
             threading.Thread(target=run_feature).start()
             self.after(100, self.process_queue)
@@ -367,14 +402,14 @@ class MSPCManagerHelper(tk.Tk):
         # 清除并重新输入 pcm_beta_installed 的内容
         self.result_textbox.config(state="normal")
         self.result_textbox.delete("1.0", tk.END)
-        _, pcm_beta_installed = get_current_windows_version()
+        _, pcm_beta_installed = get_current_pc_manager_version()
         if pcm_beta_installed:
             self.result_textbox.insert(tk.END, f"{self.translator.translate('pcm_beta_installed')}: {pcm_beta_installed}\n")
         self.result_textbox.config(state="disabled")
 
     # 刷新版本号
     def refresh_version(self):
-        version, pcm_beta_installed = get_current_windows_version()
+        version, pcm_beta_installed = get_current_pc_manager_version()
         if version:
             self.version_label.config(text=f"{self.translator.translate('current_pcm_version')}{version}")
         else:
