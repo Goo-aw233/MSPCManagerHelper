@@ -104,3 +104,6 @@ class MainFeature:
         value, _ = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")
         winreg.CloseKey(key)
         return value
+
+    def debug_dev_mode(self):
+        return self.translator.translate("feature_unavailable")
