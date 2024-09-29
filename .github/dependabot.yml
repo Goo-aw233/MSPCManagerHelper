@@ -10,6 +10,15 @@ updates:
     schedule:
       interval: daily
     groups:
-      maven-dependencies:
+      pip-dependencies:
+        patterns:
+          - "*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: daily
+    groups:
+      action-dependencies:
         patterns:
           - "*"
