@@ -1,6 +1,7 @@
+import locale
 import os
-import subprocess
 import queue
+import subprocess
 import threading
 import tkinter as tk
 from tkinter import ttk, messagebox
@@ -9,9 +10,10 @@ from checkSystemRequirements import check_system_requirements
 from getVersionNumber import get_current_pc_manager_version
 from installationFeature import InstallationFeature
 from mainFeature import MainFeature
-from translator import Translator
 from otherFeature import OtherFeature
+from translator import Translator
 from uninstallationFeature import UninstallationFeature
+
 
 class MSPCManagerHelper(tk.Tk):
     def __init__(self):
@@ -28,6 +30,17 @@ class MSPCManagerHelper(tk.Tk):
 
         # 初始化功能
         self.translator = Translator('en-us')
+        self.default_font_style = ("Segoe UI", 10)
+        locale_str = locale.getlocale()[0]
+        if locale_str.startswith("English"):
+            self.translator = Translator('en-us')
+            self.default_font_style = ("Segoe UI", 10)
+        elif locale_str.startswith("Chinese (Simplified)"):
+            self.translator = Translator('zh-cn')
+            self.default_font_style = ("Microsoft YaHei UI", 10)
+        elif locale_str.startswith("Chinese (Traditional)"):
+            self.translator = Translator('zh-tw')
+            self.default_font_style = ("Microsoft JhengHei UI", 10)
         self.main_feature = MainFeature(self.translator)
         self.installation_feature = InstallationFeature(self.translator)
         self.uninstallation_feature = UninstallationFeature(self.translator)
@@ -39,7 +52,6 @@ class MSPCManagerHelper(tk.Tk):
         self.current_pid = None
 
         # 设置默认字体样式
-        self.default_font_style = ("Segoe UI", 10)
         self.set_font_style()  # 设置字体样式
 
     # 创建窗口部件
@@ -47,9 +59,15 @@ class MSPCManagerHelper(tk.Tk):
         # 语言选择组合框
         self.language_combobox = ttk.Combobox(self, values=[self.translator.translate("lang_en-us"),
                                                             self.translator.translate("lang_zh-cn"),
-                                                            self.translator.translate("lang_zh-tw")],
-                                              state="readonly")
+                                                            self.translator.translate("lang_zh-tw")], state="readonly")
         self.language_combobox.current(0)
+        locale_str = locale.getlocale()[0]
+        if locale_str.startswith("English"):
+            self.language_combobox.current(0)
+        elif locale_str.startswith("Chinese (Simplified)"):
+            self.language_combobox.current(1)
+        elif locale_str.startswith("Chinese (Traditional)"):
+            self.language_combobox.current(2)
         self.language_combobox.bind("<<ComboboxSelected>>", self.change_language)
         self.language_combobox.place(x=35, y=80, width=180, height=25)
 
@@ -62,11 +80,13 @@ class MSPCManagerHelper(tk.Tk):
         self.version_label.pack(side="left", padx=(0, 10))
 
         # 刷新按钮
-        self.refresh_button = tk.Button(version_frame, text=self.translator.translate("refresh"), command=self.refresh_version, width=10, height=1)
+        self.refresh_button = tk.Button(version_frame, text=self.translator.translate("refresh"),
+                                        command=self.refresh_version, width=10, height=1)
         self.refresh_button.pack(side="left")
 
         # 系统要求检测
-        self.system_requirement_label = tk.Label(self, text=self.translator.translate("system_requirements_checking"), bg="white", wraplength=400, padx=0, pady=10)
+        self.system_requirement_label = tk.Label(self, text=self.translator.translate("system_requirements_checking"),
+                                                 bg="white", wraplength=400, padx=0, pady=10)
         self.system_requirement_label.place(x=35, y=145)
 
         # 提示信息
@@ -78,8 +98,7 @@ class MSPCManagerHelper(tk.Tk):
                                                         self.translator.translate("main_project"),
                                                         self.translator.translate("install_project"),
                                                         self.translator.translate("uninstall_project"),
-                                                        self.translator.translate("other_project")],
-                                          state="readonly")
+                                                        self.translator.translate("other_project")], state="readonly")
         self.main_combobox.current(0)
         self.main_combobox.bind("<<ComboboxSelected>>", self.update_feature_combobox)
         self.main_combobox.place(x=35, y=260, width=380, height=25)
@@ -89,15 +108,18 @@ class MSPCManagerHelper(tk.Tk):
         self.feature_combobox.place(x=35, y=310, width=380, height=25)
 
         # 执行按钮
-        self.execute_button = tk.Button(self, text=self.translator.translate("main_execute_button"), command=self.execute_feature, width=10, height=1)
+        self.execute_button = tk.Button(self, text=self.translator.translate("main_execute_button"),
+                                        command=self.execute_feature, width=10, height=1)
         self.execute_button.place(x=35, y=360)
 
         # 取消按钮
-        self.cancel_button = tk.Button(self, text=self.translator.translate("main_cancel_button"), command=self.cancel_feature, state="disabled", width=10, height=1)
+        self.cancel_button = tk.Button(self, text=self.translator.translate("main_cancel_button"),
+                                       command=self.cancel_feature, state="disabled", width=10, height=1)
         self.cancel_button.place(x=145, y=360)
 
         # 以管理员身份运行按钮
-        self.run_as_administrator_button = tk.Button(self, text=self.translator.translate("run_as_administrator"), command=self.run_as_administrator, width=20, height=1)
+        self.run_as_administrator_button = tk.Button(self, text=self.translator.translate("run_as_administrator"),
+                                                     command=self.run_as_administrator, width=20, height=1)
         self.run_as_administrator_button.place(x=255, y=360)
         if AdvancedStartup.is_admin():
             self.run_as_administrator_button.config(state="disabled")
@@ -125,7 +147,8 @@ class MSPCManagerHelper(tk.Tk):
     # 创建 result_textbox 右键菜单具体项目
     def create_result_textbox_context_menu(self):
         self.context_menu = tk.Menu(self, tearoff=0)
-        self.context_menu.add_command(label=self.translator.translate("main_copy"), command=self.result_textbox_copy_to_clipboard)
+        self.context_menu.add_command(label=self.translator.translate("main_copy"),
+                                      command=self.result_textbox_copy_to_clipboard)
 
     # 复制结果到剪贴板
     def result_textbox_copy_to_clipboard(self):
@@ -173,59 +196,54 @@ class MSPCManagerHelper(tk.Tk):
         self.hint_label.config(text=self.translator.translate("notice_select_option"))
         self.execute_button.config(text=self.translator.translate("main_execute_button"))
         self.cancel_button.config(text=self.translator.translate("main_cancel_button"))
-        self.run_as_administrator_button.config(text=self.translator.translate("run_as_administrator"))  # 更新以管理员身份运行按钮的文本
-        self.main_combobox.config(values=[self.translator.translate("select_option"),
-                                          self.translator.translate("main_project"),
-                                          self.translator.translate("install_project"),
-                                          self.translator.translate("uninstall_project"),
-                                          self.translator.translate("other_project"),
-                                          ])
+        self.run_as_administrator_button.config(
+            text=self.translator.translate("run_as_administrator"))  # 更新以管理员身份运行按钮的文本
+        self.main_combobox.config(
+            values=[self.translator.translate("select_option"), self.translator.translate("main_project"),
+                    self.translator.translate("install_project"), self.translator.translate("uninstall_project"),
+                    self.translator.translate("other_project"), ])
         self.main_combobox.current(0)
         self.update_feature_combobox(None)
 
     # 更新功能组合框
     def update_feature_combobox(self, event):
         selection = self.main_combobox.get()
-        options = {
-            self.translator.translate("main_project"): [self.translator.translate("repair_pc_manager"),
-                                                        self.translator.translate("get_pc_manager_logs"),
-                                                        self.translator.translate("debug_dev_mode")
-                                                        ],
-            self.translator.translate("install_project"): [self.translator.translate("download_from_winget"),
-                                                           self.translator.translate("download_from_store"),
-                                                           self.translator.translate("install_for_all_users"),
-                                                           self.translator.translate("install_for_current_user"),
-                                                           self.translator.translate("update_from_application_package"),
-                                                           self.translator.translate("install_from_appxmanifest"),
-                                                           self.translator.translate("install_wv2_runtime")
-                                                           ],
-            self.translator.translate("uninstall_project"): [self.translator.translate("uninstall_for_all_users"),
-                                                             self.translator.translate("uninstall_for_current_user"),
-                                                             self.translator.translate("uninstall_beta")
-                                                             ],
-            self.translator.translate("other_project"): [self.translator.translate("view_installed_antivirus"),
-                                                         self.translator.translate("developer_options"),
-                                                         self.translator.translate("repair_edge_wv2_setup"),
-                                                         self.translator.translate("pc_manager_faq"),
-                                                         # self.translator.translate("join_preview_program"),
-                                                         self.translator.translate("restart_pc_manager_service"),
-                                                         self.translator.translate("switch_region_to_cn"),
-                                                         self.translator.translate("add_pcm_to_widgets"),
-                                                         self.translator.translate("compute_file_hash")
-                                                         ]
-        }
+        options = {self.translator.translate("main_project"): [self.translator.translate("repair_pc_manager"),
+                                                               self.translator.translate("get_pc_manager_logs"),
+                                                               self.translator.translate("debug_dev_mode")],
+                   self.translator.translate("install_project"): [self.translator.translate("download_from_winget"),
+                                                                  self.translator.translate("download_from_store"),
+                                                                  self.translator.translate("install_for_all_users"),
+                                                                  self.translator.translate("install_for_current_user"),
+                                                                  self.translator.translate(
+                                                                      "update_from_application_package"),
+                                                                  self.translator.translate(
+                                                                      "install_from_appxmanifest"),
+                                                                  self.translator.translate("install_wv2_runtime")],
+                   self.translator.translate("uninstall_project"): [
+                       self.translator.translate("uninstall_for_all_users"),
+                       self.translator.translate("uninstall_for_current_user"),
+                       self.translator.translate("uninstall_beta")],
+                   self.translator.translate("other_project"): [self.translator.translate("view_installed_antivirus"),
+                                                                self.translator.translate("developer_options"),
+                                                                self.translator.translate("repair_edge_wv2_setup"),
+                                                                self.translator.translate("pc_manager_faq"),
+                                                                # self.translator.translate("join_preview_program"),
+                                                                self.translator.translate("restart_pc_manager_service"),
+                                                                self.translator.translate("switch_region_to_cn"),
+                                                                self.translator.translate("add_pcm_to_widgets"),
+                                                                self.translator.translate("compute_file_hash")]}
 
         # 获取当前选择的语言
         current_language = self.language_combobox.get()
 
         # 需要隐藏的选项
         language_hidden_options = [self.translator.translate("pc_manager_faq"),
-                          # self.translator.translate("join_preview_program"),
-                          self.translator.translate("switch_region_to_cn")]
+                                   # self.translator.translate("join_preview_program"),
+                                   self.translator.translate("switch_region_to_cn")]
 
         # 如果当前语言是 en-us 或 zh-tw 或其它语言，隐藏特定选项
-        if current_language in [self.translator.translate("lang_en-us"),
-                                self.translator.translate("lang_zh-tw")]:
+        if current_language in [self.translator.translate("lang_en-us"), self.translator.translate("lang_zh-tw")]:
             for key in options:
                 options[key] = [option for option in options[key] if option not in language_hidden_options]
 
@@ -234,15 +252,15 @@ class MSPCManagerHelper(tk.Tk):
             for key in options:
                 options[key] = [option for option in options[key] if
                                 option not in [self.translator.translate("install_from_appxmanifest"),
-                                                self.translator.translate("add_pcm_to_widgets")]]
+                                               self.translator.translate("add_pcm_to_widgets")]]
 
         # 如果不是 debugdevmode，隐藏特定选项
         if not AdvancedStartup.is_debugdevmode():
             for key in options:
                 options[key] = [option for option in options[key] if
                                 option not in [self.translator.translate("debug_dev_mode"),
-                                                self.translator.translate("install_from_appxmanifest"),
-                                                self.translator.translate("add_pcm_to_widgets")]]
+                                               self.translator.translate("install_from_appxmanifest"),
+                                               self.translator.translate("add_pcm_to_widgets")]]
 
         # 更新功能组合框的值
         self.feature_combobox['values'] = options.get(selection, [])
@@ -251,8 +269,7 @@ class MSPCManagerHelper(tk.Tk):
     # 执行功能
     def execute_feature(self):
         if self.main_combobox.get() == self.translator.translate("select_option") or not self.feature_combobox.get():
-            messagebox.showwarning(self.translator.translate("warning"),
-                                   self.translator.translate("select_function"))
+            messagebox.showwarning(self.translator.translate("warning"), self.translator.translate("select_function"))
         else:
             self.execute_button.config(state="disabled")
             self.cancel_button.config(state="normal")
@@ -318,6 +335,7 @@ class MSPCManagerHelper(tk.Tk):
                     result = self.other_feature.compute_file_hash()
 
                 self.result_queue.put(result)
+
             threading.Thread(target=run_feature).start()
             self.after(100, self.process_queue)
 
@@ -368,12 +386,9 @@ class MSPCManagerHelper(tk.Tk):
     # 设置字体样式
     def set_font_style(self):
         default_font_style = ("Segoe UI", 10)
-        font_styles = {
-            "lang_en-us": default_font_style,
-            "lang_zh-cn": ("微软雅黑", 10),
-            "lang_zh-tw": ("微軟正黑體", 10),
-            # 在这里添加更多语言及其对应的字体样式
-        }
+        font_styles = {"lang_en-us": default_font_style, "lang_zh-cn": ("微软雅黑", 10),
+                       "lang_zh-tw": ("微軟正黑體", 10),  # 在这里添加更多语言及其对应的字体样式
+                       }
 
         selected_language = self.language_combobox.get()
         language_key = None
@@ -404,7 +419,8 @@ class MSPCManagerHelper(tk.Tk):
         self.result_textbox.delete("1.0", tk.END)
         _, pcm_beta_installed = get_current_pc_manager_version()
         if pcm_beta_installed:
-            self.result_textbox.insert(tk.END, f"{self.translator.translate('pcm_beta_installed')}: {pcm_beta_installed}\n")
+            self.result_textbox.insert(tk.END,
+                                       f"{self.translator.translate('pcm_beta_installed')}: {pcm_beta_installed}\n")
         self.result_textbox.config(state="disabled")
 
     # 刷新版本号
@@ -419,6 +435,7 @@ class MSPCManagerHelper(tk.Tk):
     def check_system_requirements(self):
         system_status = check_system_requirements(self.translator.locale)
         self.system_requirement_label.config(text=system_status)
+
 
 if __name__ == "__main__":
     app = MSPCManagerHelper()
