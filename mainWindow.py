@@ -30,17 +30,13 @@ class MSPCManagerHelper(tk.Tk):
 
         # 初始化功能
         self.translator = Translator('en-us')
-        self.default_font_style = ("Segoe UI", 10)
         locale_str = locale.getlocale()[0]
         if locale_str.startswith("English"):
             self.translator = Translator('en-us')
-            self.default_font_style = ("Segoe UI", 10)
         elif locale_str.startswith("Chinese (Simplified)"):
             self.translator = Translator('zh-cn')
-            self.default_font_style = ("Microsoft YaHei UI", 10)
         elif locale_str.startswith("Chinese (Traditional)"):
             self.translator = Translator('zh-tw')
-            self.default_font_style = ("Microsoft JhengHei UI", 10)
         self.main_feature = MainFeature(self.translator)
         self.installation_feature = InstallationFeature(self.translator)
         self.uninstallation_feature = UninstallationFeature(self.translator)
@@ -52,6 +48,7 @@ class MSPCManagerHelper(tk.Tk):
         self.current_pid = None
 
         # 设置默认字体样式
+        self.default_font_style = ("Segoe UI", 10)
         self.set_font_style()  # 设置字体样式
 
     # 创建窗口部件
