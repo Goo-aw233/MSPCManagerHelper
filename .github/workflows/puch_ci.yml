@@ -16,7 +16,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ windows-latest, windows-2022-ARM64 ]
+        os: [ windows-latest ]
     runs-on: ${{ matrix.os }}
 
     steps:
