@@ -1,6 +1,7 @@
+import locale
 import os
-import subprocess
 import queue
+import subprocess
 import threading
 import tkinter as tk
 from tkinter import ttk, messagebox
@@ -9,9 +10,10 @@ from checkSystemRequirements import check_system_requirements
 from getVersionNumber import get_current_pc_manager_version
 from installationFeature import InstallationFeature
 from mainFeature import MainFeature
-from translator import Translator
 from otherFeature import OtherFeature
+from translator import Translator
 from uninstallationFeature import UninstallationFeature
+
 
 class MSPCManagerHelper(tk.Tk):
     def __init__(self):
@@ -28,6 +30,13 @@ class MSPCManagerHelper(tk.Tk):
 
         # 初始化功能
         self.translator = Translator('en-us')
+        locale_str = locale.getlocale()[0]
+        if locale_str.startswith("English"):
+            self.translator = Translator('en-us')
+        elif locale_str.startswith("Chinese (Simplified)"):
+            self.translator = Translator('zh-cn')
+        elif locale_str.startswith("Chinese (Traditional)"):
+            self.translator = Translator('zh-tw')
         self.main_feature = MainFeature(self.translator)
         self.installation_feature = InstallationFeature(self.translator)
         self.uninstallation_feature = UninstallationFeature(self.translator)
@@ -50,6 +59,13 @@ class MSPCManagerHelper(tk.Tk):
                                                             self.translator.translate("lang_zh-tw")],
                                               state="readonly")
         self.language_combobox.current(0)
+        locale_str = locale.getlocale()[0]
+        if locale_str.startswith("English"):
+            self.language_combobox.current(0)
+        elif locale_str.startswith("Chinese (Simplified)"):
+            self.language_combobox.current(1)
+        elif locale_str.startswith("Chinese (Traditional)"):
+            self.language_combobox.current(2)
         self.language_combobox.bind("<<ComboboxSelected>>", self.change_language)
         self.language_combobox.place(x=35, y=80, width=180, height=25)
 
