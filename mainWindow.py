@@ -1,3 +1,4 @@
+import ctypes
 import locale
 import os
 import queue
@@ -5,28 +6,35 @@ import subprocess
 import threading
 import tkinter as tk
 from tkinter import ttk, messagebox
+
 from advancedStartup import AdvancedStartup
 from checkSystemRequirements import check_system_requirements
-from getVersionNumber import get_current_pc_manager_version
+from getVersionNumber import GetPCManagerVersion
 from installationFeature import InstallationFeature
 from mainFeature import MainFeature
 from otherFeature import OtherFeature
+from topMenu import TopMenu
 from translator import Translator
 from uninstallationFeature import UninstallationFeature
-
 
 class MSPCManagerHelper(tk.Tk):
     def __init__(self):
         super().__init__()
-        title = "MSPCManagerHelper Preview v24922 - we11A"
-        if AdvancedStartup.is_debugdevmode():
-            title += " DebugDevMode"
+        self.MSPCManagerHelper_Version = "Preview v24103 - we11D"
+        title = f"MSPCManagerHelper {self.MSPCManagerHelper_Version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
+        if AdvancedStartup.is_devmode():
+            title += " - DevMode"
+        if AdvancedStartup.is_debugdevmode():
+            title += " - DebugDevMode"
         self.title(title)
-        self.geometry("854x480")
-        self.resizable(False, False)
+        window_width, window_height = 854, 480  # 窗口大小
+        center_x, center_y = self.winfo_screenwidth() // 2 - window_width // 2, self.winfo_screenheight() // 2 - window_height // 2 # 计算窗口位置
+        self.geometry(f"{window_width}x{window_height}+{center_x}+{center_y}")  # 设置窗口位置
+        self.resizable(False, False)    # 禁止调整窗口大小
         self.configure(bg="white")
+        self.set_dpi_awareness()  # 设置 DPI 感知
 
         # 初始化功能
         self.translator = Translator('en-us')
@@ -46,10 +54,20 @@ class MSPCManagerHelper(tk.Tk):
         self.cancelled = False
         self.current_process = None
         self.current_pid = None
+        self.top_menu = None
+        self.bind_all("<Alt_L>", self.toggle_top_menu)
+        self.bind("<Button-1>", self.hide_top_menu)
 
         # 设置默认字体样式
         self.default_font_style = ("Segoe UI", 10)
         self.set_font_style()  # 设置字体样式
+
+    # 设置 DPI 感知
+    def set_dpi_awareness(self):
+        try:
+            ctypes.windll.shcore.SetProcessDpiAwareness(1)
+        except Exception as e:
+            messagebox.showerror(self.translator.translate("failed_to_set_dpi_awareness"), f"{str(e)}")
 
     # 创建窗口部件
     def create_widgets(self):
@@ -73,8 +91,8 @@ class MSPCManagerHelper(tk.Tk):
         version_frame = tk.Frame(self, bg="white")
         version_frame.place(x=35, y=110)
 
-        # 版本号
-        self.version_label = tk.Label(version_frame, text=self.translator.translate("current_pcm_version"), bg="white")
+        # 检查 Windows 版本号
+        self.version_label = tk.Label(version_frame, text=self.translator.translate("current_pc_manager_version"), bg="white")
         self.version_label.pack(side="left", padx=(0, 10))
 
         # 刷新按钮
@@ -129,19 +147,15 @@ class MSPCManagerHelper(tk.Tk):
         self.refresh_version()
         self.check_system_requirements()
 
-        # 创建 result_textbox 右键菜单
+        # 创建 result_textbox 的右键菜单
         self.create_result_textbox_context_menu()
-        self.update_result_textbox_context_menu()  # 确保调用 update_result_textbox_context_menu 方法
         self.result_textbox.bind("<Button-3>", self.show_result_textbox_context_menu)
-
-    # 更新右键菜单中的“复制”选项标签文本
-    def update_result_textbox_context_menu(self):
-        self.context_menu.entryconfig(0, label=self.translator.translate("main_copy"))
 
     # 创建 result_textbox 右键菜单具体项目
     def create_result_textbox_context_menu(self):
         self.context_menu = tk.Menu(self, tearoff=0)
         self.context_menu.add_command(label=self.translator.translate("main_copy"), command=self.result_textbox_copy_to_clipboard)
+        self.context_menu.add_command(label=self.translator.translate("main_clear"), command=self.clear_result_textbox)
 
     # 复制结果到剪贴板
     def result_textbox_copy_to_clipboard(self):
@@ -152,6 +166,12 @@ class MSPCManagerHelper(tk.Tk):
 
         self.clipboard_clear()
         self.clipboard_append(selected_text)
+
+    # 清空 result_textbox 输出框
+    def clear_result_textbox(self):
+        self.result_textbox.config(state="normal")
+        self.result_textbox.delete("1.0", tk.END)
+        self.result_textbox.config(state="disabled")
 
     # 显示右键菜单
     def show_result_textbox_context_menu(self, event):
@@ -182,9 +202,8 @@ class MSPCManagerHelper(tk.Tk):
 
     # 更新文本
     def update_texts(self):
-        self.version_label.config(text=self.translator.translate("current_pcm_version"))
+        self.version_label.config(text=self.translator.translate("current_pc_manager_version"))
         self.refresh_button.config(text=self.translator.translate("refresh"))
-        self.update_result_textbox_context_menu()  # 更新右键菜单的文本
         self.system_requirement_label.config(text=self.translator.translate("system_requirements_checking"))
         self.hint_label.config(text=self.translator.translate("notice_select_option"))
         self.execute_button.config(text=self.translator.translate("main_execute_button"))
@@ -198,6 +217,10 @@ class MSPCManagerHelper(tk.Tk):
                                           ])
         self.main_combobox.current(0)
         self.update_feature_combobox(None)
+
+        # 更新右键菜单的文本
+        self.context_menu.entryconfig(0, label=self.translator.translate("main_copy"))  # 更新复制命令文本
+        self.context_menu.entryconfig(1, label=self.translator.translate("main_clear"))  # 更新清除命令文本
 
     # 更新功能组合框
     def update_feature_combobox(self, event):
@@ -225,9 +248,8 @@ class MSPCManagerHelper(tk.Tk):
                                                          self.translator.translate("pc_manager_faq"),
                                                          # self.translator.translate("join_preview_program"),
                                                          self.translator.translate("restart_pc_manager_service"),
-                                                         self.translator.translate("switch_region_to_cn"),
-                                                         self.translator.translate("add_pcm_to_widgets"),
-                                                         self.translator.translate("compute_file_hash")
+                                                         self.translator.translate("switch_pc_manager_region"),
+                                                         self.translator.translate("compute_files_hash")
                                                          ]
         }
 
@@ -235,9 +257,7 @@ class MSPCManagerHelper(tk.Tk):
         current_language = self.language_combobox.get()
 
         # 需要隐藏的选项
-        language_hidden_options = [self.translator.translate("pc_manager_faq"),
-                          # self.translator.translate("join_preview_program"),
-                          self.translator.translate("switch_region_to_cn")]
+        language_hidden_options = [self.translator.translate("pc_manager_faq")]
 
         # 如果当前语言是 en-us 或 zh-tw 或其它语言，隐藏特定选项
         if current_language in [self.translator.translate("lang_en-us"),
@@ -249,16 +269,16 @@ class MSPCManagerHelper(tk.Tk):
         if not AdvancedStartup.is_devmode():
             for key in options:
                 options[key] = [option for option in options[key] if
-                                option not in [self.translator.translate("install_from_appxmanifest"),
-                                                self.translator.translate("add_pcm_to_widgets")]]
+                                option not in [self.translator.translate("install_from_appxmanifest")]
+                                ]
 
         # 如果不是 debugdevmode，隐藏特定选项
         if not AdvancedStartup.is_debugdevmode():
             for key in options:
                 options[key] = [option for option in options[key] if
-                                option not in [self.translator.translate("debug_dev_mode"),
-                                                self.translator.translate("install_from_appxmanifest"),
-                                                self.translator.translate("add_pcm_to_widgets")]]
+                                option not in [self.translator.translate("install_from_appxmanifest"),
+                                               self.translator.translate("debug_dev_mode")]
+                                ]
 
         # 更新功能组合框的值
         self.feature_combobox['values'] = options.get(selection, [])
@@ -326,12 +346,10 @@ class MSPCManagerHelper(tk.Tk):
                 #     result = self.other_feature.join_preview_program()
                 elif feature == self.translator.translate("restart_pc_manager_service"):
                     result = self.other_feature.restart_pc_manager_service()
-                elif feature == self.translator.translate("switch_region_to_cn"):
-                    result = self.other_feature.switch_region_to_cn()
-                elif feature == self.translator.translate("add_pcm_to_widgets"):
-                    result = self.other_feature.add_pcm_to_widgets()
-                elif feature == self.translator.translate("compute_file_hash"):
-                    result = self.other_feature.compute_file_hash()
+                elif feature == self.translator.translate("switch_pc_manager_region"):
+                    result = self.other_feature.switch_pc_manager_region()
+                elif feature == self.translator.translate("compute_files_hash"):
+                    result = self.other_feature.compute_files_hash()
 
                 self.result_queue.put(result)
             threading.Thread(target=run_feature).start()
@@ -415,26 +433,43 @@ class MSPCManagerHelper(tk.Tk):
         # 重新设置 result_textbox 的大小
         self.result_textbox.place(x=435, y=80, width=400, height=310)
 
-        # 清除并重新输入 pcm_beta_installed 的内容
-        self.result_textbox.config(state="normal")
-        self.result_textbox.delete("1.0", tk.END)
-        _, pcm_beta_installed = get_current_pc_manager_version()
-        if pcm_beta_installed:
-            self.result_textbox.insert(tk.END, f"{self.translator.translate('pcm_beta_installed')}: {pcm_beta_installed}\n")
-        self.result_textbox.config(state="disabled")
-
     # 刷新版本号
     def refresh_version(self):
-        version, pcm_beta_installed = get_current_pc_manager_version()
+        version, beta_version = GetPCManagerVersion().refresh_version()
         if version:
-            self.version_label.config(text=f"{self.translator.translate('current_pcm_version')}{version}")
+            self.version_label.config(text=f"{self.translator.translate('current_pc_manager_version')}: {version}")
+            if beta_version:
+                # 清除并重新输入 pc_manager_beta_installed 的内容
+                self.result_textbox.config(state="normal")
+                self.result_textbox.delete("1.0", tk.END)
+                self.result_textbox.insert(tk.END, f"{self.translator.translate('pc_manager_beta_installed')}: {beta_version}\n")
+        elif beta_version:
+            self.version_label.config(text=f"{self.translator.translate('current_pc_manager_beta_version')}: {beta_version}")
         else:
-            self.version_label.config(text=self.translator.translate("cannot_read_pcm_version"))
+            self.version_label.config(text=self.translator.translate("cannot_read_pc_manager_version"))
 
     # 检测系统要求
     def check_system_requirements(self):
         system_status = check_system_requirements(self.translator.locale)
         self.system_requirement_label.config(text=system_status)
+
+    # 显示顶部菜单
+    def toggle_top_menu(self, event):
+        if self.top_menu is None:
+            self.top_menu = TopMenu(self, self.translator, self.MSPCManagerHelper_Version)
+            self.config(menu=self.top_menu.top_menu)
+        else:
+            self.config(menu=tk.Menu(self))  # 使用空的 tk.Menu 实例
+            self.top_menu = None
+
+    def hide_top_menu(self, event):
+        if self.top_menu is not None:
+            self.config(menu=tk.Menu(self))  # 使用空的 tk.Menu 实例
+            self.top_menu = None
+
+    def show_top_menu(self, event):
+        self.top_menu = TopMenu(self, self.translator, self.MSPCManagerHelper_Version)
+        self.config(menu=self.top_menu.top_menu)
 
 if __name__ == "__main__":
     app = MSPCManagerHelper()
