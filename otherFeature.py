@@ -1,7 +1,9 @@
+import iso3166
 import subprocess
+import tkinter as tk
 import webbrowser
 import winreg
-from tkinter import filedialog
+from tkinter import messagebox, filedialog
 
 class OtherFeature:
     def __init__(self, translator):
@@ -138,9 +140,41 @@ class OtherFeature:
         except subprocess.CalledProcessError as e:
             return f"{self.translator.translate('start_pc_manager_service_error')}: {str(e)}\n{self.translator.translate('pc_manager_service_error_code')}: {e.returncode}"
 
-    def switch_region_to_cn(self):
+    def switch_pc_manager_region(self):
         pcm_reg_path = r"SOFTWARE\WOW6432Node\MSPCManager Store"
         pcm_region_value_name = "InstallRegionCode"
+
+        # 获取 region_code 值
+        def region():
+            self.region_code = entry.get()
+            (messagebox.showerror(self.translator.translate("unknown_pc_manager_region_code"),
+                                  self.translator.translate("unknown_pc_manager_region_code_warning"),
+                                  parent=root)
+            if str(self.region_code).upper() not in iso3166.countries_by_alpha2 else (setattr(self, 'cancel', False) or root.destroy()))
+
+        root, self.cancel = tk.Tk(), True
+        root.title(self.translator.translate("switch_pc_manager_region_notice"))
+        root.geometry("450x150")
+        root.resizable(False, False)
+
+        label = tk.Label(root, text=self.translator.translate("type_to_switch_pc_manager_region"))
+        entry = tk.Entry(root)  # 创建提示和输入框
+
+        submit_button = tk.Button(root, text=self.translator.translate("main_execute_button"), command=region, width=10,
+                                  height=1)
+        cancel_button = tk.Button(root, text=self.translator.translate("main_cancel_button"),
+                                  command=lambda: root.destroy(), width=10, height=1)  # 按钮功能与样式
+
+        label.pack(pady=10)
+        entry.pack(pady=5)
+        submit_button.pack(side=tk.LEFT, padx=95)
+        cancel_button.pack(side=tk.LEFT)
+
+        root.grab_set()  # 设置为模态窗口
+        root.wait_window(root)
+
+        if self.cancel:
+            return self.translator.translate("user_canceled")
 
         try:
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, pcm_reg_path, 0, winreg.KEY_ALL_ACCESS) as key:
@@ -149,41 +183,61 @@ class OtherFeature:
                 except FileNotFoundError:
                     pass  # 如果值不存在，忽略错误
 
-                winreg.SetValueEx(key, pcm_region_value_name, 0, winreg.REG_SZ, "CN")
+                winreg.SetValueEx(key, pcm_region_value_name, 0, winreg.REG_SZ, self.region_code.upper())
 
-            message = self.translator.translate("switch_region_to_cn_completed")
+            message = self.translator.translate("switch_region_completed")
             message += f"\n{self.translator.translate('restart_pc_manager_to_apply_changes')}"
         except OSError as e:
-            message = f"{self.translator.translate('switch_region_to_cn_error')}: {str(e)}"
+            message = f"\n{self.translator.translate('switch_region_to_cn_error')}: {str(e)}"
 
         # 读取 InstallRegionCode 的值
         try:
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, pcm_reg_path, 0, winreg.KEY_READ) as key:
                 pcm_region_code = winreg.QueryValueEx(key, pcm_region_value_name)[0]
-                message += f"\n{self.translator.translate('current_pcm_region')}: {pcm_region_code}"
+                message += f"\n{self.translator.translate('current_pc_manager_region')}: {pcm_region_code}"
+        except FileNotFoundError:
+            message += f"\n{self.translator.translate('launch_pc_manager_to_continue')}"
         except OSError as e:
-            message += f"\n{self.translator.translate('current_pcm_region_error')}: {str(e)}"
+            message += f"\n{self.translator.translate('current_pc_manager_region_error')}: {str(e)}"
 
         return message
 
-    def add_pcm_to_widgets(self):
-        return self.translator.translate("feature_unavailable")
-
-    def compute_file_hash(self):
+    def compute_files_hash(self):
         try:
-            path_to_compute_file = filedialog.askopenfilename(filetypes=[("*", "*")])
-            if not path_to_compute_file:
-                return self.translator.translate("no_compute_file_selected")
+            paths_to_compute_files = filedialog.askopenfilenames(filetypes=[("*", "*")])
+            if not paths_to_compute_files:
+                return self.translator.translate("no_compute_files_selected")
 
-            # 使用 PowerShell 的 Get-FileHash 命令校验文件的 SHA256
-            result = subprocess.run(
-                ["powershell.exe", "-Command",
-                 f"Get-FileHash -Path '{path_to_compute_file}' -Algorithm SHA256 | Select-Object -ExpandProperty Hash"],
-                capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
-            )
-            file_sha256_hash = result.stdout.strip()
-            return f"{self.translator.translate('compute_file_sha256_hash_is')}: {file_sha256_hash}"
+            results = []
+            for compute_files_path in paths_to_compute_files:
+                sha256_result = subprocess.run(
+                    ["powershell.exe", "-Command",
+                     f"Get-FileHash -Path '{compute_files_path}' -Algorithm SHA256 | Select-Object -ExpandProperty Hash"],
+                    capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
+                )
+                sha256_hash = sha256_result.stdout.strip()
+
+                sha1_result = subprocess.run(
+                    ["powershell.exe", "-Command",
+                     f"Get-FileHash -Path '{compute_files_path}' -Algorithm SHA1 | Select-Object -ExpandProperty Hash"],
+                    capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
+                )
+                sha1_hash = sha1_result.stdout.strip()
+
+                md5_result = subprocess.run(
+                    ["powershell.exe", "-Command",
+                     f"Get-FileHash -Path '{compute_files_path}' -Algorithm MD5 | Select-Object -ExpandProperty Hash"],
+                    capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
+                )
+                md5_hash = md5_result.stdout.strip()
+
+                results.append(f"{self.translator.translate('path_to_compute_files')}: {compute_files_path}\n"
+                               f"{self.translator.translate('sha256_hash')}: {sha256_hash}\n"
+                               f"{self.translator.translate('sha1_hash')}: {sha1_hash}\n"
+                               f"{self.translator.translate('md5_hash')}: {md5_hash}")
+
+            return "\n\n".join(results)
         except subprocess.CalledProcessError as e:
-            return f"{self.translator.translate('compute_file_sha256_hash_error')}: {e.stderr.strip()}"
+            return f"{self.translator.translate('compute_files_hash_error')}: {e.stderr.strip()}"
         except Exception as e:
-            return f"{self.translator.translate('compute_file_sha256_hash_error')}: {str(e)}"
+            return f"{self.translator.translate('compute_files_hash_error')}: {str(e)}"
