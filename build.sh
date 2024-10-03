@@ -6,9 +6,9 @@ echo "$arch"
 echo ""
 
 if [ "$arch" == "x86_64" ]; then
-    pyinstaller --onefile --windowed --name "MSPCManagerHelper_Preview_v24922_-_we11A_x64" --add-data "locales:locales" --add-binary "tools/procdump/procdump64.exe:." --clean --version-file=version_x64.txt mainWindow.py
+    pyinstaller --onefile --windowed --name "MSPCManagerHelper_Preview_v24103_-_we11D_x64" --add-data "locales:locales" --add-binary "tools/procdump/procdump64.exe:." --clean --version-file=version_x64.txt mainWindow.py
 elif [ "$arch" == "aarch64" ]; then
-    pyinstaller --onefile --windowed --name "MSPCManagerHelper_Preview_v24922_-_we11A_ARM64" --add-data "locales:locales" --add-binary "tools/procdump/procdump64a.exe:." --clean --version-file=version_ARM64.txt mainWindow.py
+    pyinstaller --onefile --windowed --name "MSPCManagerHelper_Preview_v24103_-_we11D_ARM64" --add-data "locales:locales" --add-binary "tools/procdump/procdump64a.exe:." --clean --version-file=version_ARM64.txt mainWindow.py
 else
     echo "UNKNOWN: $arch"
 fi
