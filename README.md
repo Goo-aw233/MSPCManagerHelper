@@ -20,7 +20,7 @@ This is a utility `MSPCManagerHelper` designed for **Microsoft Corporation** `Mi
 
 ## 💻 Development
 
-1. Download Python 3.11 from [Python](https://www.python.org/downloads).
+1. Download Python 3.11 from [Python](https://www.python.org/downloads)
 
 2. Clone the repository
 
@@ -31,9 +31,20 @@ cd MSPCManagerHelper
 
 3. Create and activate the virtual environment
 
+- Windows: 
+
 ```
-python -m venv <path\to\MSPCManagerHelper>
-<path\to\MSPCManagerHelper>\Scripts\activate
+cd <path\to\MSPCManagerHelper>
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+- macOS/Linux: 
+
+```
+cd <path/to/MSPCManagerHelper>
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
 4. Install the pip packages
@@ -45,13 +56,8 @@ python -m pip install --upgrade pip
 ```
 
 Or by running `install_requirements.bat`.
+You can also activate the virtual environment and install pip packages with `install_requirements_.venv.bat`.
 
 5. Build the EXE
 
-Build yourself by running `build` directly from the root directory.
-
-- Build for Windows x64:
-`build_x64.bat` or `build_x64.sh`
-
-- Build for Windows ARM64:
-`build_ARM64.bat` or `build_ARM64.sh`.
+Build yourself by running `build.bat` or `build_.venv.bat` directly from the root directory.

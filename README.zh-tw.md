@@ -20,7 +20,7 @@ Select your region and language to continue.
 
 ## 💻 開發
 
-1. 從 [Python](https://www.python.org/downloads) 下載 Python 3.11 版本。
+1. 從 [Python](https://www.python.org/downloads) 下載 Python 3.11 版本
 
 2. 將倉庫 Clone 至本機
 
@@ -31,9 +31,20 @@ cd MSPCManagerHelper
 
 3. 創建並啟用虛擬環境
 
+- Windows: 
+
 ```
-python -m venv <path\to\MSPCManagerHelper>
-<path\to\MSPCManagerHelper>\Scripts\activate
+cd <path\to\MSPCManagerHelper>
+python -m venv .venv
+.venv\Scripts\activate
+```
+
+- macOS/Linux: 
+
+```
+cd <path/to/MSPCManagerHelper>
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
 4. 安裝套件包
@@ -45,13 +56,8 @@ python -m pip install --upgrade pip
 ```
 
 或者透過執行 `install_requirements.bat` 來安裝。
+亦可以透過執行 `install_requirements_.venv.bat` 來激活虛擬環境並安裝套件包。
 
 5. 構建 EXE
 
-直接執行根目錄下的 `build` 即可自己構建。
-
-- 為 Windows x64 構建：
-`build_x64.bat` 或 `build_x64.sh`
-
-- 為 Windows ARM64 構建：
-`build_ARM64.bat` 或 `build_ARM64.sh`
+直接執行根目錄下的 `build.bat` 或 `build_.venv.bat` 即可自己構建。
