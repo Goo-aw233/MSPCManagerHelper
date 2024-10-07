@@ -5,7 +5,7 @@ import queue
 import subprocess
 import threading
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import messagebox, ttk
 
 from advancedStartup import AdvancedStartup
 from checkSystemRequirements import check_system_requirements
@@ -20,7 +20,7 @@ from uninstallationFeature import UninstallationFeature
 class MSPCManagerHelper(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.MSPCManagerHelper_Version = "Preview v24103 - we11D"
+        self.MSPCManagerHelper_Version = "Preview v24107 - we11B"
         title = f"MSPCManagerHelper {self.MSPCManagerHelper_Version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
@@ -75,7 +75,7 @@ class MSPCManagerHelper(tk.Tk):
         self.language_combobox = ttk.Combobox(self, values=[self.translator.translate("lang_en-us"),
                                                             self.translator.translate("lang_zh-cn"),
                                                             self.translator.translate("lang_zh-tw")],
-                                              state="readonly")
+                                              state="readonly", height=6)
         self.language_combobox.current(0)
         locale_str = locale.getlocale()[0]
         if locale_str.startswith("English"):
@@ -113,13 +113,13 @@ class MSPCManagerHelper(tk.Tk):
                                                         self.translator.translate("install_project"),
                                                         self.translator.translate("uninstall_project"),
                                                         self.translator.translate("other_project")],
-                                          state="readonly")
+                                          state="readonly", height=8)  # 设置展开后的最大高度为 8
         self.main_combobox.current(0)
         self.main_combobox.bind("<<ComboboxSelected>>", self.update_feature_combobox)
         self.main_combobox.place(x=35, y=260, width=380, height=25)
 
         # 第二个组合框
-        self.feature_combobox = ttk.Combobox(self, state="readonly")
+        self.feature_combobox = ttk.Combobox(self, state="readonly", height=6)  # 设置展开后的最大高度为 6
         self.feature_combobox.place(x=35, y=310, width=380, height=25)
 
         # 执行按钮
@@ -136,9 +136,15 @@ class MSPCManagerHelper(tk.Tk):
         if AdvancedStartup.is_admin():
             self.run_as_administrator_button.config(state="disabled")
 
-        # 结果输出框
+        # 结果输出框 result_textbox
         self.result_textbox = tk.Text(self, wrap="word", state="disabled", bg="lightgray")
         self.result_textbox.place(x=435, y=80, width=400, height=310)
+        # 创建滚动条
+        scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.result_textbox.yview)
+        # 将滚动条与 result_textbox 关联
+        self.result_textbox.config(yscrollcommand=scrollbar.set)
+        # 放置滚动条
+        scrollbar.place(x=835, y=80, height=310)
 
         # 输出 uninstallation_feature 到 result_textbox
         self.uninstallation_feature.result_textbox = self.result_textbox
@@ -222,41 +228,42 @@ class MSPCManagerHelper(tk.Tk):
         self.context_menu.entryconfig(0, label=self.translator.translate("main_copy"))  # 更新复制命令文本
         self.context_menu.entryconfig(1, label=self.translator.translate("main_clear"))  # 更新清除命令文本
 
-    # 更新功能组合框
+    # 更新功能组合框内容
     def update_feature_combobox(self, event):
         selection = self.main_combobox.get()
         options = {
             self.translator.translate("main_project"): [self.translator.translate("repair_pc_manager"),
-                                                        self.translator.translate("get_pc_manager_logs"),
-                                                        self.translator.translate("debug_dev_mode")
-                                                        ],
+                                                        self.translator.translate("get_pc_manager_logs")],
             self.translator.translate("install_project"): [self.translator.translate("download_from_winget"),
                                                            self.translator.translate("download_from_store"),
                                                            self.translator.translate("install_for_all_users"),
                                                            self.translator.translate("install_for_current_user"),
                                                            self.translator.translate("update_from_application_package"),
-                                                           self.translator.translate("install_from_appxmanifest"),
-                                                           self.translator.translate("install_wv2_runtime")
-                                                           ],
+                                                           self.translator.translate("install_wv2_runtime")],
             self.translator.translate("uninstall_project"): [self.translator.translate("uninstall_for_all_users"),
                                                              self.translator.translate("uninstall_for_current_user"),
-                                                             self.translator.translate("uninstall_beta")
-                                                             ],
+                                                             self.translator.translate("uninstall_pc_manager_beta")],
             self.translator.translate("other_project"): [self.translator.translate("view_installed_antivirus"),
                                                          self.translator.translate("developer_options"),
                                                          self.translator.translate("repair_edge_wv2_setup"),
                                                          self.translator.translate("pc_manager_faq"),
-                                                         # self.translator.translate("join_preview_program"),
                                                          self.translator.translate("restart_pc_manager_service"),
                                                          self.translator.translate("switch_pc_manager_region"),
-                                                         self.translator.translate("compute_files_hash")
-                                                         ]
+                                                         self.translator.translate("compute_files_hash"),
+                                                         self.translator.translate("get_msedge_webview2_version")]
         }
+
+        # 根据参数显示或隐藏选项
+        if AdvancedStartup.is_devmode():
+            options[self.translator.translate("install_project")].insert(5, self.translator.translate("install_from_appxmanifest"))
+        if AdvancedStartup.is_debugdevmode():
+            options[self.translator.translate("main_project")].append(self.translator.translate("debug_dev_mode"))  # 插入到末尾
+            options[self.translator.translate("install_project")].insert(5, self.translator.translate("install_from_appxmanifest")) # 插入到第 5 个位置（从 0 开始）
 
         # 获取当前选择的语言
         current_language = self.language_combobox.get()
 
-        # 需要隐藏的选项
+        # 根据语言隐藏特定选项
         language_hidden_options = [self.translator.translate("pc_manager_faq")]
 
         # 如果当前语言是 en-us 或 zh-tw 或其它语言，隐藏特定选项
@@ -264,21 +271,6 @@ class MSPCManagerHelper(tk.Tk):
                                 self.translator.translate("lang_zh-tw")]:
             for key in options:
                 options[key] = [option for option in options[key] if option not in language_hidden_options]
-
-        # 如果不是 devmode，隐藏特定选项
-        if not AdvancedStartup.is_devmode():
-            for key in options:
-                options[key] = [option for option in options[key] if
-                                option not in [self.translator.translate("install_from_appxmanifest")]
-                                ]
-
-        # 如果不是 debugdevmode，隐藏特定选项
-        if not AdvancedStartup.is_debugdevmode():
-            for key in options:
-                options[key] = [option for option in options[key] if
-                                option not in [self.translator.translate("install_from_appxmanifest"),
-                                               self.translator.translate("debug_dev_mode")]
-                                ]
 
         # 更新功能组合框的值
         self.feature_combobox['values'] = options.get(selection, [])
@@ -330,8 +322,8 @@ class MSPCManagerHelper(tk.Tk):
                     result = self.uninstallation_feature.uninstall_for_all_users()
                 elif feature == self.translator.translate("uninstall_for_current_user"):
                     result = self.uninstallation_feature.uninstall_for_current_user()
-                elif feature == self.translator.translate("uninstall_beta"):
-                    result = self.uninstallation_feature.uninstall_beta()
+                elif feature == self.translator.translate("uninstall_pc_manager_beta"):
+                    result = self.uninstallation_feature.uninstall_pc_manager_beta()
 
                 # OtherFeature
                 elif feature == self.translator.translate("view_installed_antivirus"):
@@ -350,6 +342,8 @@ class MSPCManagerHelper(tk.Tk):
                     result = self.other_feature.switch_pc_manager_region()
                 elif feature == self.translator.translate("compute_files_hash"):
                     result = self.other_feature.compute_files_hash()
+                elif feature == self.translator.translate("get_msedge_webview2_version"):
+                    result = self.other_feature.get_msedge_webview2_version()
 
                 self.result_queue.put(result)
             threading.Thread(target=run_feature).start()
