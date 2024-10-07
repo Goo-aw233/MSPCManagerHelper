@@ -12,7 +12,54 @@ class InstallationFeature:
         self.translator = translator
 
     def download_from_winget(self):
-        return self.translator.translate("feature_unavailable")
+        try:
+            # 检查 WinGet 是否安装
+            result = subprocess.Popen(['where.exe', 'winget.exe'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+            stdout, stderr = result.communicate()
+            if result.returncode != 0:
+                return self.translator.translate("winget_not_installed")
+
+            # 弹出提示框询问用户是否同意 Microsoft Store 源协议
+            response = messagebox.askyesnocancel(
+                self.translator.translate("winget_msstore_source_agreement_notice"),
+                self.translator.translate("ask_winget_msstore_source_agreement")
+            )
+            if response is None:
+                return self.translator.translate("user_canceled")
+            elif not response:
+                return self.translator.translate("disagree_winget_msstore_source_agreement")
+
+            # 使用 WinGet 搜索 Microsoft PC Manager
+            result = subprocess.Popen(['winget.exe', 'search', 'Microsoft PC Manager', '--source', 'msstore', '--accept-source-agreements'],
+                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+            stdout, stderr = result.communicate()
+            if result.returncode != 0:
+                if result.returncode == 2316632067:
+                    return self.translator.translate("winget_not_internet_connection")
+                elif result.returncode == 2316632084:
+                    return self.translator.translate("winget_no_results_found")
+                elif result.returncode == 2316632139:
+                    return self.translator.translate("winget_source_reset_needed")
+                else:
+                    stderr = stderr.strip() if stderr else self.translator.translate("winget_not_error_info")
+                    stdout = stdout.strip() if stdout else self.translator.translate("winget_not_output")
+                    return f"{self.translator.translate('winget_error')}\n{self.translator.translate('winget_error_info')}: {stderr}\n{self.translator.translate('winget_error_code')}: {result.returncode}\n{self.translator.translate('winget_output')}: {stdout}"
+
+            # 使用 WinGet 安装 Microsoft PC Manager
+            result = subprocess.Popen(['winget.exe', 'install', 'Microsoft PC Manager', '--source', 'msstore', '--accept-source-agreements', '--accept-package-agreements'],
+                                      stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+            stdout, stderr = result.communicate()
+            if result.returncode != 0:
+                if result.returncode == 2316632107:
+                    return self.translator.translate("already_installed_pc_manager_from_winget")
+                else:
+                    stderr = stderr.strip() if stderr else self.translator.translate("winget_not_error_info")
+                    stdout = stdout.strip() if stdout else self.translator.translate("winget_not_output")
+                    return f"{self.translator.translate('winget_error')}\n{self.translator.translate('winget_error_info')}: {stderr}\n{self.translator.translate('winget_error_code')}: {result.returncode}\n{self.translator.translate('winget_output')}: {stdout}"
+
+            return self.translator.translate("pc_manager_has_been_installed_from_winget")
+        except Exception as e:
+            return f"{self.translator.translate('winget_error')}\n{self.translator.translate('winget_error_info')}: {str(e)}\n{self.translator.translate('winget_not_error_code')}"
 
     def download_from_store(self):
         try:
@@ -334,7 +381,53 @@ class InstallationFeature:
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
 
-            # 删除临时文件
+            # 询问是否注册服务
+            response_for_service = messagebox.askyesno(
+                self.translator.translate("install_from_appxmanifest_register_svc_notice"),
+                self.translator.translate("install_from_appxmanifest_register_svc")
+            )
+
+            if response_for_service:
+                # 检查服务 "PCManager Service Store" 是否存在
+                service_check_store = subprocess.run(
+                    ['powershell.exe', '-Command', 'Get-Service -Name "PCManager Service Store"'],
+                    capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
+                )
+
+                # 检查服务 "PC Manager Service" 是否存在
+                service_check_store_old = subprocess.run(
+                    ['powershell.exe', '-Command', 'Get-Service -Name "PC Manager Service"'],
+                    capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
+                )
+
+                if service_check_store.returncode == 0 or service_check_store_old.returncode == 0:
+                    messagebox.showwarning(
+                        self.translator.translate("install_from_appxmanifest_svc_exists_warning"),
+                        self.translator.translate("install_from_appxmanifest_svc_exists")
+                    )
+                else:
+                    # 创建服务
+                    service_create = subprocess.run(
+                        ['sc.exe', 'create', 'PCManager Service Store', 'binPath=',
+                         f'"{program_files_path}\\PCManager\\MSPCManagerService.exe"',
+                         'DisplayName=', '"MSPCManager Service (Store)"', 'start=', 'auto'],
+                        capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
+                    )
+
+                    if service_create.returncode == 0:
+                        # 设置服务描述
+                        subprocess.run(
+                            ['sc.exe', 'description', 'PCManager Service Store',
+                             '"Microsoft PCManager Service For Store"'],
+                            capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
+                        )
+                        # 启动服务
+                        subprocess.run(
+                            ['sc.exe', 'start', 'PCManager Service Store'],
+                            capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
+                        )
+
+            # 清理临时文件
             for file in os.listdir(temp_appxmanifest_file_path):
                 file_path = os.path.join(temp_appxmanifest_file_path, file)
                 if os.path.isfile(file_path):
