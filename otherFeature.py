@@ -11,16 +11,13 @@ class OtherFeature:
 
     def view_installed_antivirus(self):
         try:
-            # 设置隐藏窗口的标志
-            creationflags = subprocess.CREATE_NO_WINDOW
-
             # 执行 PowerShell 命令
             result = subprocess.run(
                 ["powershell.exe", "-Command",
                  ("Get-WmiObject -Namespace 'Root\\SecurityCenter2' -Class 'AntivirusProduct' | "
                   "Select-Object displayName, pathToSignedProductExe, pathToSignedReportingExe, productState | "
                   "Format-List")],
-                capture_output=True, text=True, check=True, creationflags=creationflags
+                capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
             output = result.stdout.strip()
             if not output:
@@ -188,7 +185,7 @@ class OtherFeature:
             message = self.translator.translate("switch_region_completed")
             message += f"\n{self.translator.translate('restart_pc_manager_to_apply_changes')}"
         except OSError as e:
-            message = f"\n{self.translator.translate('switch_region_to_cn_error')}: {str(e)}"
+            message = f"\n{self.translator.translate('switch_region_error')}: {str(e)}"
 
         # 读取 InstallRegionCode 的值
         try:
@@ -241,3 +238,35 @@ class OtherFeature:
             return f"{self.translator.translate('compute_files_hash_error')}: {e.stderr.strip()}"
         except Exception as e:
             return f"{self.translator.translate('compute_files_hash_error')}: {str(e)}"
+
+    def get_msedge_webview2_version(self):
+        messages = []
+
+        try:
+            # 使用 PowerShell 命令读取 msedgewebview2.exe 的版本号
+            pwsh_command = (
+                "$SystemMSEdgeWebView2Path = \"$env:SystemRoot\\System32\\Microsoft-Edge-WebView\\msedgewebview2.exe\"; "
+                "$SystemMSEdgeWebView2PathVersionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($SystemMSEdgeWebView2Path); "
+                "$SystemMSEdgeWebView2PathVersionInfo.ProductVersion"
+            )
+            result = subprocess.run(
+                ["powershell.exe", "-Command", pwsh_command],
+                capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
+            )
+            system_msedge_webview2_version = result.stdout.strip()
+            messages.append(f"{self.translator.translate('system_msedge_webview2_version')}: {system_msedge_webview2_version}")
+        except subprocess.CalledProcessError as e:
+            messages.append(f"{self.translator.translate('get_msedge_webview2_version_powershell_error')}: {e.stderr.strip()}")
+
+        try:
+            # 读取注册表中的版本号
+            msedge_webview2_reg_path = r"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, msedge_webview2_reg_path) as key:
+                user_msedge_webview2_version = winreg.QueryValueEx(key, "pv")[0]
+                messages.append(f"{self.translator.translate('user_msedge_webview2_version')}: {user_msedge_webview2_version}")
+        except FileNotFoundError:
+            messages.append(self.translator.translate("msedge_webview2_version_registry_key_not_found"))
+        except OSError as e:
+            messages.append(f"{self.translator.translate('get_msedge_webview2_version_registry_error')}: {str(e)}")
+
+        return "\n".join(messages)
