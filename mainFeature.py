@@ -128,4 +128,9 @@ class MainFeature:
         return "\n".join(messages)
 
     def debug_dev_mode(self):
-        return self.translator.translate("feature_unavailable")
+        messages = []
+        try:
+            messages.append(self.translator.translate("feature_unavailable"))
+        except Exception as e:
+            messages.append(self.translator.translate("debug_dev_mode_error") + f": {str(e)}")
+        return "\n".join(messages)
