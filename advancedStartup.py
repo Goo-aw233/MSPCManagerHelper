@@ -9,8 +9,8 @@ class AdvancedStartup:
 
     @staticmethod
     def is_debugdevmode():
-        devmode_args = ['/debugdevmode', '-debugdevmode']
-        return any(arg.lower() in devmode_args for arg in sys.argv)
+        debugdevmode_args = ['/debugdevmode', '-debugdevmode']
+        return any(arg.lower() in debugdevmode_args for arg in sys.argv)
 
     @staticmethod
     # 获取用户是否以管理员身份运行
