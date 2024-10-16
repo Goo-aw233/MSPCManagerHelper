@@ -9,8 +9,8 @@ iso3166==2.1.1
 packaging==24.1
 pefile==2024.8.26
 pip-check-reqs==2.5.3
-pyinstaller==6.10.0
-pyinstaller-hooks-contrib==2024.8
+pyinstaller==6.11.0
+pyinstaller-hooks-contrib==2024.9
 python-dotenv==1.0.1
 pywin32==308
 pywin32-ctypes==0.2.3
