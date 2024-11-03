@@ -11,7 +11,7 @@ from getVersionNumber import GetPCManagerVersion
 from installationFeature import InstallationFeature
 from mainFeature import MainFeature
 from otherFeature import OtherFeature
-from tkinter import messagebox, ttk
+from tkinter import filedialog, messagebox, ttk
 from topMenu import TopMenu
 from translator import Translator
 from uninstallationFeature import UninstallationFeature
@@ -73,9 +73,13 @@ class MSPCManagerHelper(tk.Tk):
     # 创建窗口部件
     def create_widgets(self):
         # 语言选择组合框
-        self.language_combobox = ttk.Combobox(self, values=[self.translator.translate("lang_en-us"),
-                                                            self.translator.translate("lang_zh-cn"),
-                                                            self.translator.translate("lang_zh-tw")],
+        self.language_list = [self.translator.translate("lang_en-us"),
+                    self.translator.translate("lang_zh-cn"),
+                    self.translator.translate("lang_zh-tw"),
+                    self.translator.translate("lang_custom")]
+        translators = [Translator(i) for i in ['en-us', 'zh-cn', 'zh-tw']]
+        self.languages = dict(zip(self.language_list, translators))
+        self.language_combobox = ttk.Combobox(self, values=self.language_list,
                                               state="readonly", height=6)
         self.language_combobox.current(0)
         locale_str = locale.getlocale()[0]
@@ -205,12 +209,33 @@ class MSPCManagerHelper(tk.Tk):
     # 更改语言
     def change_language(self, event):
         selected_language = self.language_combobox.get()
-        if selected_language == self.translator.translate("lang_en-us"):
-            self.translator = Translator('en-us')
-        elif selected_language == self.translator.translate("lang_zh-cn"):
-            self.translator = Translator('zh-cn')
-        elif selected_language == self.translator.translate("lang_zh-tw"):
-            self.translator = Translator('zh-tw')
+        Load_Languages = self.translator.translate("lang_custom")
+        add_language = False
+
+        #选择语言
+        if selected_language in self.languages:
+            self.translator = self.languages[selected_language]
+        elif selected_language == Load_Languages:
+            language_file_path = filedialog.askopenfilename(
+            filetypes=[("JSON", "*.json")])
+            if language_file_path:
+                add_language = True
+                self.translator.load_translations(language_file_path)
+                current_language = self.translator.translate("current_language")
+                self.languages[self.translator.translate(current_language)] = self.translator
+
+        #更新语言选择组合框
+        self.language_list = list(self.languages.keys()) + [self.translator.translate("lang_custom")]
+        self.language_combobox.config(values=(self.language_list))
+        if add_language:
+            self.language_combobox.current(len(self.language_list)-2)
+        else:
+            current_language = self.translator.translate("current_language")
+            current_language_index = self.language_list.index(self.translator.translate(current_language))
+
+            self.language_combobox.current(current_language_index)
+        self.language_combobox.update()
+
         self.main_feature = MainFeature(self.translator, self.result_textbox)  # 更新 MainFeature 语言实例
         self.installation_feature = InstallationFeature(self.translator, self.result_textbox)  # 更新 InstallationFeature 语言实例
         self.uninstallation_feature = UninstallationFeature(self.translator, self.result_textbox)  # 更新 UninstallationFeature 语言实例
