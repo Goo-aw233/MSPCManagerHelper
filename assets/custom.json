@@ -1,6 +1,7 @@
 {
-    "@Language": "Language",
-    "current_language": "lang_en-us",
+    "@Language": "Language (lang_key is the language and country code, key is the name of the displayed language. E.g., lang_ja-jp and 日本語 (日本). lang_key can be sorted in any order. Please name the file with the language and country code, e.g. ja-jp.json.)",
+    "current_language": "lang_key",
+    "lang_key": "key",
     "lang_en-us": "English (United States)",
     "lang_zh-cn": "中文 (简体)",
     "lang_zh-tw": "中文 (繁體)",
