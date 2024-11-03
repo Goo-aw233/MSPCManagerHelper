@@ -1,13 +1,24 @@
 import iso3166
+import pywintypes
+import os
 import subprocess
 import tkinter as tk
 import webbrowser
+import win32serviceutil
+import win32service
 import winreg
 from tkinter import messagebox, filedialog
 
 class OtherFeature:
-    def __init__(self, translator):
+    def __init__(self, translator, result_textbox=None):
         self.translator = translator
+        self.result_textbox = result_textbox
+
+    def textbox(self, message):
+        self.result_textbox.config(state="normal")
+        self.result_textbox.insert(tk.END, message + "\n")
+        self.result_textbox.config(state="disable")
+        self.result_textbox.update_idletasks()  # 刷新界面
 
     def view_installed_antivirus(self):
         try:
@@ -69,13 +80,16 @@ class OtherFeature:
         except OSError as e:
             return f"{self.translator.translate('repair_edge_wv2_setup_error')}: {str(e)}"
 
-    def pc_manager_faq(self):
+    def pc_manager_docs(self):
         try:
+            # 根据语言选择 URL
+            pc_manager_docs_url = "https://docs.qq.com/doc/DR2FrVkJmT0NuZ0Zx" if self.translator.locale == "zh-cn" else "https://mspcmanager.github.io/mspcm-docs"
+
             # 打开指定的 URL
-            webbrowser.open("https://docs.qq.com/doc/DR2FrVkJmT0NuZ0Zx")
-            return self.translator.translate("pc_manager_faq_opened")
+            webbrowser.open(pc_manager_docs_url)
+            return self.translator.translate("pc_manager_docs_opened")
         except Exception as e:
-            return f"{self.translator.translate('pc_manager_faq_error')}: {str(e)}"
+            return f"{self.translator.translate('pc_manager_docs_error')}: {str(e)}"
 
     # def join_preview_program(self):
     #     try:
@@ -86,60 +100,55 @@ class OtherFeature:
     #         return f"{self.translator.translate('join_preview_program_error')}: {str(e)}"
 
     def restart_pc_manager_service(self):
+        service_name = "PCManager Service Store"
+        wait_secs = 5  # 设置等待时间为 5 秒
+
         try:
-            # 查询服务状态
-            query_result = subprocess.run(
-                ["sc.exe", "query", "PCManager Service Store"],
-                capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
-            )
-            if "RUNNING" in query_result.stdout:
-                # 停止服务
-                stop_result = subprocess.run(
-                    ["sc.exe", "stop", "PCManager Service Store"],
-                    capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
-                )
-                if stop_result.returncode != 0:
-                    error_message = self.translator.translate("stop_pc_manager_service_error")
-                    error_code = stop_result.returncode
-                    if error_code == 5:
-                        error_message += f"\n{self.translator.translate('pc_manager_service_error_code_5')}"
-                    elif error_code == 1056:
-                        error_message += f"\n{self.translator.translate('pc_manager_service_error_code_1056')}"
-                    elif error_code == 1060:
-                        error_message += f"\n{self.translator.translate('pc_manager_service_error_code_1060')}"
-                    else:
-                        error_message += f"\n{self.translator.translate('pc_manager_service_error_code')}: {error_code}"
-                    return error_message
-                else:
-                    print(self.translator.translate("stopping_pc_manager_service"))
-
-            # 启动服务
-            start_result = subprocess.run(
-                ["sc.exe", "start", "PCManager Service Store"],
-                capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
-            )
-            if start_result.returncode != 0:
-                error_message = self.translator.translate("start_pc_manager_service_error")
-                error_code = start_result.returncode
-                if error_code == 5:
-                    error_message += f"\n{self.translator.translate('pc_manager_service_error_code_5')}"
-                elif error_code == 1056:
-                    error_message += f"\n{self.translator.translate('pc_manager_service_error_code_1056')}"
-                elif error_code == 1060:
-                    error_message += f"\n{self.translator.translate('pc_manager_service_error_code_1060')}"
-                else:
-                    error_message += f"\n{self.translator.translate('pc_manager_service_error_code')}: {error_code}"
-                return error_message
+            # 检查服务是否存在
+            service_status = win32serviceutil.QueryServiceStatus(service_name)
+        except pywintypes.error as e:
+            if e.winerror == 5:  # 要以管理员身份运行
+                return self.translator.translate("pc_manager_service_error_code_5")
+            elif e.winerror == 1056:  # 服务已在运行
+                return self.translator.translate("pc_manager_service_error_code_1056")
+            elif e.winerror == 1060:  # 服务未安装
+                return self.translator.translate("pc_manager_service_error_code_1060")
             else:
-                print(self.translator.translate("starting_pc_manager_service"))
+                return f"{self.translator.translate('start_pc_manager_service_error')}: {str(e)}"
 
-            return self.translator.translate("pc_manager_service_restarted_successfully")
-        except subprocess.CalledProcessError as e:
-            return f"{self.translator.translate('start_pc_manager_service_error')}: {str(e)}\n{self.translator.translate('pc_manager_service_error_code')}: {e.returncode}"
+        try:
+            # 检查服务是否在运行
+            if service_status[1] == win32service.SERVICE_RUNNING:
+                self.textbox(self.translator.translate("stopping_pc_manager_service") + '\n')
+                win32serviceutil.StopService(service_name)  # 停止服务
+                win32serviceutil.WaitForServiceStatus(service_name, win32service.SERVICE_STOPPED, waitSecs=wait_secs)   # 等待服务停止
+                self.textbox(self.translator.translate("starting_pc_manager_service") + '\n')
+                win32serviceutil.StartService(service_name) # 启动服务
+                win32serviceutil.WaitForServiceStatus(service_name, win32service.SERVICE_RUNNING, waitSecs=wait_secs)   # 等待服务启动
+                return self.translator.translate("pc_manager_service_restarted_successfully")
+            else:
+                self.textbox(self.translator.translate("starting_pc_manager_service") + '\n')
+                win32serviceutil.StartService(service_name) # 启动服务
+                win32serviceutil.WaitForServiceStatus(service_name, win32service.SERVICE_RUNNING, waitSecs=wait_secs)   # 等待服务启动
+                return self.translator.translate("pc_manager_service_restarted_successfully")
+        except pywintypes.error as e:
+            return f"{self.translator.translate('start_pc_manager_service_error')}: {str(e)}"
 
     def switch_pc_manager_region(self):
         pcm_reg_path = r"SOFTWARE\WOW6432Node\MSPCManager Store"
         pcm_region_value_name = "InstallRegionCode"
+
+        # 添加 messagebox.askyesnocancel 对话框
+        user_response = messagebox.askyesnocancel(
+            self.translator.translate("ask_if_version_above_3_14_0_0"),
+            self.translator.translate("select_pc_manager_version")
+        )
+
+        if user_response is None:
+            return self.translator.translate("user_canceled")
+        elif user_response:
+            subprocess.run(["start", "ms-settings:regionformatting"], check=True, shell=True)
+            return self.translator.translate("how_to_switch_pc_manager_region")
 
         # 获取 region_code 值
         def region():
@@ -147,12 +156,17 @@ class OtherFeature:
             (messagebox.showerror(self.translator.translate("unknown_pc_manager_region_code"),
                                   self.translator.translate("unknown_pc_manager_region_code_warning"),
                                   parent=root)
-            if str(self.region_code).upper() not in iso3166.countries_by_alpha2 else (setattr(self, 'cancel', False) or root.destroy()))
+             if str(self.region_code).upper() not in iso3166.countries_by_alpha2 else (
+                        setattr(self, 'cancel', False) or root.destroy()))
 
         root, self.cancel = tk.Tk(), True
         root.title(self.translator.translate("switch_pc_manager_region_notice"))
         root.geometry("450x150")
         root.resizable(False, False)
+
+        # 设置自定义图标
+        switch_region_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
+        root.iconbitmap(switch_region_icon_path)
 
         label = tk.Label(root, text=self.translator.translate("type_to_switch_pc_manager_region"))
         entry = tk.Entry(root)  # 创建提示和输入框
@@ -243,14 +257,14 @@ class OtherFeature:
         messages = []
 
         try:
-            # 使用 PowerShell 命令读取 msedgewebview2.exe 的版本号
-            pwsh_command = (
+            # 使用 PowerShell 命令读取 System32 的 msedgewebview2.exe 的版本号
+            root_msedge_webview2 = (
                 "$SystemMSEdgeWebView2Path = \"$env:SystemRoot\\System32\\Microsoft-Edge-WebView\\msedgewebview2.exe\"; "
                 "$SystemMSEdgeWebView2PathVersionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($SystemMSEdgeWebView2Path); "
                 "$SystemMSEdgeWebView2PathVersionInfo.ProductVersion"
             )
             result = subprocess.run(
-                ["powershell.exe", "-Command", pwsh_command],
+                ["powershell.exe", "-Command", root_msedge_webview2],
                 capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
             system_msedge_webview2_version = result.stdout.strip()
