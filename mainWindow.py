@@ -5,14 +5,13 @@ import queue
 import subprocess
 import threading
 import tkinter as tk
-from tkinter import messagebox, ttk
-
 from advancedStartup import AdvancedStartup
 from checkSystemRequirements import check_system_requirements
 from getVersionNumber import GetPCManagerVersion
 from installationFeature import InstallationFeature
 from mainFeature import MainFeature
 from otherFeature import OtherFeature
+from tkinter import messagebox, ttk
 from topMenu import TopMenu
 from translator import Translator
 from uninstallationFeature import UninstallationFeature
@@ -20,7 +19,9 @@ from uninstallationFeature import UninstallationFeature
 class MSPCManagerHelper(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.MSPCManagerHelper_Version = "Preview v24107 - we11B"
+        main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
+        self.iconbitmap(main_icon_path)
+        self.MSPCManagerHelper_Version = "Beta v0.2.0.1"
         title = f"MSPCManagerHelper {self.MSPCManagerHelper_Version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
@@ -146,8 +147,13 @@ class MSPCManagerHelper(tk.Tk):
         # 放置滚动条
         scrollbar.place(x=835, y=80, height=310)
 
-        # 输出 uninstallation_feature 到 result_textbox
+        # 输出所有功能的信息到 result_textbox
+        self.main_feature.result_textbox = self.result_textbox
+        self.installation_feature.result_textbox = self.result_textbox
         self.uninstallation_feature.result_textbox = self.result_textbox
+        self.other_feature.result_textbox = self.result_textbox
+        self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
+        self.textbox(self.translator.translate('tips_open_top_menu'))
 
         # 初始检测版本号和系统要求
         self.refresh_version()
@@ -179,6 +185,14 @@ class MSPCManagerHelper(tk.Tk):
         self.result_textbox.delete("1.0", tk.END)
         self.result_textbox.config(state="disabled")
 
+    # 输出文本到 result_textbox
+    def textbox(self, message):
+        message = str(message)
+        self.result_textbox.config(state="normal")
+        self.result_textbox.insert(tk.END, message + "\n")
+        self.result_textbox.config(state="disable")
+        self.result_textbox.update_idletasks()  # 刷新界面
+
     # 显示右键菜单
     def show_result_textbox_context_menu(self, event):
         self.context_menu.tk_popup(event.x_root, event.y_root)
@@ -197,14 +211,18 @@ class MSPCManagerHelper(tk.Tk):
             self.translator = Translator('zh-cn')
         elif selected_language == self.translator.translate("lang_zh-tw"):
             self.translator = Translator('zh-tw')
-        self.main_feature = MainFeature(self.translator)  # 更新 MainFeature 语言实例
-        self.installation_feature = InstallationFeature(self.translator)  # 更新 InstallationFeature 语言实例
-        self.uninstallation_feature = UninstallationFeature(self.translator)  # 更新 UninstallationFeature 语言实例
-        self.other_feature = OtherFeature(self.translator)  # 更新 OtherFeature 语言实例
+        self.main_feature = MainFeature(self.translator, self.result_textbox)  # 更新 MainFeature 语言实例
+        self.installation_feature = InstallationFeature(self.translator, self.result_textbox)  # 更新 InstallationFeature 语言实例
+        self.uninstallation_feature = UninstallationFeature(self.translator, self.result_textbox)  # 更新 UninstallationFeature 语言实例
+        self.other_feature = OtherFeature(self.translator, self.result_textbox)  # 更新 OtherFeature 语言实例
         self.update_texts()
         self.refresh_version()
         self.check_system_requirements()
         self.set_font_style()  # 设置字体样式
+        self.clear_result_textbox()
+        # 重新输出指定协议与隐私
+        self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
+        self.textbox(self.translator.translate('tips_open_top_menu'))
 
     # 更新文本
     def update_texts(self):
@@ -235,7 +253,7 @@ class MSPCManagerHelper(tk.Tk):
             self.translator.translate("main_project"): [self.translator.translate("repair_pc_manager"),
                                                         self.translator.translate("get_pc_manager_logs")],
             self.translator.translate("install_project"): [self.translator.translate("download_from_winget"),
-                                                           self.translator.translate("download_from_store"),
+                                                           self.translator.translate("download_from_msstore"),
                                                            self.translator.translate("install_for_all_users"),
                                                            self.translator.translate("install_for_current_user"),
                                                            self.translator.translate("update_from_application_package"),
@@ -246,7 +264,7 @@ class MSPCManagerHelper(tk.Tk):
             self.translator.translate("other_project"): [self.translator.translate("view_installed_antivirus"),
                                                          self.translator.translate("developer_options"),
                                                          self.translator.translate("repair_edge_wv2_setup"),
-                                                         self.translator.translate("pc_manager_faq"),
+                                                         self.translator.translate("pc_manager_docs"),
                                                          self.translator.translate("restart_pc_manager_service"),
                                                          self.translator.translate("switch_pc_manager_region"),
                                                          self.translator.translate("compute_files_hash"),
@@ -261,16 +279,16 @@ class MSPCManagerHelper(tk.Tk):
             options[self.translator.translate("install_project")].insert(5, self.translator.translate("install_from_appxmanifest")) # 插入到第 5 个位置（从 0 开始）
 
         # 获取当前选择的语言
-        current_language = self.language_combobox.get()
+        # current_language = self.language_combobox.get()
 
         # 根据语言隐藏特定选项
-        language_hidden_options = [self.translator.translate("pc_manager_faq")]
+        # language_hidden_options = [self.translator.translate("pc_manager_docs")]
 
         # 如果当前语言是 en-us 或 zh-tw 或其它语言，隐藏特定选项
-        if current_language in [self.translator.translate("lang_en-us"),
-                                self.translator.translate("lang_zh-tw")]:
-            for key in options:
-                options[key] = [option for option in options[key] if option not in language_hidden_options]
+        # if current_language in [self.translator.translate("lang_en-us"),
+        #                         self.translator.translate("lang_zh-tw")]:
+        #     for key in options:
+        #         options[key] = [option for option in options[key] if option not in language_hidden_options]
 
         # 更新功能组合框的值
         self.feature_combobox['values'] = options.get(selection, [])
@@ -284,65 +302,63 @@ class MSPCManagerHelper(tk.Tk):
         else:
             self.execute_button.config(state="disabled")
             self.cancel_button.config(state="normal")
-            self.result_textbox.config(state="normal")
-            self.result_textbox.delete("1.0", tk.END)  # 清空 TextBox 的内容
-            feature = self.feature_combobox.get()
-            executing_message = f"{self.translator.translate('main_executing')} {feature} {self.translator.translate('main_operation')}"
-            self.result_textbox.insert(tk.END, executing_message + "\n")
-            self.result_textbox.config(state="disabled")
+            self.clear_result_textbox()  # 清空 TextBox 的内容
+            main_feature_name = self.feature_combobox.get()
+            executing_message = self.translator.translate('main_executing_operation').format(main_feature_name=main_feature_name)
+            self.textbox(executing_message)
 
             def run_feature():
                 result = ""
                 # MainFeature
-                if feature == self.translator.translate("repair_pc_manager"):
+                if main_feature_name == self.translator.translate("repair_pc_manager"):
                     result = self.main_feature.repair_pc_manager()
-                elif feature == self.translator.translate("get_pc_manager_logs"):
+                elif main_feature_name == self.translator.translate("get_pc_manager_logs"):
                     result = self.main_feature.get_pc_manager_logs()
-                elif feature == self.translator.translate("debug_dev_mode"):
+                elif main_feature_name == self.translator.translate("debug_dev_mode"):
                     result = self.main_feature.debug_dev_mode()
 
                 # InstallationFeature
-                elif feature == self.translator.translate("download_from_winget"):
+                elif main_feature_name == self.translator.translate("download_from_winget"):
                     result = self.installation_feature.download_from_winget()
-                elif feature == self.translator.translate("download_from_store"):
-                    result = self.installation_feature.download_from_store()
-                elif feature == self.translator.translate("install_for_all_users"):
+                elif main_feature_name == self.translator.translate("download_from_msstore"):
+                    result = self.installation_feature.download_from_msstore()
+                elif main_feature_name == self.translator.translate("install_for_all_users"):
                     result = self.installation_feature.install_for_all_users()
-                elif feature == self.translator.translate("install_for_current_user"):
+                elif main_feature_name == self.translator.translate("install_for_current_user"):
                     result = self.installation_feature.install_for_current_user()
-                elif feature == self.translator.translate("update_from_application_package"):
+                elif main_feature_name == self.translator.translate("update_from_application_package"):
                     result = self.installation_feature.update_from_application_package()
-                elif feature == self.translator.translate("install_from_appxmanifest"):
+                elif main_feature_name == self.translator.translate("install_from_appxmanifest"):
                     result = self.installation_feature.install_from_appxmanifest()
-                elif feature == self.translator.translate("install_wv2_runtime"):
+                elif main_feature_name == self.translator.translate("install_wv2_runtime"):
                     result = self.installation_feature.install_wv2_runtime(self)
 
                 # UninstallationFeature
-                elif feature == self.translator.translate("uninstall_for_all_users"):
+                elif main_feature_name == self.translator.translate("uninstall_for_all_users"):
                     result = self.uninstallation_feature.uninstall_for_all_users()
-                elif feature == self.translator.translate("uninstall_for_current_user"):
+                elif main_feature_name == self.translator.translate("uninstall_for_current_user"):
                     result = self.uninstallation_feature.uninstall_for_current_user()
-                elif feature == self.translator.translate("uninstall_pc_manager_beta"):
+                elif main_feature_name == self.translator.translate("uninstall_pc_manager_beta"):
                     result = self.uninstallation_feature.uninstall_pc_manager_beta()
 
                 # OtherFeature
-                elif feature == self.translator.translate("view_installed_antivirus"):
+                elif main_feature_name == self.translator.translate("view_installed_antivirus"):
                     result = self.other_feature.view_installed_antivirus()
-                elif feature == self.translator.translate("developer_options"):
+                elif main_feature_name == self.translator.translate("developer_options"):
                     result = self.other_feature.developer_options()
-                elif feature == self.translator.translate("repair_edge_wv2_setup"):
+                elif main_feature_name == self.translator.translate("repair_edge_wv2_setup"):
                     result = self.other_feature.repair_edge_wv2_setup()
-                elif feature == self.translator.translate("pc_manager_faq"):
-                    result = self.other_feature.pc_manager_faq()
-                # elif feature == self.translator.translate("join_preview_program"):
+                elif main_feature_name == self.translator.translate("pc_manager_docs"):
+                    result = self.other_feature.pc_manager_docs()
+                # elif main_feature_name == self.translator.translate("join_preview_program"):
                 #     result = self.other_feature.join_preview_program()
-                elif feature == self.translator.translate("restart_pc_manager_service"):
+                elif main_feature_name == self.translator.translate("restart_pc_manager_service"):
                     result = self.other_feature.restart_pc_manager_service()
-                elif feature == self.translator.translate("switch_pc_manager_region"):
+                elif main_feature_name == self.translator.translate("switch_pc_manager_region"):
                     result = self.other_feature.switch_pc_manager_region()
-                elif feature == self.translator.translate("compute_files_hash"):
+                elif main_feature_name == self.translator.translate("compute_files_hash"):
                     result = self.other_feature.compute_files_hash()
-                elif feature == self.translator.translate("get_msedge_webview2_version"):
+                elif main_feature_name == self.translator.translate("get_msedge_webview2_version"):
                     result = self.other_feature.get_msedge_webview2_version()
 
                 self.result_queue.put(result)

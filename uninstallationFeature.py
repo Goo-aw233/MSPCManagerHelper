@@ -6,8 +6,15 @@ import winreg
 from tkinter import messagebox
 
 class UninstallationFeature:
-    def __init__(self, translator):
+    def __init__(self, translator, result_textbox=None):
         self.translator = translator
+        self.result_textbox = result_textbox
+
+    def textbox(self, message):
+        self.result_textbox.config(state="normal")
+        self.result_textbox.insert(tk.END, message + "\n")
+        self.result_textbox.config(state="disable")
+        self.result_textbox.update_idletasks()  # 刷新界面
 
     def uninstall_for_all_users(self):
         try:
@@ -124,17 +131,11 @@ class UninstallationFeature:
                         try:
                             subprocess.run(['rmdir', '/S', '/Q', folder], shell=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
                             if is_first:
-                                self.result_textbox.config(state="normal")
-                                self.result_textbox.insert(tk.END, '\n' + self.translator.translate('clearing_pc_manager_beta_configuration_files') + ':\n')  # 显示执行操作
-                                self.result_textbox.config(state="disabled")
+                                self.textbox('\n' + self.translator.translate('clearing_pc_manager_beta_configuration_files') + ':\n')   # 显示执行操作
                                 is_first = False
-                            self.result_textbox.config(state="normal")
-                            self.result_textbox.insert(tk.END, '-'+folder+'\n')  # 显示执行内容
-                            self.result_textbox.config(state="disabled")
+                            self.textbox('-' + folder + '\n')
                         except Exception as e:
-                            self.result_textbox.config(state="normal")
-                            self.result_textbox.insert(tk.END, self.translator.translate('fail_to_clear_pc_manager_beta_configuration_files_path') + ': ' + str(folder) + ', ' + self.translator.translate('fail_to_clear_pc_manager_beta_configuration_files_info') + ': ' + str(e) + '\n')  # 显示错误内容
-                            self.result_textbox.config(state="disabled")
+                            self.textbox(self.translator.translate('fail_to_clear_pc_manager_beta_configuration_files_path') + ': ' + str(folder) + ', ' + self.translator.translate('fail_to_clear_pc_manager_beta_configuration_files_info') + ': ' + str(e) + '\n')   # 显示错误内容
 
                 # 删除注册表项
                 registry_keys_to_delete = [
@@ -149,17 +150,11 @@ class UninstallationFeature:
                     try:
                         subprocess.run(['reg', 'delete', key, '/f'], creationflags=subprocess.CREATE_NO_WINDOW)
                         if is_first:
-                            self.result_textbox.config(state="normal")
-                            self.result_textbox.insert(tk.END, '\n' + self.translator.translate('clearing_pc_manager_beta_registries') + ':\n')  # 显示执行操作
-                            self.result_textbox.config(state="disabled")
+                            self.textbox('\n' + self.translator.translate('clearing_pc_manager_beta_registries') + ':\n')  # 显示执行操作
                             is_first = False
-                        self.result_textbox.config(state="normal")
-                        self.result_textbox.insert(tk.END, '-'+key+'\n')  # 显示执行内容
-                        self.result_textbox.config(state="disabled")
+                        self.textbox('-' + key + '\n')   # 显示执行操作
                     except Exception as e:
-                        self.result_textbox.config(state="normal")
-                        self.result_textbox.insert(tk.END, self.translator.translate('fail_to_clear_pc_manager_beta_registries_info') + ': ' + str(e) + '\n')  # 显示错误内容
-                        self.result_textbox.config(state="disabled")
+                        self.textbox(self.translator.translate('fail_to_clear_pc_manager_beta_registries_info') + ': ' + str(e) + '\n')  # 显示错误内容
 
                 return '\n' + self.translator.translate("uninstalled_cleanup_pc_manager_beta_config_and_files")
             else:

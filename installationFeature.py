@@ -1,15 +1,23 @@
 import os
+import requests
 import shutil
 import subprocess
-import requests
 import tempfile
+import tkinter as tk
 import webbrowser
 import winreg
 from tkinter import filedialog, messagebox
 
 class InstallationFeature:
-    def __init__(self, translator):
+    def __init__(self, translator, result_textbox=None):
         self.translator = translator
+        self.result_textbox = result_textbox
+
+    def textbox(self, message):
+        self.result_textbox.config(state="normal")
+        self.result_textbox.insert(tk.END, message + "\n")
+        self.result_textbox.config(state="disable")
+        self.result_textbox.update_idletasks()  # 刷新界面
 
     def download_from_winget(self):
         try:
@@ -20,6 +28,7 @@ class InstallationFeature:
                 return self.translator.translate("winget_not_installed")
 
             # 弹出提示框询问用户是否同意 Microsoft Store 源协议
+            self.textbox(self.translator.translate("winget_msstore_source_agreement") + '\n')
             response = messagebox.askyesnocancel(
                 self.translator.translate("winget_msstore_source_agreement_notice"),
                 self.translator.translate("ask_winget_msstore_source_agreement")
@@ -49,6 +58,7 @@ class InstallationFeature:
             result = subprocess.Popen(['winget.exe', 'install', 'Microsoft PC Manager', '--source', 'msstore', '--accept-source-agreements', '--accept-package-agreements'],
                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
             stdout, stderr = result.communicate()
+            self.textbox(self.translator.translate("downloading_pc_manager_from_winget") + '\n')
             if result.returncode != 0:
                 if result.returncode == 2316632107:
                     return self.translator.translate("already_installed_pc_manager_from_winget")
@@ -61,27 +71,27 @@ class InstallationFeature:
         except Exception as e:
             return f"{self.translator.translate('winget_error')}\n{self.translator.translate('winget_error_info')}: {str(e)}\n{self.translator.translate('winget_not_error_code')}"
 
-    def download_from_store(self):
+    def download_from_msstore(self):
         try:
             # 检测 Microsoft Store 是否安装
             result = subprocess.run(
                 ['powershell.exe', '-Command', 'Get-AppxPackage -Name Microsoft.WindowsStore'],
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
-            if 'Microsoft.WindowsStore' in result.stdout:
+            if 'PackageFamilyName : Microsoft.WindowsStore_8wekyb3d8bbwe' in result.stdout:
                 try:
                     # 如果安装了 Microsoft Store，运行命令
                     subprocess.run(
                         ['powershell.exe', '-Command', 'Start-Process ms-windows-store://pdp/?ProductId=9PM860492SZD'], creationflags=subprocess.CREATE_NO_WINDOW)
-                    return self.translator.translate("download_from_store_app_opened")
+                    return self.translator.translate("download_from_msstore_app_opened")
                 except Exception as e:
-                    return f"{self.translator.translate('download_from_store_app_error')}: {str(e)}"
+                    return f"{self.translator.translate('download_from_msstore_app_error')}: {str(e)}"
             else:
                 # 如果没有安装 Microsoft Store，打开指定的 URL
                 webbrowser.open("https://www.microsoft.com/store/productid/9PM860492SZD")
-                return self.translator.translate("download_from_store_site_opened")
+                return self.translator.translate("download_from_msstore_site_opened")
         except Exception as e:
-            return f"{self.translator.translate('download_from_store_site_error')}: {str(e)}"
+            return f"{self.translator.translate('download_from_msstore_site_error')}: {str(e)}"
 
     def install_for_all_users(self):
         # 打开文件选择对话框选择文件
