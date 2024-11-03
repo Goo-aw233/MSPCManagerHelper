@@ -35,5 +35,5 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: MSPCManagerHelper_Preview_${{ matrix.os }}
+        name: MSPCManagerHelper_Beta_${{ matrix.os }}
         path: ./dist/
