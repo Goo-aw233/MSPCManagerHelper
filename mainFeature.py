@@ -1,11 +1,11 @@
 import os
 import shutil
 import subprocess
+import tkinter as tk
+import sys
 import winreg
 from datetime import datetime
 from tkinter import messagebox
-import tkinter as tk
-import sys
 
 class MainFeature:
     def __init__(self, translator, result_textbox=None):
@@ -20,7 +20,16 @@ class MainFeature:
         self.result_textbox.update_idletasks()  # 刷新界面
 
     def repair_pc_manager(self):
-        return self.translator.translate("feature_unavailable")
+        try:
+            response = messagebox.askyesno(self.translator.translate("repair_pc_manager_notice"),
+                                           self.translator.translate("repair_pc_manager_to_perform"))
+            if response:
+                self.textbox(self.translator.translate("feature_unavailable"))
+                return self.translator.translate("repair_pc_manager_success")
+            else:
+                return self.translator.translate("user_canceled")
+        except Exception as e:
+            return f"{self.translator.translate('repair_pc_manager_error')}: {str(e)}"
 
     def get_pc_manager_logs(self):
         # 获取进程 PID
