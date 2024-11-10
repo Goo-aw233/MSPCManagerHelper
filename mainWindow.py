@@ -21,7 +21,7 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
         self.iconbitmap(main_icon_path)
-        self.MSPCManagerHelper_Version = "Beta v0.2.0.1"
+        self.MSPCManagerHelper_Version = "Beta v0.2.0.2"
         title = f"MSPCManagerHelper {self.MSPCManagerHelper_Version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
@@ -29,13 +29,13 @@ class MSPCManagerHelper(tk.Tk):
             title += " - DevMode"
         if AdvancedStartup.is_debugdevmode():
             title += " - DebugDevMode"
+        self.set_dpi_awareness()  # 设置 DPI 感知
         self.title(title)
         window_width, window_height = 854, 480  # 窗口大小
         center_x, center_y = self.winfo_screenwidth() // 2 - window_width // 2, self.winfo_screenheight() // 2 - window_height // 2 # 计算窗口位置
         self.geometry(f"{window_width}x{window_height}+{center_x}+{center_y}")  # 设置窗口位置
         self.resizable(False, False)    # 禁止调整窗口大小
         self.configure(bg="white")
-        self.set_dpi_awareness()  # 设置 DPI 感知
 
         # 初始化功能
         self.translator = Translator('en-us')
@@ -158,6 +158,7 @@ class MSPCManagerHelper(tk.Tk):
         self.other_feature.result_textbox = self.result_textbox
         self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
         self.textbox(self.translator.translate('tips_open_top_menu'))
+        self.textbox(self.translator.translate('tips_run_as_dev_mode'))
 
         # 初始检测版本号和系统要求
         self.refresh_version()
@@ -212,7 +213,7 @@ class MSPCManagerHelper(tk.Tk):
         Load_Languages = self.translator.translate("lang_custom")
         add_language = False
 
-        #选择语言
+        # 选择语言
         if selected_language in self.languages:
             self.translator = self.languages[selected_language]
         elif selected_language == Load_Languages:
@@ -224,7 +225,7 @@ class MSPCManagerHelper(tk.Tk):
                 current_language = self.translator.translate("current_language")
                 self.languages[self.translator.translate(current_language)] = self.translator
 
-        #更新语言选择组合框
+        # 更新语言选择组合框
         self.language_list = list(self.languages.keys()) + [self.translator.translate("lang_custom")]
         self.language_combobox.config(values=(self.language_list))
         if add_language:
@@ -248,6 +249,7 @@ class MSPCManagerHelper(tk.Tk):
         # 重新输出指定协议与隐私
         self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
         self.textbox(self.translator.translate('tips_open_top_menu'))
+        self.textbox(self.translator.translate('tips_run_as_dev_mode'))
 
     # 更新文本
     def update_texts(self):
