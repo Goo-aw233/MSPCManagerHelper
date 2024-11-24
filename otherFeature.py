@@ -100,19 +100,22 @@ class OtherFeature:
     #         return f"{self.translator.translate('join_preview_program_error')}: {str(e)}"
 
     def restart_pc_manager_service(self):
-        service_name = "PCManager Service Store"
+        pc_manager_service_name = "PCManager Service Store"
         wait_secs = 5  # 设置等待时间为 5 秒
 
         try:
             # 检查服务是否存在
-            service_status = win32serviceutil.QueryServiceStatus(service_name)
+            service_status = win32serviceutil.QueryServiceStatus(pc_manager_service_name)
         except pywintypes.error as e:
-            if e.winerror == 5:  # 要以管理员身份运行
-                return self.translator.translate("pc_manager_service_error_code_5")
-            elif e.winerror == 1056:  # 服务已在运行
-                return self.translator.translate("pc_manager_service_error_code_1056")
-            elif e.winerror == 1060:  # 服务未安装
-                return self.translator.translate("pc_manager_service_error_code_1060")
+            # 需要以管理员身份运行
+            if e.winerror == 5:
+                return f"{self.translator.translate('pc_manager_service_error_code_5')}\n{str(e)}"
+            # 服务已在运行
+            elif e.winerror == 1056:
+                return f"{self.translator.translate('pc_manager_service_error_code_1056')}\n{str(e)}"
+            # 服务未安装
+            elif e.winerror == 1060:
+                return f"{self.translator.translate('pc_manager_service_error_code_1060')}\n{str(e)}"
             else:
                 return f"{self.translator.translate('start_pc_manager_service_error')}: {str(e)}"
 
@@ -120,23 +123,23 @@ class OtherFeature:
             # 检查服务是否在运行
             if service_status[1] == win32service.SERVICE_RUNNING:
                 self.textbox(self.translator.translate("stopping_pc_manager_service") + '\n')
-                win32serviceutil.StopService(service_name)  # 停止服务
-                win32serviceutil.WaitForServiceStatus(service_name, win32service.SERVICE_STOPPED, waitSecs=wait_secs)   # 等待服务停止
+                win32serviceutil.StopService(pc_manager_service_name)  # 停止服务
+                win32serviceutil.WaitForServiceStatus(pc_manager_service_name, win32service.SERVICE_STOPPED, waitSecs=wait_secs)   # 等待服务停止
                 self.textbox(self.translator.translate("starting_pc_manager_service") + '\n')
-                win32serviceutil.StartService(service_name) # 启动服务
-                win32serviceutil.WaitForServiceStatus(service_name, win32service.SERVICE_RUNNING, waitSecs=wait_secs)   # 等待服务启动
+                win32serviceutil.StartService(pc_manager_service_name) # 启动服务
+                win32serviceutil.WaitForServiceStatus(pc_manager_service_name, win32service.SERVICE_RUNNING, waitSecs=wait_secs)   # 等待服务启动
                 return self.translator.translate("pc_manager_service_restarted_successfully")
             else:
                 self.textbox(self.translator.translate("starting_pc_manager_service") + '\n')
-                win32serviceutil.StartService(service_name) # 启动服务
-                win32serviceutil.WaitForServiceStatus(service_name, win32service.SERVICE_RUNNING, waitSecs=wait_secs)   # 等待服务启动
+                win32serviceutil.StartService(pc_manager_service_name) # 启动服务
+                win32serviceutil.WaitForServiceStatus(pc_manager_service_name, win32service.SERVICE_RUNNING, waitSecs=wait_secs)   # 等待服务启动
                 return self.translator.translate("pc_manager_service_restarted_successfully")
         except pywintypes.error as e:
             return f"{self.translator.translate('start_pc_manager_service_error')}: {str(e)}"
 
     def switch_pc_manager_region(self):
-        pcm_reg_path = r"SOFTWARE\WOW6432Node\MSPCManager Store"
-        pcm_region_value_name = "InstallRegionCode"
+        pc_manager_registry_path = r"SOFTWARE\WOW6432Node\MSPCManager Store"
+        pc_manager_region_value_name = "InstallRegionCode"
 
         # 添加 messagebox.askyesnocancel 对话框
         user_response = messagebox.askyesnocancel(
@@ -188,13 +191,13 @@ class OtherFeature:
             return self.translator.translate("user_canceled")
 
         try:
-            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, pcm_reg_path, 0, winreg.KEY_ALL_ACCESS) as key:
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, pc_manager_registry_path, 0, winreg.KEY_ALL_ACCESS) as key:
                 try:
-                    winreg.DeleteValue(key, pcm_region_value_name)
+                    winreg.DeleteValue(key, pc_manager_region_value_name)
                 except FileNotFoundError:
                     pass  # 如果值不存在，忽略错误
 
-                winreg.SetValueEx(key, pcm_region_value_name, 0, winreg.REG_SZ, self.region_code.upper())
+                winreg.SetValueEx(key, pc_manager_region_value_name, 0, winreg.REG_SZ, self.region_code.upper())
 
             message = self.translator.translate("switch_region_completed")
             message += f"\n{self.translator.translate('restart_pc_manager_to_apply_changes')}"
@@ -203,9 +206,9 @@ class OtherFeature:
 
         # 读取 InstallRegionCode 的值
         try:
-            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, pcm_reg_path, 0, winreg.KEY_READ) as key:
-                pcm_region_code = winreg.QueryValueEx(key, pcm_region_value_name)[0]
-                message += f"\n{self.translator.translate('current_pc_manager_region')}: {pcm_region_code}"
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, pc_manager_registry_path, 0, winreg.KEY_READ) as key:
+                pc_manager_region_code = winreg.QueryValueEx(key, pc_manager_region_value_name)[0]
+                message += f"\n{self.translator.translate('current_pc_manager_region')}: {pc_manager_region_code}"
         except FileNotFoundError:
             message += f"\n{self.translator.translate('launch_pc_manager_to_continue')}"
         except OSError as e:
