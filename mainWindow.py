@@ -21,7 +21,7 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
         self.iconbitmap(main_icon_path)
-        self.MSPCManagerHelper_Version = "Beta v0.2.0.2"
+        self.MSPCManagerHelper_Version = "Beta v0.2.0.3"
         title = f"MSPCManagerHelper {self.MSPCManagerHelper_Version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
@@ -283,9 +283,11 @@ class MSPCManagerHelper(tk.Tk):
                                                            self.translator.translate("download_from_msstore"),
                                                            self.translator.translate("install_for_all_users"),
                                                            self.translator.translate("install_for_current_user"),
+                                                           self.translator.translate("reinstall_pc_manager"),
                                                            self.translator.translate("update_from_application_package"),
                                                            self.translator.translate("install_wv2_runtime")],
-            self.translator.translate("uninstall_project"): [self.translator.translate("uninstall_for_all_users"),
+            self.translator.translate("uninstall_project"): [self.translator.translate("uninstall_for_all_users_in_dism"),
+                                                             self.translator.translate("uninstall_for_all_users"),
                                                              self.translator.translate("uninstall_for_current_user"),
                                                              self.translator.translate("uninstall_pc_manager_beta")],
             self.translator.translate("other_project"): [self.translator.translate("view_installed_antivirus"),
@@ -332,6 +334,7 @@ class MSPCManagerHelper(tk.Tk):
             self.clear_result_textbox()  # 清空 TextBox 的内容
             main_feature_name = self.feature_combobox.get()
             executing_message = self.translator.translate('main_executing_operation').format(main_feature_name=main_feature_name)
+            executing_message += '\n' + self.translator.translate('excessive_waiting_time')
             self.textbox(executing_message)
 
             def run_feature():
@@ -353,6 +356,8 @@ class MSPCManagerHelper(tk.Tk):
                     result = self.installation_feature.install_for_all_users()
                 elif main_feature_name == self.translator.translate("install_for_current_user"):
                     result = self.installation_feature.install_for_current_user()
+                elif main_feature_name == self.translator.translate("reinstall_pc_manager"):
+                    result = self.installation_feature.reinstall_pc_manager()
                 elif main_feature_name == self.translator.translate("update_from_application_package"):
                     result = self.installation_feature.update_from_application_package()
                 elif main_feature_name == self.translator.translate("install_from_appxmanifest"):
@@ -361,6 +366,8 @@ class MSPCManagerHelper(tk.Tk):
                     result = self.installation_feature.install_wv2_runtime(self)
 
                 # UninstallationFeature
+                elif main_feature_name == self.translator.translate("uninstall_for_all_users_in_dism"):
+                    result = self.uninstallation_feature.uninstall_for_all_users_in_dism()
                 elif main_feature_name == self.translator.translate("uninstall_for_all_users"):
                     result = self.uninstallation_feature.uninstall_for_all_users()
                 elif main_feature_name == self.translator.translate("uninstall_for_current_user"):
