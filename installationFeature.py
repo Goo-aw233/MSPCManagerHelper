@@ -19,6 +19,9 @@ class InstallationFeature:
         self.result_textbox.config(state="disable")
         self.result_textbox.update_idletasks()  # 刷新界面
 
+    def refresh_result_textbox(self):
+        pass
+
     def download_from_winget(self):
         try:
             # 检查 WinGet 是否安装

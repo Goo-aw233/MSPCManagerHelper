@@ -21,7 +21,7 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
         self.iconbitmap(main_icon_path)
-        self.MSPCManagerHelper_Version = "Beta v0.2.0.3"
+        self.MSPCManagerHelper_Version = "Beta v0.2.0.4"
         title = f"MSPCManagerHelper {self.MSPCManagerHelper_Version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
@@ -156,6 +156,12 @@ class MSPCManagerHelper(tk.Tk):
         self.installation_feature.result_textbox = self.result_textbox
         self.uninstallation_feature.result_textbox = self.result_textbox
         self.other_feature.result_textbox = self.result_textbox
+        # 刷新 result_textbox（需在输出到 result_textbox 后）
+        self.main_feature.refresh_result_textbox()
+        self.installation_feature.refresh_result_textbox()
+        self.uninstallation_feature.refresh_result_textbox()
+        self.other_feature.refresh_result_textbox()
+        # 输出提示
         self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
         self.textbox(self.translator.translate('tips_open_top_menu'))
         self.textbox(self.translator.translate('tips_run_as_dev_mode'))
@@ -333,7 +339,8 @@ class MSPCManagerHelper(tk.Tk):
             self.cancel_button.config(state="normal")
             self.clear_result_textbox()  # 清空 TextBox 的内容
             main_feature_name = self.feature_combobox.get()
-            executing_message = self.translator.translate('main_executing_operation').format(main_feature_name=main_feature_name)
+            executing_message = self.translator.translate('main_executing_operation').format(
+                main_feature_name=main_feature_name)
             executing_message += '\n' + self.translator.translate('excessive_waiting_time')
             self.textbox(executing_message)
 
@@ -396,6 +403,22 @@ class MSPCManagerHelper(tk.Tk):
                     result = self.other_feature.get_msedge_webview2_version()
 
                 self.result_queue.put(result)
+                if main_feature_name in [
+                    self.translator.translate("download_from_winget"),
+                    self.translator.translate("download_from_msstore"),
+                    self.translator.translate("install_for_all_users"),
+                    self.translator.translate("install_for_current_user"),
+                    self.translator.translate("reinstall_pc_manager"),
+                    self.translator.translate("update_from_application_package"),
+                    self.translator.translate("install_from_appxmanifest"),
+                    self.translator.translate("install_wv2_runtime"),
+                    self.translator.translate("uninstall_for_all_users_in_dism"),
+                    self.translator.translate("uninstall_for_all_users"),
+                    self.translator.translate("uninstall_for_current_user"),
+                    self.translator.translate("uninstall_pc_manager_beta")
+                ]:
+                    self.refresh_version()
+
             threading.Thread(target=run_feature).start()
             self.after(100, self.process_queue)
 
@@ -484,9 +507,11 @@ class MSPCManagerHelper(tk.Tk):
             self.version_label.config(text=f"{self.translator.translate('current_pc_manager_version')}: {version}")
             if beta_version:
                 # 清除并重新输入 pc_manager_beta_installed 的内容
-                self.result_textbox.config(state="normal")
-                self.result_textbox.delete("1.0", tk.END)
-                self.result_textbox.insert(tk.END, f"{self.translator.translate('pc_manager_beta_installed')}: {beta_version}\n")
+                self.clear_result_textbox()
+                self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
+                self.textbox(self.translator.translate('tips_open_top_menu'))
+                self.textbox(self.translator.translate('tips_run_as_dev_mode'))
+                self.textbox(f"{self.translator.translate('pc_manager_beta_installed')}: {beta_version}\n")
         elif beta_version:
             self.version_label.config(text=f"{self.translator.translate('current_pc_manager_beta_version')}: {beta_version}")
         else:

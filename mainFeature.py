@@ -6,11 +6,15 @@ import sys
 import winreg
 from datetime import datetime
 from tkinter import messagebox
+from otherFeature import OtherFeature
+from uninstallationFeature import UninstallationFeature
 
 class MainFeature:
     def __init__(self, translator, result_textbox=None):
         self.translator = translator
         self.result_textbox = result_textbox
+        self.other_feature = OtherFeature(self.translator, self.result_textbox)
+        self.uninstallation_feature = UninstallationFeature(self.translator, self.result_textbox)
 
     def textbox(self, message):
         message = str(message)
@@ -19,12 +23,18 @@ class MainFeature:
         self.result_textbox.config(state="disable")
         self.result_textbox.update_idletasks()  # 刷新界面
 
+    def refresh_result_textbox(self):
+        self.other_feature.result_textbox = self.result_textbox
+        self.uninstallation_feature.result_textbox = self.result_textbox
+
     def repair_pc_manager(self):
         try:
             response = messagebox.askyesno(self.translator.translate("repair_pc_manager_notice"),
                                            self.translator.translate("repair_pc_manager_to_perform"))
             if response:
-                self.textbox(self.translator.translate("feature_unavailable"))
+                self.textbox(self.uninstallation_feature.uninstall_for_all_users_in_dism())
+                self.textbox(self.uninstallation_feature.uninstall_pc_manager_beta())
+                self.textbox(self.other_feature.repair_edge_wv2_setup())
                 return self.translator.translate("repair_pc_manager_success")
             else:
                 return self.translator.translate("user_canceled")
