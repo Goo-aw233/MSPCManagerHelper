@@ -17,6 +17,9 @@ class UninstallationFeature:
         self.result_textbox.config(state="disable")
         self.result_textbox.update_idletasks()  # 刷新界面
 
+    def refresh_result_textbox(self):
+        pass
+
     def uninstall_for_all_users_in_dism(self):
         try:
             # 获取预配包结果
@@ -95,12 +98,14 @@ class UninstallationFeature:
                                        self.translator.translate("cleanup_config_and_files_for_all_users_in_dism")):
                     # 删除文件夹
                     folders_to_delete = [
+                        os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
                         os.path.join(os.environ['LocalAppData'], 'PC Manager Store'),
                         os.path.join(os.environ['LocalAppData'], 'Windows Master Store'),
+                        # os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository', 'Packages'),
                         os.path.join(os.environ['ProgramData'], 'Windows Master Setup'),
                         os.path.join(os.environ['ProgramData'], 'Windows Master Store'),
                         os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master')
+                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master Store')
                     ]
                     is_first = True
                     for folder in folders_to_delete:
@@ -130,17 +135,31 @@ class UninstallationFeature:
                             self.textbox(self.translator.translate('fail_to_clear_registries_info_for_all_users_in_dism') + ': ' + str(e) + '\n')  # 显示错误内容
 
                     # 删除文件
-                    file_paths = os.path.join(os.environ['SystemRoot'], 'Prefetch')
-                    prefetch_files = itertools.chain(
-                        glob.iglob(os.path.join(file_paths, '*BGADEFMGR*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*CREATEDUMP*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*MICROSOFT.WIC.PCWNDMANAGER*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*MSPCMANAGER*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*MSPCWNDMANAGER*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*PCMAUTORUN*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*PCMCHECKSUM*.pf'))
+                    file_paths = [
+                        os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository'),
+                        os.path.join(os.environ['SystemRoot'], 'Prefetch')
+                    ]
+
+                    # apprepository_files = itertools.chain.from_iterable(
+                    #     glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                    #         '*Microsoft.MicrosoftPCManager*.xml',
+                    #         '*Microsoft.PCManager*.xml'
+                    #     ]
+                    # )
+
+                    prefetch_files = itertools.chain.from_iterable(
+                        glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                            '*BGADEFMGR*.pf',
+                            '*CREATEDUMP*.pf',
+                            '*MICROSOFT.WIC.PCWNDMANAGER*.pf',
+                            '*MSPCMANAGER*.pf',
+                            '*MSPCWNDMANAGER*.pf',
+                            '*PCMAUTORUN*.pf',
+                            '*PCMCHECKSUM*.pf'
+                        ]
                     )
                     is_first = True
+                    # for files in [apprepository_files, prefetch_files]:
                     for files in prefetch_files:
                         try:
                             os.remove(files)
@@ -201,12 +220,14 @@ class UninstallationFeature:
                                        self.translator.translate("cleanup_config_and_files_for_all_users")):
                     # 删除文件夹
                     folders_to_delete = [
+                        os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
                         os.path.join(os.environ['LocalAppData'], 'PC Manager Store'),
                         os.path.join(os.environ['LocalAppData'], 'Windows Master Store'),
+                        # os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository', 'Packages'),
                         os.path.join(os.environ['ProgramData'], 'Windows Master Setup'),
                         os.path.join(os.environ['ProgramData'], 'Windows Master Store'),
                         os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master')
+                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master Store')
                     ]
                     is_first = True
                     for folder in folders_to_delete:
@@ -236,17 +257,31 @@ class UninstallationFeature:
                             self.textbox(self.translator.translate('fail_to_clear_registries_info_for_all_users') + ': ' + str(e) + '\n')  # 显示错误内容
 
                     # 删除文件
-                    file_paths = os.path.join(os.environ['SystemRoot'], 'Prefetch')
-                    prefetch_files = itertools.chain(
-                        glob.iglob(os.path.join(file_paths, '*BGADEFMGR*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*CREATEDUMP*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*MICROSOFT.WIC.PCWNDMANAGER*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*MSPCMANAGER*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*MSPCWNDMANAGER*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*PCMAUTORUN*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*PCMCHECKSUM*.pf'))
+                    file_paths = [
+                        os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository'),
+                        os.path.join(os.environ['SystemRoot'], 'Prefetch')
+                    ]
+
+                    # apprepository_files = itertools.chain.from_iterable(
+                    #     glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                    #         '*Microsoft.MicrosoftPCManager*.xml',
+                    #         '*Microsoft.PCManager*.xml'
+                    #     ]
+                    # )
+
+                    prefetch_files = itertools.chain.from_iterable(
+                        glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                            '*BGADEFMGR*.pf',
+                            '*CREATEDUMP*.pf',
+                            '*MICROSOFT.WIC.PCWNDMANAGER*.pf',
+                            '*MSPCMANAGER*.pf',
+                            '*MSPCWNDMANAGER*.pf',
+                            '*PCMAUTORUN*.pf',
+                            '*PCMCHECKSUM*.pf'
+                        ]
                     )
                     is_first = True
+                    # for files in [apprepository_files, prefetch_files]:
                     for files in prefetch_files:
                         try:
                             os.remove(files)
@@ -291,12 +326,14 @@ class UninstallationFeature:
                                        self.translator.translate("cleanup_config_and_files_for_current_user")):
                     # 删除文件夹
                     folders_to_delete = [
+                        os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
                         os.path.join(os.environ['LocalAppData'], 'PC Manager Store'),
                         os.path.join(os.environ['LocalAppData'], 'Windows Master Store'),
+                        # os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository', 'Packages'),
                         os.path.join(os.environ['ProgramData'], 'Windows Master Setup'),
                         os.path.join(os.environ['ProgramData'], 'Windows Master Store'),
                         os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master')
+                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master Store')
                     ]
                     is_first = True
                     for folder in folders_to_delete:
@@ -326,17 +363,31 @@ class UninstallationFeature:
                             self.textbox(self.translator.translate('fail_to_clear_registries_info_for_current_user') + ': ' + str(e) + '\n')  # 显示错误内容
 
                     # 删除文件
-                    file_paths = os.path.join(os.environ['SystemRoot'], 'Prefetch')
-                    prefetch_files = itertools.chain(
-                        glob.iglob(os.path.join(file_paths, '*BGADEFMGR*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*CREATEDUMP*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*MICROSOFT.WIC.PCWNDMANAGER*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*MSPCMANAGER*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*MSPCWNDMANAGER*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*PCMAUTORUN*.pf')),
-                        glob.iglob(os.path.join(file_paths, '*PCMCHECKSUM*.pf'))
+                    file_paths = [
+                        os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository'),
+                        os.path.join(os.environ['SystemRoot'], 'Prefetch')
+                    ]
+
+                    # apprepository_files = itertools.chain.from_iterable(
+                    #     glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                    #         '*Microsoft.MicrosoftPCManager*.xml',
+                    #         '*Microsoft.PCManager*.xml'
+                    #     ]
+                    # )
+
+                    prefetch_files = itertools.chain.from_iterable(
+                        glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                            '*BGADEFMGR*.pf',
+                            '*CREATEDUMP*.pf',
+                            '*MICROSOFT.WIC.PCWNDMANAGER*.pf',
+                            '*MSPCMANAGER*.pf',
+                            '*MSPCWNDMANAGER*.pf',
+                            '*PCMAUTORUN*.pf',
+                            '*PCMCHECKSUM*.pf'
+                        ]
                     )
                     is_first = True
+                    # for files in [apprepository_files, prefetch_files]:
                     for files in prefetch_files:
                         try:
                             os.remove(files)
@@ -387,6 +438,8 @@ class UninstallationFeature:
                                             self.translator.translate("cleanup_pc_manager_beta_config_and_files")):
                     return self.translator.translate("pc_manager_beta_uninstalled")
 
+                # 停止并删除服务
+
                 # 删除文件夹
                 folders_to_delete = [
                     os.path.join(os.environ['LocalAppData'], 'PC Manager'),
@@ -394,7 +447,10 @@ class UninstallationFeature:
                     os.path.join(os.environ['ProgramData'], 'PCMConfigPath'),
                     os.path.join(os.environ['ProgramData'], 'Windows Master'),
                     os.path.join(os.environ['ProgramData'], 'Windows Master Setup'),
-                    os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master')
+                    os.path.join(os.environ['ProgramFiles'], 'Microsoft PC Manager'),
+                    os.path.join(os.environ['ProgramFiles'], 'Windows Master'),
+                    os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master'),
+                    os.path.join(os.environ['SystemRoot'], 'SystemTemp', 'Windows Master')
                 ]
                 is_first = True
                 for folder in folders_to_delete:
@@ -428,17 +484,33 @@ class UninstallationFeature:
                         self.textbox(self.translator.translate('fail_to_clear_pc_manager_beta_registries_info') + ': ' + str(e) + '\n')  # 显示错误内容
 
                 # 删除文件
-                file_paths = os.path.join(os.environ['SystemRoot'], 'Prefetch')
-                prefetch_files = itertools.chain(
-                    glob.iglob(os.path.join(file_paths, '*BGADEFMGR*.pf')),
-                    glob.iglob(os.path.join(file_paths, '*MSPCMANAGER*.pf')),
-                    glob.iglob(os.path.join(file_paths, '*MSPCWNDMANAGER*.pf')),
-                    glob.iglob(os.path.join(file_paths, '*PCMAUTORUN*.pf')),
-                    glob.iglob(os.path.join(file_paths, '*PCMCHECKSUM*.pf')),
-                    glob.iglob(os.path.join(file_paths, '*UNINST*.pf'))
+                file_paths = [
+                    os.path.join(os.environ['SystemRoot'], 'Prefetch'),
+                    os.path.join(os.environ['Public'], 'Desktop'),
+                    os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'Start Menu', 'Programs')
+                ]
+
+                prefetch_files = itertools.chain.from_iterable(
+                    glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                        '*BGADEFMGR*.pf',
+                        '*MSPCMANAGER*.pf',
+                        '*MSPCWNDMANAGER*.pf',
+                        '*PCMAUTORUN*.pf',
+                        '*PCMCHECKSUM*.pf',
+                        '*UNINST*.pf'
+                    ]
+                )
+
+                shortcuts = itertools.chain.from_iterable(
+                    glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                        '*MSPCManager*.lnk',
+                        '*Microsoft PC Manager*.lnk',
+                        '*微软电脑管家*.lnk',
+                        '*Microsoft 電腦管家*.lnk'
+                    ]
                 )
                 is_first = True
-                for files in prefetch_files:
+                for files in itertools.chain(prefetch_files, shortcuts):
                     try:
                         os.remove(files)
                         if is_first:

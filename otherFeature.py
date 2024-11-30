@@ -20,6 +20,9 @@ class OtherFeature:
         self.result_textbox.config(state="disable")
         self.result_textbox.update_idletasks()  # 刷新界面
 
+    def refresh_result_textbox(self):
+        pass
+
     def view_installed_antivirus(self):
         try:
             # 执行 PowerShell 命令
@@ -141,7 +144,7 @@ class OtherFeature:
         pc_manager_registry_path = r"SOFTWARE\WOW6432Node\MSPCManager Store"
         pc_manager_region_value_name = "InstallRegionCode"
 
-        # 添加 messagebox.askyesnocancel 对话框
+        # 询问版本号是否大于等于 3.14.0.0
         user_response = messagebox.askyesnocancel(
             self.translator.translate("ask_if_version_above_3_14_0_0"),
             self.translator.translate("select_pc_manager_version")

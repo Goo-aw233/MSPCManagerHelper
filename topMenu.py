@@ -15,6 +15,7 @@ class TopMenu:
         self.version = version
         self.create_menu()
 
+    # 创建菜单
     def create_menu(self):
         self.top_menu = tk.Menu(self.parent)
         self.top_menu_properties = tk.Menu(self.top_menu, tearoff=0)
@@ -49,6 +50,7 @@ class TopMenu:
     def top_menu_properties_about(self):
         TopMenuProperties(self.parent, self.translator, self.version)
 
+# 更新菜单
 class TopMenuUpdate:
     @staticmethod
     def open_github_update():
@@ -69,6 +71,7 @@ class TopMenuUpdate:
     def open_WindowsAppRuntime_download():
         webbrowser.open("https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads-archive?wt.mc_id=studentamb_265231#windows-app-sdk-15")
 
+# 条款政策菜单
 class TopMenuTermOfUse:
     def __init__(self, parent, translator):
         self.parent = parent
@@ -152,6 +155,7 @@ class TopMenuTermOfUse:
 
         privacy_window.protocol("WM_DELETE_WINDOW", privacy_window.destroy)
 
+# 属性菜单
 class TopMenuProperties:
     def __init__(self, parent, translator, version):
         self.parent = parent
@@ -161,6 +165,8 @@ class TopMenuProperties:
 
     def show_properties_properties_about_window(self):
         properties_about_window = tk.Toplevel(self.parent)
+        about_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
+        properties_about_window.iconbitmap(about_icon_path)
         properties_about_window.title(self.translator.translate("top_menu_properties_about"))
         properties_about_window.geometry("300x150")
         properties_about_window.resizable(False, False) # 禁止调整窗口大小
