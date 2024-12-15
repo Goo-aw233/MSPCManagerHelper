@@ -3,7 +3,7 @@ setlocal
 
 cd %~dp0
 echo ".venv"
-python -m venv .venv
+python.exe -m venv .venv
 echo "activate"
 call .venv\Scripts\activate
 
