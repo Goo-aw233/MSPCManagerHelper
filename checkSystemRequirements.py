@@ -1,8 +1,7 @@
 import winreg
 from translator import Translator
 
-def check_system_requirements(locale):
-    translator = Translator(locale)
+def check_system_requirements(translator):
     try:
         with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion") as key:
             current_build_number = winreg.QueryValueEx(key, "CurrentBuildNumber")[0]

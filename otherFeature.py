@@ -1,11 +1,11 @@
 import iso3166
-import pywintypes
 import os
 import subprocess
 import tkinter as tk
 import webbrowser
-import win32serviceutil
+import win32api
 import win32service
+import win32serviceutil
 import winreg
 from tkinter import messagebox, filedialog
 
@@ -94,13 +94,15 @@ class OtherFeature:
         except Exception as e:
             return f"{self.translator.translate('pc_manager_docs_error')}: {str(e)}"
 
-    # def join_preview_program(self):
-    #     try:
-    #         # 打开指定的 URL
-    #         webbrowser.open("https://forms.office.com/r/v1LX7SKWTs")
-    #         return self.translator.translate("join_preview_program_opened")
-    #     except Exception as e:
-    #         return f"{self.translator.translate('join_preview_program_error')}: {str(e)}"
+    """
+    def join_preview_program(self):
+        try:
+            # 打开指定的 URL
+            webbrowser.open("https://forms.office.com/r/v1LX7SKWTs")
+            return self.translator.translate("join_preview_program_opened")
+        except Exception as e:
+            return f"{self.translator.translate('join_preview_program_error')}: {str(e)}"
+    """
 
     def restart_pc_manager_service(self):
         pc_manager_service_name = "PCManager Service Store"
@@ -109,7 +111,7 @@ class OtherFeature:
         try:
             # 检查服务是否存在
             service_status = win32serviceutil.QueryServiceStatus(pc_manager_service_name)
-        except pywintypes.error as e:
+        except win32api.error as e:
             # 需要以管理员身份运行
             if e.winerror == 5:
                 return f"{self.translator.translate('pc_manager_service_error_code_5')}\n{str(e)}"
@@ -137,7 +139,7 @@ class OtherFeature:
                 win32serviceutil.StartService(pc_manager_service_name) # 启动服务
                 win32serviceutil.WaitForServiceStatus(pc_manager_service_name, win32service.SERVICE_RUNNING, waitSecs=wait_secs)   # 等待服务启动
                 return self.translator.translate("pc_manager_service_restarted_successfully")
-        except pywintypes.error as e:
+        except win32api.error as e:
             return f"{self.translator.translate('start_pc_manager_service_error')}: {str(e)}"
 
     def switch_pc_manager_region(self):
@@ -225,14 +227,8 @@ class OtherFeature:
             if not paths_to_compute_files:
                 return self.translator.translate("no_compute_files_selected")
 
-            results = []
             for compute_files_path in paths_to_compute_files:
-                sha256_result = subprocess.run(
-                    ["powershell.exe", "-Command",
-                     f"Get-FileHash -Path '{compute_files_path}' -Algorithm SHA256 | Select-Object -ExpandProperty Hash"],
-                    capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
-                )
-                sha256_hash = sha256_result.stdout.strip()
+                self.textbox(f"{self.translator.translate('path_to_compute_files')}: {compute_files_path}")
 
                 sha1_result = subprocess.run(
                     ["powershell.exe", "-Command",
@@ -240,6 +236,33 @@ class OtherFeature:
                     capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
                 )
                 sha1_hash = sha1_result.stdout.strip()
+                self.textbox(f"SHA1:\n{sha1_hash}\n")
+
+                sha256_result = subprocess.run(
+                    ["powershell.exe", "-Command",
+                     f"Get-FileHash -Path '{compute_files_path}' -Algorithm SHA256 | Select-Object -ExpandProperty Hash"],
+                    capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
+                )
+                sha256_hash = sha256_result.stdout.strip()
+                self.textbox(f"SHA256:\n{sha256_hash}\n")
+
+                """
+                sha384_result = subprocess.run(
+                    ["powershell.exe", "-Command",
+                     f"Get-FileHash -Path '{compute_files_path}' -Algorithm SHA384 | Select-Object -ExpandProperty Hash"],
+                    capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
+                )
+                sha384_hash = sha384_result.stdout.strip()
+                self.textbox(f"SHA384:\n{sha384_hash}\n")
+
+                sha512_result = subprocess.run(
+                    ["powershell.exe", "-Command",
+                     f"Get-FileHash -Path '{compute_files_path}' -Algorithm SHA512 | Select-Object -ExpandProperty Hash"],
+                    capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
+                )
+                sha512_hash = sha512_result.stdout.strip()
+                self.textbox(f"SHA512:\n{sha512_hash}\n")
+                """
 
                 md5_result = subprocess.run(
                     ["powershell.exe", "-Command",
@@ -247,13 +270,9 @@ class OtherFeature:
                     capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
                 )
                 md5_hash = md5_result.stdout.strip()
+                self.textbox(f"MD5:\n{md5_hash}\n\n")
 
-                results.append(f"{self.translator.translate('path_to_compute_files')}: {compute_files_path}\n"
-                               f"{self.translator.translate('sha256_hash')}: {sha256_hash}\n"
-                               f"{self.translator.translate('sha1_hash')}: {sha1_hash}\n"
-                               f"{self.translator.translate('md5_hash')}: {md5_hash}")
-
-            return "\n\n".join(results)
+            return self.translator.translate("compute_files_hash_success")
         except subprocess.CalledProcessError as e:
             return f"{self.translator.translate('compute_files_hash_error')}: {e.stderr.strip()}"
         except Exception as e:

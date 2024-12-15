@@ -21,7 +21,7 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
         self.iconbitmap(main_icon_path)
-        self.MSPCManagerHelper_Version = "Beta v0.2.0.4"
+        self.MSPCManagerHelper_Version = "Beta v0.2.0.5"
         title = f"MSPCManagerHelper {self.MSPCManagerHelper_Version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
@@ -38,14 +38,14 @@ class MSPCManagerHelper(tk.Tk):
         self.configure(bg="white")
 
         # 初始化功能
-        self.translator = Translator('en-us')
+        self.translator = Translator(locale='en-us')
         locale_str = locale.getlocale()[0]
         if locale_str.startswith("English"):
-            self.translator = Translator('en-us')
+            self.translator = Translator(locale='en-us')
         elif locale_str.startswith("Chinese (Simplified)"):
-            self.translator = Translator('zh-cn')
+            self.translator = Translator(locale='zh-cn')
         elif locale_str.startswith("Chinese (Traditional)"):
-            self.translator = Translator('zh-tw')
+            self.translator = Translator(locale='zh-tw')
         self.main_feature = MainFeature(self.translator)
         self.installation_feature = InstallationFeature(self.translator)
         self.uninstallation_feature = UninstallationFeature(self.translator)
@@ -77,7 +77,7 @@ class MSPCManagerHelper(tk.Tk):
                     self.translator.translate("lang_zh-cn"),
                     self.translator.translate("lang_zh-tw"),
                     self.translator.translate("lang_custom")]
-        translators = [Translator(i) for i in ['en-us', 'zh-cn', 'zh-tw']]
+        translators = [Translator(locale=i) for i in ['en-us', 'zh-cn', 'zh-tw']]
         self.languages = dict(zip(self.language_list, translators))
         self.language_combobox = ttk.Combobox(self, values=self.language_list,
                                               state="readonly", height=6)
@@ -215,31 +215,32 @@ class MSPCManagerHelper(tk.Tk):
 
     # 更改语言
     def change_language(self, event):
+        current_language_index = self.language_list.index(self.translator.current_language)
         selected_language = self.language_combobox.get()
         Load_Languages = self.translator.translate("lang_custom")
-        add_language = False
+        language_file_path = None
 
         # 选择语言
-        if selected_language in self.languages:
-            self.translator = self.languages[selected_language]
-        elif selected_language == Load_Languages:
+        if selected_language == Load_Languages:
             language_file_path = filedialog.askopenfilename(
             filetypes=[("JSON", "*.json")])
             if language_file_path:
-                add_language = True
-                self.translator.load_translations(language_file_path)
-                current_language = self.translator.translate("current_language")
-                self.languages[self.translator.translate(current_language)] = self.translator
+                self.translator = Translator(file_path=language_file_path)
+                current_language = self.translator.current_language
+                self.languages[current_language] = self.translator
+                self.language_list[-1:] = [current_language, self.translator.translate("lang_custom")]
+        else:
+            self.translator = self.languages[selected_language]
+            self.language_list[-1] = self.translator.translate("lang_custom")
 
         # 更新语言选择组合框
-        self.language_list = list(self.languages.keys()) + [self.translator.translate("lang_custom")]
         self.language_combobox.config(values=(self.language_list))
-        if add_language:
-            self.language_combobox.current(len(self.language_list)-2)
+        if selected_language == Load_Languages:
+            self.language_combobox.current(current_language_index)
+            if language_file_path:
+                self.language_combobox.current(len(self.language_list)-2)
         else:
-            current_language = self.translator.translate("current_language")
-            current_language_index = self.language_list.index(self.translator.translate(current_language))
-
+            current_language_index = self.language_list.index(self.translator.current_language)
             self.language_combobox.current(current_language_index)
         self.language_combobox.update()
 
@@ -313,17 +314,19 @@ class MSPCManagerHelper(tk.Tk):
             options[self.translator.translate("main_project")].append(self.translator.translate("debug_dev_mode"))  # 插入到末尾
             options[self.translator.translate("install_project")].insert(5, self.translator.translate("install_from_appxmanifest")) # 插入到第 5 个位置（从 0 开始）
 
+        """
         # 获取当前选择的语言
-        # current_language = self.language_combobox.get()
+        current_language = self.language_combobox.get()
 
         # 根据语言隐藏特定选项
-        # language_hidden_options = [self.translator.translate("pc_manager_docs")]
+        language_hidden_options = [self.translator.translate("pc_manager_docs")]
 
         # 如果当前语言是 en-us 或 zh-tw 或其它语言，隐藏特定选项
-        # if current_language in [self.translator.translate("lang_en-us"),
-        #                         self.translator.translate("lang_zh-tw")]:
-        #     for key in options:
-        #         options[key] = [option for option in options[key] if option not in language_hidden_options]
+        if current_language in [self.translator.translate("lang_en-us"),
+                                self.translator.translate("lang_zh-tw")]:
+            for key in options:
+                options[key] = [option for option in options[key] if option not in language_hidden_options]
+        """
 
         # 更新功能组合框的值
         self.feature_combobox['values'] = options.get(selection, [])
@@ -486,7 +489,7 @@ class MSPCManagerHelper(tk.Tk):
         elif selected_language == self.translator.translate("lang_zh-tw"):
             language_key = "lang_zh-tw"
 
-        font_style = font_styles.get(language_key, default_font_style)  # 如果未找到语言，默认使用 Segoe UI
+        font_style = font_styles.get(language_key, default_font_style)  # 其他语言默认使用 Segoe UI
 
         self.version_label.config(font=font_style)
         self.refresh_button.config(font=font_style)
@@ -519,7 +522,7 @@ class MSPCManagerHelper(tk.Tk):
 
     # 检测系统要求
     def check_system_requirements(self):
-        system_status = check_system_requirements(self.translator.locale)
+        system_status = check_system_requirements(self.translator)
         self.system_requirement_label.config(text=system_status)
 
     # 显示顶部菜单

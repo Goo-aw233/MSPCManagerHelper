@@ -2,21 +2,22 @@
 
 ## 🖹 Choose Your Language
 
-Select your region and language to continue.
+Please select your language to continue
 
-选择你的语言地区以继续。
+請選取你的語言以繼續 | 请选择你的语言以继续
 
 [繁體中文 (臺灣)](./README.zh-tw.md) | [简体中文 (中国大陆)](./README.zh-cn.md)
 
 ## 👏 Introduction
 
-This is a utility `MSPCManagerHelper` designed for **Microsoft Corporation** `Microsoft PC Manager`, this tool is designed to help users to solve the problems encountered to provide fast and convenient solutions. Welcome to <https://pcmanager.microsoft.com> to download and try the latest version of Microsoft PC Manager! 😉
+`MSPCManagerHelper` is a utility tool designed to complement `Microsoft PC Manager`. It aims to provide users with efficient and convenient solutions for resolving issues they may encounter.
+Visit <https://pcmanager.microsoft.com> to download and experience the latest version of Microsoft PC Manager and join our [User Community](https://forms.office.com/r/EPcrKfUbjK)! 😉
 
-> [!IMPORTANT]
-> We are not organized by Microsoft Coporation or its subsidiaries to write this document, and are not employees of Microsoft Coporation or its subsidiaries.
+> [!IMPORTANT]  
+> This tool is not developed or endorsed by Microsoft Corporation or its subsidiaries. The authors are independent developers with no affiliation to Microsoft or its subsidiaries.
 
-> [!NOTE]
-> Parts of MSPCManagerHelper refer to links from third-party (i.e., non-official Microsoft) web pages. These pages appear to provide accurate and safe information to help you solve your problem. However, please remain aware of ads promoted on these pages that are often categorized as PUPs (Potentially Unwanted Products). Before downloading and installing a file or application, please thoroughly research any products promoted on the page.
+> [!NOTE]  
+> Some features of `MSPCManagerHelper` include references to third-party (non-Microsoft) web pages. While these pages may offer accurate and helpful information, they might also contain advertisements categorized as PUPs (Potentially Unwanted Products). Please exercise caution and thoroughly review any products or files before downloading or installing them.
 
 ## 💻 Development
 
@@ -24,24 +25,24 @@ This is a utility `MSPCManagerHelper` designed for **Microsoft Corporation** `Mi
 
 2. Clone the repository
 
-```
+```bash
 git clone https://github.com/Goo-aw233/MSPCManagerHelper.git
 cd MSPCManagerHelper
 ```
 
-3. Create and activate the virtual environment
+3. Create and activate a virtual environment
 
-- Windows: 
+- **Windows**: 
 
-```
+```bat
 cd <path\to\MSPCManagerHelper>
-python -m venv .venv
+python.exe -m venv .venv
 .venv\Scripts\activate
 ```
 
-- macOS/Linux: 
+- **macOS / Linux**: 
 
-```
+```bash
 cd <path/to/MSPCManagerHelper>
 python3 -m venv .venv
 source .venv/bin/activate
@@ -49,7 +50,7 @@ source .venv/bin/activate
 
 4. Install the pip packages
 
-```
+```bash
 pip install -r requirements.txt
 pip install requests
 python -m pip install --upgrade pip
