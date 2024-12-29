@@ -6,9 +6,10 @@ from tkinter import ttk
 
 class TopMenu:
     def __init__(self, parent, translator, version):
+        self.top_menu_files = None
         self.top_menu_update = None
         self.top_menu_term_of_use_and_privacy = None
-        self.top_menu_properties = None
+        self.top_menu_help = None
         self.top_menu = None
         self.parent = parent
         self.translator = translator
@@ -18,28 +19,38 @@ class TopMenu:
     # 创建菜单
     def create_menu(self):
         self.top_menu = tk.Menu(self.parent)
-        self.top_menu_properties = tk.Menu(self.top_menu, tearoff=0)
+        # 创建菜单项
+        self.top_menu_files = tk.Menu(self.top_menu, tearoff=0)
+        self.top_menu_help = tk.Menu(self.top_menu, tearoff=0)
         self.top_menu_term_of_use_and_privacy = tk.Menu(self.top_menu, tearoff=0)
         self.top_menu_update = tk.Menu(self.top_menu, tearoff=0)
 
-        self.top_menu.add_cascade(label=self.translator.translate("top_menu_update"), menu=self.top_menu_update)
+        # “文件(F)”菜单（underline 以第一个为 0 字符开始计算，直到快捷键）
+        self.top_menu.add_cascade(label=self.translator.translate("top_menu_files_access_key"), underline=3, menu=self.top_menu_files)
+        self.top_menu_files.add_separator()
+        self.top_menu_files.add_command(label=self.translator.translate("top_menu_files_exit"), command=lambda: TopMenuFiles.exit_program(self.parent))
+
+        # “下载与更新(U)”菜单（underline 以第一个为 0 字符开始计算，直到快捷键）
+        self.top_menu.add_cascade(label=self.translator.translate("top_menu_update_access_key"), underline=6, menu=self.top_menu_update)
         self.top_menu_update.add_command(label=self.translator.translate("top_menu_update_GitHub"), command=TopMenuUpdate.open_github_update)
         self.top_menu_update.add_command(label=self.translator.translate("top_menu_update_OneDrive"), command=TopMenuUpdate.open_onedrive_update)
         self.top_menu_update.add_separator()
-        self.top_menu_update.add_command(label=self.translator.translate("top_menu_update_LiCaoZ_Azure_Blob_PC_Manager"), command=TopMenuUpdate.open_LiCaoZ_Azure_Blob_application_package)
-        self.top_menu_update.add_command(label=self.translator.translate("top_menu_update_OneDrive_PC_Manager"), command=TopMenuUpdate.open_OneDrive_application_package)
+        self.top_menu_update.add_command(label=self.translator.translate("top_menu_update_LiCaoZ_Azure_Blob_PC_Manager"), command=TopMenuUpdate.open_licaoz_azure_blob_application_package)
+        self.top_menu_update.add_command(label=self.translator.translate("top_menu_update_OneDrive_PC_Manager"), command=TopMenuUpdate.open_onedrive_application_package)
         self.top_menu_update.add_separator()
-        self.top_menu_update.add_command(label=self.translator.translate("top_menu_update_WindowsAppRuntime"), command=TopMenuUpdate.open_WindowsAppRuntime_download)
+        self.top_menu_update.add_command(label=self.translator.translate("top_menu_update_WindowsAppRuntime"), command=TopMenuUpdate.open_windowsappruntime_download)
 
-        self.top_menu.add_cascade(label=self.translator.translate("top_menu_term_of_use_and_privacy"), menu=self.top_menu_term_of_use_and_privacy)
+        # “使用条款与隐私政策(T)”菜单（underline 以第一个为 0 字符开始计算，直到快捷键）
+        self.top_menu.add_cascade(label=self.translator.translate("top_menu_term_of_use_and_privacy_access_key"), underline=10, menu=self.top_menu_term_of_use_and_privacy)
         self.top_menu_term_of_use_and_privacy.add_command(label=self.translator.translate("top_menu_term_of_use"), command=self.top_menu_term_of_use)
         self.top_menu_term_of_use_and_privacy.add_command(label=self.translator.translate("top_menu_privacy"), command=self.top_menu_privacy)
 
-        self.top_menu.add_cascade(label=self.translator.translate("top_menu_properties"), menu=self.top_menu_properties)
-        self.top_menu_properties.add_command(label=self.translator.translate("top_menu_properties_about"), command=self.top_menu_properties_about)
-        self.top_menu_properties.add_command(label=self.translator.translate("top_menu_properties_help"), command=TopMenuProperties.open_help)
-        self.top_menu_properties.add_command(label=self.translator.translate("top_menu_properties_official_site"), command=TopMenuProperties.open_official_site)
-        self.top_menu_properties.add_command(label=self.translator.translate("top_menu_properties_more_contact"), command=lambda: TopMenuProperties.open_more_contact(self.translator))
+        # “帮助(H)”菜单（underline 以第一个为 0 字符开始计算，直到快捷键）
+        self.top_menu.add_cascade(label=self.translator.translate("top_menu_help_access_key"), underline=3, menu=self.top_menu_help)
+        self.top_menu_help.add_command(label=self.translator.translate("top_menu_help_about"), command=self.top_menu_help_about)
+        self.top_menu_help.add_command(label=self.translator.translate("top_menu_help_gethelp"), command=TopMenuHelp.open_gethelp)
+        self.top_menu_help.add_command(label=self.translator.translate("top_menu_help_official_site"), command=TopMenuHelp.open_official_site)
+        self.top_menu_help.add_command(label=self.translator.translate("top_menu_help_more_contact"), command=lambda: TopMenuHelp.open_more_contact(self.translator))
 
     def top_menu_term_of_use(self):
         TopMenuTermOfUse(self.parent, self.translator).show_term_of_use_window()
@@ -47,8 +58,14 @@ class TopMenu:
     def top_menu_privacy(self):
         TopMenuTermOfUse(self.parent, self.translator).show_privacy_window()
 
-    def top_menu_properties_about(self):
-        TopMenuProperties(self.parent, self.translator, self.version)
+    def top_menu_help_about(self):
+        TopMenuHelp(self.parent, self.translator, self.version)
+
+# 文件菜单
+class TopMenuFiles:
+    @staticmethod
+    def exit_program(root):
+        root.destroy()
 
 # 更新菜单
 class TopMenuUpdate:
@@ -59,16 +76,17 @@ class TopMenuUpdate:
     @staticmethod
     def open_onedrive_update():
         webbrowser.open("https://gbcs6-my.sharepoint.com/:f:/g/personal/gucats_gbcs6_onmicrosoft_com/EtKwa-2la71HmG2RxkB5lngBvvRt9CFOYsyJG_HOwYIzNA")
-    @staticmethod
-    def open_LiCaoZ_Azure_Blob_application_package():
-        webbrowser.open("https://lcz.ink/PCMOFL")
 
     @staticmethod
-    def open_OneDrive_application_package():
+    def open_licaoz_azure_blob_application_package():
+        webbrowser.open("https://kaoz.uk/PCManagerOFL")
+
+    @staticmethod
+    def open_onedrive_application_package():
         webbrowser.open("https://gbcs6-my.sharepoint.com/:f:/g/personal/gucats_gbcs6_onmicrosoft_com/EoscJOQ9taJFtx9LZLPiBM0BEmVm7wsLuJOuHnwmo9EQ5w")
 
     @staticmethod
-    def open_WindowsAppRuntime_download():
+    def open_windowsappruntime_download():
         webbrowser.open("https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads-archive?wt.mc_id=studentamb_265231#windows-app-sdk-15")
 
 # 条款政策菜单
@@ -156,50 +174,50 @@ class TopMenuTermOfUse:
         privacy_window.protocol("WM_DELETE_WINDOW", privacy_window.destroy)
 
 # 属性菜单
-class TopMenuProperties:
+class TopMenuHelp:
     def __init__(self, parent, translator, version):
         self.parent = parent
         self.translator = translator
         self.version = version
-        self.show_properties_properties_about_window()
+        self.show_help_about_window()
 
-    def show_properties_properties_about_window(self):
-        properties_about_window = tk.Toplevel(self.parent)
+    def show_help_about_window(self):
+        help_about_window = tk.Toplevel(self.parent)
         about_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
-        properties_about_window.iconbitmap(about_icon_path)
-        properties_about_window.title(self.translator.translate("top_menu_properties_about"))
-        properties_about_window.geometry("300x150")
-        properties_about_window.resizable(False, False) # 禁止调整窗口大小
-        properties_about_window.transient(self.parent)  # 设置窗口为模态
-        properties_about_window.grab_set()
+        help_about_window.iconbitmap(about_icon_path)
+        help_about_window.title(self.translator.translate("top_menu_help_about"))
+        help_about_window.geometry("300x150")
+        help_about_window.resizable(False, False) # 禁止调整窗口大小
+        help_about_window.transient(self.parent)  # 设置窗口为模态
+        help_about_window.grab_set()
 
         # 使窗口在程序窗口的位置居中显示
-        properties_about_window.update_idletasks()
-        window_width = properties_about_window.winfo_width()
-        window_height = properties_about_window.winfo_height()
+        help_about_window.update_idletasks()
+        window_width = help_about_window.winfo_width()
+        window_height = help_about_window.winfo_height()
         parent_x = self.parent.winfo_x()
         parent_y = self.parent.winfo_y()
         parent_width = self.parent.winfo_width()
         parent_height = self.parent.winfo_height()
         position_top = parent_y + (parent_height // 2) - (window_height // 2)
         position_right = parent_x + (parent_width // 2) - (window_width // 2)
-        properties_about_window.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
+        help_about_window.geometry(f"{window_width}x{window_height}+{position_right}+{position_top}")
 
         label_text = (f"MSPCManagerHelper"
                       f"\n{self.version}"
                       f"\n{self.translator.translate('translation_author')}: {self.translator.translate('localization_translators_name')}"
                       f"\n{self.translator.translate('project_contributors')}: {textwrap.fill(self.translator.translate('project_contributors_name'), width=30)}"
                       )
-        label = tk.Label(properties_about_window, text=label_text, justify="center")
+        label = tk.Label(help_about_window, text=label_text, justify="center")
         label.pack(expand=True)
 
-        properties_about_window.protocol("WM_DELETE_WINDOW", properties_about_window.destroy)
+        help_about_window.protocol("WM_DELETE_WINDOW", help_about_window.destroy)
 
         # 绑定 ESC 键关闭窗口
-        properties_about_window.bind("<Escape>", lambda event: properties_about_window.destroy())
+        help_about_window.bind("<Escape>", lambda event: help_about_window.destroy())
 
     @staticmethod
-    def open_help():
+    def open_gethelp():
         webbrowser.open("https://github.com/Goo-aw233/MSPCManagerHelper/wiki")
 
     @staticmethod

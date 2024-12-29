@@ -5,9 +5,9 @@ name: Python application
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "Snapshots_GC" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "Snapshots_GC" ]
 
 permissions:
   contents: read
@@ -17,6 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [ windows-latest ]
+        architecture: [ x64 ]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -35,5 +36,5 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: MSPCManagerHelper_Beta_${{ matrix.os }}
+        name: ${{ github.ref == 'refs/heads/main' && 'MSPCManagerHelper_Beta' || 'MSPCManagerHelper_SNAPSHOTS_Beta' }}_${{ matrix.os }}_${{ matrix.architecture }}
         path: ./dist/
