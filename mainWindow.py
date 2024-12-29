@@ -21,8 +21,8 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
         self.iconbitmap(main_icon_path)
-        self.MSPCManagerHelper_Version = "Beta v0.2.0.5"
-        title = f"MSPCManagerHelper {self.MSPCManagerHelper_Version}"
+        self.MSPCManagerHelper_Version = "Beta v0.2.0.6"
+        title = f"MSPCManagerHelper SNAPSHOTS {self.MSPCManagerHelper_Version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
         if AdvancedStartup.is_devmode():
@@ -55,9 +55,8 @@ class MSPCManagerHelper(tk.Tk):
         self.cancelled = False
         self.current_process = None
         self.current_pid = None
-        self.top_menu = None
-        self.bind_all("<Alt_L>", self.toggle_top_menu)
-        self.bind("<Button-1>", self.hide_top_menu)
+        self.top_menu = TopMenu(self, self.translator, self.MSPCManagerHelper_Version)
+        self.config(menu=self.top_menu.top_menu)  # 显示顶部菜单
 
         # 设置默认字体样式
         self.default_font_style = ("Segoe UI", 10)
@@ -163,7 +162,6 @@ class MSPCManagerHelper(tk.Tk):
         self.other_feature.refresh_result_textbox()
         # 输出提示
         self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
-        self.textbox(self.translator.translate('tips_open_top_menu'))
         self.textbox(self.translator.translate('tips_run_as_dev_mode'))
 
         # 初始检测版本号和系统要求
@@ -244,18 +242,20 @@ class MSPCManagerHelper(tk.Tk):
             self.language_combobox.current(current_language_index)
         self.language_combobox.update()
 
-        self.main_feature = MainFeature(self.translator, self.result_textbox)  # 更新 MainFeature 语言实例
-        self.installation_feature = InstallationFeature(self.translator, self.result_textbox)  # 更新 InstallationFeature 语言实例
-        self.uninstallation_feature = UninstallationFeature(self.translator, self.result_textbox)  # 更新 UninstallationFeature 语言实例
-        self.other_feature = OtherFeature(self.translator, self.result_textbox)  # 更新 OtherFeature 语言实例
-        self.update_texts()
-        self.refresh_version()
-        self.check_system_requirements()
-        self.set_font_style()  # 设置字体样式
-        self.clear_result_textbox()
+        # 更新语言实例
+        self.main_feature = MainFeature(self.translator, self.result_textbox)  # MainFeature
+        self.installation_feature = InstallationFeature(self.translator, self.result_textbox)  # InstallationFeature
+        self.uninstallation_feature = UninstallationFeature(self.translator, self.result_textbox)  # UninstallationFeature
+        self.other_feature = OtherFeature(self.translator, self.result_textbox)  # OtherFeature
+        self.update_texts() # 更新文本
+        self.refresh_version()  # 刷新版本号
+        self.check_system_requirements()    # 检测系统要求
+        self.set_font_style()  # 字体样式
+        self.clear_result_textbox() # 清空 TextBox 的内容
+        self.top_menu = TopMenu(self, self.translator, self.MSPCManagerHelper_Version)  # 重新创建顶部菜单
+        self.config(menu=self.top_menu.top_menu)  # 显示顶部菜单
         # 重新输出指定协议与隐私
         self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
-        self.textbox(self.translator.translate('tips_open_top_menu'))
         self.textbox(self.translator.translate('tips_run_as_dev_mode'))
 
     # 更新文本
@@ -512,7 +512,6 @@ class MSPCManagerHelper(tk.Tk):
                 # 清除并重新输入 pc_manager_beta_installed 的内容
                 self.clear_result_textbox()
                 self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
-                self.textbox(self.translator.translate('tips_open_top_menu'))
                 self.textbox(self.translator.translate('tips_run_as_dev_mode'))
                 self.textbox(f"{self.translator.translate('pc_manager_beta_installed')}: {beta_version}\n")
         elif beta_version:
@@ -524,20 +523,6 @@ class MSPCManagerHelper(tk.Tk):
     def check_system_requirements(self):
         system_status = check_system_requirements(self.translator)
         self.system_requirement_label.config(text=system_status)
-
-    # 显示顶部菜单
-    def toggle_top_menu(self, event):
-        if self.top_menu is None:
-            self.top_menu = TopMenu(self, self.translator, self.MSPCManagerHelper_Version)
-            self.config(menu=self.top_menu.top_menu)
-        else:
-            self.config(menu=tk.Menu(self))  # 使用空的 tk.Menu 实例
-            self.top_menu = None
-
-    def hide_top_menu(self, event):
-        if self.top_menu is not None:
-            self.config(menu=tk.Menu(self))  # 使用空的 tk.Menu 实例
-            self.top_menu = None
 
     def show_top_menu(self, event):
         self.top_menu = TopMenu(self, self.translator, self.MSPCManagerHelper_Version)
