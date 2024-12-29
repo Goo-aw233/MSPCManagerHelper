@@ -25,11 +25,13 @@ class TopMenu:
         self.top_menu_term_of_use_and_privacy = tk.Menu(self.top_menu, tearoff=0)
         self.top_menu_update = tk.Menu(self.top_menu, tearoff=0)
 
-        self.top_menu.add_cascade(label=self.translator.translate("top_menu_files"), menu=self.top_menu_files)
+        # “文件(F)”菜单（underline 以第一个为 0 字符开始计算，直到快捷键）
+        self.top_menu.add_cascade(label=self.translator.translate("top_menu_files_access_key"), underline=3, menu=self.top_menu_files)
         self.top_menu_files.add_separator()
         self.top_menu_files.add_command(label=self.translator.translate("top_menu_files_exit"), command=lambda: TopMenuFiles.exit_program(self.parent))
 
-        self.top_menu.add_cascade(label=self.translator.translate("top_menu_update"), menu=self.top_menu_update)
+        # “下载与更新(U)”菜单（underline 以第一个为 0 字符开始计算，直到快捷键）
+        self.top_menu.add_cascade(label=self.translator.translate("top_menu_update_access_key"), underline=6, menu=self.top_menu_update)
         self.top_menu_update.add_command(label=self.translator.translate("top_menu_update_GitHub"), command=TopMenuUpdate.open_github_update)
         self.top_menu_update.add_command(label=self.translator.translate("top_menu_update_OneDrive"), command=TopMenuUpdate.open_onedrive_update)
         self.top_menu_update.add_separator()
@@ -38,11 +40,13 @@ class TopMenu:
         self.top_menu_update.add_separator()
         self.top_menu_update.add_command(label=self.translator.translate("top_menu_update_WindowsAppRuntime"), command=TopMenuUpdate.open_windowsappruntime_download)
 
-        self.top_menu.add_cascade(label=self.translator.translate("top_menu_term_of_use_and_privacy"), menu=self.top_menu_term_of_use_and_privacy)
+        # “使用条款与隐私政策(T)”菜单（underline 以第一个为 0 字符开始计算，直到快捷键）
+        self.top_menu.add_cascade(label=self.translator.translate("top_menu_term_of_use_and_privacy_access_key"), underline=10, menu=self.top_menu_term_of_use_and_privacy)
         self.top_menu_term_of_use_and_privacy.add_command(label=self.translator.translate("top_menu_term_of_use"), command=self.top_menu_term_of_use)
         self.top_menu_term_of_use_and_privacy.add_command(label=self.translator.translate("top_menu_privacy"), command=self.top_menu_privacy)
 
-        self.top_menu.add_cascade(label=self.translator.translate("top_menu_help"), menu=self.top_menu_help)
+        # “帮助(H)”菜单（underline 以第一个为 0 字符开始计算，直到快捷键）
+        self.top_menu.add_cascade(label=self.translator.translate("top_menu_help_access_key"), underline=3, menu=self.top_menu_help)
         self.top_menu_help.add_command(label=self.translator.translate("top_menu_help_about"), command=self.top_menu_help_about)
         self.top_menu_help.add_command(label=self.translator.translate("top_menu_help_gethelp"), command=TopMenuHelp.open_gethelp)
         self.top_menu_help.add_command(label=self.translator.translate("top_menu_help_official_site"), command=TopMenuHelp.open_official_site)
@@ -175,9 +179,9 @@ class TopMenuHelp:
         self.parent = parent
         self.translator = translator
         self.version = version
-        self.show_help_help_about_window()
+        self.show_help_about_window()
 
-    def show_help_help_about_window(self):
+    def show_help_about_window(self):
         help_about_window = tk.Toplevel(self.parent)
         about_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
         help_about_window.iconbitmap(about_icon_path)

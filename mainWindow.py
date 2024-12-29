@@ -5,6 +5,7 @@ import queue
 import subprocess
 import threading
 import tkinter as tk
+import tkinter.font as tkFont
 from advancedStartup import AdvancedStartup
 from checkSystemRequirements import check_system_requirements
 from getVersionNumber import GetPCManagerVersion
@@ -100,7 +101,7 @@ class MSPCManagerHelper(tk.Tk):
         self.version_label.pack(side="left", padx=(0, 10))
 
         # 刷新按钮
-        self.refresh_button = tk.Button(version_frame, text=self.translator.translate("refresh"), command=self.refresh_version, width=10, height=1)
+        self.refresh_button = ttk.Button(version_frame, text=self.translator.translate("refresh"), command=self.refresh_version)
         self.refresh_button.pack(side="left")
 
         # 系统要求检测
@@ -127,15 +128,15 @@ class MSPCManagerHelper(tk.Tk):
         self.feature_combobox.place(x=35, y=310, width=380, height=25)
 
         # 执行按钮
-        self.execute_button = tk.Button(self, text=self.translator.translate("main_execute_button"), command=self.execute_feature, width=10, height=1)
+        self.execute_button = ttk.Button(self, text=self.translator.translate("main_execute_button"), command=self.execute_feature)
         self.execute_button.place(x=35, y=360)
 
         # 取消按钮
-        self.cancel_button = tk.Button(self, text=self.translator.translate("main_cancel_button"), command=self.cancel_feature, state="disabled", width=10, height=1)
+        self.cancel_button = ttk.Button(self, text=self.translator.translate("main_cancel_button"), command=self.cancel_feature, state="disabled")
         self.cancel_button.place(x=145, y=360)
 
         # 以管理员身份运行按钮
-        self.run_as_administrator_button = tk.Button(self, text=self.translator.translate("run_as_administrator"), command=self.run_as_administrator, width=20, height=1)
+        self.run_as_administrator_button = ttk.Button(self, text=self.translator.translate("run_as_administrator"), command=self.run_as_administrator)
         self.run_as_administrator_button.place(x=255, y=360)
         if AdvancedStartup.is_admin():
             self.run_as_administrator_button.config(state="disabled")
@@ -342,8 +343,7 @@ class MSPCManagerHelper(tk.Tk):
             self.cancel_button.config(state="normal")
             self.clear_result_textbox()  # 清空 TextBox 的内容
             main_feature_name = self.feature_combobox.get()
-            executing_message = self.translator.translate('main_executing_operation').format(
-                main_feature_name=main_feature_name)
+            executing_message = self.translator.translate('main_executing_operation').format(main_feature_name=main_feature_name)
             executing_message += '\n' + self.translator.translate('excessive_waiting_time')
             self.textbox(executing_message)
 
@@ -471,9 +471,14 @@ class MSPCManagerHelper(tk.Tk):
 
     # 设置字体样式
     def set_font_style(self):
-        default_font_style = ("Segoe UI", 10)
+        # 获取当前系统正在使用的字体
+        default_font = tkFont.nametofont("TkDefaultFont")
+        default_font_family = default_font.cget("family")
+        default_font_size = default_font.cget("size")   # 或者设置为 10
+        default_font_style = (default_font_family, default_font_size)
+
         font_styles = {
-            "lang_en-us": default_font_style,
+            "lang_en-us": ("Segoe UI", 10),
             "lang_zh-cn": ("微软雅黑", 10),
             "lang_zh-tw": ("微軟正黑體", 10),
             # 在这里添加更多语言及其对应的字体样式
@@ -489,14 +494,11 @@ class MSPCManagerHelper(tk.Tk):
         elif selected_language == self.translator.translate("lang_zh-tw"):
             language_key = "lang_zh-tw"
 
-        font_style = font_styles.get(language_key, default_font_style)  # 其他语言默认使用 Segoe UI
+        font_style = font_styles.get(language_key, default_font_style)  # 其他语言默认使用系统字体
 
         self.version_label.config(font=font_style)
-        self.refresh_button.config(font=font_style)
         self.system_requirement_label.config(font=font_style)
         self.hint_label.config(font=font_style)
-        self.execute_button.config(font=font_style)
-        self.cancel_button.config(font=font_style)
         self.main_combobox.config(font=font_style)
         self.feature_combobox.config(font=font_style)
         self.result_textbox.config(font=font_style)

@@ -1,13 +1,14 @@
 import iso3166
 import os
 import subprocess
+import sys
 import tkinter as tk
 import webbrowser
 import win32api
 import win32service
 import win32serviceutil
 import winreg
-from tkinter import messagebox, filedialog
+from tkinter import filedialog, messagebox, ttk
 
 class OtherFeature:
     def __init__(self, translator, result_textbox=None):
@@ -19,6 +20,29 @@ class OtherFeature:
         self.result_textbox.insert(tk.END, message + "\n")
         self.result_textbox.config(state="disable")
         self.result_textbox.update_idletasks()  # 刷新界面
+
+    def get_nsudolc_path(self):
+        try:
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
+                                r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment") as key:
+                processor_architecture = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
+
+            if processor_architecture == "AMD64":
+                if hasattr(sys, '_MEIPASS'):
+                    return os.path.join(sys._MEIPASS, "tools", "NSudo", "NSudoLC_x64.exe")
+                else:
+                    return os.path.join("tools", "NSudo", "NSudoLC_x64.exe")
+            elif processor_architecture == "ARM64":
+                if hasattr(sys, '_MEIPASS'):
+                    return os.path.join(sys._MEIPASS, "tools", "NSudo", "NSudoLC_ARM64.exe")
+                else:
+                    return os.path.join("tools", "NSudo", "NSudoLC_ARM64.exe")
+            else:
+                self.textbox(self.translator.translate("no_match_nsudo_version"))
+                return None
+        except Exception as e:
+            self.textbox(self.translator.translate("error_getting_nsudo_path") + f": {str(e)}")
+            return None
 
     def refresh_result_textbox(self):
         pass
@@ -68,19 +92,31 @@ class OtherFeature:
 
     def repair_edge_wv2_setup(self):
         try:
+            nsudolc_path = self.get_nsudolc_path()
+            if not nsudolc_path:
+                return "\n.join(messages)"
+
+            msedgewebview2_key_name = r"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\MicrosoftEdgeUpdate.exe"
+
             # 删除注册表项
-            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options", 0,
-                                winreg.KEY_ALL_ACCESS) as key:
-                winreg.DeleteKey(key, "MicrosoftEdgeUpdate.exe")
+            result = subprocess.run(
+                [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "reg.exe", "delete", msedgewebview2_key_name, "/f"],
+                capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
+            )
+            if result.returncode != 0:
+                return f"{self.translator.translate('repair_edge_wv2_setup_error')}: {result.stderr.strip()}"
 
             # 新建注册表项
-            with winreg.CreateKey(winreg.HKEY_LOCAL_MACHINE,
-                                  r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\MicrosoftEdgeUpdate.exe") as key:
-                winreg.SetValueEx(key, "DisableExceptionChainValidation", 0, winreg.REG_DWORD, 0)
+            result = subprocess.run(
+                [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "reg.exe", "add", msedgewebview2_key_name, "/v",
+                 "DisableExceptionChainValidation", "/t", "REG_DWORD", "/d", "0", "/f"],
+                capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
+            )
+            if result.returncode != 0:
+                return f"{self.translator.translate('repair_edge_wv2_setup_error')}: {result.stderr.strip()}"            
 
             return self.translator.translate("repair_edge_wv2_setup_completed")
-        except OSError as e:
+        except Exception as e:
             return f"{self.translator.translate('repair_edge_wv2_setup_error')}: {str(e)}"
 
     def pc_manager_docs(self):
@@ -112,6 +148,7 @@ class OtherFeature:
             # 检查服务是否存在
             service_status = win32serviceutil.QueryServiceStatus(pc_manager_service_name)
         except win32api.error as e:
+            # 此处错误类型需要修改
             # 需要以管理员身份运行
             if e.winerror == 5:
                 return f"{self.translator.translate('pc_manager_service_error_code_5')}\n{str(e)}"
@@ -176,13 +213,11 @@ class OtherFeature:
         switch_region_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
         root.iconbitmap(switch_region_icon_path)
 
-        label = tk.Label(root, text=self.translator.translate("type_to_switch_pc_manager_region"))
-        entry = tk.Entry(root)  # 创建提示和输入框
+        label = ttk.Label(root, text=self.translator.translate("type_to_switch_pc_manager_region"))
+        entry = ttk.Entry(root)  # 创建提示和输入框
 
-        submit_button = tk.Button(root, text=self.translator.translate("main_execute_button"), command=region, width=10,
-                                  height=1)
-        cancel_button = tk.Button(root, text=self.translator.translate("main_cancel_button"),
-                                  command=lambda: root.destroy(), width=10, height=1)  # 按钮功能与样式
+        submit_button = ttk.Button(root, text=self.translator.translate("main_execute_button"), command=region)
+        cancel_button = ttk.Button(root, text=self.translator.translate("main_cancel_button"), command=lambda: root.destroy())  # 按钮功能与样式
 
         label.pack(pady=10)
         entry.pack(pady=5)
@@ -195,6 +230,7 @@ class OtherFeature:
         if self.cancel:
             return self.translator.translate("user_canceled")
 
+        # 写入 InstallRegionCode 的值
         try:
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, pc_manager_registry_path, 0, winreg.KEY_ALL_ACCESS) as key:
                 try:

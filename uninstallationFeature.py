@@ -136,7 +136,7 @@ class UninstallationFeature:
                         os.path.join(os.environ['ProgramData'], 'Windows Master Store'),
                         os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
                         os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Packages', 'Microsoft.PCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData','Local', 'Windows Master'),
+                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master'),
                         os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master Store'),
                         os.path.join(os.environ['Temp'], 'WM Scan Test')
                     ]
@@ -217,7 +217,7 @@ class UninstallationFeature:
                                         capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
                                     if result.returncode == 0:  # 128 为找不到正在运行的进程
                                         if is_first:
-                                            self.textbox('\n' + self.translator.translate('advanced_cleanup_taskkill_process') + ':\n')
+                                            self.textbox('\n' + self.translator.translate('advanced_cleanup_taskkill_process_for_all_users_in_dism') + ':\n')
                                             is_first = False
                                         self.textbox('-' + process + '\n')  # 显示执行操作
                                         any_process_killed = True
@@ -225,7 +225,7 @@ class UninstallationFeature:
                                     continue
 
                             if not any_process_killed:
-                                self.textbox(self.translator.translate('advanced_cleanup_no_processes_killed'))
+                                self.textbox(self.translator.translate('advanced_cleanup_no_processes_killed_for_all_users_in_dism'))
 
                             # 删除文件夹
                             folders_to_delete = [
@@ -331,6 +331,11 @@ class UninstallationFeature:
             if all(result.returncode == 0 for result in [result1, result2, result3, result4]):
                 if messagebox.askyesno(self.translator.translate("cleanup_config_and_files_notice_for_all_users"),
                                        self.translator.translate("cleanup_config_and_files_for_all_users")):
+
+                    nsudolc_path = self.get_nsudolc_path()
+                    if not nsudolc_path:
+                        return "\n.join(messages)"
+
                     # 删除文件夹
                     folders_to_delete = [
                         os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
@@ -349,7 +354,9 @@ class UninstallationFeature:
                     for folder in folders_to_delete:
                         if os.path.exists(folder):
                             try:
-                                subprocess.run(['rmdir', '/S', '/Q', folder], shell=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                                subprocess.run(
+                                    [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", folder],
+                                    capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
                                 if is_first:
                                     self.textbox('\n' + self.translator.translate('clearing_configuration_files_for_all_users') + ':\n')  # 显示执行操作
                                     is_first = False
@@ -364,7 +371,8 @@ class UninstallationFeature:
                     is_first = True
                     for key in registry_keys_to_delete:
                         try:
-                            subprocess.run(['reg.exe', 'delete', key, '/f'], creationflags=subprocess.CREATE_NO_WINDOW)
+                            subprocess.run([nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "reg.exe", "delete", key, "/f"],
+                                capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
                             if is_first:
                                 self.textbox('\n' + self.translator.translate('clearing_registries_for_all_users') + ':\n')  # 显示执行操作
                                 is_first = False
@@ -389,7 +397,9 @@ class UninstallationFeature:
                     is_first = True
                     for files in prefetch_files:
                         try:
-                            os.remove(files)
+                            subprocess.run(
+                                [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "del", "/F", "/Q", files],
+                                capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
                             if is_first:
                                 self.textbox('\n' + self.translator.translate('clearing_other_files_for_all_users') + ':\n')
                                 is_first = False
@@ -398,10 +408,94 @@ class UninstallationFeature:
                             self.textbox(self.translator.translate('fail_to_clear_other_files_for_all_users') + ': ' + str(files) + ', ' + self.translator.translate('fail_to_clear_other_files_info_for_all_users') + ': ' + str(e) + '\n')
 
                     # 进阶清理
+                    response_for_advanced_cleanup = messagebox.askyesno(
+                        self.translator.translate("advanced_cleanup_config_and_files_notice_for_all_users"),
+                        self.translator.translate("advanced_cleanup_config_and_files_for_all_users")
+                    )
+
+                    if response_for_advanced_cleanup:
+                        try:
+                            # 结束进程
+                            processes = ["MSPCManager.exe", "MSPCManagerService.exe",
+                                         "Microsoft.WIC.PCWndManager.Plugin.exe",
+                                         "MSPCWndManager.exe", "MSPCManagerWidget.exe"]
+                            is_first = True
+                            any_process_killed = False
+                            for process in processes:
+                                try:
+                                    result = subprocess.run([nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "taskkill.exe", "/F", "/IM", process],
+                                        capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                                    if result.returncode == 0:  # 128 为找不到正在运行的进程
+                                        if is_first:
+                                            self.textbox('\n' + self.translator.translate('advanced_cleanup_taskkill_process_for_all_users') + ':\n')
+                                            is_first = False
+                                        self.textbox('-' + process + '\n')  # 显示执行操作
+                                        any_process_killed = True
+                                except Exception as e:
+                                    continue
+
+                            if not any_process_killed:
+                                self.textbox(self.translator.translate('advanced_cleanup_no_processes_killed_for_all_users'))
+
+                            # 删除文件夹
+                            folders_to_delete = [
+                                # os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.Windows.Search_cw5n1h2txyewy', 'LocalState', 'AppIconCache', '*', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
+                                # os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.Windows.Search_cw5n1h2txyewy', 'LocalState', 'AppIconCache', '*', 'Microsoft.PCManager_8wekyb3d8bbwe'),
+                                os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe', 'LocalCache', 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe'),
+                                os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe', 'LocalCache', 'MSPCManager_*_8wekyb3d8bbwe'),
+                                os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe', 'LocalCache', 'Microsoft.PCManager_*_8wekyb3d8bbwe'),
+                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository', 'Packages', 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe'),
+                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository', 'Packages', 'Microsoft.PCManager_*_8wekyb3d8bbwe'),
+                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'WindowsApps', 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe'),
+                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'WindowsApps', 'Microsoft.PCManager_*_8wekyb3d8bbwe'),
+                                os.path.join(os.environ['ProgramData'], 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
+                                os.path.join(os.environ['ProgramData'], 'Packages', 'Microsoft.PCManager_8wekyb3d8bbwe'),
+                                os.path.join(os.environ['ProgramFiles'], 'WindowsApps', 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe'),
+                                os.path.join(os.environ['ProgramFiles'], 'WindowsApps', 'Microsoft.PCManager_*_8wekyb3d8bbwe')
+                            ]
+                            # 删除文件
+                            files_to_delete = [
+                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository', 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe.xml'),
+                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository', 'Microsoft.PCManager_*_8wekyb3d8bbwe.xml')
+                            ]
+
+                            is_first = True
+                            for folder in folders_to_delete:
+                                for path in glob.glob(folder):
+                                    try:
+                                        subprocess.run(
+                                            [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", path],
+                                            capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                                        if is_first:
+                                            self.textbox('\n' + self.translator.translate('advanced_clearing_config_and_files_for_all_users') + ':\n')
+                                            is_first = False
+                                        self.textbox('-' + path + '\n') # 显示执行操作
+                                    except Exception as e:
+                                        self.textbox(self.translator.translate("advanced_fail_to_config_and_files_for_all_users") + f": {path}")
+                                        self.textbox(self.translator.translate("advanced_fail_to_config_and_files_info_for_all_users") + f": {str(e)}")
+
+                            is_first = True
+                            for file in files_to_delete:
+                                for path in glob.glob(file):
+                                    try:
+                                        subprocess.run(
+                                            [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "del", "/F", "/Q", path],
+                                            capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                                        if is_first:
+                                            self.textbox('\n' + self.translator.translate('advanced_clearing_config_and_files_for_all_users') + ':\n')
+                                            is_first = False
+                                        self.textbox('-' + path + '\n') # 显示执行操作
+                                    except Exception as e:
+                                        self.textbox(self.translator.translate("advanced_fail_to_config_and_files_for_all_users") + f": {path}")
+                                        self.textbox(self.translator.translate("advanced_fail_to_config_and_files_info_for_all_users") + f": {str(e)}")
+
+                        except Exception as e:
+                            self.textbox(self.translator.translate("advanced_cleanup_error") + f": {str(e)}")
 
                     return '\n' + self.translator.translate("uninstall_and_cleanup_for_all_users_success")
                 else:
                     return self.translator.translate('uninstall_for_all_users_success')
+
             # 需要以管理员身份运行或包异常
             elif any(result.returncode == 1 for result in [result1, result2, result3, result4]):
                 return f"{self.translator.translate('uninstall_for_all_users_error_code_1')}\n{result1.stderr.strip()} | {result2.stderr.strip()} | {result3.stderr.strip()} | {result4.stderr.strip()}\n{self.translator.translate('uninstall_for_all_users_error_code')}: {result1.returncode}\n\n{result2.returncode}\n\n{result3.returncode}\n\n{result4.returncode}"
@@ -431,6 +525,11 @@ class UninstallationFeature:
             if all(result.returncode == 0 for result in [result1, result2]):
                 if messagebox.askyesno(self.translator.translate("cleanup_config_and_files_notice_for_current_user"),
                                        self.translator.translate("cleanup_config_and_files_for_current_user")):
+
+                    nsudolc_path = self.get_nsudolc_path()
+                    if not nsudolc_path:
+                        return "\n.join(messages)"
+
                     # 删除文件夹
                     folders_to_delete = [
                         os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
@@ -449,7 +548,9 @@ class UninstallationFeature:
                     for folder in folders_to_delete:
                         if os.path.exists(folder):
                             try:
-                                subprocess.run(['rmdir', '/S', '/Q', folder], shell=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                                subprocess.run(
+                                    [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", folder],
+                                    capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
                                 if is_first:
                                     self.textbox('\n' + self.translator.translate('clearing_configuration_files_for_current_user') + ':\n')  # 显示执行操作
                                     is_first = False
@@ -464,7 +565,8 @@ class UninstallationFeature:
                     is_first = True
                     for key in registry_keys_to_delete:
                         try:
-                            subprocess.run(['reg.exe', 'delete', key, '/f'], creationflags=subprocess.CREATE_NO_WINDOW)
+                            subprocess.run([nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "reg.exe", "delete", key, "/f"],
+                                capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
                             if is_first:
                                 self.textbox('\n' + self.translator.translate('clearing_registries_for_current_user') + ':\n')  # 显示执行操作
                                 is_first = False
@@ -489,7 +591,9 @@ class UninstallationFeature:
                     is_first = True
                     for files in prefetch_files:
                         try:
-                            os.remove(files)
+                            subprocess.run(
+                                [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "del", "/F", "/Q", files],
+                                capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
                             if is_first:
                                 self.textbox('\n' + self.translator.translate('clearing_other_files_for_current_user') + ':\n')
                                 is_first = False
@@ -500,6 +604,7 @@ class UninstallationFeature:
                     return '\n' + self.translator.translate("uninstall_and_cleanup_for_current_user_success")
                 else:
                     return self.translator.translate('uninstall_for_current_user_success')
+
             # 需要以管理员身份运行或包异常
             elif any(result.returncode == 1 for result in [result1, result2]):
                 return f"{self.translator.translate('uninstall_for_current_user_error_code_1')}\n{result1.stderr.strip()} | {result2.stderr.strip()}\n{self.translator.translate('uninstall_for_all_users_error_code')}: {result1.returncode}\n\n{result2.returncode}"
