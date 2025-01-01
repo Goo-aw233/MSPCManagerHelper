@@ -207,7 +207,7 @@ class UninstallationFeature:
                         try:
                             # 结束进程
                             processes = ["MSPCManager.exe", "MSPCManagerService.exe",
-                                         "Microsoft.WIC.PCWndManager.Plugin.exe",
+                                         "MSPCManagerCore.exe", "Microsoft.WIC.PCWndManager.Plugin.exe",
                                          "MSPCWndManager.exe", "MSPCManagerWidget.exe"]
                             is_first = True
                             any_process_killed = False
@@ -257,7 +257,7 @@ class UninstallationFeature:
                                             [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", path],
                                             capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
                                         if is_first:
-                                            self.textbox('\n' + self.translator.translate('advanced_clearing_config_and_files_for_all_users_in_dism') + ':\n')
+                                            self.textbox('\n' + self.translator.translate('advanced_clearing_folders_for_all_users_in_dism') + ':\n')
                                             is_first = False
                                         self.textbox('-' + path + '\n') # 显示执行操作
                                     except Exception as e:
@@ -417,7 +417,7 @@ class UninstallationFeature:
                         try:
                             # 结束进程
                             processes = ["MSPCManager.exe", "MSPCManagerService.exe",
-                                         "Microsoft.WIC.PCWndManager.Plugin.exe",
+                                         "MSPCManagerCore.exe", "Microsoft.WIC.PCWndManager.Plugin.exe",
                                          "MSPCWndManager.exe", "MSPCManagerWidget.exe"]
                             is_first = True
                             any_process_killed = False
@@ -467,7 +467,7 @@ class UninstallationFeature:
                                             [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", path],
                                             capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
                                         if is_first:
-                                            self.textbox('\n' + self.translator.translate('advanced_clearing_config_and_files_for_all_users') + ':\n')
+                                            self.textbox('\n' + self.translator.translate('advanced_clearing_folders_for_all_users') + ':\n')
                                             is_first = False
                                         self.textbox('-' + path + '\n') # 显示执行操作
                                     except Exception as e:
