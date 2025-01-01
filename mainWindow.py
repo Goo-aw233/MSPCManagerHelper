@@ -22,7 +22,7 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
         self.iconbitmap(main_icon_path)
-        self.MSPCManagerHelper_Version = "Beta v0.2.0.6"
+        self.MSPCManagerHelper_Version = "Beta v0.2.0.7"
         title = f"MSPCManagerHelper {self.MSPCManagerHelper_Version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
