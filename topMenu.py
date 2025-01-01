@@ -173,7 +173,7 @@ class TopMenuTermOfUse:
 
         privacy_window.protocol("WM_DELETE_WINDOW", privacy_window.destroy)
 
-# 属性菜单
+# 帮助菜单
 class TopMenuHelp:
     def __init__(self, parent, translator, version):
         self.parent = parent
