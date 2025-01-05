@@ -87,7 +87,7 @@ class TopMenuUpdate:
 
     @staticmethod
     def open_windowsappruntime_download():
-        webbrowser.open("https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads-archive?wt.mc_id=studentamb_265231#windows-app-sdk-15")
+        webbrowser.open("https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads-archive?wt.mc_id=studentamb_265231")
 
 # 条款政策菜单
 class TopMenuTermOfUse:

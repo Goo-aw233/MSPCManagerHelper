@@ -22,7 +22,7 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
         self.iconbitmap(main_icon_path)
-        self.MSPCManagerHelper_Version = "Beta v0.2.0.7"
+        self.MSPCManagerHelper_Version = "Beta v0.2.0.8"
         title = f"MSPCManagerHelper {self.MSPCManagerHelper_Version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
@@ -36,7 +36,7 @@ class MSPCManagerHelper(tk.Tk):
         center_x, center_y = self.winfo_screenwidth() // 2 - window_width // 2, self.winfo_screenheight() // 2 - window_height // 2 # 计算窗口位置
         self.geometry(f"{window_width}x{window_height}+{center_x}+{center_y}")  # 设置窗口位置
         self.resizable(False, False)    # 禁止调整窗口大小
-        self.configure(bg="white")
+        self.configure(bg="WhiteSmoke")
 
         # 初始化功能
         self.translator = Translator(locale='en-us')
@@ -93,11 +93,11 @@ class MSPCManagerHelper(tk.Tk):
         self.language_combobox.place(x=35, y=80, width=180, height=25)
 
         # 检测版本的 TextBlock 和刷新按钮
-        version_frame = tk.Frame(self, bg="white")
+        version_frame = tk.Frame(self, bg="WhiteSmoke")
         version_frame.place(x=35, y=110)
 
         # 检查 Windows 版本号
-        self.version_label = tk.Label(version_frame, text=self.translator.translate("current_pc_manager_version"), bg="white")
+        self.version_label = tk.Label(version_frame, text=self.translator.translate("current_pc_manager_version"), bg="WhiteSmoke")
         self.version_label.pack(side="left", padx=(0, 10))
 
         # 刷新按钮
@@ -105,11 +105,11 @@ class MSPCManagerHelper(tk.Tk):
         self.refresh_button.pack(side="left")
 
         # 系统要求检测
-        self.system_requirement_label = tk.Label(self, text=self.translator.translate("system_requirements_checking"), bg="white", wraplength=400, padx=0, pady=10)
+        self.system_requirement_label = tk.Label(self, text=self.translator.translate("system_requirements_checking"), bg="WhiteSmoke", wraplength=400, padx=0, pady=10)
         self.system_requirement_label.place(x=35, y=145)
 
         # 提示信息
-        self.hint_label = tk.Label(self, text=self.translator.translate("notice_select_option"), bg="white")
+        self.hint_label = tk.Label(self, text=self.translator.translate("notice_select_option"), bg="WhiteSmoke")
         self.hint_label.place(x=35, y=210)
 
         # 第一个组合框
@@ -142,7 +142,7 @@ class MSPCManagerHelper(tk.Tk):
             self.run_as_administrator_button.config(state="disabled")
 
         # 结果输出框 result_textbox
-        self.result_textbox = tk.Text(self, wrap="word", state="disabled", bg="lightgray")
+        self.result_textbox = tk.Text(self, wrap="word", state="disabled", bg="LightGray")
         self.result_textbox.place(x=435, y=80, width=400, height=310)
         # 创建滚动条
         scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.result_textbox.yview)
@@ -163,7 +163,8 @@ class MSPCManagerHelper(tk.Tk):
         self.other_feature.refresh_result_textbox()
         # 输出提示
         self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
-        self.textbox(self.translator.translate('tips_run_as_dev_mode'))
+        if not (AdvancedStartup.is_devmode() or AdvancedStartup.is_debugdevmode()):
+            self.textbox(self.translator.translate('tips_run_as_dev_mode'))
 
         # 初始检测版本号和系统要求
         self.refresh_version()
@@ -257,7 +258,8 @@ class MSPCManagerHelper(tk.Tk):
         self.config(menu=self.top_menu.top_menu)  # 显示顶部菜单
         # 重新输出指定协议与隐私
         self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
-        self.textbox(self.translator.translate('tips_run_as_dev_mode'))
+        if not (AdvancedStartup.is_devmode() or AdvancedStartup.is_debugdevmode()):
+            self.textbox(self.translator.translate('tips_run_as_dev_mode'))
 
     # 更新文本
     def update_texts(self):
@@ -514,7 +516,8 @@ class MSPCManagerHelper(tk.Tk):
                 # 清除并重新输入 pc_manager_beta_installed 的内容
                 self.clear_result_textbox()
                 self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
-                self.textbox(self.translator.translate('tips_run_as_dev_mode'))
+                if not (AdvancedStartup.is_devmode() or AdvancedStartup.is_debugdevmode()):
+                    self.textbox(self.translator.translate('tips_run_as_dev_mode'))
                 self.textbox(f"{self.translator.translate('pc_manager_beta_installed')}: {beta_version}\n")
         elif beta_version:
             self.version_label.config(text=f"{self.translator.translate('current_pc_manager_beta_version')}: {beta_version}")
