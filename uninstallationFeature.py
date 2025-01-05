@@ -171,7 +171,11 @@ class UninstallationFeature:
                             self.textbox(self.translator.translate('fail_to_clear_registries_info_for_all_users_in_dism') + ': ' + str(e) + '\n')  # 显示错误内容
 
                     # 删除文件
-                    file_paths = [os.path.join(os.environ['SystemRoot'], 'Prefetch')]
+                    file_paths = [
+                        os.path.join(os.environ['LocalAppData'], 'Microsoft', 'CLR_v4.0', 'UsageLogs'),
+                        os.path.join(os.environ['SystemRoot'], 'Prefetch'),
+                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Microsoft', 'CLR_v4.0', 'UsageLogs')
+                    ]
 
                     prefetch_files = itertools.chain.from_iterable(
                         glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
@@ -184,8 +188,20 @@ class UninstallationFeature:
                             '*PCMCHECKSUM*.pf'
                         ]
                     )
+
+                    clr_logs_files = itertools.chain.from_iterable(
+                        glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                            '*BGADefMgr*.log',
+                            '*Microsoft.WIC.PCWndManager.Plugin*.log',
+                            '*MSPCManager*.log',
+                            '*MSPCWndManager*.log',
+                            '*PCMAutoRun*.log',
+                            '*PCMCheckSum*.log'
+                        ]
+                    )
+
                     is_first = True
-                    for files in prefetch_files:
+                    for files in itertools.chain(prefetch_files, clr_logs_files):
                         try:
                             subprocess.run(
                                 [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "del", "/F", "/Q", files],
@@ -288,9 +304,30 @@ class UninstallationFeature:
 
             # 需要以管理员身份运行或包异常
             elif any(result.returncode == 1 for result in [result1, result2, result3, result4]):
-                return f"{self.translator.translate('uninstall_for_all_users_in_dism_error_code_1')}\n{result1.stderr.strip()} | {result2.stderr.strip()} | {result3.stderr.strip()} | {result4.stderr.strip()}\n{self.translator.translate('uninstall_for_all_users_in_dism_error_code')}: {result1.returncode}\n\n{result2.returncode}\n\n{result3.returncode}\n\n{result4.returncode}"
+                return (
+                    f"{self.translator.translate('uninstall_for_all_users_in_dism_error_code_1')}\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_in_dism_error_code')}: {result1.returncode}\n"
+                    f"{result1.stderr.strip()}\n\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_in_dism_error_code')}: {result2.returncode}\n"
+                    f"{result2.stderr.strip()}\n\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_in_dism_error_code')}: {result3.returncode}\n"
+                    f"{result3.stderr.strip()}\n\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_in_dism_error_code')}: {result4.returncode}\n"
+                    f"{result4.stderr.strip()}"
+                )
             else:
-                return f"{self.translator.translate('uninstall_for_all_users_in_dism_error')}: {result1.stderr.strip()} | {result2.stderr.strip()} | {result3.stderr.strip()} | {result4.stderr.strip()}\n{self.translator.translate('uninstall_for_all_users_in_dism_error_code')}: {result1.returncode}\n\n{result2.returncode}\n\n{result3.returncode}\n\n{result4.returncode}"
+                return (
+                    f"{self.translator.translate('uninstall_for_all_users_in_dism_error')}\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_in_dism_error_code')}: {result1.returncode}\n"
+                    f"{result1.stderr.strip()}\n\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_in_dism_error_code')}: {result2.returncode}\n"
+                    f"{result2.stderr.strip()}\n\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_in_dism_error_code')}: {result3.returncode}\n"
+                    f"{result3.stderr.strip()}\n\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_in_dism_error_code')}: {result4.returncode}\n"
+                    f"{result4.stderr.strip()}"
+                )
+
         except Exception as e:
             return f"{self.translator.translate('uninstall_for_all_users_in_dism_error')}: {str(e)}"
 
@@ -381,7 +418,11 @@ class UninstallationFeature:
                             self.textbox(self.translator.translate('fail_to_clear_registries_info_for_all_users') + ': ' + str(e) + '\n')  # 显示错误内容
 
                     # 删除文件
-                    file_paths = [os.path.join(os.environ['SystemRoot'], 'Prefetch')]
+                    file_paths = [
+                        os.path.join(os.environ['LocalAppData'], 'Microsoft', 'CLR_v4.0', 'UsageLogs'),
+                        os.path.join(os.environ['SystemRoot'], 'Prefetch'),
+                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Microsoft', 'CLR_v4.0', 'UsageLogs')
+                    ]
 
                     prefetch_files = itertools.chain.from_iterable(
                         glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
@@ -394,8 +435,20 @@ class UninstallationFeature:
                             '*PCMCHECKSUM*.pf'
                         ]
                     )
+
+                    clr_logs_files = itertools.chain.from_iterable(
+                        glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                            '*BGADefMgr*.log',
+                            '*Microsoft.WIC.PCWndManager.Plugin*.log',
+                            '*MSPCManager*.log',
+                            '*MSPCWndManager*.log',
+                            '*PCMAutoRun*.log',
+                            '*PCMCheckSum*.log'
+                        ]
+                    )
+
                     is_first = True
-                    for files in prefetch_files:
+                    for files in itertools.chain(prefetch_files, clr_logs_files):
                         try:
                             subprocess.run(
                                 [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "del", "/F", "/Q", files],
@@ -498,9 +551,30 @@ class UninstallationFeature:
 
             # 需要以管理员身份运行或包异常
             elif any(result.returncode == 1 for result in [result1, result2, result3, result4]):
-                return f"{self.translator.translate('uninstall_for_all_users_error_code_1')}\n{result1.stderr.strip()} | {result2.stderr.strip()} | {result3.stderr.strip()} | {result4.stderr.strip()}\n{self.translator.translate('uninstall_for_all_users_error_code')}: {result1.returncode}\n\n{result2.returncode}\n\n{result3.returncode}\n\n{result4.returncode}"
+                return (
+                    f"{self.translator.translate('uninstall_for_all_users_error_code_1')}\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_error_code')}: {result1.returncode}\n"
+                    f"{result1.stderr.strip()}\n\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_error_code')}: {result2.returncode}\n"
+                    f"{result2.stderr.strip()}\n\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_error_code')}: {result3.returncode}\n"
+                    f"{result3.stderr.strip()}\n\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_error_code')}: {result4.returncode}\n"
+                    f"{result4.stderr.strip()}"
+                )
             else:
-                return f"{self.translator.translate('uninstall_for_all_users_error')}: {result1.stderr.strip()} | {result2.stderr.strip()} | {result3.stderr.strip()} | {result4.stderr.strip()}\n{self.translator.translate('uninstall_for_all_users_error_code')}: {result1.returncode}\n\n{result2.returncode}\n\n{result3.returncode}\n\n{result4.returncode}"
+                return (
+                    f"{self.translator.translate('uninstall_for_all_users_error')}\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_error_code')}: {result1.returncode}\n"
+                    f"{result1.stderr.strip()}\n\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_error_code')}: {result2.returncode}\n"
+                    f"{result2.stderr.strip()}\n\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_error_code')}: {result3.returncode}\n"
+                    f"{result3.stderr.strip()}\n\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_error_code')}: {result4.returncode}\n"
+                    f"{result4.stderr.strip()}"
+                )
+
         except Exception as e:
             return f"{self.translator.translate('uninstall_for_all_users_error')}: {str(e)}"
 
@@ -575,7 +649,11 @@ class UninstallationFeature:
                             self.textbox(self.translator.translate('fail_to_clear_registries_info_for_current_user') + ': ' + str(e) + '\n')  # 显示错误内容
 
                     # 删除文件
-                    file_paths = [os.path.join(os.environ['SystemRoot'], 'Prefetch')]
+                    file_paths = [
+                        os.path.join(os.environ['LocalAppData'], 'Microsoft', 'CLR_v4.0', 'UsageLogs'),
+                        os.path.join(os.environ['SystemRoot'], 'Prefetch'),
+                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Microsoft', 'CLR_v4.0', 'UsageLogs')
+                    ]
 
                     prefetch_files = itertools.chain.from_iterable(
                         glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
@@ -588,8 +666,20 @@ class UninstallationFeature:
                             '*PCMCHECKSUM*.pf'
                         ]
                     )
+
+                    clr_logs_files = itertools.chain.from_iterable(
+                        glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                            '*BGADefMgr*.log',
+                            '*Microsoft.WIC.PCWndManager.Plugin*.log',
+                            '*MSPCManager*.log',
+                            '*MSPCWndManager*.log',
+                            '*PCMAutoRun*.log',
+                            '*PCMCheckSum*.log'
+                        ]
+                    )
+
                     is_first = True
-                    for files in prefetch_files:
+                    for files in itertools.chain(prefetch_files, clr_logs_files):
                         try:
                             subprocess.run(
                                 [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "del", "/F", "/Q", files],
@@ -607,9 +697,22 @@ class UninstallationFeature:
 
             # 需要以管理员身份运行或包异常
             elif any(result.returncode == 1 for result in [result1, result2]):
-                return f"{self.translator.translate('uninstall_for_current_user_error_code_1')}\n{result1.stderr.strip()} | {result2.stderr.strip()}\n{self.translator.translate('uninstall_for_all_users_error_code')}: {result1.returncode}\n\n{result2.returncode}"
+                return (
+                    f"{self.translator.translate('uninstall_for_current_user_error_code_1')}\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_error_code')}: {result1.returncode}\n"
+                    f"{result1.stderr.strip()}\n\n\n"
+                    f"{self.translator.translate('uninstall_for_all_users_error_code')}: {result2.returncode}\n"
+                    f"{result2.stderr.strip()}"
+                )
             else:
-                return f"{self.translator.translate('uninstall_for_current_user_error')}: {result1.stderr.strip()} | {result2.stderr.strip()}\n{self.translator.translate('uninstall_for_current_user_error_code')}: {result1.returncode}\n\n{result2.returncode}"
+                return (
+                    f"{self.translator.translate('uninstall_for_current_user_error')}\n\n"
+                    f"{self.translator.translate('uninstall_for_current_user_error_code')}: {result1.returncode}\n"
+                    f"{result1.stderr.strip()}\n\n\n"
+                    f"{self.translator.translate('uninstall_for_current_user_error_code')}: {result2.returncode}\n"
+                    f"{result2.stderr.strip()}"
+                )
+
         except Exception as e:
             return f"{self.translator.translate('uninstall_for_current_user_error')}: {str(e)}"
 
@@ -692,9 +795,14 @@ class UninstallationFeature:
 
                 # 删除文件
                 file_paths = [
-                    os.path.join(os.environ['SystemRoot'], 'Prefetch'),
+                    os.path.join(os.environ['AppData'], 'Microsoft', 'Internet Explorer', 'Quick Launch', 'User Pinned', 'TaskBar'),
+                    os.path.join(os.environ['AppData'], 'Microsoft', 'Windows', 'Start Menu'),
+                    os.path.join(os.environ['LocalAppData'], 'Microsoft', 'CLR_v4.0', 'UsageLogs'),
+                    os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'Start Menu', 'Programs'),
                     os.path.join(os.environ['Public'], 'Desktop'),
-                    os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'Start Menu', 'Programs')
+                    os.path.join(os.environ['SystemRoot'], 'Prefetch'),
+                    os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Microsoft', 'CLR_v4.0', 'UsageLogs'),
+                    os.path.join(os.environ['UserProfile'], 'Desktop'),
                 ]
 
                 prefetch_files = itertools.chain.from_iterable(
@@ -711,15 +819,28 @@ class UninstallationFeature:
 
                 shortcuts = itertools.chain.from_iterable(
                     glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                        '*PC Manager*.lnk',
                         '*MSPCManager*.lnk',
                         '*Microsoft PC Manager*.lnk',
-                        '*微软电脑管家*.lnk',
                         '*Microsoft 電腦管家*.lnk',
-                        '*Windows Master*.lnk'
+                        '*Windows Master*.lnk',
+                        '*微软电脑管家*.lnk'
                     ]
                 )
+
+                clr_logs_files = itertools.chain.from_iterable(
+                    glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                        '*BGADefMgr*.log',
+                        '*Microsoft.WIC.PCWndManager.Plugin*.log',
+                        '*MSPCManager*.log',
+                        '*MSPCWndManager*.log',
+                        '*PCMAutoRun*.log',
+                        '*PCMCheckSum*.log'
+                    ]
+                )
+
                 is_first = True
-                for files in itertools.chain(prefetch_files, shortcuts):
+                for files in itertools.chain(clr_logs_files, prefetch_files, shortcuts):
                     try:
                         os.remove(files)
                         if is_first:
