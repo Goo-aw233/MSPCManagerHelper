@@ -406,7 +406,7 @@ class InstallationFeature:
                         indent = line[:len(line) - len(line.lstrip())]
                         file.write(f"{indent}<!-- {line.strip()} -->\n")
                         file.write(
-                            f"{indent}<TargetDeviceFamily Name=\"Windows.Universal\" MinVersion=\"10.0.17763.0\" MaxVersionTested=\"10.0.22621.0\"/>\n")
+                            f"{indent}<TargetDeviceFamily Name=\"Windows.Universal\" MinVersion=\"0.0.0.0\" MaxVersionTested=\"0.0.0.0\"/>\n")
                     else:
                         file.write(line)
 
