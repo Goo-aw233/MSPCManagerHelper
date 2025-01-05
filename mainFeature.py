@@ -75,8 +75,11 @@ class MainFeature:
             date_str = datetime.now().strftime(datetime.now().isoformat().replace(":", "."))    # 日期字符串
             logs_destination = os.path.join(os.getenv("UserProfile"), "Desktop", "Microsoft PC Manager Logs", date_str)   # 日志目标路径
             program_logs_source_path = os.path.join(os.getenv("ProgramData"), "Windows Master Store")   # 程序日志源路径
+            appdata_clr_4_0_logs_source = os.path.join(os.getenv("LocalAppData"), "Microsoft", "CLR_v4.0", "UsageLogs")  # LocalAppData 下 CLR_v4.0 日志源路径
+            systemroot_clr_4_0_logs_source = os.path.join(os.getenv("SystemRoot"), "System32", "config", "systemprofile", "AppData", "Local", "Microsoft", "CLR_v4.0", "UsageLogs")  # SystemRoot 下 CLR_v4.0 日志源路径
             common_logs_source = os.path.join(program_logs_source_path, "Common")  # Common 日志源路径
-            setup_logs_source = os.path.join(program_logs_source_path, "Setup") # Setup 日志源路径
+            crash_files_source = os.path.join(common_logs_source, "Crash")  # Crash 源路径
+            setup_logs_source = os.path.join(program_logs_source_path, "Setup")  # Setup 日志源路径
             service_logs_source = os.path.join(program_logs_source_path, "ServiceData") # ServiceData 日志源路径
             exe_setup_logs_source = os.path.join(os.getenv("ProgramData"), "Windows Master Setup")  # EXE 安装器日志源路径
             logs_zip_archive = os.path.join(os.getenv("UserProfile"), "Desktop")    # 日志压缩包路径
@@ -84,6 +87,42 @@ class MainFeature:
             # 创建目标目录
             os.makedirs(logs_destination, exist_ok=True)    # 创建日志目标目录
             os.makedirs(os.path.join(logs_destination, "Common"), exist_ok=True)    # 创建 Common 目标目录
+
+            # 复制 AppData 下的 CLR_v4.0 日志
+            if os.path.exists(appdata_clr_4_0_logs_source):
+                try:  # 使用 cmd.exe 拉起的进程需要 "-ShowWindowMode:Hide" 参数，不依赖 cmd.exe 时不需要 "cmd.exe", "/C" 参数
+                    appdata_clr_4_0_result = subprocess.run([nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "Robocopy.exe",
+                                                             appdata_clr_4_0_logs_source, os.path.join(logs_destination, "AppData_CLR_v4.0"),
+                                                             "*Microsoft.WIC.PCWndManager.Plugin*.log",
+                                                             "*MSPCManager*.log", "*MSPCWndManager*.log",
+                                                             "*PCMAutoRun*.log", "*PCMCheckSum*.log"],
+                        capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                    if appdata_clr_4_0_result.returncode == 0:
+                        self.textbox(self.translator.translate("retrieve_pc_manager_appdata_clr_4_0_logs_success"))
+                    else:
+                        self.textbox(self.translator.translate("retrieve_pc_manager_appdata_clr_4_0_logs_error") + f":\n{appdata_clr_4_0_result.stdout}")
+                except Exception as e:
+                    self.textbox(self.translator.translate("retrieve_pc_manager_appdata_clr_4_0_logs_error") + f":\n{str(e)}")
+            else:
+                pass
+
+            # 复制 SystemRoot 下的 CLR_v4.0 日志
+            if os.path.exists(systemroot_clr_4_0_logs_source):
+                try:  # 使用 cmd.exe 拉起的进程需要 "-ShowWindowMode:Hide" 参数，不依赖 cmd.exe 时不需要 "cmd.exe", "/C" 参数
+                    systemroot_clr_4_0_result = subprocess.run([nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "Robocopy.exe",
+                                                                systemroot_clr_4_0_logs_source, os.path.join(logs_destination, "SystemRoot_CLR_v4.0"),
+                                                                "*Microsoft.WIC.PCWndManager.Plugin*.log",
+                                                                "*MSPCManager*.log", "*MSPCWndManager*.log",
+                                                                "*PCMAutoRun*.log", "*PCMCheckSum*.log"],
+                         capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                    if systemroot_clr_4_0_result.returncode == 0:
+                        self.textbox(self.translator.translate("retrieve_pc_manager_systemroot_clr_4_0_logs_success"))
+                    else:
+                        self.textbox(self.translator.translate("retrieve_pc_manager_systemroot_clr_4_0_logs_error") + f":\n{systemroot_clr_4_0_result.stdout}")
+                except Exception as e:
+                    self.textbox(self.translator.translate("retrieve_pc_manager_systemroot_clr_4_0_logs_error") + f":\n{str(e)}")
+            else:
+                pass
 
             # 复制 Common 下的 .log 文件（使用日志）
             if os.path.exists(common_logs_source):
@@ -98,6 +137,22 @@ class MainFeature:
                         self.textbox(self.translator.translate("retrieve_pc_manager_common_logs_error") + f":\n{common_result.stdout}")
                 except Exception as e:
                     self.textbox(self.translator.translate("retrieve_pc_manager_common_logs_error") + f":\n{str(e)}")
+            else:
+                pass
+
+            # 复制 Crash 文件夹（崩溃文件）
+            if os.path.exists(crash_files_source):
+                try:  # 使用 cmd.exe 拉起的进程需要 "-ShowWindowMode:Hide" 参数，不依赖 cmd.exe 时不需要 "cmd.exe", "/C" 参数
+                    common_result = subprocess.run([nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "xcopy.exe",
+                         os.path.join(crash_files_source, "*.*"), os.path.join(logs_destination, "Common", "Crash"),
+                         "/H", "/I", "/S", "/Y"], # 包含隐藏和系统文件；如果目标不存在，并且使用时未指定文件，则假定目标为目录；包括子目录（不复制空目录）；覆盖
+                         capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                    if common_result.returncode == 0:
+                        self.textbox(self.translator.translate("retrieve_pc_manager_crash_files_success"))
+                    else:
+                        self.textbox(self.translator.translate("retrieve_pc_manager_crash_files_error") + f":\n{common_result.stdout}")
+                except Exception as e:
+                    self.textbox(self.translator.translate("retrieve_pc_manager_crash_files_error") + f":\n{str(e)}")
             else:
                 pass
 
