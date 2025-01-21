@@ -19,19 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-Third-Party Software
-
-This software includes the following third-party software:
-
-NSudo
-Copyright (c) M2-Team
-Licensed under the MIT License. For more details, please visit the NSudo GitHub Repository at https://github.com/M2Team/NSudo.
-
-ProcDump
-Copyright (c) Microsoft Corporation
-ProcDump is distributed under the Sysinternals Software License. For more details, please visit the Sysinternals website at https://learn.microsoft.com/sysinternals/?wt.mc_id=studentamb_265231.
-
-The licenses for these third-party tools apply to their respective binary files included with this software.
