@@ -6,19 +6,27 @@
     "lang_zh-tw": "中文 (繁體)",
     "lang_custom": "Load Languages...",
 
+
+
     "@Contributors": "Contributors",
     "localization_translators_name": "MSPCManagerHelper",
     "project_contributors_name": "GuCATs, ArcticFoxPro, LuYang114 and other Community Moderators",
 
+
+
     "@checkSystemRequirements.py": "checkSystemRequirements.py",
     "failure_to_meet_system_requirements": "The current Windows version does not meet the minimum requirements for Microsoft PC Manager:\nWindows 10 Version 19042 or Windows Server 2022",
     "meet_system_requirements": "The current system meets the minimum requirements for\nMicrosoft PC Manager",
+
+
 
     "@getVersionNumber": "getVersionNumber.py",
     "cannot_read_pc_manager_version": "Fail to load Microsoft PC Manager version",
     "current_pc_manager_version": "Microsoft PC Manager version",
     "current_pc_manager_beta_version": "Microsoft PC Manager Public Beta version",
     "pc_manager_beta_installed": "Microsoft PC Manager Public Beta is installed, version",
+
+
 
     "@mainFeature.py": "mainFeature.py",
     "repair_pc_manager_notice": "Notice - Repair Microsoft PC Manager installation / launch issues",
@@ -66,6 +74,8 @@
     "clearing_pc_manager_logs_success": "Successfully cleared Microsoft PC Manager logs source folder.",
     "clearing_pc_manager_logs_error": "Error occurred while clearing Microsoft PC Manager logs source folder",
 
+
+
     "@installationFeature.py": "installationFeature.py",
     "winget_not_installed": "WinGet is not installed yet, please use another solution.\nYou can download and install Windows Package Manager via Microsoft Learn (https://learn.microsoft.com/windows/msix/app-installer/install-update-app-installer/?wt.mc_id=studentamb_ 265231) or GitHub (https://github.com/microsoft/winget-cli/releases) and retry after downloading and installing Windows Package Manager.",
     "winget_source_not_found": "The msstore source was not found.",
@@ -87,10 +97,12 @@
     "winget_not_error_code": "WinGet did not provide error codes.",
     "winget_output": "WinGet output information",
     "winget_not_output": "WinGet did not provide output information.",
+
     "download_from_msstore_site_opened": "The Microsoft PC Manager Microsoft Store page has been opened.\nMicrosoft Store is not yet installed, you can download and reset the Microsoft Store online by `wsreset.exe -i`. Or get the Microsoft PC Manager installer at https://get.microsoft.com/installer/download/9PM860492SZD.",
     "download_from_msstore_site_error": "Error occurred while opening the Microsoft PC Manager Microsoft Store page",
     "download_from_msstore_app_opened": "Microsoft PC Manager details page has been opened in Microsoft Store.",
     "download_from_msstore_app_error": "Error occurred while opening the Microsoft PC Manager details page in Microsoft Store",
+
     "install_for_all_users_no_file_selected": "No file selected.",
     "install_for_all_users_license_select_notice": "Select License File",
     "install_for_all_users_license_select": "Would you like to select a license file for Microsoft PC Manager? This is useful if there is no Internet connection.",
@@ -98,11 +110,13 @@
     "install_for_all_users_dependency_package_select": "Would you like to select a dependency package file for Microsoft PC Manager? This is necessary if you are installing version 3.14.0.0 and higher.",
     "install_for_all_users_success": "Successfully installed Microsoft PC Manager for all users.",
     "install_for_all_users_error": "Error occurred while installing Microsoft PC Manager for all users",
+
     "install_for_current_user_no_file_selected": "No file selected.",
     "install_for_current_user_dependency_package_select_notice": "Select Dependency Package",
     "install_for_current_user_dependency_package_select": "Would you like to select a dependency package file for Microsoft PC Manager? This is necessary if you are installing version 3.14.0.0 and higher.",
     "install_for_current_user_success": "Successfully installed Microsoft PC Manager for current user.",
     "install_for_current_user_error": "Error occurred while installing Microsoft PC Manager for current user",
+
     "ask_whether_to_reinstall_for_all_users": "Reinstall Microsoft PC Manager for all users or not",
     "whether_to_reinstall_for_all_users": "Press Yes if you need to reinstall for all users or No if you need to reinstall for the current user.",
     "reinstall_pc_manager_success": "Reinstallation of Microsoft PC Manager was successful.",
@@ -111,24 +125,34 @@
     "reintsall_pc_manager_error_code_1": "Access is denied. Please try rerunning as administrator.",
     "reintsall_pc_manager_error_code_2": "There is a problem with the application package manifest file (AppxManifest.xml), try uninstalling Microsoft PC Manager and reinstalling it.",
     "reintsall_pc_manager_error_code_0x80073D02": "The package could not be installed because resources it modifies are currently in use. Unable to install because the following apps need to be closed.",
+
     "update_from_application_package_no_file_selected": "No file selected.",
     "update_from_application_package_dependency_package_select_notice": "Select Dependency Package",
     "update_from_application_package_dependency_package_select": "Would you like to select a dependency package file for Microsoft PC Manager? This is necessary if you are installing version 3.14.0.0 and higher.",
     "update_from_application_package_success": "Successfully updated Microsoft PC Manager from the application package.",
     "update_from_application_package_error": "Error occurred while updating Microsoft PC Manager from the application package",
+
     "install_from_appxmanifest_warn_title": "Warning",
     "install_from_appxmanifest_warn": "If you have previously used this feature to install Microsoft PC Manager, please uninstall Microsoft PC Manager before using this feature. Do you want to continue? This feature is still unstable, lacks debugging output, please ensure you have backed up your data and have some debugging capability.",
     "install_from_appxmanifest_no_file_selected": "No file selected.",
+    "install_from_appxmanifest_copying_files": "Copying application package files...",
+    "install_from_appxmanifest_unzipping_files": "Unzipping application package files...",
     "install_from_appxmanifest_no_match_architecture": "No version found that matches the current PC.",
     "install_from_appxmanifest_no_match_pc_manager_architecture": "No matching architecture was found in the application package. Please find out the architecture of the current application package, rename it to an application package containing the architecture name and retry. (e.g. x64 or arm64)",
+    "install_from_appxmanifest_modifying_appxmanifest": "Modifying AppxManifest.xml...",
     "install_from_appxmanifest_dependency_package_select_notice": "Select Dependency Package",
     "install_from_appxmanifest_dependency_package_select": "Would you like to select a dependency package file for Microsoft PC Manager? This is necessary if you are installing version 3.14.0.0 and higher.",
+    "install_from_appxmanifest_installing_dependency_package": "Installing dependency package...",
+    "install_from_appxmanifest_registering_app": "Registering Microsoft PC Manager application...",
     "install_from_appxmanifest_register_svc_notice": "Registering for Microsoft PC Manager Service",
     "install_from_appxmanifest_register_svc": "Are you registered for the Microsoft PC Manager service? If the service is already registered there is no need to register again.",
+    "install_from_appxmanifest_registering_svc": "Registering Microsoft PC Manager service...",
     "install_from_appxmanifest_svc_exists_warning": "Service Warnings",
     "install_from_appxmanifest_svc_exists": "Microsoft PC Manager service already exists.",
+    "install_from_appxmanifest_cleaning_up": "Cleaning up...",
     "install_from_appxmanifest_success": "Successfully installed Microsoft PC Manager from AppxManifest.",
     "install_from_appxmanifest_error": "Error occurred while installing Microsoft PC Manager from AppxManifest",
+
     "wv2_runtime_install_success": "Successfully installed Microsoft Edge WebView2 Runtime.",
     "wv2_runtime_installer_download_link": "If you need to save a copy of the Microsoft Edge WebView2 Runtime installer for yourself, please visit https://developer.microsoft.com/microsoft-edge/webview2/?wt.mc_id=studentamb_265231 and select the 'Evergreen Standalone Installer' for x64 or ARM64 to download.",
     "wv2_installer_exit_code": "Microsoft Edge WebView2 Runtime installer exit code",
@@ -139,6 +163,8 @@
     "wv2_download_error_info": "Microsoft Edge WebView2 Runtime download error information",
     "wv2_installer_error": "Error occurred while installing Microsoft Edge WebView2 Runtime.",
     "wv2_installation_cancelled": "User canceled the Microsoft Edge WebView2 Runtime installation.",
+
+
 
     "@uninstallationFeaure.py": "uninstallationFeaure.py",
     "error_getting_nsudo_path": "Error occurred while getting NSudo path",
@@ -166,6 +192,7 @@
     "uninstall_for_all_users_in_dism_error_code": "Error code",
     "uninstall_for_all_users_in_dism_error_code_1": "Uninstallation failed, please try running as an administrator again. If the problem persists after running as an administrator, please try again or contact your system administrator for assistance.",
     "uninstall_for_all_users_in_dism_error_code_740": "Uninstallation failed, please try running as an administrator. Elevated permissions are required to run DISM. Use an elevated command prompt to complete these tasks.",
+
     "uninstall_for_all_users_success": "Successfully uninstalled Microsoft PC Manager for all users.",
     "uninstall_for_all_users_error": "Error occurred while uninstalling Microsoft PC Manager for all users",
     "cleanup_config_and_files_notice_for_all_users": "Clean up configuration files and residual files",
@@ -189,6 +216,7 @@
     "uninstall_and_cleanup_for_all_users_success": "Uninstalls Microsoft PC Manager for all users and cleans up profiles and residual successes.",
     "uninstall_for_all_users_error_code": "Error code",
     "uninstall_for_all_users_error_code_1": "Uninstallation failed, please try running as an administrator. If the problem persists after running as an administrator, please try using 'Uninstall Microsoft PC Manager via DISM for all users'.",
+
     "uninstall_for_current_user_success": "Successfully uninstalled Microsoft PC Manager for current user.",
     "uninstall_for_current_user_error": "Error occurred while uninstalling Microsoft PC Manager for current user",
     "cleanup_config_and_files_notice_for_current_user": "Clean up configuration files and residual files",
@@ -201,9 +229,10 @@
     "clearing_other_files_for_current_user": "Cleaning up other residuals",
     "fail_to_clear_other_files_for_current_user": "Error occurred while cleaning up other residuals",
     "fail_to_clear_other_files_info_for_current_user": "Error information",
-    "uninstall_and_cleanup_for_current_user_success": "Uninstalls Microsoft PC Manager for all users and cleans up profiles and residual successes.",
+    "uninstall_and_cleanup_for_current_user_success": "Uninstalls Microsoft PC Manager for current user and cleans up profiles and residual successes.",
     "uninstall_for_current_user_error_code": "Error code",
     "uninstall_for_current_user_error_code_1": "Uninstallation failed, please try running as an administrator. If the problem persists after running as an administrator, please try using 'Uninstall Microsoft PC Manager via DISM for all users'.",
+
     "pc_manager_beta_not_found": "Microsoft PC Manager Public Beta is not installed.",
     "cleanup_pc_manager_beta_config_and_files_notice": "Clean up configuration files and residual files",
     "cleanup_pc_manager_beta_config_and_files": "Would you like to clean up configuration files and residuals for Microsoft PC Manager Public Beta?",
@@ -219,6 +248,8 @@
     "uninstall_pc_manager_beta_error_info": "Error information encountered while uninstalling Microsoft PC Manager",
     "uninstalled_cleanup_pc_manager_beta_config_and_files": "Microsoft PC Manager Public Beta has been uninstalled, and configuration files and residuals have been cleaned up.",
 
+
+
     "@otherFeature.py": "otherFeature.py",
     "display_name": "Product name",
     "path_to_signed_product_exe": "Product registration path",
@@ -227,14 +258,19 @@
     "no_results": "No results were found.",
     "powershell_not_found": "Unable to start the PowerShell process.",
     "powershell_error": "Error occurred while executing the PowerShell script",
+
     "developer_options_opened": "Developer options have been opened.",
     "developer_options_error": "Error occurred while opening Developer options",
+
     "repair_edge_wv2_setup_error": "Error occurred while repairing Microsoft Edge (WebView2 Runtime) installer failed to start",
     "repair_edge_wv2_setup_completed": "Repair of Microsoft Edge (WebView2 Runtime) installer failed to start is completed.",
+
     "pc_manager_docs_opened": "Microsoft PC Manager FAQ has been opened.",
     "pc_manager_docs_error": "Error occurred while opening Microsoft PC Manager FAQ",
+
     "join_preview_program_opened": "Microsoft PC Manager Preview Program form has been opened.",
     "join_preview_program_error": "Error occurred while opening the Microsoft PC Manager Preview Program Form",
+
     "stopping_pc_manager_service": "Stopping Microsoft PC Manager service.",
     "stop_pc_manager_service_error": "Error occurred while stopping the Microsoft PC Manager service",
     "starting_pc_manager_service": "Starting Microsoft PC Manager service.",
@@ -244,6 +280,7 @@
     "pc_manager_service_error_code_5": "Operation failed. Please try rerunning as administrator.",
     "pc_manager_service_error_code_1056": "An instance of the service is already running. Please try rerunning the operation.",
     "pc_manager_service_error_code_1060": "Microsoft PC Manager service is not installed.",
+
     "ask_if_version_above_3_14_0_0": "Check Microsoft PC Manager version",
     "select_pc_manager_version": "Is the current version of Microsoft PC Manager 3.14.0.0 and higher?\nIf yes, please click `Yes`. If no, please click `No`.",
     "how_to_switch_pc_manager_region": "Please switch to the region you want to set in `Country or region` in Settings and restart Microsoft PC Manager.\nif the region is changed again after switching, it may cause Microsoft PC Manager region to be switched again.",
@@ -257,37 +294,65 @@
     "get_current_pc_manager_region_error": "Error occurred while retrieving the current Microsoft PC Manager region",
     "restart_pc_manager_to_apply_changes": "Please restart Microsoft PC Manager to apply the changes.",
     "switch_region_error": "Error occurred while switching Microsoft PC Manager region",
+
     "no_compute_files_selected": "No files selected.",
     "path_to_compute_files": "Path to compute files",
     "compute_files_hash_success": "Successfully computed file hash.",
     "compute_files_hash_error": "Error occurred while computing file hash",
+
     "system_msedge_webview2_version": "System Microsoft Edge WebView2 Runtime version",
     "user_msedge_webview2_version": "User Microsoft Edge WebView2 Runtime version",
     "get_msedge_webview2_version_powershell_error": "Error occurred while getting Microsoft Edge WebView2 Runtime version",
     "msedge_webview2_version_registry_key_not_found": "User Microsoft Edge WebView2 Runtime version registry key not found",
     "get_msedge_webview2_version_registry_error": "Error occurred while getting User Microsoft Edge WebView2 Runtime version from the registry",
 
+
+
     "@topMenu.py": "topMenu.py",
-    "top_menu_files_access_key": "Files(F)",
+    "top_menu_files": "Files",
     "top_menu_files_exit": "Exit",
-    "top_menu_update_access_key": "Downloads & Updates(U)",
+
+    "top_menu_update": "Downloads & Updates",
     "top_menu_update_GitHub": "Get the latest MSPCManagerHelper from GitHub",
     "top_menu_update_OneDrive": "Get the latest MSPCManagerHelper from OneDrive",
     "top_menu_update_LiCaoZ_Azure_Blob_PC_Manager": "Get the latest Microsoft PC Manager Fast Preview application package from Azure Blob",
     "top_menu_update_OneDrive_PC_Manager": "Get the latest Microsoft PC Manager application package & license file from OneDrive",
     "top_menu_update_WindowsAppRuntime": "Get Windows App Runtime from Microsoft Learn",
-    "top_menu_term_of_use_and_privacy_access_key": "Terms of Use & Privacy(T)",
+
+    "top_menu_term_of_use_and_privacy": "Terms of Use & Privacy",
     "top_menu_term_of_use": "Term of Use",
     "top_menu_privacy": "Privacy",
     "TermOfUse_context": "MSPCManagerHelper Terms of Use\n\nWelcome to MSPCManagerHelper (hereinafter referred to as \"the Software\"). Please carefully read the following terms of use (hereinafter referred to as \"the Terms\") before using the Software. By downloading, installing, or using the Software, you agree to comply with these Terms. If you do not agree with these Terms, please do not use the Software. Terms are subject to change without notice.\n\nTerms Modification Date: December 22, 2024\n\n1. License to Use\nThe Software is licensed to you by individual developer GuCATs (hereinafter referred to as \"the Developer\") for personal, non-commercial use only. You may not copy, modify, distribute, sell, or lease any part of the Software without the Developer's written permission.\n\n2. Intellectual Property\nThe Software and all its content (including but not limited to text, images, icons, interfaces, code, and trademarks) are protected by copyright laws and other intellectual property laws. The Developer reserves all rights not expressly granted.\n\n3. User Responsibility\nYou agree to comply with all applicable laws and regulations while using the Software. You may not use the Software for any illegal activities or infringe upon the rights of others.\n\n4. Privacy Policy\nThe Developer respects your privacy and is committed to protecting your personal information. For detailed information on how we collect, use, and protect your information, please refer to our [Privacy Policy].\n\n5. Disclaimer\nThe Software is provided \"as is\" without any express or implied warranties, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement. The Developer does not guarantee that the functions of the Software will meet your requirements or that the operation of the Software will be uninterrupted or error-free. The Developer is not responsible for any issues arising from the use of the Software.\n\n6. Limitation of Liability\nTo the maximum extent permitted by applicable law, the Developer shall not be liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use the Software, even if the Developer has been advised of the possibility of such damages.\n\n7. Modification of Terms\nThe Developer reserves the right to modify these Terms at any time. The modified Terms will take effect immediately upon being posted in the Software or on the Developer's website. Your continued use of the Software signifies your acceptance of the modified Terms.\n\n8. Termination\nIf you violate these Terms, the Developer reserves the right to immediately terminate your license to use the Software without prior notice.\n\n9. Governing Law\nThese Terms are governed by the laws of [Country/Region], without regard to its conflict of law principles.\n\n10. Open Source License\nThe Software uses the MIT open-source license. You can view the details at [MIT License](https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE.txt).\n\n11. Third-Party Software\n[NSudo](https://github.com/M2TeamArchived/NSudo).\n[Sysinternals](https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_265231).",
     "Privacy_context": "MSPCManagerHelper Privacy Policy\n\nMSPCManagerHelper (hereinafter referred to as \"the Software\") does not collect and upload any data in any form, including, but not limited to, computer identifiers, geographic information, and the like.\n\nWhen you visit some of the links (e.g. learn.microsoft.com/?wt.mc_id=studentamb_265231), Microsoft Student Ambassadors trackers are used to help the developer count the number of visitors.",
-    "top_menu_help_access_key": "Help(H)",
+
+    "top_menu_help": "Help",
     "top_menu_help_about": "About",
     "top_menu_help_gethelp": "Get Help",
     "top_menu_help_official_site": "Official Site",
     "top_menu_help_more_contact": "More Contact",
+
     "translation_author": "Translation Author",
     "project_contributors": "Project Contributors",
+
+
+
+    "@access_key": "access_key",
+    "top_menu_files_access_key": "(F)",
+    "top_menu_files_exit_access_key": "(E)",
+
+    "top_menu_update_access_key": "(U)",
+
+    "top_menu_term_of_use_and_privacy_access_key": "(T)",
+    "top_menu_term_of_use_access_key": "(T)",
+    "top_menu_privacy_access_key": "(P)",
+
+    "top_menu_help_access_key": "(H)",
+    "top_menu_help_about_access_key": "(A)",
+    "top_menu_help_gethelp_access_key": "(G)",
+    "top_menu_help_official_site_access_key": "(O)",
+    "top_menu_help_more_contact_access_key": "(M)",
+
+
 
     "@mainWindow.py": "mainWindow.py",
     "refresh": "Refresh",
@@ -297,13 +362,16 @@
     "main_cancel_button": "Cancel",
     "run_as_administrator": "Run as administrator",
     "run_as_administrator_error": "Failed to run as administrator.",
+
     "main_project": "Main Project",
     "install_project": "Install Project",
     "uninstall_project": "Uninstall Project",
     "other_project": "Other Project",
+
     "repair_pc_manager": "Repair Microsoft PC Manager installation / launch issues",
     "get_pc_manager_logs": "Retrieve Microsoft PC Manager logs",
     "debug_dev_mode": "Developer Debug Mode",
+
     "download_from_winget": "Download Microsoft PC Manager from WinGet (msstore source)",
     "download_from_msstore": "* Download Microsoft PC Manager from Microsoft Store",
     "install_for_all_users": "Install Microsoft PC Manager for all users",
@@ -312,10 +380,12 @@
     "update_from_application_package": "Update Microsoft PC Manager from application package",
     "install_from_appxmanifest": "Install Microsoft PC Manager from AppxManifest",
     "install_wv2_runtime": "Install Microsoft Edge WebView2 Runtime",
+
     "uninstall_for_all_users_in_dism": "Uninstall Microsoft PC Manager via DISM for all users",
     "uninstall_for_all_users": "Uninstall Microsoft PC Manager for all users",
     "uninstall_for_current_user": "Uninstall Microsoft PC Manager for current user",
     "uninstall_pc_manager_beta": "Uninstall Microsoft PC Manager Public Beta",
+
     "view_installed_antivirus": "* View installed antivirus software on this PC",
     "developer_options": "* Developer options",
     "repair_edge_wv2_setup": "Repair Microsoft Edge (WebView2 Runtime) installer failed to start",
@@ -325,8 +395,9 @@
     "switch_pc_manager_region": "Switch Microsoft PC Manager region",
     "compute_files_hash": "* Compute file hash",
     "get_msedge_webview2_version": "* Get Microsoft Edge WebView2 Runtime version",
+
     "warning": "Warning",
-    "select_function": "Please Select the Function to Execute",
+    "select_function": "Please select the function to execute",
     "main_executing_operation": "The {main_feature_name} operation is executing.",
     "user_canceled": "User canceled the task.",
     "main_copy": "Copy",
@@ -334,6 +405,8 @@
     "feature_unavailable": "Feature unavailable.",
     "system_requirements_checking": "Checking system requirements...",
     "failed_to_set_dpi_awareness": "Failed to set DPI awareness.",
+    "illegal_language_files_title": "Illegal Language File",
+    "illegal_language_files": "This language file is not legal, please try another language file.",
     "see_term_of_use_and_privacy": "By using MSPCManagerHelper, you signify that you have read and agree to the `Terms of Use` and `Privacy Policy`, otherwise, please exit and delete the software.",
     "tips_run_as_dev_mode": "Run with `/DevMode` or `-DevMode` parameter to enable developer mode.",
     "excessive_waiting_time": "If the wait time is too long, please be patient or cancel the task and try again."
