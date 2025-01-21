@@ -6,8 +6,8 @@
 
 VSVersionInfo(
   ffi=FixedFileInfo(
-    filevers=(0, 2, 0, 8),
-    prodvers=(0, 2, 0, 8),
+    filevers=(0, 2, 0, 9),
+    prodvers=(0, 2, 0, 9),
     mask=0x3f,
     flags=0x0,
     OS=0x4,
@@ -23,12 +23,12 @@ VSVersionInfo(
         [
         StringStruct(u'CompanyName', u'GuCATs'),
         StringStruct('FileDescription', 'MSPCManagerHelper'),
-        StringStruct('FileVersion', 'Beta v0.2.0.8 ARM64'),
-        StringStruct('InternalName', 'MSPCManagerHelper_Beta_v0.2.0.8_ARM64'),
-        StringStruct(u'LegalCopyright', u'© 2024 GuCATs All rights reserved.'),
-        StringStruct('OriginalFilename', 'MSPCManagerHelper_Beta_v0.2.0.8_ARM64.exe'),
+        StringStruct('FileVersion', 'Beta v0.2.0.9 ARM64'),
+        StringStruct('InternalName', 'MSPCManagerHelper_Beta_v0.2.0.9_ARM64'),
+        StringStruct(u'LegalCopyright', u'© 2025 GuCATs All rights reserved.'),
+        StringStruct('OriginalFilename', 'MSPCManagerHelper_Beta_v0.2.0.9_ARM64.exe'),
         StringStruct('ProductName', 'MSPCManagerHelper'),
-        StringStruct('ProductVersion', 'Beta v0.2.0.8 ARM64')
+        StringStruct('ProductVersion', 'Beta v0.2.0.9 ARM64')
         ]
       )
       ]
