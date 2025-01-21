@@ -6,19 +6,27 @@
     "lang_zh-tw": "中文 (繁體)",
     "lang_custom": "加载语言...",
 
+
+
     "@Contributors": "Contributors",
     "localization_translators_name": "MSPCManagerHelper",
     "project_contributors_name": "GuCATs, ArcticFoxPro, LuYang114 及其他社群志愿者们",
 
+
+
     "@checkSystemRequirements.py": "checkSystemRequirements.py",
     "failure_to_meet_system_requirements": "当前 Windows 版本不满足微软电脑管家最低要求：\nWindows 10 版本 19042 或 Windows Server 2022",
     "meet_system_requirements": "当前系统符合微软电脑管家最低系统要求",
+
+
 
     "@getVersionNumber": "getVersionNumber.py",
     "cannot_read_pc_manager_version": "无法读取微软电脑管家版本信息",
     "current_pc_manager_version": "当前微软电脑管家版本号",
     "current_pc_manager_beta_version": "当前微软电脑管家公测版版本号",
     "pc_manager_beta_installed": "微软电脑管家公测版已安装，版本号",
+
+
 
     "@mainFeature.py": "mainFeature.py",
     "repair_pc_manager_notice": "提示 - 修复微软电脑管家无法安装 / 打开",
@@ -66,6 +74,8 @@
     "clearing_pc_manager_logs_success": "成功清理微软电脑管家日志源文件夹。",
     "clearing_pc_manager_logs_error": "清理微软电脑管家日志源文件夹时出错",
 
+
+
     "@installationFeature.py": "installationFeature.py",
     "winget_not_installed": "WinGet 尚未安装，请使用其他解决方案。\n您可以通过 Microsoft Learn (https://learn.microsoft.com/windows/msix/app-installer/install-update-app-installer/?wt.mc_id=studentamb_265231) 或 GitHub (https://github.com/microsoft/winget-cli/releases) 下载并安装 Windows Package Manager 后重试。",
     "winget_source_not_found": "未找到 msstore 源。",
@@ -87,10 +97,12 @@
     "winget_not_error_code": "WinGet 未提供错误代码。",
     "winget_output": "WinGet 输出信息",
     "winget_not_output": "WinGet 未提供输出信息。",
+
     "download_from_msstore_site_opened": "已打开微软电脑管家 Microsoft Store 页面。\n当前 Microsoft Store 尚未安装，可以通过“wsreset.exe -i”命令来在线下载并重置 Microsoft Store。或通过 https://get.microsoft.com/installer/download/9PM860492SZD 来获取微软电脑管家在线安装包。",
     "download_from_msstore_site_error": "打开微软电脑管家 Microsoft Store 页面时出错",
     "download_from_msstore_app_opened": "已从 Microsoft Store 打开微软电脑管家详情页。",
     "download_from_msstore_app_error": "从 Microsoft Store 打开微软电脑管家详情页时出错",
+
     "install_for_all_users_no_file_selected": "未选择任何文件。",
     "install_for_all_users_license_select_notice": "选择许可证文件",
     "install_for_all_users_license_select": "是否选择微软电脑管家的许可证文件？这在无互联网连接时将很有效。",
@@ -98,11 +110,13 @@
     "install_for_all_users_dependency_package_select": "是否选择微软电脑管家的依赖包文件？如果您正在安装 3.14.0.0 及更高版本则是必要的。",
     "install_for_all_users_success": "为 所有用户 安装微软电脑管家成功。",
     "install_for_all_users_error": "为 所有用户 安装微软电脑管家时出错",
+
     "install_for_current_user_no_file_selected": "未选择任何文件。",
     "install_for_current_user_dependency_package_select_notice": "选择依赖包文件",
     "install_for_current_user_dependency_package_select": "是否选择微软电脑管家的依赖包文件？如果您正在安装 3.14.0.0 及更高版本则是必要的。",
     "install_for_current_user_success": "为 当前用户 安装微软电脑管家成功。",
     "install_for_current_user_error": "为 当前用户 安装微软电脑管家时出错",
+
     "ask_whether_to_reinstall_for_all_users": "是否为 所有用户 重新安装微软电脑管家",
     "whether_to_reinstall_for_all_users": "如果需要为 所有用户 重新安装，请按下“是”；如果需要为 当前用户 重新安装，请按下“否”。",
     "reinstall_pc_manager_success": "重新安装微软电脑管家成功。",
@@ -111,24 +125,34 @@
     "reintsall_pc_manager_error_code_1": "拒绝访问。请尝试重新以管理员身份运行。",
     "reintsall_pc_manager_error_code_2": "应用包清单文件 (AppxManifest.xml) 出现问题，请尝试卸载微软电脑管家后重新安装。",
     "reintsall_pc_manager_error_code_0x80073D02": "无法安装程序包，原因是它修改的资源当前正在使用中。请退出微软电脑管家后重试。",
+
     "update_from_application_package_no_file_selected": "未选择任何文件。",
     "update_from_application_package_dependency_package_select_notice": "选择依赖包文件",
     "update_from_application_package_dependency_package_select": "是否选择微软电脑管家的依赖包文件？如果您正在安装 3.14.0.0 及更高版本则是必要的。",
     "update_from_application_package_success": "从 应用程序包 更新微软电脑管家成功。",
     "update_from_application_package_error": "从 应用程序包 更新微软电脑管家时出错",
+
     "install_from_appxmanifest_warn_title": "警告",
     "install_from_appxmanifest_warn": "如果您先前使用过此功能安装微软电脑管家，请卸载微软电脑管家后再使用此功能。您想要继续安装吗？此功能尚不稳定，缺少调试输出，请确保您已备份数据，并具有一定的调试能力。",
     "install_from_appxmanifest_no_file_selected": "未选择任何文件。",
+    "install_from_appxmanifest_copying_files": "正在复制文件...",
+    "install_from_appxmanifest_unzipping_files": "正在解压文件...",
     "install_from_appxmanifest_no_match_architecture": "未找到与当前电脑匹配的版本。",
     "install_from_appxmanifest_no_match_pc_manager_architecture": "未在应用程序包中找到符合的架构。请查明当前应用程序包的架构后，将其重命名为包含架构名称的应用程序包后重试。(如 x64 或 arm64)",
+    "install_from_appxmanifest_modifying_appxmanifest": "正在修改应用包清单 (AppxManifest.xml)...",
     "install_from_appxmanifest_dependency_package_select_notice": "选择依赖包文件",
     "install_from_appxmanifest_dependency_package_select": "是否选择微软电脑管家的依赖包文件？如果您正在安装 3.14.0.0 及更高版本则是必要的。",
+    "install_from_appxmanifest_installing_dependency_package": "正在安装依赖包...",
+    "install_from_appxmanifest_registering_app": "正在注册应用程序...",
     "install_from_appxmanifest_register_svc_notice": "注册微软电脑管家服务",
     "install_from_appxmanifest_register_svc": "是否注册微软电脑管家服务？如果服务已注册则无需再次注册。",
+    "install_from_appxmanifest_registering_svc": "正在注册服务...",
     "install_from_appxmanifest_svc_exists_warning": "服务警告",
     "install_from_appxmanifest_svc_exists": "微软电脑管家服务已存在。",
+    "install_from_appxmanifest_cleaning_up": "正在清理...",
     "install_from_appxmanifest_success": "从 应用包清单 安装微软电脑管家成功。",
     "install_from_appxmanifest_error": "从 应用包清单 安装微软电脑管家时出错",
+
     "wv2_runtime_install_success": "Microsoft Edge WebView2 Runtime 安装成功。",
     "wv2_runtime_installer_download_link": "如果您需要单独保存一份 Microsoft Edge WebView2 Runtime 安装程序，请访问 https://developer.microsoft.com/microsoft-edge/webview2/?wt.mc_id=studentamb_265231 并选择 x64 或 ARM64 的“常青独立安装程序”以下载。",
     "wv2_installer_exit_code": "Microsoft Edge WebView2 Runtime 安装程序退出代码",
@@ -139,6 +163,8 @@
     "wv2_download_error_info": "Microsoft Edge WebView2 Runtime 下载错误信息",
     "wv2_installer_error": "Microsoft Edge WebView2 Runtime 安装错误。",
     "wv2_installation_cancelled": "用户已取消 Microsoft Edge WebView2 Runtime 安装。",
+
+
 
     "@uninstallationFeaure.py": "uninstallationFeaure.py",
     "error_getting_nsudo_path": "获取 NSudoLC 路径时出错",
@@ -166,6 +192,7 @@
     "uninstall_for_all_users_in_dism_error_code": "错误代码",
     "uninstall_for_all_users_in_dism_error_code_1": "卸载失败，请尝试重新以管理员身份运行。若以管理员身份运行后仍然有此问题，请重试，或联系系统管理员以寻求帮助。",
     "uninstall_for_all_users_in_dism_error_code_740": "卸载失败，请尝试重新以管理员身份运行。需要提升权限才能运行 DISM。使用提升的命令提示符完成这些任务。",
+
     "uninstall_for_all_users_success": "为 所有用户 卸载微软电脑管家成功。",
     "uninstall_for_all_users_error": "为 所有用户 卸载微软电脑管家时出错",
     "cleanup_config_and_files_notice_for_all_users": "清理配置文件和残留",
@@ -189,6 +216,7 @@
     "uninstall_and_cleanup_for_all_users_success": "为 所有用户 卸载微软电脑管家并清理配置文件和残留成功。",
     "uninstall_for_all_users_error_code": "错误代码",
     "uninstall_for_all_users_error_code_1": "卸载失败，请尝试重新以管理员身份运行。若以管理员身份运行后仍然有此问题，请尝试使用“通过 DISM 为 所有用户 卸载微软电脑管家”。",
+
     "uninstall_for_current_user_success": "为 当前用户 卸载微软电脑管家成功。",
     "uninstall_for_current_user_error": "为 当前用户 卸载微软电脑管家时出错",
     "cleanup_config_and_files_notice_for_current_user": "清理配置文件和残留",
@@ -201,9 +229,10 @@
     "clearing_other_files_for_current_user": "正在清理其他残留",
     "fail_to_clear_other_files_for_current_user": "清理其他残留时出错",
     "fail_to_clear_other_files_info_for_current_user": "错误信息",
-    "uninstall_and_cleanup_for_current_user_success": "为 所有用户 卸载微软电脑管家并清理配置文件和残留成功。",
+    "uninstall_and_cleanup_for_current_user_success": "为 当前用户 卸载微软电脑管家并清理配置文件和残留成功。",
     "uninstall_for_current_user_error_code": "错误代码",
     "uninstall_for_current_user_error_code_1": "卸载失败，请尝试重新以管理员身份运行。若以管理员身份运行后仍然有此问题，请尝试使用“通过 DISM 为 所有用户 卸载微软电脑管家”。",
+
     "pc_manager_beta_not_found": "微软电脑管家公测版尚未安装。",
     "cleanup_pc_manager_beta_config_and_files_notice": "清理配置文件和残留",
     "cleanup_pc_manager_beta_config_and_files": "是否清理微软电脑管家公测版配置文件和残留？",
@@ -219,6 +248,8 @@
     "uninstall_pc_manager_beta_error_info": "卸载微软电脑管家时遇到的错误信息",
     "uninstalled_cleanup_pc_manager_beta_config_and_files": "已卸载微软电脑管家公测版并清理配置文件和残留。",
 
+
+
     "@otherFeature.py": "otherFeature.py",
     "display_name": "产品名称",
     "path_to_signed_product_exe": "产品注册路径",
@@ -227,14 +258,19 @@
     "no_results": "未能获取到任何结果。",
     "powershell_not_found": "无法启动 PowerShell 进程。",
     "powershell_error": "执行 PowerShell 脚本时出错",
+
     "developer_options_opened": "开发者选项已打开。",
     "developer_options_error": "打开开发者选项时出错",
+
     "repair_edge_wv2_setup_error": "修复 Microsoft Edge (WebView2 Runtime) 无法安装 时出错",
     "repair_edge_wv2_setup_completed": "修复 Microsoft Edge (WebView2 Runtime) 无法安装 完成。",
+
     "pc_manager_docs_opened": "微软电脑管家常见问题解答已打开。",
     "pc_manager_docs_error": "打开微软电脑管家常见问题解答时出错",
+
     "join_preview_program_opened": "微软电脑管家预览体验计划表单已打开。",
     "join_preview_program_error": "打开微软电脑管家预览体验计划表单时出错",
+
     "stopping_pc_manager_service": "正在停止微软电脑管家服务。",
     "stop_pc_manager_service_error": "停止微软电脑管家服务时出错",
     "starting_pc_manager_service": "正在启动微软电脑管家服务。",
@@ -244,6 +280,7 @@
     "pc_manager_service_error_code_5": "操作失败，请尝试重新以管理员身份运行。",
     "pc_manager_service_error_code_1056": "此服务的实例已在运行，请重新执行操作。",
     "pc_manager_service_error_code_1060": "微软电脑管家服务未安装。",
+
     "ask_if_version_above_3_14_0_0": "检查微软电脑管家版本",
     "select_pc_manager_version": "当前微软电脑管家是否为 3.14.0.0 及更高版本？\n如果是，请按下“是”；如果不是，请按下“否”。",
     "how_to_switch_pc_manager_region": "请在弹出的设置中，将“国家或地区”切换为您想要设置的区域，并重启微软电脑管家。\n切换完成后若区域再次被更改，可能会导致微软电脑管家区域再次被切换。",
@@ -257,37 +294,65 @@
     "get_current_pc_manager_region_error": "获取当前微软电脑管家地区时出错",
     "restart_pc_manager_to_apply_changes": "请重启微软电脑管家以应用更改。",
     "switch_region_error": "切换微软电脑管家地区时出错",
+
     "no_compute_files_selected": "未选择任何文件。",
     "path_to_compute_files": "文件路径",
     "compute_files_hash_success": "计算文件哈希值完成。",
     "compute_files_hash_error": "计算文件哈希值时出错",
+
     "system_msedge_webview2_version": "当前系统 Microsoft Edge WebView2 Runtime 版本",
     "user_msedge_webview2_version": "当前用户 Microsoft Edge WebView2 Runtime 版本",
     "get_msedge_webview2_version_powershell_error": "获取系统 Microsoft Edge WebView2 Runtime 版本时出错",
     "msedge_webview2_version_registry_key_not_found": "未找到用户 Microsoft Edge WebView2 Runtime 注册表项",
     "get_msedge_webview2_version_registry_error": "获取用户 Microsoft Edge WebView2 Runtime 版本时出错",
 
+
+
     "@topMenu.py": "topMenu.py",
-    "top_menu_files_access_key": "文件(F)",
+    "top_menu_files": "文件",
     "top_menu_files_exit": "退出",
-    "top_menu_update_access_key": "下载与更新(U)",
+
+    "top_menu_update": "下载与更新",
     "top_menu_update_GitHub": "从 GitHub 获取最新版 MSPCManagerHelper",
     "top_menu_update_OneDrive": "从 OneDrive 获取最新版 MSPCManagerHelper",
     "top_menu_update_LiCaoZ_Azure_Blob_PC_Manager": "从 Azure Blob 获取微软电脑管家最新快速预览版应用程序包",
     "top_menu_update_OneDrive_PC_Manager": "从 OneDrive 获取微软电脑管家最新版应用程序包与许可证文件",
     "top_menu_update_WindowsAppRuntime": "从 Microsoft Learn 获取 Windows App Runtime",
-    "top_menu_term_of_use_and_privacy_access_key": "使用条款与隐私政策(T)",
+
+    "top_menu_term_of_use_and_privacy": "使用条款与隐私政策",
     "top_menu_term_of_use": "使用条款",
     "top_menu_privacy": "隐私政策",
     "TermOfUse_context": "MSPCManagerHelper 使用条款\n\n欢迎使用 MSPCManagerHelper（以下简称“本软件”）。在使用本软件之前，请仔细阅读以下使用条款（以下简称“条款”）。通过下载、安装或使用本软件，即表示您同意遵守这些条款。如果您不同意这些条款，请勿使用本软件。若条款有更新，恕不另行通知。\n\n条款修改日期：2024 年 12 月 22 日\n\n1. 许可使用\n本软件由个人开发者 GuCATs（以下简称“开发者”）授权您个人、非商业性使用。您不得复制、修改、分发、出售或出租本软件的任何部分，除非获得开发者的书面许可。\n\n2. 知识产权\n本软件及其所有内容（包括但不限于文本、图像、图标、界面、代码和商标）均受版权法和其他知识产权法的保护。开发者保留所有未明确授予的权利。\n\n3. 用户责任\n您同意在使用本软件时遵守所有适用的法律法规。您不得使用本软件进行任何非法活动或侵犯他人权利的行为。\n\n4. 隐私政策\n开发者尊重您的隐私权，并致力于保护您的个人信息。有关我们如何收集、使用和保护您的信息的详细信息，请参阅我们的[隐私政策]。\n\n5. 免责声明\n本软件按“现状”提供，不提供任何形式的明示或暗示的保证，包括但不限于适销性、特定用途适用性和非侵权性。开发者不保证本软件的功能将满足您的要求，或本软件的操作将不间断或无错误。因使用本软件引起的任何问题，开发者概不负责。\n\n6. 责任限制\n在适用法律允许的最大范围内，开发者不对因使用或无法使用本软件而导致的任何直接、间接、附带、特殊或后果性损害承担责任，即使开发者已被告知可能发生此类损害。\n\n7. 条款修改\n开发者保留随时修改这些条款的权利。修改后的条款将在本软件或开发者的网站上发布后立即生效。您继续使用本软件即表示您接受修改后的条款。\n\n8. 终止\n如果您违反这些条款，开发者有权立即终止您使用本软件的许可，且无需事先通知。\n\n9. 适用法律\n这些条款受[国家/地区]法律管辖，不考虑其法律冲突原则。\n\n10. 开源协议\n本软件使用 MIT 开源协议。您可以在[MIT 许可证](https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE.txt)中查看详细信息。\n\n11. 第三方软件\n[NSudo](https://github.com/M2TeamArchived/NSudo)。\n[Sysinternals](https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_265231)。",
     "Privacy_context": "MSPCManagerHelper 隐私政策\n\nMSPCManagerHelper （以下简称“本软件”）不会以任何形式采集并上传任何数据，包括但不限于计算机识别符、地理信息等。\n\n在您访问部分链接时（如 learn.microsoft.com/?wt.mc_id=studentamb_265231），会使用微软学生大使的跟踪符，以帮助开发者统计访客数量。",
-    "top_menu_help_access_key": "帮助(H)",
+
+    "top_menu_help": "帮助",
     "top_menu_help_about": "关于",
     "top_menu_help_gethelp": "获取帮助",
     "top_menu_help_official_site": "官方网站",
     "top_menu_help_more_contact": "更多联系方式",
+
     "translation_author": "翻译人员",
     "project_contributors": "项目贡献者",
+
+
+
+    "@access_key": "access_key",
+    "top_menu_files_access_key": "(F)",
+    "top_menu_files_exit_access_key": "(E)",
+
+    "top_menu_update_access_key": "(U)",
+
+    "top_menu_term_of_use_and_privacy_access_key": "(T)",
+    "top_menu_term_of_use_access_key": "(T)",
+    "top_menu_privacy_access_key": "(P)",
+
+    "top_menu_help_access_key": "(H)",
+    "top_menu_help_about_access_key": "(A)",
+    "top_menu_help_gethelp_access_key": "(G)",
+    "top_menu_help_official_site_access_key": "(O)",
+    "top_menu_help_more_contact_access_key": "(M)",
+
+
 
     "@mainWindow.py": "mainWindow.py",
     "refresh": "刷新",
@@ -297,25 +362,30 @@
     "main_cancel_button": "取消",
     "run_as_administrator": "以管理员身份运行",
     "run_as_administrator_error": "以管理员身份运行失败",
+
     "main_project": "主要项目",
     "install_project": "安装项目",
     "uninstall_project": "卸载项目",
     "other_project": "其他项目",
+
     "repair_pc_manager": "修复微软电脑管家无法安装 / 打开",
     "get_pc_manager_logs": "获取微软电脑管家日志",
     "debug_dev_mode": "开发者调试模式",
+
     "download_from_winget": "从 WinGet 下载微软电脑管家 (msstore 源)",
     "download_from_msstore": "* 从 Microsoft Store 下载微软电脑管家",
     "install_for_all_users": "为 所有用户 安装微软电脑管家",
     "install_for_current_user": "为 当前用户 安装微软电脑管家",
     "reinstall_pc_manager": "重新安装微软电脑管家",
     "update_from_application_package": "从 应用程序包 更新微软电脑管家",
-    "install_from_appxmanifest" : "从 应用包清单 安装微软电脑管家",
+    "install_from_appxmanifest" : "从 应用包清单 (AppxManifest.xml) 安装微软电脑管家",
     "install_wv2_runtime": "安装 Microsoft Edge WebView2 Runtime",
+
     "uninstall_for_all_users_in_dism": "通过 DISM 为 所有用户 卸载微软电脑管家",
     "uninstall_for_all_users": "为 所有用户 卸载微软电脑管家",
     "uninstall_for_current_user": "为 当前用户 卸载微软电脑管家",
     "uninstall_pc_manager_beta": "卸载微软电脑管家公测版",
+
     "view_installed_antivirus": "* 查看当前电脑已安装的防病毒软件",
     "developer_options": "* 开发者选项",
     "repair_edge_wv2_setup": "修复 Microsoft Edge (WebView2 Runtime) 无法安装",
@@ -325,6 +395,7 @@
     "switch_pc_manager_region": "切换微软电脑管家地区",
     "compute_files_hash": "* 计算文件哈希值",
     "get_msedge_webview2_version": "* 获取 Microsoft Edge WebView2 Runtime 版本",
+
     "warning": "警告",
     "select_function": "请选择要执行的功能",
     "main_executing_operation": "正在执行 {main_feature_name} 的操作。",
@@ -334,6 +405,8 @@
     "feature_unavailable": "功能不可用。",
     "system_requirements_checking": "系统要求检测中...",
     "failed_to_set_dpi_awareness": "无法设置 DPI 感知性。",
+    "illegal_language_files_title": "非法的语言文件",
+    "illegal_language_files": "该语言文件不合法，请尝试其他语言文件。",
     "see_term_of_use_and_privacy": "使用 MSPCManagerHelper 即代表您已阅读并同意《使用条款》与《隐私政策》，否则，请退出软件并删除。",
     "tips_run_as_dev_mode": "以“/DevMode”或“-DevMode”参数运行以启动开发者模式。",
     "excessive_waiting_time": "若等候时间过长，请耐心等待，或取消任务后重试。"

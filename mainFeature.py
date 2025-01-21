@@ -141,7 +141,7 @@ class MainFeature:
                 pass
 
             # 复制 Crash 文件夹（崩溃文件）
-            if os.path.exists(crash_files_source):
+            if os.path.exists(crash_files_source) and os.listdir(crash_files_source):
                 try:  # 使用 cmd.exe 拉起的进程需要 "-ShowWindowMode:Hide" 参数，不依赖 cmd.exe 时不需要 "cmd.exe", "/C" 参数
                     common_result = subprocess.run([nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "xcopy.exe",
                          os.path.join(crash_files_source, "*.*"), os.path.join(logs_destination, "Common", "Crash"),
@@ -253,13 +253,8 @@ class MainFeature:
             try:
                 self.textbox("\n" + self.translator.translate("retrieving_computer_info"))
                 computer_info_path = os.path.join(logs_destination, "ComputerInfo.txt")
-                get_info_powershell_command = (
-                    "Get-ComputerInfo | Select-Object CsName, WindowsVersion, OSDisplayVersion, WindowsBuildLabEx, "
-                    "OsArchitecture, WindowsEditionId, OsLanguage, BiosManufacturer, BiosVersion, CsManufacturer, "
-                    "CsModel, CsTotalPhysicalMemory, CsSystemType, TimeZone, OsLocale, OsUILanguage | "
-                    "Out-File -FilePath '{}' -Encoding utf8".format(computer_info_path)
-                )
-                subprocess.run(["powershell.exe", "-Command", get_info_powershell_command], capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                subprocess.run(["powershell.exe", "-Command", "Get-ComputerInfo | Out-File -FilePath '{}' -Encoding utf8".format(computer_info_path)],
+                               capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
                 self.textbox(self.translator.translate("retrieve_computer_info_success"))
             except Exception as e:
                 self.textbox(self.translator.translate("retrieve_computer_info_error") + f":\n{str(e)}")

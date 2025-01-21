@@ -22,7 +22,7 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
         self.iconbitmap(main_icon_path)
-        self.MSPCManagerHelper_Version = "Beta v0.2.0.8"
+        self.MSPCManagerHelper_Version = "Beta v0.2.0.9"
         title = f"MSPCManagerHelper {self.MSPCManagerHelper_Version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
@@ -317,19 +317,18 @@ class MSPCManagerHelper(tk.Tk):
             options[self.translator.translate("main_project")].append(self.translator.translate("debug_dev_mode"))  # 插入到末尾
             options[self.translator.translate("install_project")].insert(5, self.translator.translate("install_from_appxmanifest")) # 插入到第 5 个位置（从 0 开始）
 
-        """
-        # 获取当前选择的语言
-        current_language = self.language_combobox.get()
-
-        # 根据语言隐藏特定选项
-        language_hidden_options = [self.translator.translate("pc_manager_docs")]
-
-        # 如果当前语言是 en-us 或 zh-tw 或其它语言，隐藏特定选项
-        if current_language in [self.translator.translate("lang_en-us"),
-                                self.translator.translate("lang_zh-tw")]:
-            for key in options:
-                options[key] = [option for option in options[key] if option not in language_hidden_options]
-        """
+        # 不以管理员身份运行时，只显示不需要管理员身份运行的功能
+        if not AdvancedStartup.is_admin():
+            options[self.translator.translate("main_project")] = []
+            options[self.translator.translate("install_project")] = [self.translator.translate("download_from_msstore")]
+            options[self.translator.translate("uninstall_project")] = []
+            options[self.translator.translate("other_project")] = [
+                self.translator.translate("view_installed_antivirus"),
+                self.translator.translate("developer_options"),
+                self.translator.translate("pc_manager_docs"),
+                self.translator.translate("compute_files_hash"),
+                self.translator.translate("get_msedge_webview2_version")
+            ]
 
         # 更新功能组合框的值
         self.feature_combobox['values'] = options.get(selection, [])
