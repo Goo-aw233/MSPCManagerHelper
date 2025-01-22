@@ -22,7 +22,7 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
         self.iconbitmap(main_icon_path)
-        self.MSPCManagerHelper_Version = "Beta v0.2.0.9"
+        self.MSPCManagerHelper_Version = "Beta v0.2.0.10"
         title = f"MSPCManagerHelper {self.MSPCManagerHelper_Version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
@@ -92,11 +92,11 @@ class MSPCManagerHelper(tk.Tk):
         self.language_combobox.bind("<<ComboboxSelected>>", self.change_language)
         self.language_combobox.place(x=35, y=80, width=180, height=25)
 
-        # 检测版本的 TextBlock 和刷新按钮
+        # 检测 Microsoft PC Manager 版本号的 TextBlock 和刷新按钮
         version_frame = tk.Frame(self, bg="WhiteSmoke")
         version_frame.place(x=35, y=110)
 
-        # 检查 Windows 版本号
+        # Microsoft PC Manager 版本号
         self.version_label = tk.Label(version_frame, text=self.translator.translate("current_pc_manager_version"), bg="WhiteSmoke")
         self.version_label.pack(side="left", padx=(0, 10))
 
@@ -104,7 +104,7 @@ class MSPCManagerHelper(tk.Tk):
         self.refresh_button = ttk.Button(version_frame, text=self.translator.translate("refresh"), command=self.refresh_version)
         self.refresh_button.pack(side="left")
 
-        # 系统要求检测
+        # 系统要求
         self.system_requirement_label = tk.Label(self, text=self.translator.translate("system_requirements_checking"), bg="WhiteSmoke", wraplength=400, padx=0, pady=10)
         self.system_requirement_label.place(x=35, y=145)
 
@@ -503,6 +503,7 @@ class MSPCManagerHelper(tk.Tk):
         self.main_combobox.config(font=font_style)
         self.feature_combobox.config(font=font_style)
         self.result_textbox.config(font=font_style)
+        self.language_combobox.config(font=font_style)
         # 重新设置 result_textbox 的大小
         self.result_textbox.place(x=435, y=80, width=400, height=310)
 
