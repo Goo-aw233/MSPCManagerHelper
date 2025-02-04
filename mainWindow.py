@@ -22,7 +22,7 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
         self.iconbitmap(main_icon_path)
-        self.MSPCManagerHelper_Version = "Beta v0.2.0.10"
+        self.MSPCManagerHelper_Version = "Beta v0.2.0.11"
         title = f"MSPCManagerHelper {self.MSPCManagerHelper_Version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
@@ -346,6 +346,7 @@ class MSPCManagerHelper(tk.Tk):
             main_feature_name = self.feature_combobox.get()
             executing_message = self.translator.translate('main_executing_operation').format(main_feature_name=main_feature_name)
             executing_message += '\n' + self.translator.translate('excessive_waiting_time')
+            executing_message += '\n'
             self.textbox(executing_message)
 
             def run_feature():
