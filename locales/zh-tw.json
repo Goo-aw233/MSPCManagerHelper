@@ -29,7 +29,7 @@
 
 
     "@mainFeature.py": "mainFeature.py",
-    "repair_pc_manager_notice": "提醒 - 修正 Microsoft 電腦管家無法安裝 / 開啟",
+    "repair_pc_manager_notice": "提醒",
     "repair_pc_manager_to_perform": "是否修正 Microsoft 電腦管家無法安裝 / 開啟？此操作會直接解除安裝所有版本的 Microsoft 電腦管家，清理設定和殘留檔案，並修正 Microsoft Edge (WebView2 執行階段) 無法安裝的問題。",
     "repair_pc_manager_success": "修正 Microsoft 電腦管家無法安裝 / 開啟成功。",
     "repair_pc_manager_error": "修正 Microsoft 電腦管家無法安裝 / 開啟時發生錯誤",
@@ -110,6 +110,7 @@
     "install_for_all_users_dependency_package_select": "是否選取 Microsoft 電腦管家的套件檔案？如果您正在安裝 3.14.0.0 及更高版本則是必要的。",
     "install_for_all_users_success": "為 所有使用者 安裝 Microsoft 電腦管家成功。",
     "install_for_all_users_error": "為 所有使用者 安裝 Microsoft 電腦管家時發生錯誤",
+    "dism_not_found": "無法啟動 DISM 程式。",
 
     "install_for_current_user_no_file_selected": "未選取任何檔案。",
     "install_for_current_user_dependency_package_select_notice": "選取套件檔案",
@@ -161,6 +162,8 @@
     "wv2_installer_exit_code_0x800700b7": "請嘗試刪除‘C:\\Program Files (x86)\\Microsoft\\EdgeWebView’資料夾後重試。如果‘C:\\Program Files (x86)\\Microsoft’資料夾下僅包含 Temp 資料夾，請直接刪除‘C:\\Program Files (x86)\\Microsoft’資料夾，並重試。若問題依舊，請檢查是否具有對‘C:\\Program Files (x86)\\Microsoft’資料夾的存取權限。",
     "wv2_download_error": "Microsoft Edge WebView2 執行階段 下載錯誤。",
     "wv2_download_error_info": "Microsoft Edge WebView2 執行階段 下載錯誤資訊",
+    "edgeupdate_log_export_path": "EdgeUpdate.exe 記錄檔匯出路徑",
+    "seek_help_from_system_administrator": "請聯絡系統管理員以取得支援。",
     "wv2_installer_error": "Microsoft Edge WebView2 執行階段 安裝錯誤。",
     "wv2_installation_cancelled": "使用者已取消 Microsoft Edge WebView2 執行階段 安裝。",
 
@@ -284,6 +287,7 @@
     "ask_if_version_above_3_14_0_0": "檢查 Microsoft 電腦管家版本",
     "select_pc_manager_version": "目前 Microsoft 電腦管家是否為 3.14.0.0 及更高版本？\n如果是，請按下「是」；如果不是，請按下「否」。",
     "how_to_switch_pc_manager_region": "請在彈出的設定中，將“國家/地區”切換為您想要設定的地區，並重啟 Microsoft 電腦管家。\n切換完成後若地區再次被更改，可能會導致 Microsoft 電腦管家地區再次被切換。",
+    "error_opening_ms-settings": "開啟設定時發生錯誤",
     "switch_pc_manager_region_notice": "切換地區",
     "type_to_switch_pc_manager_region": "請輸入要切換的地區代碼。例如: TW (台灣)",
     "unknown_pc_manager_region_code": "未知的地區代碼",

@@ -29,7 +29,7 @@
 
 
     "@mainFeature.py": "mainFeature.py",
-    "repair_pc_manager_notice": "提示 - 修复微软电脑管家无法安装 / 打开",
+    "repair_pc_manager_notice": "提示",
     "repair_pc_manager_to_perform": "是否修复微软电脑管家无法安装 / 打开？此操作会直接卸载所有版本的微软电脑管家，清理配置文件和残留，并修复 Microsoft Edge (WebView2 Runtime) 无法安装的问题。",
     "repair_pc_manager_success": "修复微软电脑管家无法安装 / 打开成功。",
     "repair_pc_manager_error": "修复微软电脑管家无法安装 / 打开时出错",
@@ -110,6 +110,7 @@
     "install_for_all_users_dependency_package_select": "是否选择微软电脑管家的依赖包文件？如果您正在安装 3.14.0.0 及更高版本则是必要的。",
     "install_for_all_users_success": "为 所有用户 安装微软电脑管家成功。",
     "install_for_all_users_error": "为 所有用户 安装微软电脑管家时出错",
+    "dism_not_found": "无法启动 DISM 进程。",
 
     "install_for_current_user_no_file_selected": "未选择任何文件。",
     "install_for_current_user_dependency_package_select_notice": "选择依赖包文件",
@@ -161,6 +162,8 @@
     "wv2_installer_exit_code_0x800700b7": "请尝试删除“C:\\Program Files (x86)\\Microsoft\\EdgeWebView”文件夹后重试。如果“C:\\Program Files (x86)\\Microsoft”文件夹下只有 Temp 文件夹，请直接删除“C:\\Program Files (x86)\\Microsoft”文件夹，并重试。若问题依旧，请检查是否具有对“C:\\Program Files (x86)\\Microsoft”文件夹的访问权限。",
     "wv2_download_error": "Microsoft Edge WebView2 Runtime 下载错误。",
     "wv2_download_error_info": "Microsoft Edge WebView2 Runtime 下载错误信息",
+    "edgeupdate_log_export_path": "EdgeUpdate.exe 日志导出路径",
+    "seek_help_from_system_administrator": "请联系您的系统管理员以获取帮助。",
     "wv2_installer_error": "Microsoft Edge WebView2 Runtime 安装错误。",
     "wv2_installation_cancelled": "用户已取消 Microsoft Edge WebView2 Runtime 安装。",
 
@@ -284,6 +287,7 @@
     "ask_if_version_above_3_14_0_0": "检查微软电脑管家版本",
     "select_pc_manager_version": "当前微软电脑管家是否为 3.14.0.0 及更高版本？\n如果是，请按下“是”；如果不是，请按下“否”。",
     "how_to_switch_pc_manager_region": "请在弹出的设置中，将“国家或地区”切换为您想要设置的区域，并重启微软电脑管家。\n切换完成后若区域再次被更改，可能会导致微软电脑管家区域再次被切换。",
+    "error_opening_ms-settings": "打开设置时出错",
     "switch_pc_manager_region_notice": "切换地区",
     "type_to_switch_pc_manager_region": "请输入要切换的地区。例如: CN (中国大陆)",
     "unknown_pc_manager_region_code": "未知的地区代码",
