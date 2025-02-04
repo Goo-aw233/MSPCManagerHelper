@@ -162,6 +162,8 @@ class InstallationFeature:
                 return self.translator.translate("install_for_all_users_success")
             else:
                 return self.translator.translate("install_for_all_users_error") + f": {result.stderr}\n{result.stdout}"
+        except FileNotFoundError as e:
+            return f"{self.translator.translate('dism_not_found')}\n{str(e)}: {e.filename}"
         except Exception as e:
             return self.translator.translate("install_for_all_users_error") + f": {str(e)}"
 
@@ -205,6 +207,8 @@ class InstallationFeature:
                 return self.translator.translate("install_for_current_user_success")
             else:
                 return self.translator.translate("install_for_current_user_error") + f": {result.stderr}\n{result.stdout}"
+        except FileNotFoundError as e:
+            return f"{self.translator.translate('powershell_not_found')}\n{str(e)}: {e.filename}"
         except Exception as e:
             return self.translator.translate("install_for_current_user_error") + f": {str(e)}"
 
@@ -287,6 +291,8 @@ class InstallationFeature:
                 return self.translator.translate("update_from_application_package_success")
             else:
                 return self.translator.translate("update_from_application_package_error") + f": {result.stderr}\n{result.stdout}"
+        except FileNotFoundError as e:
+            return f"{self.translator.translate('powershell_not_found')}\n{str(e)}: {e.filename}"
         except Exception as e:
             return self.translator.translate("update_from_application_package_error") + f": {str(e)}"
 
@@ -481,6 +487,8 @@ class InstallationFeature:
                     shutil.rmtree(temporary_files_path)
 
             return self.translator.translate("install_from_appxmanifest_success")
+        except FileNotFoundError as e:
+            return f"{self.translator.translate('powershell_not_found')}\n{str(e)}: {e.filename}"
         except Exception as e:
             return self.translator.translate("install_from_appxmanifest_error") + f": {str(e)}"
 
@@ -488,6 +496,8 @@ class InstallationFeature:
         mspcmanagerhelper_temp_dir = os.path.join(tempfile.gettempdir(), "MSPCManagerHelper")   # MSPCManagerHelper 临时目录
         wv2_installer_temp_path = os.path.join(mspcmanagerhelper_temp_dir, "MicrosoftEdgeWebView2Setup.exe")    # EdgeWebView2 安装程序临时下载路径
         wv2_installer_download_url = "https://go.microsoft.com/fwlink/p/?LinkId=2124703"    # EdgeWebView2 安装程序下载链接
+        edgeupdate_log_source = os.path.join(os.environ['ProgramData'], 'Microsoft', 'EdgeUpdate', 'Log', 'MicrosoftEdgeUpdate.log')    # EdgeUpdate.exe 日志源目录
+        edgeupdate_log_destination = os.path.join(os.environ['UserProfile'], 'Desktop', 'MicrosoftEdgeUpdate.log')  # EdgeUpdate.exe 日志输出目录
 
         try:
             # 检查临时目录是否存在，不存在则创建
@@ -516,12 +526,17 @@ class InstallationFeature:
                 return f"{self.translator.translate('wv2_installer_exit_code')}: {app.current_process.returncode}\n{self.translator.translate('wv2_runtime_already_installed')}"
             # 文件夹需要删除
             elif app.current_process.returncode == 2147747596:
-                return f"{self.translator.translate('wv2_installer_exit_code')}: {app.current_process.returncode}\n{self.translator.translate('wv2_installer_exit_code_0x8004070c')}"
+                shutil.copy(edgeupdate_log_source, edgeupdate_log_destination)
+                return f"{self.translator.translate('wv2_installer_exit_code')}: {app.current_process.returncode}\n{self.translator.translate('wv2_installer_exit_code_0x8004070c')}\n{self.translator.translate('edgeupdate_log_export_path')}: {edgeupdate_log_destination}\n{self.translator.translate('seek_help_from_system_administrator')}"
             # 无文件夹写入权限
             elif app.current_process.returncode == 2147942583:
-                return f"{self.translator.translate('wv2_installer_exit_code')}: {app.current_process.returncode}\n{self.translator.translate('wv2_installer_exit_code_0x800700b7')}"
+                shutil.copy(edgeupdate_log_source, edgeupdate_log_destination)
+                return f"{self.translator.translate('wv2_installer_exit_code')}: {app.current_process.returncode}\n{self.translator.translate('wv2_installer_exit_code_0x800700b7')}\n{self.translator.translate('edgeupdate_log_export_path')}: {edgeupdate_log_destination}\n{self.translator.translate('seek_help_from_system_administrator')}"
+            # 其他未知报错
             else:
-                return f"{self.translator.translate('wv2_installer_exit_code')}: {app.current_process.returncode}\n{self.translator.translate('wv2_installer_error')}"
+                shutil.copy(edgeupdate_log_source, edgeupdate_log_destination)
+                return f"{self.translator.translate('wv2_installer_exit_code')}: {app.current_process.returncode}\n{self.translator.translate('wv2_installer_error')}\n{self.translator.translate('edgeupdate_log_export_path')}: {edgeupdate_log_destination}\n{self.translator.translate('seek_help_from_system_administrator')}"
+
         except Exception as e:
             return f"{self.translator.translate('wv2_download_error_info')}: {str(e)}"
         finally:
