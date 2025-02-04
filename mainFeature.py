@@ -256,6 +256,8 @@ class MainFeature:
                 subprocess.run(["powershell.exe", "-Command", "Get-ComputerInfo | Out-File -FilePath '{}' -Encoding utf8".format(computer_info_path)],
                                capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
                 self.textbox(self.translator.translate("retrieve_computer_info_success"))
+            except FileNotFoundError as e:
+                self.textbox(f"{self.translator.translate('powershell_not_found')}\n{str(e)}: {e.filename}")
             except Exception as e:
                 self.textbox(self.translator.translate("retrieve_computer_info_error") + f":\n{str(e)}")
 

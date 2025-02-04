@@ -328,6 +328,8 @@ class UninstallationFeature:
                     f"{result4.stderr.strip()}"
                 )
 
+        except FileNotFoundError as e:
+            return f"{self.translator.translate('powershell_not_found')}\n{self.translator.translate('dism_not_found')}\n{str(e)}: {e.filename}"
         except Exception as e:
             return f"{self.translator.translate('uninstall_for_all_users_in_dism_error')}: {str(e)}"
 
@@ -575,6 +577,8 @@ class UninstallationFeature:
                     f"{result4.stderr.strip()}"
                 )
 
+        except FileNotFoundError as e:
+            return f"{self.translator.translate('powershell_not_found')}\n{str(e)}: {e.filename}"
         except Exception as e:
             return f"{self.translator.translate('uninstall_for_all_users_error')}: {str(e)}"
 
@@ -713,17 +717,19 @@ class UninstallationFeature:
                     f"{result2.stderr.strip()}"
                 )
 
+        except FileNotFoundError as e:
+            return f"{self.translator.translate('powershell_not_found')}\n{str(e)}: {e.filename}"
         except Exception as e:
             return f"{self.translator.translate('uninstall_for_current_user_error')}: {str(e)}"
 
     def uninstall_pc_manager_beta(self):
         try:
-            pcm_path = os.path.join(os.environ['ProgramFiles'], 'Microsoft PC Manager')
-            if not os.path.exists(pcm_path):
+            pc_manager_beta_path = os.path.join(os.environ['ProgramFiles'], 'Microsoft PC Manager')
+            if not os.path.exists(pc_manager_beta_path):
                 return self.translator.translate("pc_manager_beta_not_found")
 
             # 检测 Uninst.exe 是否存在
-            pc_manager_beta_uninst_exe = os.path.join(pcm_path, 'Uninst.exe')
+            pc_manager_beta_uninst_exe = os.path.join(pc_manager_beta_path, 'Uninst.exe')
             if not os.path.exists(pc_manager_beta_uninst_exe):
                 return self.translator.translate("pc_manager_beta_not_found")
 
@@ -739,7 +745,7 @@ class UninstallationFeature:
                     pass
                 else:
                     tf = False
-            pc_manager_beta_uninst_exe = os.path.join(pcm_path, 'Uninst.exe')
+            pc_manager_beta_uninst_exe = os.path.join(pc_manager_beta_path, 'Uninst.exe')
             if not os.path.exists(pc_manager_beta_uninst_exe):
                 if not messagebox.askyesno(self.translator.translate("cleanup_pc_manager_beta_config_and_files_notice"),
                                             self.translator.translate("cleanup_pc_manager_beta_config_and_files")):
@@ -759,6 +765,7 @@ class UninstallationFeature:
                     os.path.join(os.environ['ProgramFiles'], 'Windows Master'),
                     os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master'),
                     os.path.join(os.environ['SystemRoot'], 'SystemTemp', 'Windows Master'),
+                    os.path.join(os.environ['Temp'], 'Windows Master'),
                     os.path.join(os.environ['Temp'], 'WM Scan Test')
                 ]
                 is_first = True
@@ -802,7 +809,7 @@ class UninstallationFeature:
                     os.path.join(os.environ['Public'], 'Desktop'),
                     os.path.join(os.environ['SystemRoot'], 'Prefetch'),
                     os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Microsoft', 'CLR_v4.0', 'UsageLogs'),
-                    os.path.join(os.environ['UserProfile'], 'Desktop'),
+                    os.path.join(os.environ['UserProfile'], 'Desktop')
                 ]
 
                 prefetch_files = itertools.chain.from_iterable(

@@ -79,8 +79,8 @@ class OtherFeature:
             return formatted_result.strip()
         except subprocess.CalledProcessError as e:
             return f"{self.translator.translate('powershell_error')}: {e.stderr.strip()}"
-        except FileNotFoundError:
-            return self.translator.translate("powershell_not_found")
+        except FileNotFoundError as e:
+            return f"{self.translator.translate('powershell_not_found')}\n{str(e)}: {e.filename}"
 
     def developer_options(self):
         try:
@@ -192,8 +192,11 @@ class OtherFeature:
         if user_response is None:
             return self.translator.translate("user_canceled")
         elif user_response:
-            subprocess.run(["start", "ms-settings:regionformatting"], check=True, shell=True)
-            return self.translator.translate("how_to_switch_pc_manager_region")
+            try:
+                subprocess.run(["start", "ms-settings:regionformatting"], check=True, shell=True)
+                return self.translator.translate("how_to_switch_pc_manager_region")
+            except subprocess.CalledProcessError as e:
+                return f"{self.translator.translate('error_opening_ms-settings')}: {str(e)}"
 
         # 获取 region_code 值
         def region():
@@ -240,22 +243,20 @@ class OtherFeature:
 
                 winreg.SetValueEx(key, pc_manager_region_value_name, 0, winreg.REG_SZ, self.region_code.upper())
 
-            message = self.translator.translate("switch_region_completed")
-            message += f"\n{self.translator.translate('restart_pc_manager_to_apply_changes')}"
-        except OSError as e:
-            message = f"\n{self.translator.translate('switch_region_error')}: {str(e)}"
+            self.textbox(self.translator.translate("switch_region_completed"))
+            self.textbox(self.translator.translate("restart_pc_manager_to_apply_changes"))
+        except Exception as e:
+            self.textbox(f"\n{self.translator.translate('switch_region_error')}: {str(e)}")
 
         # 读取 InstallRegionCode 的值
         try:
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, pc_manager_registry_path, 0, winreg.KEY_READ) as key:
                 pc_manager_region_code = winreg.QueryValueEx(key, pc_manager_region_value_name)[0]
-                message += f"\n{self.translator.translate('current_pc_manager_region')}: {pc_manager_region_code}"
+                return f"\n{self.translator.translate('current_pc_manager_region')}: {pc_manager_region_code}"
         except FileNotFoundError:
-            message += f"\n{self.translator.translate('launch_pc_manager_to_continue')}"
-        except OSError as e:
-            message += f"\n{self.translator.translate('current_pc_manager_region_error')}: {str(e)}"
-
-        return message
+            return f"\n{self.translator.translate('launch_pc_manager_to_continue')}"
+        except Exception as e:
+            return f"\n{self.translator.translate('current_pc_manager_region_error')}: {str(e)}"
 
     def compute_files_hash(self):
         try:
@@ -311,12 +312,12 @@ class OtherFeature:
             return self.translator.translate("compute_files_hash_success")
         except subprocess.CalledProcessError as e:
             return f"{self.translator.translate('compute_files_hash_error')}: {e.stderr.strip()}"
+        except FileNotFoundError as e:
+            return f"{self.translator.translate('powershell_not_found')}\n{str(e)}: {e.filename}"
         except Exception as e:
             return f"{self.translator.translate('compute_files_hash_error')}: {str(e)}"
 
     def get_msedge_webview2_version(self):
-        messages = []
-
         try:
             # 使用 PowerShell 命令读取 System32 的 msedgewebview2.exe 的版本号
             root_msedge_webview2 = (
@@ -329,19 +330,21 @@ class OtherFeature:
                 capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
             system_msedge_webview2_version = result.stdout.strip()
-            messages.append(f"{self.translator.translate('system_msedge_webview2_version')}: {system_msedge_webview2_version}")
+            self.textbox(f"{self.translator.translate('system_msedge_webview2_version')}: {system_msedge_webview2_version}")
         except subprocess.CalledProcessError as e:
-            messages.append(f"{self.translator.translate('get_msedge_webview2_version_powershell_error')}: {e.stderr.strip()}")
+            self.textbox(f"{self.translator.translate('get_msedge_webview2_version_powershell_error')}: {e.stderr.strip()}")
+        except FileNotFoundError as e:
+            self.textbox(f"{self.translator.translate('powershell_not_found')}\n{str(e)}: {e.filename}")
+        except Exception as e:
+            self.textbox(f"{self.translator.translate('get_msedge_webview2_version_powershell_error')}: {str(e)}")
 
         try:
             # 读取注册表中的版本号
             msedge_webview2_reg_path = r"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, msedge_webview2_reg_path) as key:
                 user_msedge_webview2_version = winreg.QueryValueEx(key, "pv")[0]
-                messages.append(f"{self.translator.translate('user_msedge_webview2_version')}: {user_msedge_webview2_version}")
+                return f"{self.translator.translate('user_msedge_webview2_version')}: {user_msedge_webview2_version}"
         except FileNotFoundError:
-            messages.append(self.translator.translate("msedge_webview2_version_registry_key_not_found"))
-        except OSError as e:
-            messages.append(f"{self.translator.translate('get_msedge_webview2_version_registry_error')}: {str(e)}")
-
-        return "\n".join(messages)
+            return self.translator.translate("msedge_webview2_version_registry_key_not_found")
+        except Exception as e:
+            return f"{self.translator.translate('get_msedge_webview2_version_registry_error')}: {str(e)}"
