@@ -279,14 +279,14 @@ class MainFeature:
                     # 根据处理器架构设定 ProcDump 变量
                     if processor_architecture == "AMD64":
                         if hasattr(sys, '_MEIPASS'):
-                            procdump_path = os.path.join(sys._MEIPASS, "tools", "procdump", "procdump64.exe")
+                            procdump_path = os.path.join(sys._MEIPASS, "tools", "ProcDump", "procdump64.exe")
                         else:
-                            procdump_path = os.path.join("tools", "procdump", "procdump64.exe")
+                            procdump_path = os.path.join("tools", "ProcDump", "procdump64.exe")
                     elif processor_architecture == "ARM64":
                         if hasattr(sys, '_MEIPASS'):
-                            procdump_path = os.path.join(sys._MEIPASS, "tools", "procdump", "procdump64a.exe")
+                            procdump_path = os.path.join(sys._MEIPASS, "tools", "ProcDump", "procdump64a.exe")
                         else:
-                            procdump_path = os.path.join("tools", "procdump", "procdump64a.exe")
+                            procdump_path = os.path.join("tools", "ProcDump", "procdump64a.exe")
                     else:
                         self.textbox(self.translator.translate("no_match_procdump_version"))
                         return "\n.join(messages)"
