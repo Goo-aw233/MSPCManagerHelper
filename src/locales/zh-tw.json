@@ -413,5 +413,6 @@
     "illegal_language_files": "該語言檔案不合法，請嘗試其他語言檔案。",
     "see_term_of_use_and_privacy": "使用 MSPCManagerHelper 即代表您已閲讀並同意《使用規定》與《隱私權聲明》，否則，請離開軟體並刪除。",
     "tips_run_as_dev_mode": "以‘/DevMode’或‘-DevMode’參數執行以啟動開發人員模式。",
-    "excessive_waiting_time": "若等候時間過長，請耐心等待，或取消任務後重試。"
+    "excessive_waiting_time": "若等候時間過長，請耐心等待，或取消任務後重試。",
+    "admin_approval_mode_is_on": "系統管理員保護已開啟，需要以系統管理員身份執行的功能將無法正常執行，請關閉系統管理員保護並重啟電腦後再開啓 MSPCManagerHelper。"
 }

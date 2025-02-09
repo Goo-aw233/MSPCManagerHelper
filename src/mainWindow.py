@@ -7,7 +7,7 @@ import threading
 import tkinter as tk
 import tkinter.font as tkFont
 from advancedStartup import AdvancedStartup
-from checkSystemRequirements import check_system_requirements
+from checkSystemRequirements import CheckSystemRequirements
 from getVersionNumber import GetPCManagerVersion
 from installationFeature import InstallationFeature
 from mainFeature import MainFeature
@@ -22,8 +22,8 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
         self.iconbitmap(main_icon_path)
-        self.MSPCManagerHelper_Version = "Beta v0.2.0.11"
-        title = f"MSPCManagerHelper {self.MSPCManagerHelper_Version}"
+        self.mspcmanagerhelper_version = "Beta v0.2.0.12"
+        title = f"MSPCManagerHelper {self.mspcmanagerhelper_version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
         if AdvancedStartup.is_devmode():
@@ -56,12 +56,15 @@ class MSPCManagerHelper(tk.Tk):
         self.cancelled = False
         self.current_process = None
         self.current_pid = None
-        self.top_menu = TopMenu(self, self.translator, self.MSPCManagerHelper_Version)
+        self.top_menu = TopMenu(self, self.translator, self.mspcmanagerhelper_version)
         self.config(menu=self.top_menu.top_menu)  # 显示顶部菜单
 
         # 设置默认字体样式
         self.default_font_style = ("Segoe UI", 10)
         self.set_font_style()  # 设置字体样式
+
+        self.check_system_requirements()  # 检测系统要求
+        self.check_admin_approval_mode()  # 检查“管理员保护”是否开启
 
     # 设置 DPI 感知
     def set_dpi_awareness(self):
@@ -165,6 +168,8 @@ class MSPCManagerHelper(tk.Tk):
         self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
         if not (AdvancedStartup.is_devmode() or AdvancedStartup.is_debugdevmode()):
             self.textbox(self.translator.translate('tips_run_as_dev_mode'))
+        if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_admin()):
+            self.textbox("\n" + self.translator.translate("admin_approval_mode_is_on"))
 
         # 初始检测版本号和系统要求
         self.refresh_version()
@@ -251,15 +256,20 @@ class MSPCManagerHelper(tk.Tk):
         self.other_feature = OtherFeature(self.translator, self.result_textbox)  # OtherFeature
         self.update_texts() # 更新文本
         self.refresh_version()  # 刷新版本号
-        self.check_system_requirements()    # 检测系统要求
         self.set_font_style()  # 字体样式
         self.clear_result_textbox() # 清空 TextBox 的内容
-        self.top_menu = TopMenu(self, self.translator, self.MSPCManagerHelper_Version)  # 重新创建顶部菜单
+        self.top_menu = TopMenu(self, self.translator, self.mspcmanagerhelper_version)  # 重新创建顶部菜单
         self.config(menu=self.top_menu.top_menu)  # 显示顶部菜单
+
         # 重新输出指定协议与隐私
         self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
         if not (AdvancedStartup.is_devmode() or AdvancedStartup.is_debugdevmode()):
             self.textbox(self.translator.translate('tips_run_as_dev_mode'))
+        if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_admin()):
+            self.textbox("\n" + self.translator.translate("admin_approval_mode_is_on"))
+
+        self.check_system_requirements()    # 检测系统要求
+        self.check_admin_approval_mode()  # 检查“管理员保护”是否开启
 
     # 更新文本
     def update_texts(self):
@@ -342,6 +352,7 @@ class MSPCManagerHelper(tk.Tk):
         else:
             self.execute_button.config(state="disabled")
             self.cancel_button.config(state="normal")
+            self.language_combobox.config(state="disabled")
             self.clear_result_textbox()  # 清空 TextBox 的内容
             main_feature_name = self.feature_combobox.get()
             executing_message = self.translator.translate('main_executing_operation').format(main_feature_name=main_feature_name)
@@ -436,6 +447,7 @@ class MSPCManagerHelper(tk.Tk):
             self.result_textbox.config(state="disabled")
             self.execute_button.config(state="normal")
             self.cancel_button.config(state="disabled")
+            self.language_combobox.config(state="readonly")
         except queue.Empty:
             self.after(100, self.process_queue)
 
@@ -464,10 +476,12 @@ class MSPCManagerHelper(tk.Tk):
         self.cancelled = True
         self.execute_button.config(state="disabled")
         self.cancel_button.config(state="disabled")
+        self.language_combobox.config(state="disabled")
 
         def kill_process_thread():
             self.kill_process_by_pid()  # 结束指定进程
             self.after(0, lambda: self.execute_button.config(state="normal"))
+            self.after(0, lambda: self.language_combobox.config(state="readonly"))
 
         threading.Thread(target=kill_process_thread).start()
 
@@ -520,6 +534,8 @@ class MSPCManagerHelper(tk.Tk):
                 if not (AdvancedStartup.is_devmode() or AdvancedStartup.is_debugdevmode()):
                     self.textbox(self.translator.translate('tips_run_as_dev_mode'))
                 self.textbox(f"{self.translator.translate('pc_manager_beta_installed')}: {beta_version}\n")
+                if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_admin()):
+                    self.textbox("\n" + self.translator.translate("admin_approval_mode_is_on"))
         elif beta_version:
             self.version_label.config(text=f"{self.translator.translate('current_pc_manager_beta_version')}: {beta_version}")
         else:
@@ -527,12 +543,20 @@ class MSPCManagerHelper(tk.Tk):
 
     # 检测系统要求
     def check_system_requirements(self):
-        system_status = check_system_requirements(self.translator)
+        check_system_requirements_instance = CheckSystemRequirements(self.translator)
+        system_status = check_system_requirements_instance.check_system_requirements()
         self.system_requirement_label.config(text=system_status)
 
+    # 显示顶部菜单
     def show_top_menu(self, event):
-        self.top_menu = TopMenu(self, self.translator, self.MSPCManagerHelper_Version)
+        self.top_menu = TopMenu(self, self.translator, self.mspcmanagerhelper_version)
         self.config(menu=self.top_menu.top_menu)
+
+    # 检查“管理员保护”是否开启
+    def check_admin_approval_mode(self):
+        if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_admin()):
+            messagebox.showerror(self.translator.translate("warning"),
+                                 self.translator.translate("admin_approval_mode_is_on"))
 
 if __name__ == "__main__":
     app = MSPCManagerHelper()

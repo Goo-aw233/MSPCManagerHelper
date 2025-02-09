@@ -11,7 +11,7 @@ if "%arch%"=="AMD64" (
     "%~dp0..\..\.venv\Scripts\pyinstaller.exe" ^
         --onefile ^
         --windowed ^
-        --name "MSPCManagerHelper_Beta_v0.2.0.11_x64" ^
+        --name "MSPCManagerHelper_Beta_v0.2.0.12_x64" ^
         --add-data "%~dp0..\\..\\src\\locales;locales" ^
         --add-data "%~dp0..\\..\\src\\assets\\MSPCManagerHelper-256.ico;assets" ^
         --add-binary "%~dp0..\\..\\src\\tools\\ProcDump\\procdump64.exe;tools\\ProcDump" ^
@@ -26,7 +26,7 @@ if "%arch%"=="AMD64" (
     "%~dp0..\..\.venv\Scripts\pyinstaller.exe" ^
         --onefile ^
         --windowed ^
-        --name "MSPCManagerHelper_Beta_v0.2.0.11_ARM64" ^
+        --name "MSPCManagerHelper_Beta_v0.2.0.12_ARM64" ^
         --add-data "%~dp0..\\..\\src\\locales;locales" ^
         --add-data "%~dp0..\\..\\src\\assets\\MSPCManagerHelper-256.ico;assets" ^
         --add-binary "%~dp0..\\..\\src\\tools\\ProcDump\\procdump64a.exe;tools\\ProcDump" ^

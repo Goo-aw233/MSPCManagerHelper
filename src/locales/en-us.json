@@ -184,7 +184,7 @@
     "fail_to_clear_other_files_for_all_users_in_dism": "Error occurred while cleaning up other residuals",
     "fail_to_clear_other_files_info_for_all_users_in_dism": "Error information",
     "advanced_cleanup_config_and_files_notice_for_all_users_in_dism": "Advanced Cleanup",
-    "advanced_cleanup_config_and_files_for_all_users_in_dism": "Does advanced cleanup of Microsoft Computer Manager profiles and residuals? This may cause instability issues.",
+    "advanced_cleanup_config_and_files_for_all_users_in_dism": "Does advanced cleanup of Microsoft PC Manager profiles and residuals? This may cause instability issues.",
     "advanced_cleanup_taskkill_process_for_all_users_in_dism": "Processes are being terminated",
     "advanced_cleanup_no_processes_killed_for_all_users_in_dism": "No processes were terminated",
     "advanced_clearing_folders_for_all_users_in_dism": "Advanced cleaning (Folders)",
@@ -209,7 +209,7 @@
     "fail_to_clear_other_files_for_all_users": "Error occurred while cleaning up other residuals",
     "fail_to_clear_other_files_info_for_all_users": "Error information",
     "advanced_cleanup_config_and_files_notice_for_all_users": "Advanced Cleanup",
-    "advanced_cleanup_config_and_files_for_all_users": "Does advanced cleanup of Microsoft Computer Manager profiles and residuals? This may cause instability issues.",
+    "advanced_cleanup_config_and_files_for_all_users": "Does advanced cleanup of Microsoft PC Manager profiles and residuals? This may cause instability issues.",
     "advanced_cleanup_taskkill_process_for_all_users": "Processes are being terminated",
     "advanced_cleanup_no_processes_killed_for_all_users": "No processes were terminated",
     "advanced_clearing_folders_for_all_users": "Advanced cleaning (Folders)",
@@ -413,5 +413,6 @@
     "illegal_language_files": "This language file is not legal, please try another language file.",
     "see_term_of_use_and_privacy": "By using MSPCManagerHelper, you signify that you have read and agree to the `Terms of Use` and `Privacy Policy`, otherwise, please exit and delete the software.",
     "tips_run_as_dev_mode": "Run with `/DevMode` or `-DevMode` parameter to enable developer mode.",
-    "excessive_waiting_time": "If the wait time is too long, please be patient or cancel the task and try again."
+    "excessive_waiting_time": "If the wait time is too long, please be patient or cancel the task and try again.",
+    "admin_approval_mode_is_on": "Administrator protection is turned on, functions that need to be run as administrator will not work properly, please turn off Administrator protection and restart your PC before starting MSPCManagerHelper."
 }
