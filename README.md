@@ -10,7 +10,7 @@ Please select your language to continue
 
 ## 👏 Introduction
 
-`MSPCManagerHelper` is a utility tool designed to complement `Microsoft PC Manager`. It aims to provide users with efficient and convenient solutions for resolving issues they may encounter.
+`MSPCManagerHelper` is a utility (`PCM Assistant`, `PCM Helper` or `Microsoft PC Manager Helper`) that comes with [`Microsoft PC Manager`](https://www.microsoft.com/store/productId/9PM860492SZD). This tool is designed to provide users with efficient and convenient solutions to quickly deal with problems they may encounter during use.
 Visit <https://pcmanager.microsoft.com> to download and experience the latest version of Microsoft PC Manager and join our [User Community](https://forms.office.com/r/EPcrKfUbjK)! 😉
 
 > [!IMPORTANT]  
@@ -23,22 +23,26 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 
 1. Download Python 3.11 from [Python](https://www.python.org/downloads)
 
-2. Clone the repository
+2. Clone the Repository
 
 ```bash
 git clone https://github.com/Goo-aw233/MSPCManagerHelper.git
 cd MSPCManagerHelper
 ```
 
-3. Create and activate a virtual environment
+3. Create and Activate a Virtual Environment
 
 - **Windows**: 
 
-```bat
+```Batch
 cd <path\to\MSPCManagerHelper>
-python.exe -m venv .venv
+python -m venv .venv
 .venv\Scripts\activate
 ```
+
+<details>
+
+<summary>The <code>install_requirements.sh</code> for macOS and Linux is no longer available</summary>
 
 - **macOS / Linux**: 
 
@@ -48,17 +52,19 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-4. Install the pip packages
+</details>
 
-```bash
+4. Install the pip Packages
+
+```Batch
 pip install -r requirements.txt
 pip install requests
 python -m pip install --upgrade pip
 ```
 
-Or by running `install_requirements.bat`.
-You can also activate the virtual environment and install pip packages with `install_requirements_.venv.bat`.
+In the `scripts` directory, you can also run `install_requirements.bat` directly to quickly complete the installation, or run `install_requirements_.venv.bat` to activate the virtual environment and install the dependencies at the same time.
 
 5. Build the EXE
 
-Build yourself by running `build.bat` or `build_.venv.bat` directly from the root directory.
+Run `build.bat` or `build_.venv.bat` directly from the `build` directory to build it yourself.
+Finally, the built `EXE file` will be stored in the `build\dist` directory and named `MSPCManager_... _vx.x.x.x.x.exe`.

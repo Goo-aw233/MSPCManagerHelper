@@ -10,7 +10,7 @@ Please select your language to continue
 
 ## 👏 簡介
 
-這是一款專為 `Microsoft 電腦管家` 開發的輔助工具：`MSPCManagerHelper`，旨在協助使用者快速解決使用過程中可能遇到的問題，提供簡單高效的解決方案。
+`MSPCManagerHelper` 是一款與 [`Microsoft 電腦管家`](https://www.microsoft.com/store/productId/9PM860492SZD) 配套的實用工具（亦稱為 `PCM 幫手`、`PCM 小幫手`、`Microsoft 電腦管家小幫手` 或 `破產貓小幫手`）。本工具旨在為用戶提供高效、便捷的解決方案，以快速應對使用過程中可能遇到的問題。
 歡迎前往 <https://pcmanager.microsoft.com> 下載並體驗最新版 Microsoft 電腦管家，並加入到我們的 [社群](https://forms.office.com/r/EPcrKfUbjK) 當中！😉
 
 > [!IMPORTANT]
@@ -34,11 +34,15 @@ cd MSPCManagerHelper
 
 - **Windows**: 
 
-```bat
+```Batch
 cd <path\to\MSPCManagerHelper>
 python.exe -m venv .venv
 .venv\Scripts\activate
 ```
+
+<details>
+
+<summary>macOS 與 Linux 的 <code>install_requirements.sh</code> 已不再提供</summary>
 
 - **macOS / Linux**: 
 
@@ -48,16 +52,19 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
+</details>
+
 4. 安裝套件包
 
-```bash
+```Batch
 pip install -r requirements.txt
 pip install requests
 python -m pip install --upgrade pip
 ```
 
-您也可以執行 `install_requirements.bat` 完成安裝，或執行 `install_requirements_.venv.bat` 同時啟用虛擬環境並安裝套件。
+在 `scripts` 目錄下，您也可以直接執行 `install_requirements.bat` 快速完成安裝，或執行 `install_requirements_.venv.bat` 同時啟用虛擬環境並安裝套件。
 
 5. 構建 EXE
 
-直接執行根目錄下的 `build.bat` 或 `build_.venv.bat` 即可自己構建。
+直接執行 `build` 目錄下的 `build.bat` 或 `build_.venv.bat` 即可自己構建。
+最後，構建好的 `EXE 檔案` 將會存放在 `build\dist` 目錄下，並命名為 `MSPCManager_..._vx.x.x.x.exe`。

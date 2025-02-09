@@ -10,7 +10,7 @@ Please select your language to continue
 
 ## 👏 简介
 
-`MSPCManagerHelper` 是一款与 `微软电脑管家` 配套的实用工具（亦称为 `PCM 小助手`、`微软电脑管家小助手` 或 `破产猫小助手`）。本工具旨在为用户提供高效、便捷的解决方案，以快速应对使用过程中可能遇到的问题。
+`MSPCManagerHelper` 是一款与 [`微软电脑管家`](https://www.microsoft.com/store/productId/9PM860492SZD) 配套的实用工具（亦称为 `PCM 助手`、`PCM 小助手`、`微软电脑管家小助手` 或 `破产猫小助手`）。本工具旨在为用户提供高效、便捷的解决方案，以快速应对使用过程中可能遇到的问题。
 欢迎访问 <https://pcmanager.microsoft.com> 下载并体验最新版本的微软电脑管家，并加入到我们的 [社群](https://forms.office.com/r/7YhjaEEmKc) 当中！😉
 
 > [!IMPORTANT]
@@ -34,11 +34,15 @@ cd MSPCManagerHelper
 
 - **Windows**: 
 
-```bat
+```Batch
 cd <path\to\MSPCManagerHelper>
-python.exe -m venv .venv
+python -m venv .venv
 .venv\Scripts\activate
 ```
+
+<details>
+
+<summary>macOS 与 Linux 的 <code>install_requirements.sh</code> 已不再提供</summary>
 
 - **macOS / Linux**: 
 
@@ -48,15 +52,19 @@ python3 -m venv .venv
 source .venv/bin/activate
 ```
 
+</details>
+
 4. 安装依赖包
 
-```bash
+```Batch
 pip install -r requirements.txt
 pip install requests
 python -m pip install --upgrade pip
 ```
 
-您也可以运行 `install_requirements.bat` 快速完成安装，或运行 `install_requirements_.venv.bat` 同时激活虚拟环境并安装依赖包。
+在 `scripts` 目录下，您也可以直接运行 `install_requirements.bat` 快速完成安装，或运行 `install_requirements_.venv.bat` 同时激活虚拟环境并安装依赖包。
 
 5. 构建 EXE
-直接运行根目录下的 `build.bat` 或 `build_.venv.bat` 即可自己构建。
+
+直接运行 `build` 目录下的 `build.bat` 或 `build_.venv.bat` 即可自己构建。
+最后，构建好的 `EXE 文件` 将会存放在 `build\dist` 目录下，并命名为 `MSPCManager_..._vx.x.x.x.exe`。
