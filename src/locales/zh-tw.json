@@ -62,6 +62,7 @@
     "retrieve_pc_manager_dumps_code_4294967294": "程式未在運行，無需擷取。",
     "retrieving_computer_info": "正在擷取計算機資訊...",
     "retrieve_computer_info_success": "成功擷取計算機資訊。",
+    "mspcmanagerhelper_version_label": "MSPCManagerHelper 版本",
     "retrieve_computer_info_error": "擷取計算機資訊時發生錯誤",
     "compressing_pc_manager_logs": "正在壓縮 Microsoft 電腦管家記錄檔...",
     "pc_manager_logs_zip_archive": "Microsoft 電腦管家記錄檔",
@@ -254,10 +255,14 @@
 
 
     "@otherFeature.py": "otherFeature.py",
+    "Windows_Server_does_not_support_this_feature": "Windows Server 不支援此功能。",
     "display_name": "產品名稱",
-    "path_to_signed_product_exe": "產品註冊路徑",
-    "path_to_signed_reporting_exe": "可執行檔路徑",
-    "status": "狀態",
+    "instance_GUID": "產品唯一識別碼 (GUID)",
+    "path_to_signed_product_exe": "簽署的產品可執行檔案路徑",
+    "path_to_signed_reporting_exe": "簽署的產品報告元件路徑",
+    "product_status": "產品狀態",
+    "product_timestamp": "產品更新時間戳",
+    "only_products_registered_to_Windows_Security_are_supported": "此功能僅支援尋找註冊到 Windows 安全性的防毒軟體。",
     "no_results": "未能取得到任何結果。",
     "powershell_not_found": "無法啟動 PowerShell 程式。",
     "powershell_error": "執行 PowerShell 指令碼時發生錯誤",
@@ -285,7 +290,7 @@
     "pc_manager_service_error_code_1060": "Microsoft 電腦管家服務未安裝。",
 
     "ask_if_version_above_3_14_0_0": "檢查 Microsoft 電腦管家版本",
-    "select_pc_manager_version": "目前 Microsoft 電腦管家是否為 3.14.0.0 及更高版本？\n如果是，請按下「是」；如果不是，請按下「否」。",
+    "select_pc_manager_version": "目前 Microsoft 電腦管家是否為 3.14.0.0 及更高版本？",
     "how_to_switch_pc_manager_region": "請在彈出的設定中，將“國家/地區”切換為您想要設定的地區，並重啟 Microsoft 電腦管家。\n切換完成後若地區再次被更改，可能會導致 Microsoft 電腦管家地區再次被切換。",
     "error_opening_ms-settings": "開啟設定時發生錯誤",
     "switch_pc_manager_region_notice": "切換地區",
@@ -390,7 +395,7 @@
     "uninstall_for_current_user": "為 目前使用者 解除安裝 Microsoft 電腦管家",
     "uninstall_pc_manager_beta": "解除安裝 Microsoft 電腦管家 Beta",
 
-    "view_installed_antivirus": "* 檢視本機已安裝的防毒軟體",
+    "view_installed_antivirus": "* 尋找本機已安裝的防毒軟體",
     "developer_options": "* 開發人員專用",
     "repair_edge_wv2_setup": "修正 Microsoft Edge (WebView2 執行階段) 無法安裝",
     "pc_manager_docs": "* Microsoft 電腦管家常見問題",

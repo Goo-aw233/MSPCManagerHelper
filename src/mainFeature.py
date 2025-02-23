@@ -5,7 +5,7 @@ import sys
 import tkinter as tk
 import winreg
 from datetime import datetime
-from tkinter import messagebox
+from tkinter import filedialog, messagebox
 from otherFeature import OtherFeature
 from uninstallationFeature import UninstallationFeature
 
@@ -20,7 +20,7 @@ class MainFeature:
         message = str(message)
         self.result_textbox.config(state="normal")
         self.result_textbox.insert(tk.END, message + "\n")
-        self.result_textbox.config(state="disable")
+        self.result_textbox.config(state="disabled")
         self.result_textbox.update_idletasks()  # 刷新界面
 
     def get_nsudolc_path(self):
@@ -261,6 +261,8 @@ class MainFeature:
             except Exception as e:
                 self.textbox(self.translator.translate("retrieve_computer_info_error") + f":\n{str(e)}")
 
+            # 输出 MSPCManagerHelper 版本到 MSPCManagerHelperInfo.txt
+
             # 询问是否选择获取 Dumps
             response_for_retrieve_dumps = messagebox.askyesno(
                 self.translator.translate("ask_to_retrieve_pc_manager_dumps_notice"),
@@ -358,6 +360,14 @@ class MainFeature:
 
     def debug_dev_mode(self):
         try:
-            return self.translator.translate("feature_unavailable")
+            # 打开文件选择框
+            file_path = filedialog.askopenfilename(filetypes=[("*", "*")])
+
+            if file_path:
+                # 使用 subprocess 运行选中的文件
+                result = subprocess.run([file_path], capture_output=True, text=True)
+                return self.translator.translate("feature_unavailable") + '\n' + f"{result.stdout}"
+            else:
+                return self.translator.translate("no_file_selected")
         except Exception as e:
             return self.translator.translate("debug_dev_mode_error") + f": {str(e)}"

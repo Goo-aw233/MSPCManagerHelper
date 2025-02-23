@@ -16,7 +16,7 @@ class InstallationFeature:
     def textbox(self, message):
         self.result_textbox.config(state="normal")
         self.result_textbox.insert(tk.END, message + "\n")
-        self.result_textbox.config(state="disable")
+        self.result_textbox.config(state="disabled")
         self.result_textbox.update_idletasks()  # 刷新界面
 
     def refresh_result_textbox(self):
@@ -89,7 +89,8 @@ class InstallationFeature:
                 try:
                     # 如果安装了 Microsoft Store，运行命令
                     subprocess.run(
-                        ['powershell.exe', '-Command', 'Start-Process ms-windows-store://pdp/?ProductId=9PM860492SZD'], creationflags=subprocess.CREATE_NO_WINDOW)
+                        ["start", "ms-windows-store://pdp/?ProductId=9PM860492SZD"],
+                           check=True, shell=True)
                     return self.translator.translate("download_from_msstore_app_opened")
                 except Exception as e:
                     return f"{self.translator.translate('download_from_msstore_app_error')}: {str(e)}"
