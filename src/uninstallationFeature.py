@@ -16,7 +16,7 @@ class UninstallationFeature:
     def textbox(self, message):
         self.result_textbox.config(state="normal")
         self.result_textbox.insert(tk.END, message + "\n")
-        self.result_textbox.config(state="disable")
+        self.result_textbox.config(state="disabled")
         self.result_textbox.update_idletasks()  # 刷新界面
 
     def get_nsudolc_path(self):
