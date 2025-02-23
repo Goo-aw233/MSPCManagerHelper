@@ -22,7 +22,7 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
         self.iconbitmap(main_icon_path)
-        self.mspcmanagerhelper_version = "Beta v0.2.0.12"
+        self.mspcmanagerhelper_version = "Beta v0.2.0.13"
         title = f"MSPCManagerHelper {self.mspcmanagerhelper_version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
@@ -206,7 +206,7 @@ class MSPCManagerHelper(tk.Tk):
         message = str(message)
         self.result_textbox.config(state="normal")
         self.result_textbox.insert(tk.END, message + "\n")
-        self.result_textbox.config(state="disable")
+        self.result_textbox.config(state="disabled")
         self.result_textbox.update_idletasks()  # 刷新界面
 
     # 显示右键菜单
@@ -279,7 +279,7 @@ class MSPCManagerHelper(tk.Tk):
         self.hint_label.config(text=self.translator.translate("notice_select_option"))
         self.execute_button.config(text=self.translator.translate("main_execute_button"))
         self.cancel_button.config(text=self.translator.translate("main_cancel_button"))
-        self.run_as_administrator_button.config(text=self.translator.translate("run_as_administrator"))  # 更新以管理员身份运行按钮的文本
+        self.run_as_administrator_button.config(text=self.translator.translate("run_as_administrator"))
         self.main_combobox.config(values=[self.translator.translate("select_option"),
                                           self.translator.translate("main_project"),
                                           self.translator.translate("install_project"),
@@ -288,10 +288,8 @@ class MSPCManagerHelper(tk.Tk):
                                           ])
         self.main_combobox.current(0)
         self.update_feature_combobox(None)
-
-        # 更新右键菜单的文本
-        self.context_menu.entryconfig(0, label=self.translator.translate("main_copy"))  # 更新复制命令文本
-        self.context_menu.entryconfig(1, label=self.translator.translate("main_clear"))  # 更新清除命令文本
+        self.context_menu.entryconfig(0, label=self.translator.translate("main_copy"))
+        self.context_menu.entryconfig(1, label=self.translator.translate("main_clear"))
 
     # 更新功能组合框内容
     def update_feature_combobox(self, event):
@@ -350,9 +348,10 @@ class MSPCManagerHelper(tk.Tk):
             messagebox.showwarning(self.translator.translate("warning"),
                                    self.translator.translate("select_function"))
         else:
+            self.language_combobox.config(state="disabled")
             self.execute_button.config(state="disabled")
             self.cancel_button.config(state="normal")
-            self.language_combobox.config(state="disabled")
+            self.run_as_administrator_button.config(state="disabled")
             self.clear_result_textbox()  # 清空 TextBox 的内容
             main_feature_name = self.feature_combobox.get()
             executing_message = self.translator.translate('main_executing_operation').format(main_feature_name=main_feature_name)
@@ -445,9 +444,10 @@ class MSPCManagerHelper(tk.Tk):
             self.result_textbox.config(state="normal")
             self.result_textbox.insert(tk.END, result)
             self.result_textbox.config(state="disabled")
+            self.language_combobox.config(state="readonly")
             self.execute_button.config(state="normal")
             self.cancel_button.config(state="disabled")
-            self.language_combobox.config(state="readonly")
+            self.run_as_administrator_button.config(state="normal")
         except queue.Empty:
             self.after(100, self.process_queue)
 
@@ -474,14 +474,16 @@ class MSPCManagerHelper(tk.Tk):
     # 取消功能
     def cancel_feature(self):
         self.cancelled = True
+        self.language_combobox.config(state="disabled")
         self.execute_button.config(state="disabled")
         self.cancel_button.config(state="disabled")
-        self.language_combobox.config(state="disabled")
+        self.run_as_administrator_button.config(state="disabled")
 
         def kill_process_thread():
             self.kill_process_by_pid()  # 结束指定进程
-            self.after(0, lambda: self.execute_button.config(state="normal"))
             self.after(0, lambda: self.language_combobox.config(state="readonly"))
+            self.after(0, lambda: self.execute_button.config(state="normal"))
+            self.after(0, lambda: self.run_as_administrator_button.config(state="normal"))
 
         threading.Thread(target=kill_process_thread).start()
 
@@ -524,20 +526,20 @@ class MSPCManagerHelper(tk.Tk):
 
     # 刷新版本号
     def refresh_version(self):
-        version, beta_version = GetPCManagerVersion().refresh_version()
-        if version:
-            self.version_label.config(text=f"{self.translator.translate('current_pc_manager_version')}: {version}")
-            if beta_version:
+        pc_manager_version, pc_manager_beta_version = GetPCManagerVersion().refresh_version()
+        if pc_manager_version:
+            self.version_label.config(text=f"{self.translator.translate('current_pc_manager_version')}: {pc_manager_version}")
+            if pc_manager_beta_version:
                 # 清除并重新输入 pc_manager_beta_installed 的内容
                 self.clear_result_textbox()
                 self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
                 if not (AdvancedStartup.is_devmode() or AdvancedStartup.is_debugdevmode()):
                     self.textbox(self.translator.translate('tips_run_as_dev_mode'))
-                self.textbox(f"{self.translator.translate('pc_manager_beta_installed')}: {beta_version}\n")
+                self.textbox(f"{self.translator.translate('pc_manager_beta_installed')}: {pc_manager_beta_version}\n")
                 if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_admin()):
                     self.textbox("\n" + self.translator.translate("admin_approval_mode_is_on"))
-        elif beta_version:
-            self.version_label.config(text=f"{self.translator.translate('current_pc_manager_beta_version')}: {beta_version}")
+        elif pc_manager_beta_version:
+            self.version_label.config(text=f"{self.translator.translate('current_pc_manager_beta_version')}: {pc_manager_beta_version}")
         else:
             self.version_label.config(text=self.translator.translate("cannot_read_pc_manager_version"))
 
