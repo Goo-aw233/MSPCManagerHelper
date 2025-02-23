@@ -20,7 +20,7 @@ class CheckSystemRequirements:
         try:
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion") as key:
                 current_build_number = int(winreg.QueryValueEx(key, "CurrentBuildNumber")[0])
-                if current_build_number < 27774:
+                if current_build_number < 27718:
                     return False
 
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
