@@ -20,7 +20,7 @@ from uninstallationFeature import UninstallationFeature
 class MSPCManagerHelper(tk.Tk):
     def __init__(self):
         super().__init__()
-        main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
+        main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper.ico')
         self.iconbitmap(main_icon_path)
         self.mspcmanagerhelper_version = "Beta v0.2.0.13"
         title = f"MSPCManagerHelper {self.mspcmanagerhelper_version}"

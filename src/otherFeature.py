@@ -124,7 +124,7 @@ class OtherFeature:
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
             if result.returncode != 0:
-                return f"{self.translator.translate('repair_edge_wv2_setup_error')}: {result.stderr.strip()}"            
+                return f"{self.translator.translate('repair_edge_wv2_setup_error')}: {result.stderr.strip()}"
 
             return self.translator.translate("repair_edge_wv2_setup_completed")
         except Exception as e:
@@ -224,7 +224,7 @@ class OtherFeature:
         root.resizable(False, False)
 
         # 设置自定义图标
-        switch_region_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
+        switch_region_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper.ico')
         root.iconbitmap(switch_region_icon_path)
 
         label = ttk.Label(root, text=self.translator.translate("type_to_switch_pc_manager_region"))
