@@ -53,6 +53,7 @@
     "retrieve_pc_manager_evtx_error": "获取应用程序事件时出错",
     "retrieving_computer_info": "正在获取计算机信息...",
     "retrieve_computer_info_success": "成功获取计算机信息。",
+    "mspcmanagerhelper_version_label": "MSPCManagerHelper 版本",
     "ask_to_retrieve_pc_manager_dumps_notice": "获取微软电脑管家转储文件",
     "ask_to_retrieve_pc_manager_dumps": "是否获取微软电脑管家转储文件？",
     "no_match_procdump_version": "未找到与当前电脑匹配的 ProcDump 版本。",
@@ -254,10 +255,14 @@
 
 
     "@otherFeature.py": "otherFeature.py",
+    "Windows_Server_does_not_support_this_feature": "Windows Server 不支持此功能。",
     "display_name": "产品名称",
-    "path_to_signed_product_exe": "产品注册路径",
-    "path_to_signed_reporting_exe": "可执行文件路径",
-    "status": "状态",
+    "instance_GUID": "产品唯一标识符 (GUID)",
+    "path_to_signed_product_exe": "签名的产品可执行文件路径",
+    "path_to_signed_reporting_exe": "签名的产品可执行文件路径",
+    "product_status": "产品状态",
+    "product_timestamp": "产品更新时间戳",
+    "only_products_registered_to_Windows_Security_are_supported": "此功能仅支持查找注册到 Windows 安全中心的防病毒软件。",
     "no_results": "未能获取到任何结果。",
     "powershell_not_found": "无法启动 PowerShell 进程。",
     "powershell_error": "执行 PowerShell 脚本时出错",
@@ -285,7 +290,7 @@
     "pc_manager_service_error_code_1060": "微软电脑管家服务未安装。",
 
     "ask_if_version_above_3_14_0_0": "检查微软电脑管家版本",
-    "select_pc_manager_version": "当前微软电脑管家是否为 3.14.0.0 及更高版本？\n如果是，请按下“是”；如果不是，请按下“否”。",
+    "select_pc_manager_version": "当前微软电脑管家是否为 3.14.0.0 及更高版本？",
     "how_to_switch_pc_manager_region": "请在弹出的设置中，将“国家或地区”切换为您想要设置的区域，并重启微软电脑管家。\n切换完成后若区域再次被更改，可能会导致微软电脑管家区域再次被切换。",
     "error_opening_ms-settings": "打开设置时出错",
     "switch_pc_manager_region_notice": "切换地区",
@@ -390,7 +395,7 @@
     "uninstall_for_current_user": "为 当前用户 卸载微软电脑管家",
     "uninstall_pc_manager_beta": "卸载微软电脑管家公测版",
 
-    "view_installed_antivirus": "* 查看当前电脑已安装的防病毒软件",
+    "view_installed_antivirus": "* 查找当前电脑已安装的防病毒软件",
     "developer_options": "* 开发者选项",
     "repair_edge_wv2_setup": "修复 Microsoft Edge (WebView2 Runtime) 无法安装",
     "pc_manager_docs": "* 微软电脑管家常见问题解答",
