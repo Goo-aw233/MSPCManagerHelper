@@ -97,7 +97,7 @@ class TopMenuTermOfUse:
 
     def show_term_of_use_window(self):
         term_of_use_window = tk.Toplevel(self.parent)
-        term_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
+        term_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper.ico')
         term_of_use_window.iconbitmap(term_icon_path)
         term_of_use_window.title(self.translator.translate("top_menu_term_of_use"))
         term_of_use_window.geometry("400x300")
@@ -136,7 +136,7 @@ class TopMenuTermOfUse:
 
     def show_privacy_window(self):
         privacy_window = tk.Toplevel(self.parent)
-        privacy_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
+        privacy_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper.ico')
         privacy_window.iconbitmap(privacy_icon_path)
         privacy_window.title(self.translator.translate("top_menu_privacy"))
         privacy_window.geometry("400x300")
@@ -183,7 +183,7 @@ class TopMenuHelp:
 
     def show_help_about_window(self):
         help_about_window = tk.Toplevel(self.parent)
-        about_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper-256.ico')
+        about_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper.ico')
         help_about_window.iconbitmap(about_icon_path)
         help_about_window.title(self.translator.translate("top_menu_help_about"))
         help_about_window.geometry("300x150")
