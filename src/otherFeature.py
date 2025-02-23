@@ -18,7 +18,7 @@ class OtherFeature:
     def textbox(self, message):
         self.result_textbox.config(state="normal")
         self.result_textbox.insert(tk.END, message + "\n")
-        self.result_textbox.config(state="disable")
+        self.result_textbox.config(state="disabled")
         self.result_textbox.update_idletasks()  # 刷新界面
 
     def get_nsudolc_path(self):
@@ -49,12 +49,15 @@ class OtherFeature:
 
     def view_installed_antivirus(self):
         try:
+            # 查询注册表中的 InstallationType 值
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion") as key:
+                installation_type = winreg.QueryValueEx(key, "InstallationType")[0]
+                if installation_type == "Server":
+                    return self.translator.translate("Windows_Server_does_not_support_this_feature")
+
             # 执行 PowerShell 命令
             result = subprocess.run(
-                ["powershell.exe", "-Command",
-                 ("Get-WmiObject -Namespace 'Root\\SecurityCenter2' -Class 'AntivirusProduct' | "
-                  "Select-Object displayName, pathToSignedProductExe, pathToSignedReportingExe, productState | "
-                  "Format-List")],
+                ["powershell.exe", "-Command", "Get-CimInstance -Namespace ROOT\SecurityCenter2 -ClassName AntiVirusProduct"],
                 capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
             output = result.stdout.strip()
@@ -69,13 +72,20 @@ class OtherFeature:
                     key, value = item.split(":", 1)
                     details[key.strip()] = value.strip()
                 formatted_result += (
-                    f"{self.translator.translate('display_name')}: {details.get('displayName', '')}\n"
+                    f"{self.translator.translate('display_name')}: "
+                    f"{details.get('displayName', '')}\n"
+                    f"{self.translator.translate('instance_GUID')}: "
+                    f"{details.get('instanceGuid', '')}\n"
                     f"{self.translator.translate('path_to_signed_product_exe')}: "
                     f"{details.get('pathToSignedProductExe', '')}\n"
                     f"{self.translator.translate('path_to_signed_reporting_exe')}: "
                     f"{details.get('pathToSignedReportingExe', '')}\n"
-                    f"{self.translator.translate('status')}: {details.get('productState', '')}\n\n"
+                    f"{self.translator.translate('product_status')}: "
+                    f"{details.get('productState', '')}\n"
+                    f"{self.translator.translate('product_timestamp')}: "
+                    f"{details.get('timestamp', '')}\n\n"
                 )
+            self.textbox(self.translator.translate("only_products_registered_to_Windows_Security_are_supported") + "\n")
             return formatted_result.strip()
         except subprocess.CalledProcessError as e:
             return f"{self.translator.translate('powershell_error')}: {e.stderr.strip()}"
@@ -85,7 +95,8 @@ class OtherFeature:
     def developer_options(self):
         try:
             # 打开开发者选项页
-            subprocess.run(["start", "ms-settings:developers"], check=True, shell=True)
+            subprocess.run(["start", "ms-settings:developers"],
+                           check=True, shell=True)
             return self.translator.translate("developer_options_opened")
         except subprocess.CalledProcessError as e:
             return f"{self.translator.translate('developer_options_error')}: {str(e)}"
@@ -330,7 +341,7 @@ class OtherFeature:
                 capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
             system_msedge_webview2_version = result.stdout.strip()
-            self.textbox(f"{self.translator.translate('system_msedge_webview2_version')}: {system_msedge_webview2_version}")
+            self.textbox(f"{self.translator.translate('system_msedge_webview2_version')}:\n{system_msedge_webview2_version}")
         except subprocess.CalledProcessError as e:
             self.textbox(f"{self.translator.translate('get_msedge_webview2_version_powershell_error')}: {e.stderr.strip()}")
         except FileNotFoundError as e:
@@ -343,7 +354,7 @@ class OtherFeature:
             msedge_webview2_reg_path = r"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, msedge_webview2_reg_path) as key:
                 user_msedge_webview2_version = winreg.QueryValueEx(key, "pv")[0]
-                return f"{self.translator.translate('user_msedge_webview2_version')}: {user_msedge_webview2_version}"
+                return f"{self.translator.translate('user_msedge_webview2_version')}:\n{user_msedge_webview2_version}"
         except FileNotFoundError:
             return self.translator.translate("msedge_webview2_version_registry_key_not_found")
         except Exception as e:
