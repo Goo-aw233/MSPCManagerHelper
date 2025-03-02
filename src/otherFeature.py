@@ -52,8 +52,6 @@ class OtherFeature:
             # 查询注册表中的 InstallationType 值
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion") as key:
                 installation_type = winreg.QueryValueEx(key, "InstallationType")[0]
-                if installation_type == "Server":
-                    return self.translator.translate("Windows_Server_does_not_support_this_feature")
 
             # 执行 PowerShell 命令
             result = subprocess.run(
@@ -61,7 +59,9 @@ class OtherFeature:
                 capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
             output = result.stdout.strip()
-            if not output:
+            if not output and installation_type == "Server":
+                return self.translator.translate("Windows_Server_does_not_support_this_feature")
+            elif not output:
                 return self.translator.translate("no_results")
 
             # 解析输出并格式化
@@ -133,7 +133,10 @@ class OtherFeature:
     def pc_manager_docs(self):
         try:
             # 根据语言选择 URL
-            pc_manager_docs_url = "https://docs.qq.com/doc/DR2FrVkJmT0NuZ0Zx" if self.translator.locale == "zh-cn" else "https://mspcmanager.github.io/mspcm-docs"
+            if self.translator.locale == "zh-cn":
+                pc_manager_docs_url = "https://docs.qq.com/doc/DR2FrVkJmT0NuZ0Zx"
+            else:
+                pc_manager_docs_url = "https://mspcmanager.github.io/mspcm-docs"
 
             # 打开指定的 URL
             webbrowser.open(pc_manager_docs_url)

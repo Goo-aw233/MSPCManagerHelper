@@ -22,7 +22,7 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper.ico')
         self.iconbitmap(main_icon_path)
-        self.mspcmanagerhelper_version = "Beta v0.2.0.13"
+        self.mspcmanagerhelper_version = "Beta v0.2.0.14"
         title = f"MSPCManagerHelper {self.mspcmanagerhelper_version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
@@ -222,11 +222,11 @@ class MSPCManagerHelper(tk.Tk):
     def change_language(self, event):
         current_language_index = self.language_list.index(self.translator.current_language)
         selected_language = self.language_combobox.get()
-        Load_Languages = self.translator.translate("lang_custom")
+        loaded_languages = self.translator.translate("lang_custom")
         language_file_path = None
 
         # 选择语言
-        if selected_language == Load_Languages:
+        if selected_language == loaded_languages:
             language_file_path = filedialog.askopenfilename(
             filetypes=[("JSON", "*.json")])
             if language_file_path:
@@ -239,8 +239,8 @@ class MSPCManagerHelper(tk.Tk):
             self.language_list[-1] = self.translator.translate("lang_custom")
 
         # 更新语言选择组合框
-        self.language_combobox.config(values=(self.language_list))
-        if selected_language == Load_Languages:
+        self.language_combobox.config(values=self.language_list)
+        if selected_language == loaded_languages:
             self.language_combobox.current(current_language_index)
             if language_file_path:
                 self.language_combobox.current(len(self.language_list)-2)
@@ -448,6 +448,8 @@ class MSPCManagerHelper(tk.Tk):
             self.execute_button.config(state="normal")
             self.cancel_button.config(state="disabled")
             self.run_as_administrator_button.config(state="normal")
+            if AdvancedStartup.is_admin():
+                self.run_as_administrator_button.config(state="disabled")
         except queue.Empty:
             self.after(100, self.process_queue)
 
@@ -484,6 +486,8 @@ class MSPCManagerHelper(tk.Tk):
             self.after(0, lambda: self.language_combobox.config(state="readonly"))
             self.after(0, lambda: self.execute_button.config(state="normal"))
             self.after(0, lambda: self.run_as_administrator_button.config(state="normal"))
+            if AdvancedStartup.is_admin():
+                self.after(0, lambda: self.run_as_administrator_button.config(state="disabled"))
 
         threading.Thread(target=kill_process_thread).start()
 
