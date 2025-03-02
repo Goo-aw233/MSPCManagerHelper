@@ -108,7 +108,7 @@ class InstallationFeature:
                        ("*", "*")])
 
         if not all_users_application_package_file_path:
-            return self.translator.translate("install_for_all_users_no_file_selected")
+            return self.translator.translate("no_files_selected")
 
         # 弹出提示框询问用户是否选择许可证文件
         response_for_all_users_license = messagebox.askyesnocancel(
@@ -121,7 +121,7 @@ class InstallationFeature:
             all_users_license_path = filedialog.askopenfilename(
                 filetypes=[("License.xml", "*.xml"), ("*", "*")])
             if not all_users_license_path:
-                return self.translator.translate("install_for_all_users_no_file_selected")
+                return self.translator.translate("no_files_selected")
         elif response_for_all_users_license is None:
             return self.translator.translate("user_canceled")
         else:
@@ -138,7 +138,7 @@ class InstallationFeature:
                 filetypes=[("Msix", "*.msix"),
                            ("*", "*")])
             if not all_users_dependency_package_paths:
-                return self.translator.translate("install_for_all_users_no_file_selected")
+                return self.translator.translate("no_files_selected")
         elif response_for_all_users_dependency is None:
             return self.translator.translate("user_canceled")
 
@@ -175,7 +175,7 @@ class InstallationFeature:
                        ("*", "*")])
 
         if not current_user_application_package_file_path:
-            return self.translator.translate("install_for_current_user_no_file_selected")
+            return self.translator.translate("no_files_selected")
 
         # 弹出提示框询问用户是否选择依赖包
         response_for_current_user_dependency = messagebox.askyesnocancel(
@@ -189,7 +189,7 @@ class InstallationFeature:
                 filetypes=[("Msix", "*.msix"),
                            ("*", "*")])
             if not current_user_dependency_package_paths:
-                return self.translator.translate("install_for_current_user_no_file_selected")
+                return self.translator.translate("no_files_selected")
         elif response_for_current_user_dependency is None:
             return self.translator.translate("user_canceled")
 
@@ -258,7 +258,7 @@ class InstallationFeature:
                        ("*", "*")])
 
         if not update_application_package_file_path:
-            return self.translator.translate("update_from_application_package_no_file_selected")
+            return self.translator.translate("no_files_selected")
 
         # 弹出提示框询问用户是否选择依赖包
         response_for_update_dependency = messagebox.askyesnocancel(
@@ -272,7 +272,7 @@ class InstallationFeature:
                 filetypes=[("Msix", "*.msix"),
                            ("*", "*")])
             if not update_dependency_package_paths:
-                return self.translator.translate("update_from_application_package_no_file_selected")
+                return self.translator.translate("no_files_selected")
         elif response_for_update_dependency is None:
             return self.translator.translate("user_canceled")
 
@@ -300,7 +300,7 @@ class InstallationFeature:
     def install_from_appxmanifest(self):
         # 询问是否已经安装过 Microsoft PC Manager
         responding_to_whether_or_not_it_was_installed = messagebox.askyesnocancel(
-            self.translator.translate("install_from_appxmanifest_warn_title"),
+            self.translator.translate("warning"),
             self.translator.translate("install_from_appxmanifest_warn")
         )
 
@@ -424,7 +424,7 @@ class InstallationFeature:
                             os.remove(temporary_files_path)
                         elif os.path.isdir(temporary_files_path):  # 如果是目录就删除
                             shutil.rmtree(temporary_files_path)
-                    return self.translator.translate("install_from_appxmanifest_no_file_selected")
+                    return self.translator.translate("no_files_selected")
 
                 for dependency_path in dependency_package_paths:
                     self.textbox(self.translator.translate("install_from_appxmanifest_installing_dependency_package") + '\n')

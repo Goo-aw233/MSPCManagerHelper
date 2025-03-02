@@ -263,6 +263,8 @@ class MainFeature:
 
             # 输出 MSPCManagerHelper 版本到 MSPCManagerHelperInfo.txt
 
+            # 传入用户输入的内容到 UserInputInfo.txt
+
             # 询问是否选择获取 Dumps
             response_for_retrieve_dumps = messagebox.askyesno(
                 self.translator.translate("ask_to_retrieve_pc_manager_dumps_notice"),
@@ -361,13 +363,16 @@ class MainFeature:
     def debug_dev_mode(self):
         try:
             # 打开文件选择框
-            file_path = filedialog.askopenfilename(filetypes=[("*", "*")])
+            file_paths = filedialog.askopenfilenames(filetypes=[("*", "*")])
 
-            if file_path:
-                # 使用 subprocess 运行选中的文件
-                result = subprocess.run([file_path], capture_output=True, text=True)
-                return self.translator.translate("feature_unavailable") + '\n' + f"{result.stdout}"
+            if file_paths:
+                results = []
+                for file_path in file_paths:
+                    # 使用 subprocess 运行选中的文件
+                    result = subprocess.run([file_path], capture_output=True, text=True)
+                    results.append(result.stdout)
+                return self.translator.translate("feature_unavailable") + '\n' + '\n'.join(results)
             else:
-                return self.translator.translate("no_file_selected")
+                return self.translator.translate("no_files_selected")
         except Exception as e:
-            return self.translator.translate("debug_dev_mode_error") + f": {str(e)}"
+            return self.translator.translate("warning") + f": {str(e)}"
