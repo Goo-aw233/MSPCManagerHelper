@@ -1,5 +1,12 @@
 <h1 align="center">MSPCManagerHelper</h1>
 
+<div align=center>
+<img src="./src/assets/MSPCManagerHelper.png" width="140" height="140"/>
+</div>
+
+> [!IMPORTANT]  
+> 此仓库将进入慢速模式，短时间内不会有更新，除非有重大错误、漏洞，或者微软电脑管家更新需要适配等。
+
 ## 🖹 选择语言
 
 Please select your language to continue
