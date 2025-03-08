@@ -1,5 +1,12 @@
 <h1 align="center">MSPCManagerHelper</h1>
 
+<div align=center>
+<img src="./src/assets/MSPCManagerHelper.png" width="140" height="140"/>
+</div>
+
+> [!IMPORTANT]  
+> This repository will go into slow mode and there will be no updates for a short period of time unless there are major bugs, vulnerabilities, or Microsoft PC Manager updates that need to be adapted, etc.
+
 ## 🖹 Choose Your Language
 
 Please select your language to continue

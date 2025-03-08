@@ -10,7 +10,7 @@
 
     "@Contributors": "Contributors",
     "localization_translators_name": "MSPCManagerHelper",
-    "project_contributors_name": "GuCATs, ArcticFoxPro, LuYang114 及其他社群志愿者们",
+    "project_contributors_name": "GuCATs, ArcticFoxPro, LuYang114, zwJimRaynor（图标设计） 及其他社群志愿者们",
 
 
 
@@ -256,7 +256,7 @@
     "display_name": "产品名称",
     "instance_GUID": "产品唯一标识符 (GUID)",
     "path_to_signed_product_exe": "签名的产品可执行文件路径",
-    "path_to_signed_reporting_exe": "签名的产品可执行文件路径",
+    "path_to_signed_reporting_exe": "签名的产品报告组件路径",
     "product_status": "产品状态",
     "product_timestamp": "产品更新时间戳",
     "only_products_registered_to_Windows_Security_are_supported": "此功能仅支持查找注册到 Windows 安全中心的防病毒软件。",
