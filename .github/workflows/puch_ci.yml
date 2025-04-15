@@ -16,8 +16,6 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ windows-latest, windows-11-arm ]
-        architecture: [ x64, ARM64 ]
         include:
           - os: windows-latest
             architecture: x64
