@@ -28,7 +28,26 @@ class CheckSystemRequirements:
                 admin_approval_mode = int(winreg.QueryValueEx(key, "TypeOfAdminApprovalMode")[0])
                 if admin_approval_mode == 2:
                     return True
+                elif admin_approval_mode != 2:
+                    return False
         except FileNotFoundError:
             return False
 
         return False
+
+    @staticmethod
+    def check_server_levels():
+        try:
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion") as key:
+                installation_type = winreg.QueryValueEx(key, "InstallationType")[0]
+                if installation_type != "Server":
+                    return False
+
+            try:
+                with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Server") as key:
+                    winreg.QueryValueEx(key, "ClientExperienceEnabled")
+                    return False
+            except FileNotFoundError:
+                return True
+        except Exception:
+            return False

@@ -22,7 +22,7 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper.ico')
         self.iconbitmap(main_icon_path)
-        self.mspcmanagerhelper_version = "Beta v0.2.0.15"
+        self.mspcmanagerhelper_version = "Beta v0.2.0.16"
         title = f"MSPCManagerHelper {self.mspcmanagerhelper_version}"
         if AdvancedStartup.is_admin():
             title += " (Administrator)"
@@ -65,6 +65,7 @@ class MSPCManagerHelper(tk.Tk):
 
         self.check_system_requirements()  # 检测系统要求
         self.check_admin_approval_mode()  # 检查“管理员保护”是否开启
+        self.check_server_levels()  # 检查 Windows Server 安装类型
 
     # 设置 DPI 感知
     def set_dpi_awareness(self):
@@ -270,6 +271,7 @@ class MSPCManagerHelper(tk.Tk):
 
         self.check_system_requirements()    # 检测系统要求
         self.check_admin_approval_mode()  # 检查“管理员保护”是否开启
+        self.check_server_levels()  # 检查 Windows Server 安装类型
 
     # 更新文本
     def update_texts(self):
@@ -563,6 +565,12 @@ class MSPCManagerHelper(tk.Tk):
         if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_admin()):
             messagebox.showerror(self.translator.translate("warning"),
                                  self.translator.translate("admin_approval_mode_is_on"))
+
+    # 检查 Windows Server 安装类型
+    def check_server_levels(self):
+        if CheckSystemRequirements.check_server_levels():
+            messagebox.showerror(self.translator.translate("warning"),
+                            self.translator.translate("server_installation_type_is_core"))
 
 if __name__ == "__main__":
     app = MSPCManagerHelper()
