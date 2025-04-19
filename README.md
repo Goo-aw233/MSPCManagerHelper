@@ -17,7 +17,7 @@ Please select your language to continue
 
 ## 👏 Introduction
 
-`MSPCManagerHelper` is a utility (`PCM Assistant`, `PCM Helper` or `Microsoft PC Manager Helper`) that comes with [`Microsoft PC Manager`](https://www.microsoft.com/store/productId/9PM860492SZD). This tool is designed to provide users with efficient and convenient solutions to quickly deal with problems they may encounter during use.
+`MSPCManagerHelper` is a utility (`PCM Assistant`, `PCM Helper` or `Microsoft PC Manager Helper`) that comes with [`Microsoft PC Manager`](https://apps.microsoft.com/detail/9PM860492SZD). This tool is designed to provide users with efficient and convenient solutions to quickly deal with problems they may encounter during use.
 Visit <https://pcmanager.microsoft.com> to download and experience the latest version of Microsoft PC Manager and join our [User Community](https://forms.office.com/r/EPcrKfUbjK)! 😉
 
 > [!IMPORTANT]  
@@ -74,4 +74,4 @@ In the `scripts` directory, you can also run `install_requirements.bat` directly
 5. Build the EXE
 
 Run `build.bat` or `build_.venv.bat` directly from the `scripts\build` directory to build it yourself.
-Finally, the built `EXE file` will be stored in the `dist` directory of the root directory and named `MSPCManager_... _vx.x.x.x.x.exe`.
+Finally, the built `EXE file` will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_... _vx.x.x.x.x.exe`.

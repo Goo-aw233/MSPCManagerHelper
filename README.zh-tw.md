@@ -17,7 +17,7 @@ Please select your language to continue
 
 ## 👏 簡介
 
-`MSPCManagerHelper` 是一款與 [`Microsoft 電腦管家`](https://www.microsoft.com/store/productId/9PM860492SZD) 配套的實用工具（亦稱為 `PCM 幫手`、`PCM 小幫手`、`Microsoft 電腦管家小幫手` 或 `破產貓小幫手`）。本工具旨在為用戶提供高效、便捷的解決方案，以快速應對使用過程中可能遇到的問題。
+`MSPCManagerHelper` 是一款與 [`Microsoft 電腦管家`](https://apps.microsoft.com/detail/9PM860492SZD) 配套的實用工具（亦稱為 `PCM 幫手`、`PCM 小幫手`、`Microsoft 電腦管家小幫手` 或 `破產貓小幫手`）。本工具旨在為用戶提供高效、便捷的解決方案，以快速應對使用過程中可能遇到的問題。
 歡迎前往 <https://pcmanager.microsoft.com> 下載並體驗最新版 Microsoft 電腦管家，並加入到我們的 [社群](https://forms.office.com/r/EPcrKfUbjK) 當中！😉
 
 > [!IMPORTANT]
@@ -74,4 +74,4 @@ python -m pip install --upgrade pip
 5. 構建 EXE
 
 直接執行 `scripts\build` 目錄下的 `build.bat` 或 `build_.venv.bat` 即可自己構建。
-最後，構建好的 `EXE 檔案` 將會存放在根目錄的 `dist` 目錄下，並命名為 `MSPCManager_..._vx.x.x.x.exe`。
+最後，構建好的 `EXE 檔案` 將會存放在根目錄的 `dist` 目錄下，並命名為 `MSPCManagerHelper_..._vx.x.x.x.exe`。
