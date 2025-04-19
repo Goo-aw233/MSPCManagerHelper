@@ -413,10 +413,9 @@
     "no_files_selected": "No files selected.",
     "system_requirements_checking": "Checking System Requirements...",
     "failed_to_set_dpi_awareness": "Failed to set DPI awareness.",
-    "illegal_language_files_title": "Illegal Language File",
-    "illegal_language_files": "This language file is not legal, please try another language file.",
     "see_term_of_use_and_privacy": "By using MSPCManagerHelper, you signify that you have read and agree to the `Terms of Use` and `Privacy Policy`, otherwise, please exit and delete the software.",
     "tips_run_as_dev_mode": "Run with `/DevMode` or `-DevMode` parameter to enable developer mode.",
     "excessive_waiting_time": "If the wait time is too long, please be patient or cancel the task and try again.",
-    "admin_approval_mode_is_on": "Administrator protection is turned on, functions that need to be run as administrator will not work properly, please turn off Administrator protection and restart your PC before starting MSPCManagerHelper."
+    "admin_approval_mode_is_on": "Administrator Protection is turned on, functions that need to be run as administrator will not work properly, please turn off Administrator Protection and restart your PC before starting MSPCManagerHelper.",
+    "server_installation_type_is_core": "The current Windows Server installation type is Core, Microsoft PC Manager will not be available on this system. You'll need to do a clean installation of Windows Server to select Server with Desktop Experience."
 }
