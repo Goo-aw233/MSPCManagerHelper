@@ -96,7 +96,7 @@ class InstallationFeature:
                     return f"{self.translator.translate('download_from_msstore_app_error')}: {str(e)}"
             else:
                 # 如果没有安装 Microsoft Store，打开指定的 URL
-                webbrowser.open("https://www.microsoft.com/store/productid/9PM860492SZD")
+                webbrowser.open("https://apps.microsoft.com/detail/9PM860492SZD")
                 return self.translator.translate("download_from_msstore_site_opened")
         except Exception as e:
             return f"{self.translator.translate('download_from_msstore_site_error')}: {str(e)}"

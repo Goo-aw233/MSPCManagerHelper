@@ -16,8 +16,11 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ windows-latest ]
-        architecture: [ x64 ]
+        include:
+          - os: windows-latest
+            architecture: x64
+          - os: windows-11-arm
+            architecture: ARM64
     runs-on: ${{ matrix.os }}
 
     steps:
