@@ -229,4 +229,4 @@ class TopMenuHelp:
         if translator.locale == "zh-cn":
             webbrowser.open("https://forms.office.com/r/7YhjaEEmKc")
         else:
-            webbrowser.open("https://forms.office.com/r/EPcrKfUbjK")
+            webbrowser.open("https://mspcmanager.github.io/mspcm-docs/appendix/social-accounts.html")
