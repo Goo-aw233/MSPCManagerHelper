@@ -1,11 +1,11 @@
-<h1 align="center">MSPCManagerHelper</h1>
-
 <div align=center>
+
+# MSPCManagerHelper
 <img src="./src/assets/MSPCManagerHelper.png" width="140" height="140"/>
 </div>
 
-> [!IMPORTANT]  
-> 此仓库将进入慢速模式，短时间内不会有更新，除非有重大错误、漏洞，或者微软电脑管家更新需要适配等。
+> [!IMPORTANT]
+> 此仓库将进入慢速模式，短时间内不会有更新，除非有重大错误、漏洞或微软电脑管家更新需要适配等。
 
 ## 🖹 选择语言
 
@@ -17,8 +17,8 @@ Please select your language to continue
 
 ## 👏 简介
 
-`MSPCManagerHelper` 是一款与 [`微软电脑管家`](https://apps.microsoft.com/detail/9PM860492SZD) 配套的实用工具（亦称为 `PCM 助手`、`PCM 小助手`、`微软电脑管家小助手` 或 `破产猫小助手`）。本工具旨在为用户提供高效、便捷的解决方案，以快速应对使用过程中可能遇到的问题。
-欢迎访问 <https://pcmanager.microsoft.com> 下载并体验最新版本的微软电脑管家，并加入到我们的 [社群](https://forms.office.com/r/7YhjaEEmKc) 当中！😉
+`MSPCManagerHelper` 是一款与[`微软电脑管家`](https://apps.microsoft.com/detail/9PM860492SZD)配套的实用工具（亦称为 `PCM 助手`、`PCM 小助手`、`微软电脑管家小助手`或`破产猫小助手`）。本工具旨在为用户提供高效、便捷的解决方案，以快速应对使用过程中可能遇到的问题。
+欢迎访问 <https://pcmanager.microsoft.com> 下载并体验最新版本的微软电脑管家，并加入到我们的[社群](https://forms.office.com/r/7YhjaEEmKc)当中！😉
 
 > [!IMPORTANT]
 > 请注意，本工具并非 Microsoft Corporation 及其子公司官方开发或发布。工具作者与 Microsoft Corporation 及其子公司无任何隶属关系，工具中的内容也不代表 Microsoft Corporation 或其子公司的官方立场。
@@ -30,48 +30,45 @@ Please select your language to continue
 
 1. 从 [Python](https://www.python.org/downloads) 下载 Python 3.11 版本
 
-2. 将仓库 Clone 至本地
+2. 克隆代码
 
-```bash
-git clone https://github.com/Goo-aw233/MSPCManagerHelper.git
-cd MSPCManagerHelper
-```
+    ```bash
+    git clone https://github.com/Goo-aw233/MSPCManagerHelper.git
+    cd MSPCManagerHelper
+    ```
 
 3. 创建和激活虚拟环境
 
-- **Windows**: 
+    - **Windows**:
 
-```Batch
-cd <path\to\MSPCManagerHelper>
-python -m venv .venv
-.venv\Scripts\activate
-```
+        ```Batch
+        py -3.11 -m venv .venv
+        .venv\Scripts\activate
+        ```
 
-<details>
+    <details>
+    <summary>macOS 与 Linux 的 <code>install_requirements.sh</code> 已不再提供</summary>
 
-<summary>macOS 与 Linux 的 <code>install_requirements.sh</code> 已不再提供</summary>
+    - **macOS / Linux**:
 
-- **macOS / Linux**: 
+        ```bash
+        python3 -m venv .venv
+        source .venv/bin/activate
+        ```
 
-```bash
-cd <path/to/MSPCManagerHelper>
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-</details>
+    </details>
 
 4. 安装依赖包
 
-```Batch
-pip install -r requirements.txt
-pip install requests
-python -m pip install --upgrade pip
-```
+    ```Batch
+    python -m pip install --upgrade pip
+    pip install -r requirements.txt
+    pip install requests
+    ```
 
-在 `scripts` 目录下，您也可以直接运行 `install_requirements.bat` 快速完成安装，或运行 `install_requirements_.venv.bat` 同时激活虚拟环境并安装依赖包。
+    在 `scripts` 目录下，您也可以直接运行 `install_requirements.bat` 快速完成安装，或运行 `install_requirements_.venv.bat` 同时激活虚拟环境并安装依赖包。
 
 5. 构建 EXE
 
-直接运行 `scripts\build` 目录下的 `build.bat` 或 `build_.venv.bat` 即可自己构建。
-最后，构建好的 `EXE 文件` 将会存放在根目录的 `dist` 目录下，并命名为 `MSPCManagerHelper_..._vx.x.x.x.exe`。
+    直接运行 `scripts\build` 目录下的 `build.bat` 或 `build_.venv.bat` 即可自己构建。
+    最后，构建好的 `EXE 文件` 将会存放在根目录的 `dist` 目录下，并命名为 `MSPCManagerHelper_..._vx.x.x.x.exe`。
