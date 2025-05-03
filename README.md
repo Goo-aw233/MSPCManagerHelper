@@ -13,7 +13,7 @@ Please select your language to continue
 
 請選取你的語言以繼續 | 请选择你的语言以继续
 
-[繁體中文 (臺灣)](./README.zh-tw.md) | [简体中文 (中国大陆)](./README.zh-cn.md)
+[中文（繁體）](./README.zh-Hant.md) | [中文（简体）](./README.zh-Hans.md)
 
 ## 👏 Introduction
 
