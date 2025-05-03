@@ -9,7 +9,7 @@ python.exe -m venv "%~dp0..\.venv"
 echo "Activating .venv"
 call "%~dp0..\.venv\Scripts\activate.bat"
 
-echo "Installing requirements.txt & Upgrading pip"
+echo "Upgrading pip & Installing requirements.txt"
 python.exe -m pip install --upgrade pip
 pip.exe install -r "%~dp0..\requirements.txt"
 pip.exe install requests
