@@ -25,17 +25,20 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.11
+    - name: Set up Python 3.13
       uses: actions/setup-python@v5
       with:
-        python-version: "3.11"
+        python-version: "3.13"
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         if (Test-Path requirements.txt) { pip install -r requirements.txt }
+    - name: Cleanup before build
+      run: |
+        ./scripts/build/cleanup-before-first-build.cmd
     - name: Build exe
       run: |
-        ./scripts/build/build.bat
+        ./scripts/build/build.cmd
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
