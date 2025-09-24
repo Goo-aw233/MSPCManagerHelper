@@ -1,11 +1,8 @@
 <div align=center>
 
 # MSPCManagerHelper
-<img src="./src/assets/MSPCManagerHelper.png" width="140" height="140"/>
+<img src="./src/assets/icons/MSPCManagerHelper.png" width="140" height="140"/>
 </div>
-
-> [!IMPORTANT]
-> This repository will go into slow mode and there will be no updates for a short period of time unless there are major bugs, vulnerabilities, or Microsoft PC Manager updates that need to be adapted, etc.
 
 ## 🖹 Choose Your Language
 
@@ -13,7 +10,7 @@ Please select your language to continue
 
 請選取你的語言以繼續 | 请选择你的语言以继续
 
-[中文（繁體）](./README.zh-Hant.md) | [中文（简体）](./README.zh-Hans.md)
+[中文 (繁體)](./docs/README.zh-Hant.md) | [中文 (简体)](./docs/README.zh-Hans.md)
 
 ## 👏 Introduction
 
@@ -28,7 +25,7 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 
 ## 💻 Development
 
-1. Download Python 3.11 from [Python](https://www.python.org/downloads)
+1. Download Python 3.13 from [Python](https://www.python.org/downloads)
 
 2. Clone the code
 
@@ -42,8 +39,8 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
     - **Windows**:
 
         ```Batch
-        py -3.11 -m venv .venv
-        .venv\Scripts\activate
+        py.exe -3.13 -m venv .venv
+        ".venv\Scripts\activate"
         ```
 
     <details>
@@ -63,12 +60,14 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
     ```Batch
     python -m pip install --upgrade pip
     pip install -r requirements.txt
-    pip install requests
     ```
 
-    In the `scripts` directory, you can also run `install_requirements.bat` directly to quickly complete the installation, or run `install_requirements_.venv.bat` to activate the virtual environment and install the dependencies at the same time.
+    In the `scripts` directory, you can also run `install_requirements.cmd` directly to quickly complete the installation, or run `install_requirements_.venv.cmd` to activate the virtual environment and install the dependencies at the same time.
 
 5. Build the EXE
 
-    Run `build.bat` or `build_.venv.bat` directly from the `scripts\build` directory to build it yourself.
+    > [!IMPORTANT]
+    > If this is the first build, run `cleanup-before-first-build.cmd` in the `scripts` directory to clean up unneeded files.
+
+    Run `build.cmd` or `build_.venv.cmd` directly from the `scripts\build` directory to build it yourself.
     Finally, the built `EXE file` will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_... _vx.x.x.x.x.exe`.

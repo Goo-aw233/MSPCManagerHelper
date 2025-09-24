@@ -1,11 +1,8 @@
 <div align=center>
 
 # MSPCManagerHelper
-<img src="./src/assets/MSPCManagerHelper.png" width="140" height="140"/>
+<img src="./src/assets/icons/MSPCManagerHelper.png" width="140" height="140"/>
 </div>
-
-> [!IMPORTANT]
-> 此仓库将进入慢速模式，短时间内不会有更新，除非有重大错误、漏洞或微软电脑管家更新需要适配等。
 
 ## 🖹 选择语言
 
@@ -13,7 +10,7 @@ Please select your language to continue
 
 請選取你的語言以繼續 | 请选择你的语言以继续
 
-[English (United States)](./README.md) | [中文（繁體）](./README.zh-Hant.md)
+[English (United States)](./../README.md) | [中文 (繁體)](./README.zh-Hant.md)
 
 ## 👏 简介
 
@@ -28,7 +25,7 @@ Please select your language to continue
 
 ## 💻 开发
 
-1. 从 [Python](https://www.python.org/downloads) 下载 Python 3.11 版本
+1. 从 [Python](https://www.python.org/downloads) 下载 Python 3.13 版本
 
 2. 克隆代码
 
@@ -42,8 +39,8 @@ Please select your language to continue
     - **Windows**:
 
         ```Batch
-        py -3.11 -m venv .venv
-        .venv\Scripts\activate
+        py.exe -3.13 -m venv .venv
+        ".venv\Scripts\activate"
         ```
 
     <details>
@@ -63,12 +60,14 @@ Please select your language to continue
     ```Batch
     python -m pip install --upgrade pip
     pip install -r requirements.txt
-    pip install requests
     ```
 
-    在 `scripts` 目录下，您也可以直接运行 `install_requirements.bat` 快速完成安装，或运行 `install_requirements_.venv.bat` 同时激活虚拟环境并安装依赖包。
+    在 `scripts` 目录下，您也可以直接运行 `install_requirements.cmd` 快速完成安装，或运行 `install_requirements_.venv.cmd` 同时激活虚拟环境并安装依赖包。
 
 5. 构建 EXE
 
-    直接运行 `scripts\build` 目录下的 `build.bat` 或 `build_.venv.bat` 即可自己构建。
+    > [!IMPORTANT]
+    > 如果是首次构建，请运行 `scripts` 目录下的 `cleanup-before-first-build.cmd` 来清理不需要的文件。
+
+    直接运行 `scripts\build` 目录下的 `build.cmd` 或 `build_.venv.cmd` 即可自己构建。
     最后，构建好的 `EXE 文件` 将会存放在根目录的 `dist` 目录下，并命名为 `MSPCManagerHelper_..._vx.x.x.x.exe`。
