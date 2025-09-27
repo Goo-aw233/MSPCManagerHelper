@@ -41,9 +41,11 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
     def _set_language(self, language=None):
         if language is None:
             language_map = {
-                ('en_',): 'en-us',
-                ('zh_CN', 'zh_Hans', 'zh_Hans_HK', 'zh_Hans_MO', 'zh_Hans_SG', 'zh_SG'): 'zh-cn',
-                ('zh_Hant', 'zh_Hant_HK', 'zh_Hant_MO', 'zh_Hant_TW', 'zh_HK', 'zh_MO', 'zh_TW'): 'zh-tw'
+                ('en_', 'en-'): 'en-us',
+                ('zh_CN', 'zh_Hans', 'zh_Hans_CN', 'zh_Hans_HK', 'zh_Hans_MO', 'zh_Hans_SG', 'zh_SG', 'zh-CN',
+                 'zh-Hans', 'zh-Hans-CN', 'zh-Hans-HK', 'zh-Hans-MO', 'zh-Hans-SG', 'zh-SG',): 'zh-cn',
+                ('zh_Hant', 'zh_Hant_HK', 'zh_Hant_MO', 'zh_Hant_TW', 'zh_HK', 'zh_MO', 'zh_TW', 'zh-Hant',
+                 'zh-Hant-HK', 'zh-Hant-MO', 'zh-Hant-TW', 'zh-HK', 'zh-MO', 'zh_TW'): 'zh-tw'
             }
             locale_str = locale.getdefaultlocale()[0]
             default_language = 'en-us'
