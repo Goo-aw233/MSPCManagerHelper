@@ -1,7 +1,7 @@
 <div align=center>
 
 # MSPCManagerHelper
-<img src="./src/assets/icons/MSPCManagerHelper.png" width="140" height="140"/>
+<img src="../src/assets/icons/MSPCManagerHelper.png" width="140" height="140"/>
 </div>
 
 ## 🖹 選取語言
@@ -66,7 +66,6 @@ Please select your language to continue
 
 5. 構建 EXE
 
-    > [!IMPORTANT]
     > 如果是首次構建，請執行 `scripts` 目錄下的 `cleanup-before-first-build.cmd` 來清除不需要的檔案。
 
     直接執行 `scripts\build` 目錄下的 `build.cmd` 或 `build_.venv.cmd` 即可自己構建。
