@@ -5,8 +5,8 @@ from tkinter import messagebox
 
 import customtkinter
 
-from .. import __program_name__, __program_version__
-from ..modules import CheckSystemRequirements
+from gui.modules.program_metadata import ProgramMetadata
+from gui.modules.check_system_requirements import CheckSystemRequirements
 
 
 class AboutPageFrame(customtkinter.CTkScrollableFrame):
@@ -43,8 +43,8 @@ class AboutPageFrame(customtkinter.CTkScrollableFrame):
         self.program_info_label_title.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="w")
 
         self.program_info_content_label = customtkinter.CTkLabel(self.program_info_frame, justify="left")
-        translated_program_info_content_1 = f'{self.translator.translate("program_name")}: {__program_name__}'
-        translated_program_info_content_2 = f'{self.translator.translate("program_version")}: {__program_version__}'
+        translated_program_info_content_1 = f'{self.translator.translate("program_name")}: {ProgramMetadata.PROGRAM_NAME}'
+        translated_program_info_content_2 = f'{self.translator.translate("program_version")}: {ProgramMetadata.PROGRAM_VERSION}'
         combined_program_info = (f"{translated_program_info_content_1}\n"
                                  f"{translated_program_info_content_2}")
         self.program_info_content_label.configure(text=combined_program_info, font=(self.font_family, 12),

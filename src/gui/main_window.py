@@ -3,14 +3,14 @@ import locale
 import tkinter.font
 from tkinter import messagebox
 from windows_toasts import Toast, WindowsToaster
-from . import __program_name__, __program_version__
-from .modules import (AdvancedStartup, CheckSystemRequirements, GetProgramResources)
-from .navigation import NavigationFrame
-from .translator import Translator
-from .pages import (
+from gui.modules.program_metadata import ProgramMetadata
+from gui.modules import (AdvancedStartup, CheckSystemRequirements, GetProgramResources)
+from gui.navigation import NavigationFrame
+from gui.pages import (
     HomePageFrame, MaintenancePageFrame, InstallationFeaturesPageFrame,
     UninstallationFeaturesPageFrame, UtilsPageFrame, ToolboxPageFrame, AboutPageFrame
 )
+from gui.translator import Translator
 
 
 class MSPCManagerHelperMainWindow(customtkinter.CTk):
@@ -23,7 +23,7 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
 
     def _configure_window(self):
         # Set the Window Title
-        program_title_str = f"{__program_name__} {__program_version__}"
+        program_title_str = f"{ProgramMetadata.PROGRAM_NAME} {ProgramMetadata.PROGRAM_VERSION}"
         if AdvancedStartup.is_administrator():
             program_title_str += " (Administrator)"
         if AdvancedStartup.is_devmode():
@@ -41,11 +41,12 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
     def _set_language(self, language=None):
         if language is None:
             language_map = {
-                ('en_', 'en-'): 'en-us',
+                ('en_', 'en-'): 'en-us',    # English
                 ('zh_CN', 'zh_Hans', 'zh_Hans_CN', 'zh_Hans_HK', 'zh_Hans_MO', 'zh_Hans_SG', 'zh_SG', 'zh-CN',
                  'zh-Hans', 'zh-Hans-CN', 'zh-Hans-HK', 'zh-Hans-MO', 'zh-Hans-SG', 'zh-SG',): 'zh-cn',
+                # Simplified Chinese
                 ('zh_Hant', 'zh_Hant_HK', 'zh_Hant_MO', 'zh_Hant_TW', 'zh_HK', 'zh_MO', 'zh_TW', 'zh-Hant',
-                 'zh-Hant-HK', 'zh-Hant-MO', 'zh-Hant-TW', 'zh-HK', 'zh-MO', 'zh_TW'): 'zh-tw'
+                 'zh-Hant-HK', 'zh-Hant-MO', 'zh-Hant-TW', 'zh-HK', 'zh-MO', 'zh_TW'): 'zh-tw'  # Traditional Chinese
             }
             locale_str = locale.getdefaultlocale()[0]
             default_language = 'en-us'
@@ -78,7 +79,7 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
             toaster.show_toast(toast_notification)
 
     def _init_ui(self):
-        # 清除旧的 widgets
+        # Destroy all Widgets
         for widget in self.winfo_children():
             widget.destroy()
 
@@ -87,7 +88,7 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=40)
 
-        # 创建各页面 Frame
+        # Create Frames For Each Page
         self.frames = {
             "home_page": HomePageFrame(self, font_family=self.font_family, translator=self.translator, change_language_callback=self.change_language),
             "maintenance_page": MaintenancePageFrame(self, font_family=self.font_family, translator=self.translator),
@@ -101,7 +102,7 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
             frame.grid(row=0, column=1, sticky="nsew")
             frame.grid_remove()
 
-        # 创建导航栏，传入 font_family 和 translator
+        # Create the Navigation
         self.navigation_frame = NavigationFrame(
             self,
             self._on_page_change,
@@ -110,7 +111,7 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
         )
         self.navigation_frame.grid(row=0, column=0, sticky="nsw")
 
-        # 默认显示首页
+        # Default Home Page Display
         self.navigation_frame.select_page("home_page")
 
     def change_language(self, new_language_code: str):

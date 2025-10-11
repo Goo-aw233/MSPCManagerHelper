@@ -2,7 +2,7 @@ import webbrowser
 
 import customtkinter
 
-from ..modules.program_settings import ProgramSettings
+from gui.modules.program_settings import ProgramSettings
 
 
 class ToolboxPageFrame(customtkinter.CTkScrollableFrame):

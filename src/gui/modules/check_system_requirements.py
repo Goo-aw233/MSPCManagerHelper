@@ -1,4 +1,3 @@
-import subprocess
 import winreg
 
 
@@ -11,7 +10,7 @@ class CheckSystemRequirements:
             # Checking the Windows Current Build Number
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, CheckSystemRequirements._WINDOWS_NT_CURRENT_VERSION_KEY_PATH) as version_key:
                 current_build_number = int(winreg.QueryValueEx(version_key, "CurrentBuildNumber")[0])
-                if current_build_number < 26100:    # Launched in 27718, Added in 26120.4520
+                if current_build_number < 26100:    # Launched in 27718/27764, Added in 26120.4520, Removed After br_release
                     return False
 
             # Checking the Administrator Protection Status

@@ -11,7 +11,7 @@ from core.utils.repair_microsoftedgeupdate_not_working import RepairMicrosoftEdg
 from core.utils.restart_service import RestartService
 from core.utils.switch_regions import SwitchRegions
 from core.utils.view_installed_antivirus_products import ViewInstalledAntiVirusProducts
-from ..modules.program_settings import ProgramSettings
+from gui.modules.program_settings import ProgramSettings
 
 
 class UtilsPageFrame(customtkinter.CTkScrollableFrame):
