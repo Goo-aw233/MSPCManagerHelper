@@ -40,7 +40,7 @@ Please Select Your Language to Continue
     - **Windows**:
 
         ```Batch
-        py.exe -3.13 -m venv .venv
+        py.exe -3.14 -m venv .venv
         ".venv\Scripts\activate"
         ```
 

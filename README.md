@@ -40,7 +40,7 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
     - **Windows**:
 
         ```Batch
-        py.exe -3.13 -m venv .venv
+        py.exe -3.14 -m venv .venv
         ".venv\Scripts\activate"
         ```
 
