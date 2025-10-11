@@ -1,7 +1,7 @@
 import ctypes
 
 
-class UninstallViaDismForAllUsers:
+class UninstallViaDISMForAllUsers:
     def __init__(self, translator=None):
         self.translator = translator
         self.error_code = ctypes.get_last_error()
