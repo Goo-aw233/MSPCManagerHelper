@@ -3,6 +3,7 @@ import os
 import shutil
 import subprocess
 import winreg
+from pathlib import Path
 
 import psutil
 
@@ -31,37 +32,37 @@ class UninstallMicrosoftPCManagerBeta:
 
     @staticmethod
     def _check_if_installed():
-        microsoft_pc_manager_dir = os.path.join(os.environ['ProgramFiles'], 'Microsoft PC Manager')
-        uninst_exe_path = os.path.join(microsoft_pc_manager_dir, 'Uninst.exe')
-        if not os.path.isdir(microsoft_pc_manager_dir) or not os.path.isfile(uninst_exe_path):
+        microsoft_pc_manager_dir = Path(os.environ['ProgramFiles']) / 'Microsoft PC Manager'
+        uninst_exe_path = microsoft_pc_manager_dir / 'Uninst.exe'
+        if not microsoft_pc_manager_dir.is_dir() or not uninst_exe_path.is_file():
             return False
         return True
 
     def _cleanup_after_uninstallation(self):
         results = []
         folders_to_delete = [
-                    os.path.join(os.environ['LocalAppData'], 'PC Manager'),
-                    os.path.join(os.environ['LocalAppData'], 'Windows Master'),
-                    os.path.join(os.environ['ProgramData'], 'PCMConfigPath'),
-                    os.path.join(os.environ['ProgramData'], 'Windows Master'),
-                    os.path.join(os.environ['ProgramData'], 'Windows Master Setup'),
-                    os.path.join(os.environ['ProgramFiles'], 'Microsoft PC Manager'),
-                    os.path.join(os.environ['ProgramFiles'], 'WindowsMaster'),
-                    os.path.join(os.environ['ProgramFiles'], 'Windows Master'),
-                    os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master'),
-                    os.path.join(os.environ['SystemRoot'], 'SystemTemp', 'Windows Master'),
-                    os.path.join(os.environ['Temp'], 'Windows Master'),
-                    os.path.join(os.environ['Temp'], 'WM Scan Test')
+                    Path(os.environ['LocalAppData']) / 'PC Manager',
+                    Path(os.environ['LocalAppData']) / 'Windows Master',
+                    Path(os.environ['ProgramData']) / 'PCMConfigPath',
+                    Path(os.environ['ProgramData']) / 'Windows Master',
+                    Path(os.environ['ProgramData']) / 'Windows Master Setup',
+                    Path(os.environ['ProgramFiles']) / 'Microsoft PC Manager',
+                    Path(os.environ['ProgramFiles']) / 'WindowsMaster',
+                    Path(os.environ['ProgramFiles']) / 'Windows Master',
+                    Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Windows Master',
+                    Path(os.environ['SystemRoot']) / 'SystemTemp' / 'Windows Master',
+                    Path(os.environ['Temp']) / 'Windows Master',
+                    Path(os.environ['Temp']) / 'WM Scan Test'
                 ]
 
         for folder in folders_to_delete:
-            if os.path.exists(folder):
+            if folder.exists():
                 try:
                     shutil.rmtree(folder)
-                    results.append(f"{self.translator.translate('removed_folder')}: {folder}")
+                    results.append(f"{self.translator.translate('removed_folder')}: {str(folder)}")
                 except OSError as e:
                     results.append(f"{self.translator.translate('an_error_occurred_while_removing_a_folder')}\n"
-                                   f"{self.translator.translate('folder_name')}: {folder}\n"
+                                   f"{self.translator.translate('folder_name')}: {str(folder)}\n"
                                    f"{self.translator.translate('exception_context')}: {e}")
 
         registries_to_delete = [
@@ -91,9 +92,9 @@ class UninstallMicrosoftPCManagerBeta:
         return "\n".join(results)
 
     def _start_exe_uninstallation(self):
-        uninst_exe_path = os.path.join(os.environ['ProgramFiles'], 'Microsoft PC Manager', 'Uninst.exe')
+        uninst_exe_path = Path(os.environ['ProgramFiles']) / 'Microsoft PC Manager' / 'Uninst.exe'
         try:
-            uninstaller_process = subprocess.Popen([uninst_exe_path])
+            uninstaller_process = subprocess.Popen([str(uninst_exe_path)])
             main_process = psutil.Process(uninstaller_process.pid)
 
             # 等待主进程及其所有子孙进程结束

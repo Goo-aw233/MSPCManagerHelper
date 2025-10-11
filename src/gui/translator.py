@@ -1,5 +1,5 @@
 import json
-import os
+from pathlib import Path
 
 
 class Translator:
@@ -8,9 +8,8 @@ class Translator:
         self.translations = self.load_translations()
 
     def load_translations(self):
-        file_path = os.path.join(os.path.dirname(os.path.dirname(__file__)),
-                                 'assets', 'locales', f'{self.locale}.json')
-        with open(file_path, 'r', encoding='utf-8') as file:
+        file_path = (Path(__file__).resolve().parents[1] / 'assets' / 'locales' / f'{self.locale}.json')
+        with file_path.open('r', encoding='utf-8') as file:
             return json.load(file)
 
     def translate(self, key):

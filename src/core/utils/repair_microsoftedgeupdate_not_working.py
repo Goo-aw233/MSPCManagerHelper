@@ -2,6 +2,7 @@ import ctypes
 import os
 import shutil
 import winreg
+from pathlib import Path
 
 
 class RepairMicrosoftEdgeUpdateNotWorking:
@@ -24,19 +25,20 @@ class RepairMicrosoftEdgeUpdateNotWorking:
         if repair_options.get('restore_edgeupdate_ifeo_key'):
             results.append(self._delete_microsoftedgeupdate_key_from_ifeo())
             results.append(self._add_ifeo_key_for_microsoftedgeupdate())
-        
+
         if repair_options.get('remove_edge_parent_folder'):
             results.append(self._remove_microsoft_edge_parent_folder_in_program_files_x86())
 
         if repair_options.get('remove_webview2_folder'):
             results.append(self._remove_microsoft_edge_webview2_folder_in_program_files_x86())
-        
+
         results.append(f"\n{self.translator.translate('successfully_repaired_microsoftedgeupdate_exe_not_working')}")
         return "\n".join(filter(None, results))
 
     def _add_ifeo_key_for_microsoftedgeupdate(self):
         try:
-            with winreg.CreateKey(winreg.HKEY_LOCAL_MACHINE, fr"{self._IFEO}\{self._MICROSOFTEDGEUPDATE_EXE_NAME}") as key:
+            with winreg.CreateKey(winreg.HKEY_LOCAL_MACHINE,
+                                  fr"{self._IFEO}\{self._MICROSOFTEDGEUPDATE_EXE_NAME}") as key:
                 winreg.SetValueEx(key, "DisableExceptionChainValidation", 0, winreg.REG_DWORD, 0)
             return self.translator.translate("successfully_added_ifeo_microsoftedgeupdate_key")
         except Exception as e:
@@ -55,9 +57,13 @@ class RepairMicrosoftEdgeUpdateNotWorking:
                     f"{self.translator.translate('exception_context')}: {e}")
 
     def _remove_microsoft_edge_parent_folder_in_program_files_x86(self):
-        target_dir = os.path.expandvars(self._MICROSOFT_EDGE_PARENT_FOLDER_IN_PROGRAM_FILES_X86)
+        program_files_x86 = os.environ.get('ProgramFiles(x86)')
+        if program_files_x86:
+            target_dir = Path(program_files_x86) / "Microsoft"
+        else:
+            target_dir = Path(self._MICROSOFT_EDGE_PARENT_FOLDER_IN_PROGRAM_FILES_X86)
         try:
-            if os.path.isdir(target_dir):
+            if target_dir.is_dir():
                 shutil.rmtree(target_dir)
                 return f"{self.translator.translate('successfully_removed_directory')}: {target_dir}"
             else:
@@ -67,9 +73,13 @@ class RepairMicrosoftEdgeUpdateNotWorking:
                     f"{self.translator.translate('exception_context')}: {e}")
 
     def _remove_microsoft_edge_webview2_folder_in_program_files_x86(self):
-        target_dir = os.path.expandvars(self._MICROSOFT_EDGE_WEBVIEW2_FOLDER_IN_PROGRAM_FILES_X86)
+        program_files_x86 = os.environ.get('ProgramFiles(x86)')
+        if program_files_x86:
+            target_dir = Path(program_files_x86) / "Microsoft" / "EdgeWebView"
+        else:
+            target_dir = Path(self._MICROSOFT_EDGE_WEBVIEW2_FOLDER_IN_PROGRAM_FILES_X86)
         try:
-            if os.path.isdir(target_dir):
+            if target_dir.is_dir():
                 shutil.rmtree(target_dir)
                 return f"{self.translator.translate('successfully_removed_directory')}: {target_dir}"
             else:

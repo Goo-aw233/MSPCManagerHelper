@@ -3,18 +3,18 @@ import subprocess
 import os
 import tempfile
 import urllib.request
+from pathlib import Path
 
 
 class InstallMicrosoftEdgeWebView2Runtime:
-    _PROGRAM_TEMP_DIR = os.path.join(tempfile.gettempdir(), "MSPCManagerHelper")
-    _MICROSOFT_EDGE_WEBVIEW2_RUNTIME_INSTALLER_DOWNLOAD_PATH = os.path.join(_PROGRAM_TEMP_DIR,
-                                                                            "MicrosoftEdgeWebView2Setup.exe")
+    _PROGRAM_TEMP_DIR = Path(tempfile.gettempdir()) / "MSPCManagerHelper"
+    _MICROSOFT_EDGE_WEBVIEW2_RUNTIME_INSTALLER_DOWNLOAD_PATH = _PROGRAM_TEMP_DIR / "MicrosoftEdgeWebView2Setup.exe"
     _MICROSOFT_EDGE_WEBVIEW2_RUNTIME_INSTALLER_DOWNLOAD_URL = "https://go.microsoft.com/fwlink/p/?LinkId=2124703"
 
     def __init__(self):
         self.error_code = ctypes.get_last_error()
         self.error_message = ctypes.FormatError(self.error_code).strip()
-        if not os.path.exists(self._PROGRAM_TEMP_DIR):
+        if not self._PROGRAM_TEMP_DIR.exists():
             os.makedirs(self._PROGRAM_TEMP_DIR, exist_ok=True)
 
     def install_microsoft_edge_webview2_runtime(self):
@@ -63,8 +63,7 @@ class InstallMicrosoftEdgeWebView2Runtime:
 
     def _cleanup_temporary_files(self):
         try:
-            if os.path.exists(
-                    InstallMicrosoftEdgeWebView2Runtime._MICROSOFT_EDGE_WEBVIEW2_RUNTIME_INSTALLER_DOWNLOAD_PATH):
+            if InstallMicrosoftEdgeWebView2Runtime._MICROSOFT_EDGE_WEBVIEW2_RUNTIME_INSTALLER_DOWNLOAD_PATH.exists():
                 os.remove(InstallMicrosoftEdgeWebView2Runtime._MICROSOFT_EDGE_WEBVIEW2_RUNTIME_INSTALLER_DOWNLOAD_PATH)
         except Exception as e:
             print(f"an_error_occurred_when_cleaning_up_temporary_files")

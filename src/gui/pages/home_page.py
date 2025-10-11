@@ -1,11 +1,11 @@
 import ctypes
 import customtkinter
-import os
 import subprocess
 import sys
 import threading
+from pathlib import Path
 from tkinter import messagebox
-from ..modules import AdvancedStartup, CheckSystemRequirements, GetMicrosoftPCManagerVersionNumber, ProgramSettings
+from gui.modules import AdvancedStartup, CheckSystemRequirements, GetMicrosoftPCManagerVersionNumber, ProgramSettings
 
 
 class HomePageFrame(customtkinter.CTkScrollableFrame):
@@ -389,9 +389,7 @@ class HomePageFrame(customtkinter.CTkScrollableFrame):
             __file__ is ".../src/gui/pages/home_page.py".
             Program root is three levels up from os.path.dirname(__file__).
             """
-            main_py_path = os.path.abspath(
-                os.path.join(os.path.dirname(__file__), "..", "..", "..", "main.py")
-            )
+            main_py_path = str(Path(__file__).resolve().parents[2] / "main.py")
 
             """
             Prepare parameters: script path + original arguments (e.g., /DevMode).
