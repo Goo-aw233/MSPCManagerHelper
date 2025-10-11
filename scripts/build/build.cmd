@@ -1,5 +1,5 @@
 @echo off
-setlocal
+setlocal EnableDelayedExpansion
 
 for /f "tokens=2,*" %%a in ('reg query "HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\CentralProcessor\0" /v ProcessorNameString') do set "cpuName=%%b"
 for /f "tokens=3" %%a in ('reg query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v PROCESSOR_ARCHITECTURE') do set "arch=%%a"
@@ -12,7 +12,39 @@ ver
 echo %arch%
 echo %cpuName%
 echo %buildLabEx%
-echo %lcuVer%
+
+if defined lcuVer (
+    echo !lcuVer!
+) else (
+    for /f "tokens=3" %%a in ('reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentMajorVersionNumber 2^>nul') do set "maj=%%a"
+    for /f "tokens=3" %%a in ('reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentMinorVersionNumber 2^>nul') do set "min=%%a"
+    for /f "tokens=3" %%a in ('reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentBuildNumber 2^>nul') do set "buildNum=%%a"
+    for /f "tokens=3" %%a in ('reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v UBR 2^>nul') do set "ubr=%%a"
+
+    rem Convert Hexadecimal or Decimal Strings to Decimal (If Conversion Fails, Retain Original String)
+    if defined maj (
+        set /a maj=!maj! 2>nul
+    )
+    if defined min (
+        set /a min=!min! 2>nul
+    )
+    if defined buildNum (
+        set /a buildNum=!buildNum! 2>nul
+    )
+    if defined ubr (
+        set /a ubr=!ubr! 2>nul
+    ) else (
+        set "ubr=0"
+    )
+
+    if defined maj if defined min if defined buildNum (
+        set "lcuVer=!maj!.!min!.!buildNum!.!ubr!"
+        echo !lcuVer!
+    ) else (
+        echo (UNKNOWN LCUVer)
+    )
+)
+
 echo %editionID%
 echo.
 echo ####################

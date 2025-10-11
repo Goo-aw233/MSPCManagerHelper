@@ -4,7 +4,7 @@ setlocal
 cd %~dp0
 
 echo "Creating .venv"
-py.exe -3.13 -m venv "%~dp0..\.venv"
+py.exe -3.14 -m venv "%~dp0..\.venv"
 
 echo "Activating .venv"
 call "%~dp0..\.venv\Scripts\activate.bat"
