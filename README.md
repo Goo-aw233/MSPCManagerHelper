@@ -2,11 +2,12 @@
 
 # MSPCManagerHelper
 <img src="./src/assets/icons/MSPCManagerHelper.png" width="140" height="140"/>
+
 </div>
 
 ## 🖹 Choose Your Language
 
-Please select your language to continue
+Please Select Your Language to Continue
 
 請選取你的語言以繼續 | 请选择你的语言以继续
 
@@ -25,7 +26,7 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 
 ## 💻 Development
 
-1. Download Python 3.13 from [Python](https://www.python.org/downloads)
+1. Download Python 3.14 from [Python](https://www.python.org/downloads)
 
 2. Clone the code
 

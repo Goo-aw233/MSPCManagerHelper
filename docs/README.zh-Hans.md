@@ -2,11 +2,12 @@
 
 # MSPCManagerHelper
 <img src="../src/assets/icons/MSPCManagerHelper.png" width="140" height="140"/>
+
 </div>
 
 ## 🖹 选择语言
 
-Please select your language to continue
+Please Select Your Language to Continue
 
 請選取你的語言以繼續 | 请选择你的语言以继续
 
@@ -25,7 +26,7 @@ Please select your language to continue
 
 ## 💻 开发
 
-1. 从 [Python](https://www.python.org/downloads) 下载 Python 3.13 版本
+1. 从 [Python](https://www.python.org/downloads) 下载 Python 3.14 版本
 
 2. 克隆代码
 
