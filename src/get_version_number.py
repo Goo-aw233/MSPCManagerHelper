@@ -1,5 +1,6 @@
 import winreg
 
+
 class GetPCManagerVersion:
     def __init__(self):
         super().__init__()

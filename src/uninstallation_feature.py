@@ -6,7 +6,9 @@ import subprocess
 import sys
 import winreg
 import tkinter as tk
+from pathlib import Path
 from tkinter import messagebox
+
 
 class UninstallationFeature:
     def __init__(self, translator, result_textbox=None):
@@ -27,14 +29,14 @@ class UninstallationFeature:
 
             if processor_architecture == "AMD64":
                 if hasattr(sys, '_MEIPASS'):
-                    return os.path.join(sys._MEIPASS, "tools", "NSudo", "NSudoLC_x64.exe")
+                    return Path(sys._MEIPASS) / "tools" / "NSudo" / "NSudoLC_x64.exe"
                 else:
-                    return os.path.join("tools", "NSudo", "NSudoLC_x64.exe")
+                    return Path("tools") / "NSudo" / "NSudoLC_x64.exe"
             elif processor_architecture == "ARM64":
                 if hasattr(sys, '_MEIPASS'):
-                    return os.path.join(sys._MEIPASS, "tools", "NSudo", "NSudoLC_ARM64.exe")
+                    return Path(sys._MEIPASS) / "tools" / "NSudo" / "NSudoLC_ARM64.exe"
                 else:
-                    return os.path.join("tools", "NSudo", "NSudoLC_ARM64.exe")
+                    return Path("tools") / "NSudo" / "NSudoLC_ARM64.exe"
             else:
                 self.textbox(self.translator.translate("no_match_nsudo_version"))
                 return None
@@ -128,29 +130,29 @@ class UninstallationFeature:
 
                     # 删除文件夹
                     folders_to_delete = [
-                        os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.PCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['LocalAppData'], 'PC Manager Store'),
-                        os.path.join(os.environ['LocalAppData'], 'Windows Master Store'),
-                        os.path.join(os.environ['ProgramData'], 'Windows Master Setup'),
-                        os.path.join(os.environ['ProgramData'], 'Windows Master Store'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Packages', 'Microsoft.PCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master Store'),
-                        os.path.join(os.environ['Temp'], 'WM Scan Test')
+                        Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe',
+                        Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.PCManager_8wekyb3d8bbwe',
+                        Path(os.environ['LocalAppData']) / 'PC Manager Store',
+                        Path(os.environ['LocalAppData']) / 'Windows Master Store',
+                        Path(os.environ['ProgramData']) / 'Windows Master Setup',
+                        Path(os.environ['ProgramData']) / 'Windows Master Store',
+                        Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Packages' / 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe',
+                        Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Packages' / 'Microsoft.PCManager_8wekyb3d8bbwe',
+                        Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Windows Master',
+                        Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Windows Master Store',
+                        Path(os.environ['Temp']) / 'WM Scan Test'
                     ]
                     is_first = True
                     for folder in folders_to_delete:
-                        if os.path.exists(folder):
+                        if folder.exists():
                             try:
                                 subprocess.run(
-                                    [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", folder],
+                                    [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", str(folder)],
                                     capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
                                 if is_first:
                                     self.textbox('\n' + self.translator.translate('clearing_configuration_files_for_all_users_in_dism') + ':\n')  # 显示执行操作
                                     is_first = False
-                                self.textbox('-' + folder + '\n')   # 显示执行操作
+                                self.textbox('-' + str(folder) + '\n')   # 显示执行操作
                             except Exception as e:
                                 self.textbox(self.translator.translate('fail_to_clear_configuration_files_path_for_all_users_in_dism') + ': ' + str(folder) + ', ' + self.translator.translate('fail_to_configuration_files_info_for_all_users_in_dism') + ': ' + str(e) + '\n')  # 显示错误内容
 
@@ -172,13 +174,13 @@ class UninstallationFeature:
 
                     # 删除文件
                     file_paths = [
-                        os.path.join(os.environ['LocalAppData'], 'Microsoft', 'CLR_v4.0', 'UsageLogs'),
-                        os.path.join(os.environ['SystemRoot'], 'Prefetch'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Microsoft', 'CLR_v4.0', 'UsageLogs')
+                        Path(os.environ['LocalAppData']) / 'Microsoft' / 'CLR_v4.0' / 'UsageLogs',
+                        Path(os.environ['SystemRoot']) / 'Prefetch',
+                        Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Microsoft' / 'CLR_v4.0' / 'UsageLogs'
                     ]
 
                     prefetch_files = itertools.chain.from_iterable(
-                        glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                        glob.iglob(str(paths / pattern)) for paths in file_paths for pattern in [
                             '*BGADEFMGR*.pf',
                             '*CREATEDUMP*.pf',
                             '*MICROSOFT.WIC.PCWNDMANAGER*.pf',
@@ -190,7 +192,7 @@ class UninstallationFeature:
                     )
 
                     clr_logs_files = itertools.chain.from_iterable(
-                        glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                        glob.iglob(str(paths / pattern)) for paths in file_paths for pattern in [
                             '*BGADefMgr*.log',
                             '*Microsoft.WIC.PCWndManager.Plugin*.log',
                             '*MSPCManager*.log',
@@ -245,29 +247,29 @@ class UninstallationFeature:
 
                             # 删除文件夹
                             folders_to_delete = [
-                                # os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.Windows.Search_cw5n1h2txyewy', 'LocalState', 'AppIconCache', '*', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
-                                # os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.Windows.Search_cw5n1h2txyewy', 'LocalState', 'AppIconCache', '*', 'Microsoft.PCManager_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe', 'LocalCache', 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe', 'LocalCache', 'MSPCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe', 'LocalCache', 'Microsoft.PCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository', 'Packages', 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository', 'Packages', 'Microsoft.PCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'WindowsApps', 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'WindowsApps', 'Microsoft.PCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramData'], 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramData'], 'Packages', 'Microsoft.PCManager_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramFiles'], 'WindowsApps', 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramFiles'], 'WindowsApps', 'Microsoft.PCManager_*_8wekyb3d8bbwe')
+                                # Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.Windows.Search_cw5n1h2txyewy' / 'LocalState' / 'AppIconCache' / '*' / 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe',
+                                # Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.Windows.Search_cw5n1h2txyewy' / 'LocalState' / 'AppIconCache' / '*' / 'Microsoft.PCManager_8wekyb3d8bbwe',
+                                Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe' / 'LocalCache' / 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe' / 'LocalCache' / 'MSPCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe' / 'LocalCache' / 'Microsoft.PCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramData']) / 'Microsoft' / 'Windows' / 'AppRepository' / 'Packages' / 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramData']) / 'Microsoft' / 'Windows' / 'AppRepository' / 'Packages' / 'Microsoft.PCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramData']) / 'Microsoft' / 'Windows' / 'WindowsApps' / 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramData']) / 'Microsoft' / 'Windows' / 'WindowsApps' / 'Microsoft.PCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramData']) / 'Packages' / 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramData']) / 'Packages' / 'Microsoft.PCManager_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramFiles']) / 'WindowsApps' / 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramFiles']) / 'WindowsApps' / 'Microsoft.PCManager_*_8wekyb3d8bbwe'
                             ]
                             # 删除文件
                             files_to_delete = [
-                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository', 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe.xml'),
-                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository', 'Microsoft.PCManager_*_8wekyb3d8bbwe.xml')
+                                Path(os.environ['ProgramData']) / 'Microsoft' / 'Windows' / 'AppRepository' / 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe.xml',
+                                Path(os.environ['ProgramData']) / 'Microsoft' / 'Windows' / 'AppRepository' / 'Microsoft.PCManager_*_8wekyb3d8bbwe.xml'
                             ]
 
                             is_first = True
                             for folder in folders_to_delete:
-                                for path in glob.glob(folder):
+                                for path in glob.glob(str(folder)):
                                     try:
                                         subprocess.run(
                                             [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", path],
@@ -282,7 +284,7 @@ class UninstallationFeature:
 
                             is_first = True
                             for file in files_to_delete:
-                                for path in glob.glob(file):
+                                for path in glob.glob(str(file)):
                                     try:
                                         subprocess.run(
                                             [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "del", "/F", "/Q", path],
@@ -377,29 +379,29 @@ class UninstallationFeature:
 
                     # 删除文件夹
                     folders_to_delete = [
-                        os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.PCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['LocalAppData'], 'PC Manager Store'),
-                        os.path.join(os.environ['LocalAppData'], 'Windows Master Store'),
-                        os.path.join(os.environ['ProgramData'], 'Windows Master Setup'),
-                        os.path.join(os.environ['ProgramData'], 'Windows Master Store'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Packages', 'Microsoft.PCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master Store'),
-                        os.path.join(os.environ['Temp'], 'WM Scan Test')
+                        Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe',
+                        Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.PCManager_8wekyb3d8bbwe',
+                        Path(os.environ['LocalAppData']) / 'PC Manager Store',
+                        Path(os.environ['LocalAppData']) / 'Windows Master Store',
+                        Path(os.environ['ProgramData']) / 'Windows Master Setup',
+                        Path(os.environ['ProgramData']) / 'Windows Master Store',
+                        Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Packages' / 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe',
+                        Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Packages' / 'Microsoft.PCManager_8wekyb3d8bbwe',
+                        Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Windows Master',
+                        Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Windows Master Store',
+                        Path(os.environ['Temp']) / 'WM Scan Test'
                     ]
                     is_first = True
                     for folder in folders_to_delete:
-                        if os.path.exists(folder):
+                        if folder.exists():
                             try:
                                 subprocess.run(
-                                    [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", folder],
+                                    [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", str(folder)],
                                     capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
                                 if is_first:
                                     self.textbox('\n' + self.translator.translate('clearing_configuration_files_for_all_users') + ':\n')  # 显示执行操作
                                     is_first = False
-                                self.textbox('-' + folder + '\n')   # 显示执行操作
+                                self.textbox('-' + str(folder) + '\n')   # 显示执行操作
                             except Exception as e:
                                 self.textbox(self.translator.translate('fail_to_clear_configuration_files_path_for_all_users') + ': ' + str(folder) + ', ' + self.translator.translate('fail_to_configuration_files_info_for_all_users') + ': ' + str(e) + '\n')  # 显示错误内容
 
@@ -421,13 +423,13 @@ class UninstallationFeature:
 
                     # 删除文件
                     file_paths = [
-                        os.path.join(os.environ['LocalAppData'], 'Microsoft', 'CLR_v4.0', 'UsageLogs'),
-                        os.path.join(os.environ['SystemRoot'], 'Prefetch'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Microsoft', 'CLR_v4.0', 'UsageLogs')
+                        Path(os.environ['LocalAppData']) / 'Microsoft' / 'CLR_v4.0' / 'UsageLogs',
+                        Path(os.environ['SystemRoot']) / 'Prefetch',
+                        Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Microsoft' / 'CLR_v4.0' / 'UsageLogs'
                     ]
 
                     prefetch_files = itertools.chain.from_iterable(
-                        glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                        glob.iglob(str(paths / pattern)) for paths in file_paths for pattern in [
                             '*BGADEFMGR*.pf',
                             '*CREATEDUMP*.pf',
                             '*MICROSOFT.WIC.PCWNDMANAGER*.pf',
@@ -439,7 +441,7 @@ class UninstallationFeature:
                     )
 
                     clr_logs_files = itertools.chain.from_iterable(
-                        glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                        glob.iglob(str(paths / pattern)) for paths in file_paths for pattern in [
                             '*BGADefMgr*.log',
                             '*Microsoft.WIC.PCWndManager.Plugin*.log',
                             '*MSPCManager*.log',
@@ -494,29 +496,29 @@ class UninstallationFeature:
 
                             # 删除文件夹
                             folders_to_delete = [
-                                # os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.Windows.Search_cw5n1h2txyewy', 'LocalState', 'AppIconCache', '*', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
-                                # os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.Windows.Search_cw5n1h2txyewy', 'LocalState', 'AppIconCache', '*', 'Microsoft.PCManager_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe', 'LocalCache', 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe', 'LocalCache', 'MSPCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe', 'LocalCache', 'Microsoft.PCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository', 'Packages', 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository', 'Packages', 'Microsoft.PCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'WindowsApps', 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'WindowsApps', 'Microsoft.PCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramData'], 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramData'], 'Packages', 'Microsoft.PCManager_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramFiles'], 'WindowsApps', 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe'),
-                                os.path.join(os.environ['ProgramFiles'], 'WindowsApps', 'Microsoft.PCManager_*_8wekyb3d8bbwe')
+                                # Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.Windows.Search_cw5n1h2txyewy' / 'LocalState' / 'AppIconCache' / '*' / 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe',
+                                # Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.Windows.Search_cw5n1h2txyewy' / 'LocalState' / 'AppIconCache' / '*' / 'Microsoft.PCManager_8wekyb3d8bbwe',
+                                Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe' / 'LocalCache' / 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe' / 'LocalCache' / 'MSPCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.DesktopAppInstaller_8wekyb3d8bbwe' / 'LocalCache' / 'Microsoft.PCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramData']) / 'Microsoft' / 'Windows' / 'AppRepository' / 'Packages' / 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramData']) / 'Microsoft' / 'Windows' / 'AppRepository' / 'Packages' / 'Microsoft.PCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramData']) / 'Microsoft' / 'Windows' / 'WindowsApps' / 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramData']) / 'Microsoft' / 'Windows' / 'WindowsApps' / 'Microsoft.PCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramData']) / 'Packages' / 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramData']) / 'Packages' / 'Microsoft.PCManager_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramFiles']) / 'WindowsApps' / 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe',
+                                Path(os.environ['ProgramFiles']) / 'WindowsApps' / 'Microsoft.PCManager_*_8wekyb3d8bbwe'
                             ]
                             # 删除文件
                             files_to_delete = [
-                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository', 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe.xml'),
-                                os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'AppRepository', 'Microsoft.PCManager_*_8wekyb3d8bbwe.xml')
+                                Path(os.environ['ProgramData']) / 'Microsoft' / 'Windows' / 'AppRepository' / 'Microsoft.MicrosoftPCManager_*_8wekyb3d8bbwe.xml',
+                                Path(os.environ['ProgramData']) / 'Microsoft' / 'Windows' / 'AppRepository' / 'Microsoft.PCManager_*_8wekyb3d8bbwe.xml'
                             ]
 
                             is_first = True
                             for folder in folders_to_delete:
-                                for path in glob.glob(folder):
+                                for path in glob.glob(str(folder)):
                                     try:
                                         subprocess.run(
                                             [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", path],
@@ -531,7 +533,7 @@ class UninstallationFeature:
 
                             is_first = True
                             for file in files_to_delete:
-                                for path in glob.glob(file):
+                                for path in glob.glob(str(file)):
                                     try:
                                         subprocess.run(
                                             [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "del", "/F", "/Q", path],
@@ -610,29 +612,29 @@ class UninstallationFeature:
 
                     # 删除文件夹
                     folders_to_delete = [
-                        os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['LocalAppData'], 'Packages', 'Microsoft.PCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['LocalAppData'], 'PC Manager Store'),
-                        os.path.join(os.environ['LocalAppData'], 'Windows Master Store'),
-                        os.path.join(os.environ['ProgramData'], 'Windows Master Setup'),
-                        os.path.join(os.environ['ProgramData'], 'Windows Master Store'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Packages', 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Packages', 'Microsoft.PCManager_8wekyb3d8bbwe'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master Store'),
-                        os.path.join(os.environ['Temp'], 'WM Scan Test')
+                        Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe',
+                        Path(os.environ['LocalAppData']) / 'Packages' / 'Microsoft.PCManager_8wekyb3d8bbwe',
+                        Path(os.environ['LocalAppData']) / 'PC Manager Store',
+                        Path(os.environ['LocalAppData']) / 'Windows Master Store',
+                        Path(os.environ['ProgramData']) / 'Windows Master Setup',
+                        Path(os.environ['ProgramData']) / 'Windows Master Store',
+                        Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Packages' / 'Microsoft.MicrosoftPCManager_8wekyb3d8bbwe',
+                        Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Packages' / 'Microsoft.PCManager_8wekyb3d8bbwe',
+                        Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Windows Master',
+                        Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Windows Master Store',
+                        Path(os.environ['Temp']) / 'WM Scan Test'
                     ]
                     is_first = True
                     for folder in folders_to_delete:
-                        if os.path.exists(folder):
+                        if folder.exists():
                             try:
                                 subprocess.run(
-                                    [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", folder],
+                                    [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", str(folder)],
                                     capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
                                 if is_first:
                                     self.textbox('\n' + self.translator.translate('clearing_configuration_files_for_current_user') + ':\n')  # 显示执行操作
                                     is_first = False
-                                self.textbox('-' + folder + '\n')   # 显示执行操作
+                                self.textbox('-' + str(folder) + '\n')   # 显示执行操作
                             except Exception as e:
                                 self.textbox(self.translator.translate('fail_to_clear_configuration_files_path_for_current_user') + ': ' + str(folder) + ', ' + self.translator.translate('fail_to_configuration_files_info_for_current_user') + ': ' + str(e) + '\n')  # 显示错误内容
 
@@ -654,13 +656,13 @@ class UninstallationFeature:
 
                     # 删除文件
                     file_paths = [
-                        os.path.join(os.environ['LocalAppData'], 'Microsoft', 'CLR_v4.0', 'UsageLogs'),
-                        os.path.join(os.environ['SystemRoot'], 'Prefetch'),
-                        os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Microsoft', 'CLR_v4.0', 'UsageLogs')
+                        Path(os.environ['LocalAppData']) / 'Microsoft' / 'CLR_v4.0' / 'UsageLogs',
+                        Path(os.environ['SystemRoot']) / 'Prefetch',
+                        Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Microsoft' / 'CLR_v4.0' / 'UsageLogs'
                     ]
 
                     prefetch_files = itertools.chain.from_iterable(
-                        glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                        glob.iglob(str(paths / pattern)) for paths in file_paths for pattern in [
                             '*BGADEFMGR*.pf',
                             '*CREATEDUMP*.pf',
                             '*MICROSOFT.WIC.PCWNDMANAGER*.pf',
@@ -672,7 +674,7 @@ class UninstallationFeature:
                     )
 
                     clr_logs_files = itertools.chain.from_iterable(
-                        glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                        glob.iglob(str(paths / pattern)) for paths in file_paths for pattern in [
                             '*BGADefMgr*.log',
                             '*Microsoft.WIC.PCWndManager.Plugin*.log',
                             '*MSPCManager*.log',
@@ -724,17 +726,17 @@ class UninstallationFeature:
 
     def uninstall_pc_manager_beta(self):
         try:
-            pc_manager_beta_path = os.path.join(os.environ['ProgramFiles'], 'Microsoft PC Manager')
-            if not os.path.exists(pc_manager_beta_path):
+            pc_manager_beta_path = Path(os.environ['ProgramFiles']) / 'Microsoft PC Manager'
+            if not pc_manager_beta_path.exists():
                 return self.translator.translate("pc_manager_beta_not_found")
 
             # 检测 Uninst.exe 是否存在
-            pc_manager_beta_uninst_exe = os.path.join(pc_manager_beta_path, 'Uninst.exe')
-            if not os.path.exists(pc_manager_beta_uninst_exe):
+            pc_manager_beta_uninst_exe = pc_manager_beta_path / 'Uninst.exe'
+            if not pc_manager_beta_uninst_exe.exists():
                 return self.translator.translate("pc_manager_beta_not_found")
 
             # 运行卸载程序
-            result = subprocess.run([pc_manager_beta_uninst_exe], capture_output=True, text=True)
+            result = subprocess.run([str(pc_manager_beta_uninst_exe)], capture_output=True, text=True)
             if result.returncode != 0:
                 return f"{self.translator.translate('uninstall_pcm_beta_error_info')}: {result.stderr.strip()}"
 
@@ -745,8 +747,8 @@ class UninstallationFeature:
                     pass
                 else:
                     tf = False
-            pc_manager_beta_uninst_exe = os.path.join(pc_manager_beta_path, 'Uninst.exe')
-            if not os.path.exists(pc_manager_beta_uninst_exe):
+            pc_manager_beta_uninst_exe = pc_manager_beta_path / 'Uninst.exe'
+            if not pc_manager_beta_uninst_exe.exists():
                 if not messagebox.askyesno(self.translator.translate("cleanup_pc_manager_beta_config_and_files_notice"),
                                             self.translator.translate("cleanup_pc_manager_beta_config_and_files")):
                     return self.translator.translate("pc_manager_beta_uninstalled")
@@ -755,28 +757,28 @@ class UninstallationFeature:
 
                 # 删除文件夹
                 folders_to_delete = [
-                    os.path.join(os.environ['LocalAppData'], 'PC Manager'),
-                    os.path.join(os.environ['LocalAppData'], 'Windows Master'),
-                    os.path.join(os.environ['ProgramData'], 'PCMConfigPath'),
-                    os.path.join(os.environ['ProgramData'], 'Windows Master'),
-                    os.path.join(os.environ['ProgramData'], 'Windows Master Setup'),
-                    os.path.join(os.environ['ProgramFiles'], 'Microsoft PC Manager'),
-                    os.path.join(os.environ['ProgramFiles'], 'WindowsMaster'),
-                    os.path.join(os.environ['ProgramFiles'], 'Windows Master'),
-                    os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Windows Master'),
-                    os.path.join(os.environ['SystemRoot'], 'SystemTemp', 'Windows Master'),
-                    os.path.join(os.environ['Temp'], 'Windows Master'),
-                    os.path.join(os.environ['Temp'], 'WM Scan Test')
+                    Path(os.environ['LocalAppData']) / 'PC Manager',
+                    Path(os.environ['LocalAppData']) / 'Windows Master',
+                    Path(os.environ['ProgramData']) / 'PCMConfigPath',
+                    Path(os.environ['ProgramData']) / 'Windows Master',
+                    Path(os.environ['ProgramData']) / 'Windows Master Setup',
+                    Path(os.environ['ProgramFiles']) / 'Microsoft PC Manager',
+                    Path(os.environ['ProgramFiles']) / 'WindowsMaster',
+                    Path(os.environ['ProgramFiles']) / 'Windows Master',
+                    Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Windows Master',
+                    Path(os.environ['SystemRoot']) / 'SystemTemp' / 'Windows Master',
+                    Path(os.environ['Temp']) / 'Windows Master',
+                    Path(os.environ['Temp']) / 'WM Scan Test'
                 ]
                 is_first = True
                 for folder in folders_to_delete:
-                    if os.path.exists(folder):
+                    if folder.exists():
                         try:
-                            subprocess.run(['rmdir', '/S', '/Q', folder], shell=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                            subprocess.run(['rmdir', '/S', '/Q', str(folder)], shell=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
                             if is_first:
                                 self.textbox('\n' + self.translator.translate('clearing_pc_manager_beta_configuration_files') + ':\n')   # 显示执行操作
                                 is_first = False
-                            self.textbox('-' + folder + '\n')   # 显示执行操作
+                            self.textbox('-' + str(folder) + '\n')   # 显示执行操作
                         except Exception as e:
                             self.textbox(self.translator.translate('fail_to_clear_pc_manager_beta_configuration_files_path') + ': ' + str(folder) + ', ' + self.translator.translate('fail_to_clear_pc_manager_beta_configuration_files_info') + ': ' + str(e) + '\n')   # 显示错误内容
 
@@ -802,18 +804,18 @@ class UninstallationFeature:
 
                 # 删除文件
                 file_paths = [
-                    os.path.join(os.environ['AppData'], 'Microsoft', 'Internet Explorer', 'Quick Launch', 'User Pinned', 'TaskBar'),
-                    os.path.join(os.environ['AppData'], 'Microsoft', 'Windows', 'Start Menu'),
-                    os.path.join(os.environ['LocalAppData'], 'Microsoft', 'CLR_v4.0', 'UsageLogs'),
-                    os.path.join(os.environ['ProgramData'], 'Microsoft', 'Windows', 'Start Menu', 'Programs'),
-                    os.path.join(os.environ['Public'], 'Desktop'),
-                    os.path.join(os.environ['SystemRoot'], 'Prefetch'),
-                    os.path.join(os.environ['SystemRoot'], 'System32', 'config', 'systemprofile', 'AppData', 'Local', 'Microsoft', 'CLR_v4.0', 'UsageLogs'),
-                    os.path.join(os.environ['UserProfile'], 'Desktop')
+                    Path(os.environ['AppData']) / 'Microsoft' / 'Internet Explorer' / 'Quick Launch' / 'User Pinned' / 'TaskBar',
+                    Path(os.environ['AppData']) / 'Microsoft' / 'Windows' / 'Start Menu',
+                    Path(os.environ['LocalAppData']) / 'Microsoft' / 'CLR_v4.0' / 'UsageLogs',
+                    Path(os.environ['ProgramData']) / 'Microsoft' / 'Windows' / 'Start Menu' / 'Programs',
+                    Path(os.environ['Public']) / 'Desktop',
+                    Path(os.environ['SystemRoot']) / 'Prefetch',
+                    Path(os.environ['SystemRoot']) / 'System32' / 'config' / 'systemprofile' / 'AppData' / 'Local' / 'Microsoft' / 'CLR_v4.0' / 'UsageLogs',
+                    Path(os.environ['UserProfile']) / 'Desktop'
                 ]
 
                 prefetch_files = itertools.chain.from_iterable(
-                    glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                    glob.iglob(str(paths / pattern)) for paths in file_paths for pattern in [
                         '*BGADEFMGR*.pf',
                         '*MSPCMANAGER*.pf',
                         '*MSPCWNDMANAGER*.pf',
@@ -825,7 +827,7 @@ class UninstallationFeature:
                 )
 
                 shortcuts = itertools.chain.from_iterable(
-                    glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                    glob.iglob(str(paths / pattern)) for paths in file_paths for pattern in [
                         '*PC Manager*.lnk',
                         '*MSPCManager*.lnk',
                         '*Microsoft PC Manager*.lnk',
@@ -836,7 +838,7 @@ class UninstallationFeature:
                 )
 
                 clr_logs_files = itertools.chain.from_iterable(
-                    glob.iglob(os.path.join(paths, pattern)) for paths in file_paths for pattern in [
+                    glob.iglob(str(paths / pattern)) for paths in file_paths for pattern in [
                         '*BGADefMgr*.log',
                         '*Microsoft.WIC.PCWndManager.Plugin*.log',
                         '*MSPCManager*.log',

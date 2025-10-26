@@ -7,6 +7,8 @@ import tkinter as tk
 import webbrowser
 import winreg
 from tkinter import filedialog, messagebox
+from pathlib import Path
+
 
 class InstallationFeature:
     def __init__(self, translator, result_textbox=None):
@@ -308,32 +310,34 @@ class InstallationFeature:
             return self.translator.translate("user_canceled")
 
         # 打开文件选择对话框选择文件
-        pc_manager_package_file_path = filedialog.askopenfilename(
+        pc_manager_package_file_path_str = filedialog.askopenfilename(
             filetypes=[("Msix / MsixBundle", "*.msix;*.msixbundle"), ("*", "*")]
         )
 
-        if not pc_manager_package_file_path:
+        if not pc_manager_package_file_path_str:
             return self.translator.translate("user_canceled")
+        
+        pc_manager_package_file_path = Path(pc_manager_package_file_path_str)
 
         try:
             # 创建临时目录
-            mspcmanagerhelper_temp_dir = os.path.join(tempfile.gettempdir(), "MSPCManagerHelper")   # MSPCManagerHelper 临时目录
-            if not os.path.exists(mspcmanagerhelper_temp_dir):
+            mspcmanagerhelper_temp_dir = Path(tempfile.gettempdir()) / "MSPCManagerHelper"   # MSPCManagerHelper 临时目录
+            if not mspcmanagerhelper_temp_dir.exists():
                 os.makedirs(mspcmanagerhelper_temp_dir)
 
             # 复制文件到 MSPCManagerHelper 临时目录并重命名为 .zip
-            pc_manager_package_file_name = os.path.basename(pc_manager_package_file_path)   # Microsoft PC Manager 包文件名
-            pc_manager_zip_package_file_path = os.path.join(mspcmanagerhelper_temp_dir, pc_manager_package_file_name + ".zip")  # 将包文件名去掉后缀添加 .zip
+            pc_manager_package_file_name = pc_manager_package_file_path.name   # Microsoft PC Manager 包文件名
+            pc_manager_zip_package_file_path = mspcmanagerhelper_temp_dir / (pc_manager_package_file_name + ".zip")  # 将包文件名去掉后缀添加 .zip
             self.textbox(self.translator.translate("install_from_appxmanifest_copying_files"))
             shutil.copyfile(pc_manager_package_file_path, pc_manager_zip_package_file_path) # 将源文件复制到 MSPCManagerHelper 临时目录
 
             # 解压文件
-            pc_manager_package_unpacked_file_path = os.path.join(mspcmanagerhelper_temp_dir, os.path.splitext(pc_manager_package_file_name)[0]) # 解压后的文件路径
+            pc_manager_package_unpacked_file_path = mspcmanagerhelper_temp_dir / pc_manager_package_file_path.stem # 解压后的文件路径
             self.textbox(self.translator.translate("install_from_appxmanifest_unzipping_files"))
             shutil.unpack_archive(pc_manager_zip_package_file_path, pc_manager_package_unpacked_file_path)  # 解压文件
 
             # 检测解压后的文件夹内是否还有 .msix 文件
-            pc_manager_msix_files = [f for f in os.listdir(pc_manager_package_unpacked_file_path) if f.endswith('.msix')]
+            pc_manager_msix_files = [f.name for f in pc_manager_package_unpacked_file_path.iterdir() if f.suffix == '.msix']
             if not pc_manager_msix_files:
                 pass
             else:
@@ -342,13 +346,12 @@ class InstallationFeature:
                 arm64_file = next((f for f in pc_manager_msix_files if 'arm64' in f), None)
                 if not x64_file and not arm64_file:
                     # 清理 MSPCManagerHelper 临时目录下的文件
-                    for temporary_files in os.listdir(mspcmanagerhelper_temp_dir):  # 遍历 MSPCManagerHelper 临时目录下的文件
-                        temporary_files_path = os.path.join(mspcmanagerhelper_temp_dir, temporary_files)  # 临时文件路径
+                    for temporary_files in mspcmanagerhelper_temp_dir.iterdir():  # 遍历 MSPCManagerHelper 临时目录下的文件
                         self.textbox(self.translator.translate("install_from_appxmanifest_cleaning_up"))
-                        if os.path.isfile(temporary_files_path):  # 如果是文件就删除
-                            os.remove(temporary_files_path)
-                        elif os.path.isdir(temporary_files_path):  # 如果是目录就删除
-                            shutil.rmtree(temporary_files_path)
+                        if temporary_files.is_file():  # 如果是文件就删除
+                            temporary_files.unlink()
+                        elif temporary_files.is_dir():  # 如果是目录就删除
+                            shutil.rmtree(temporary_files)
                     return self.translator.translate("install_from_appxmanifest_no_match_pc_manager_architecture")
 
                 # 读取 PROCESSOR_ARCHITECTURE 的值以确定包
@@ -357,43 +360,44 @@ class InstallationFeature:
                 )[0]
 
                 if processor_architecture == "AMD64" and x64_file:
-                    pc_manager_zip_package_file_path = os.path.join(mspcmanagerhelper_temp_dir, x64_file + ".zip")  # 将包文件名去掉后缀添加 .zip
-                    shutil.copyfile(os.path.join(pc_manager_package_unpacked_file_path, x64_file), pc_manager_zip_package_file_path)    # 复制文件到 MSPCManagerHelper 临时目录
+                    pc_manager_zip_package_file_path = mspcmanagerhelper_temp_dir / (x64_file + ".zip")  # 将包文件名去掉后缀添加 .zip
+                    shutil.copyfile(pc_manager_package_unpacked_file_path / x64_file, pc_manager_zip_package_file_path)    # 复制文件到 MSPCManagerHelper 临时目录
                     self.textbox(self.translator.translate("install_from_appxmanifest_copying_files"))
-                    shutil.unpack_archive(pc_manager_zip_package_file_path, os.path.join(mspcmanagerhelper_temp_dir, os.path.splitext(x64_file)[0]))    # 解压文件
+                    unpacked_dir = mspcmanagerhelper_temp_dir / Path(x64_file).stem
+                    shutil.unpack_archive(pc_manager_zip_package_file_path, unpacked_dir)    # 解压文件
                     self.textbox(self.translator.translate("install_from_appxmanifest_unzipping_files") + '\n')
-                    pc_manager_package_unpacked_file_path = os.path.join(mspcmanagerhelper_temp_dir, os.path.splitext(x64_file)[0])   # 解压后的文件路径
+                    pc_manager_package_unpacked_file_path = unpacked_dir   # 解压后的文件路径
                 elif processor_architecture == "ARM64" and arm64_file:
-                    pc_manager_zip_package_file_path = os.path.join(mspcmanagerhelper_temp_dir, arm64_file + ".zip")    # 将包文件名去掉后缀添加 .zip
-                    shutil.copyfile(os.path.join(pc_manager_package_unpacked_file_path, arm64_file), pc_manager_zip_package_file_path)  # 复制文件到 MSPCManagerHelper 临时目录
+                    pc_manager_zip_package_file_path = mspcmanagerhelper_temp_dir / (arm64_file + ".zip")    # 将包文件名去掉后缀添加 .zip
+                    shutil.copyfile(pc_manager_package_unpacked_file_path / arm64_file, pc_manager_zip_package_file_path)  # 复制文件到 MSPCManagerHelper 临时目录
                     self.textbox(self.translator.translate("install_from_appxmanifest_copying_files"))
-                    shutil.unpack_archive(pc_manager_zip_package_file_path, os.path.join(mspcmanagerhelper_temp_dir, os.path.splitext(arm64_file)[0]))  # 解压文件
+                    unpacked_dir = mspcmanagerhelper_temp_dir / Path(arm64_file).stem
+                    shutil.unpack_archive(pc_manager_zip_package_file_path, unpacked_dir)  # 解压文件
                     self.textbox(self.translator.translate("install_from_appxmanifest_unzipping_files") + '\n')
-                    pc_manager_package_unpacked_file_path = os.path.join(mspcmanagerhelper_temp_dir, os.path.splitext(arm64_file)[0])   # 解压后的文件路径
+                    pc_manager_package_unpacked_file_path = unpacked_dir   # 解压后的文件路径
                 else:
                     # 清理 MSPCManagerHelper 临时目录下的文件
-                    for temporary_files in os.listdir(mspcmanagerhelper_temp_dir):  # 遍历 MSPCManagerHelper 临时目录下的文件
-                        temporary_files_path = os.path.join(mspcmanagerhelper_temp_dir, temporary_files)  # 临时文件路径
+                    for temporary_files in mspcmanagerhelper_temp_dir.iterdir():  # 遍历 MSPCManagerHelper 临时目录下的文件
                         self.textbox(self.translator.translate("install_from_appxmanifest_cleaning_up"))
-                        if os.path.isfile(temporary_files_path):  # 如果是文件就删除
-                            os.remove(temporary_files_path)
-                        elif os.path.isdir(temporary_files_path):  # 如果是目录就删除
-                            shutil.rmtree(temporary_files_path)
+                        if temporary_files.is_file():  # 如果是文件就删除
+                            temporary_files.unlink()
+                        elif temporary_files.is_dir():  # 如果是目录就删除
+                            shutil.rmtree(temporary_files)
                     return self.translator.translate("install_from_appxmanifest_no_match_architecture")
 
             # 将最后解压的文件夹复制到 %ProgramFiles% 下
-            pc_manager_program_files_path = os.path.join(os.environ['ProgramFiles'], os.path.basename(pc_manager_package_unpacked_file_path))   # Microsoft PC Manager 安装路径
-            if not os.path.exists(pc_manager_program_files_path):
+            pc_manager_program_files_path = Path(os.environ['ProgramFiles']) / pc_manager_package_unpacked_file_path.name   # Microsoft PC Manager 安装路径
+            if not pc_manager_program_files_path.exists():
                 os.makedirs(pc_manager_program_files_path)
             self.textbox(self.translator.translate("install_from_appxmanifest_copying_files") + '\n')
-            subprocess.run(["Robocopy.exe", pc_manager_package_unpacked_file_path, pc_manager_program_files_path,   # 复制文件夹
+            subprocess.run(["Robocopy.exe", str(pc_manager_package_unpacked_file_path), str(pc_manager_program_files_path),   # 复制文件夹
                 "/E",  # 复制所有子目录，包括空目录
                 "/XD", "AppxMetadata",  # 排除目录
                 "/XF", "[Content_Types].xml", "AppxBlockMap.xml", "AppxSignature.p7x"  # 排除文件
             ], capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
 
             # 修改 AppxManifest.xml 文件
-            appxmanifest_path = os.path.join(pc_manager_program_files_path, "AppxManifest.xml") # AppxManifest.xml 文件路径
+            appxmanifest_path = pc_manager_program_files_path / "AppxManifest.xml" # AppxManifest.xml 文件路径
             self.textbox(self.translator.translate("install_from_appxmanifest_modifying_appxmanifest") + '\n')
             with open(appxmanifest_path, 'r', encoding='utf-8') as file:    # 读取 AppxManifest.xml 文件
                 lines = file.readlines()    # 读取文件内容
@@ -417,13 +421,12 @@ class InstallationFeature:
                 dependency_package_paths = filedialog.askopenfilenames(filetypes=[("Msix", "*.msix"), ("*", "*")])
                 if not dependency_package_paths:    # 如果没有选择文件
                     # 清理 MSPCManagerHelper 临时目录下的文件
-                    for temporary_files in os.listdir(mspcmanagerhelper_temp_dir):  # 遍历 MSPCManagerHelper 临时目录下的文件
-                        temporary_files_path = os.path.join(mspcmanagerhelper_temp_dir, temporary_files)  # 临时文件路径
+                    for temporary_files in mspcmanagerhelper_temp_dir.iterdir():  # 遍历 MSPCManagerHelper 临时目录下的文件
                         self.textbox(self.translator.translate("install_from_appxmanifest_cleaning_up"))
-                        if os.path.isfile(temporary_files_path):  # 如果是文件就删除
-                            os.remove(temporary_files_path)
-                        elif os.path.isdir(temporary_files_path):  # 如果是目录就删除
-                            shutil.rmtree(temporary_files_path)
+                        if temporary_files.is_file():  # 如果是文件就删除
+                            temporary_files.unlink()
+                        elif temporary_files.is_dir():  # 如果是目录就删除
+                            shutil.rmtree(temporary_files)
                     return self.translator.translate("no_files_selected")
 
                 for dependency_path in dependency_package_paths:
@@ -479,13 +482,12 @@ class InstallationFeature:
                         )
 
             # 清理 MSPCManagerHelper 临时目录下的文件
-            for temporary_files in os.listdir(mspcmanagerhelper_temp_dir):  # 遍历 MSPCManagerHelper 临时目录下的文件
-                temporary_files_path = os.path.join(mspcmanagerhelper_temp_dir, temporary_files)    # 临时文件路径
+            for temporary_files in mspcmanagerhelper_temp_dir.iterdir():  # 遍历 MSPCManagerHelper 临时目录下的文件
                 self.textbox(self.translator.translate("install_from_appxmanifest_cleaning_up"))
-                if os.path.isfile(temporary_files_path):    # 如果是文件就删除
-                    os.remove(temporary_files_path)
-                elif os.path.isdir(temporary_files_path):   # 如果是目录就删除
-                    shutil.rmtree(temporary_files_path)
+                if temporary_files.is_file():    # 如果是文件就删除
+                    temporary_files.unlink()
+                elif temporary_files.is_dir():   # 如果是目录就删除
+                    shutil.rmtree(temporary_files)
 
             return self.translator.translate("install_from_appxmanifest_success")
         except FileNotFoundError as e:
@@ -493,16 +495,16 @@ class InstallationFeature:
         except Exception as e:
             return self.translator.translate("install_from_appxmanifest_error") + f": {str(e)}"
 
-    def install_wv2_runtime(self, app):
-        mspcmanagerhelper_temp_dir = os.path.join(tempfile.gettempdir(), "MSPCManagerHelper")   # MSPCManagerHelper 临时目录
-        wv2_installer_temp_path = os.path.join(mspcmanagerhelper_temp_dir, "MicrosoftEdgeWebView2Setup.exe")    # EdgeWebView2 安装程序临时下载路径
+    def install_wv2_runtime(self, program):
+        mspcmanagerhelper_temp_dir = Path(tempfile.gettempdir()) / "MSPCManagerHelper"   # MSPCManagerHelper 临时目录
+        wv2_installer_temp_path = mspcmanagerhelper_temp_dir / "MicrosoftEdgeWebView2Setup.exe"    # EdgeWebView2 安装程序临时下载路径
         wv2_installer_download_url = "https://go.microsoft.com/fwlink/p/?LinkId=2124703"    # EdgeWebView2 安装程序下载链接
-        edgeupdate_log_source = os.path.join(os.environ['ProgramData'], 'Microsoft', 'EdgeUpdate', 'Log', 'MicrosoftEdgeUpdate.log')    # EdgeUpdate.exe 日志源目录
-        edgeupdate_log_destination = os.path.join(os.environ['UserProfile'], 'Desktop', 'MicrosoftEdgeUpdate.log')  # EdgeUpdate.exe 日志输出目录
+        edgeupdate_log_source = Path(os.environ['ProgramData']) / 'Microsoft' / 'EdgeUpdate' / 'Log' / 'MicrosoftEdgeUpdate.log'    # EdgeUpdate.exe 日志源目录
+        edgeupdate_log_destination = Path(os.environ['UserProfile']) / 'Desktop' / 'MicrosoftEdgeUpdate.log'  # EdgeUpdate.exe 日志输出目录
 
         try:
             # 检查临时目录是否存在，不存在则创建
-            if not os.path.exists(mspcmanagerhelper_temp_dir):
+            if not mspcmanagerhelper_temp_dir.exists():
                 os.makedirs(mspcmanagerhelper_temp_dir, exist_ok=True)
 
             # 下载文件
@@ -514,34 +516,34 @@ class InstallationFeature:
                 return self.translator.translate("wv2_download_error")
 
             # 运行安装程序
-            app.current_process = subprocess.Popen([wv2_installer_temp_path, "/install"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            stdout, stderr = app.current_process.communicate()
+            program.current_process = subprocess.Popen([str(wv2_installer_temp_path), "/install"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            stdout, stderr = program.current_process.communicate()
 
-            if app.cancelled:
+            if program.cancelled:
                 return self.translator.translate("wv2_installation_cancelled")
 
-            if app.current_process.returncode == 0:
+            if program.current_process.returncode == 0:
                 return self.translator.translate("wv2_runtime_install_success") + '\n' + self.translator.translate("wv2_runtime_installer_download_link")
             # 需要以管理员身份运行
-            elif app.current_process.returncode == 2147747880:
-                return f"{self.translator.translate('wv2_installer_exit_code')}: {app.current_process.returncode}\n{self.translator.translate('wv2_runtime_already_installed')}"
+            elif program.current_process.returncode == 2147747880:
+                return f"{self.translator.translate('wv2_installer_exit_code')}: {program.current_process.returncode}\n{self.translator.translate('wv2_runtime_already_installed')}"
             # 文件夹需要删除
-            elif app.current_process.returncode == 2147747596:
+            elif program.current_process.returncode == 2147747596:
                 shutil.copy(edgeupdate_log_source, edgeupdate_log_destination)
-                return f"{self.translator.translate('wv2_installer_exit_code')}: {app.current_process.returncode}\n{self.translator.translate('wv2_installer_exit_code_0x8004070c')}\n{self.translator.translate('edgeupdate_log_export_path')}: {edgeupdate_log_destination}\n{self.translator.translate('seek_help_from_system_administrator')}"
+                return f"{self.translator.translate('wv2_installer_exit_code')}: {program.current_process.returncode}\n{self.translator.translate('wv2_installer_exit_code_0x8004070c')}\n{self.translator.translate('edgeupdate_log_export_path')}: {edgeupdate_log_destination}\n{self.translator.translate('seek_help_from_system_administrator')}"
             # 无文件夹写入权限
-            elif app.current_process.returncode == 2147942583:
+            elif program.current_process.returncode == 2147942583:
                 shutil.copy(edgeupdate_log_source, edgeupdate_log_destination)
-                return f"{self.translator.translate('wv2_installer_exit_code')}: {app.current_process.returncode}\n{self.translator.translate('wv2_installer_exit_code_0x800700b7')}\n{self.translator.translate('edgeupdate_log_export_path')}: {edgeupdate_log_destination}\n{self.translator.translate('seek_help_from_system_administrator')}"
+                return f"{self.translator.translate('wv2_installer_exit_code')}: {program.current_process.returncode}\n{self.translator.translate('wv2_installer_exit_code_0x800700b7')}\n{self.translator.translate('edgeupdate_log_export_path')}: {edgeupdate_log_destination}\n{self.translator.translate('seek_help_from_system_administrator')}"
             # 其他未知报错
             else:
                 shutil.copy(edgeupdate_log_source, edgeupdate_log_destination)
-                return f"{self.translator.translate('wv2_installer_exit_code')}: {app.current_process.returncode}\n{self.translator.translate('wv2_installer_error')}\n{self.translator.translate('edgeupdate_log_export_path')}: {edgeupdate_log_destination}\n{self.translator.translate('seek_help_from_system_administrator')}"
+                return f"{self.translator.translate('wv2_installer_exit_code')}: {program.current_process.returncode}\n{self.translator.translate('wv2_installer_error')}\n{self.translator.translate('edgeupdate_log_export_path')}: {edgeupdate_log_destination}\n{self.translator.translate('seek_help_from_system_administrator')}"
 
         except Exception as e:
             return f"{self.translator.translate('wv2_download_error_info')}: {str(e)}"
         finally:
             # 删除临时目录
-            if os.path.exists(mspcmanagerhelper_temp_dir):
+            if mspcmanagerhelper_temp_dir.exists():
                 shutil.rmtree(mspcmanagerhelper_temp_dir)
-            app.current_process = None
+            program.current_process = None

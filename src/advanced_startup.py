@@ -1,6 +1,7 @@
 import ctypes
 import sys
 
+
 class AdvancedStartup:
     @staticmethod
     def is_devmode():
@@ -14,7 +15,7 @@ class AdvancedStartup:
 
     @staticmethod
     # 获取用户是否以管理员身份运行
-    def is_admin():
+    def is_administrator():
         try:
             return ctypes.windll.shell32.IsUserAnAdmin()
         except:
@@ -22,7 +23,7 @@ class AdvancedStartup:
 
     @staticmethod
     # 重新启动并请求管理员权限
-    def run_as_admin(params):
+    def run_as_administrator(params):
         result = ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, params, None, 0)
         if result > 32:
             sys.exit()
