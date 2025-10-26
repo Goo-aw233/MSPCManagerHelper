@@ -1,30 +1,32 @@
 import ctypes
 import locale
-import os
 import queue
 import subprocess
 import threading
 import tkinter as tk
 import tkinter.font as tkFont
-from advancedStartup import AdvancedStartup
-from checkSystemRequirements import CheckSystemRequirements
-from getVersionNumber import GetPCManagerVersion
-from installationFeature import InstallationFeature
-from mainFeature import MainFeature
-from otherFeature import OtherFeature
+from pathlib import Path
+
+from advanced_startup import AdvancedStartup
+from check_system_requirements import CheckSystemRequirements
+from get_version_number import GetPCManagerVersion
+from installation_feature import InstallationFeature
+from main_feature import MainFeature
+from other_feature import OtherFeature
 from tkinter import filedialog, messagebox, ttk
-from topMenu import TopMenu
+from top_menu import TopMenu
 from translator import Translator
-from uninstallationFeature import UninstallationFeature
+from uninstallation_feature import UninstallationFeature
+
 
 class MSPCManagerHelper(tk.Tk):
     def __init__(self):
         super().__init__()
-        main_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper.ico')
-        self.iconbitmap(main_icon_path)
-        self.mspcmanagerhelper_version = "Beta v0.2.0.16"
+        main_icon_path = Path(__file__).parent / 'assets' / 'MSPCManagerHelper.ico'
+        self.iconbitmap(str(main_icon_path))
+        self.mspcmanagerhelper_version = "Beta v0.2.0.17"
         title = f"MSPCManagerHelper {self.mspcmanagerhelper_version}"
-        if AdvancedStartup.is_admin():
+        if AdvancedStartup.is_administrator():
             title += " (Administrator)"
         if AdvancedStartup.is_devmode():
             title += " - DevMode"
@@ -66,6 +68,7 @@ class MSPCManagerHelper(tk.Tk):
         self.check_system_requirements()  # 检测系统要求
         self.check_admin_approval_mode()  # 检查“管理员保护”是否开启
         self.check_server_levels()  # 检查 Windows Server 安装类型
+        self.get_windows_installation_information()  # 获取 Windows 安装信息
 
     # 设置 DPI 感知
     def set_dpi_awareness(self):
@@ -142,7 +145,7 @@ class MSPCManagerHelper(tk.Tk):
         # 以管理员身份运行按钮
         self.run_as_administrator_button = ttk.Button(self, text=self.translator.translate("run_as_administrator"), command=self.run_as_administrator)
         self.run_as_administrator_button.place(x=255, y=360)
-        if AdvancedStartup.is_admin():
+        if AdvancedStartup.is_administrator():
             self.run_as_administrator_button.config(state="disabled")
 
         # 结果输出框 result_textbox
@@ -169,7 +172,7 @@ class MSPCManagerHelper(tk.Tk):
         self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
         if not (AdvancedStartup.is_devmode() or AdvancedStartup.is_debugdevmode()):
             self.textbox(self.translator.translate('tips_run_as_dev_mode'))
-        if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_admin()):
+        if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_administrator()):
             self.textbox("\n" + self.translator.translate("admin_approval_mode_is_on"))
 
         # 初始检测版本号和系统要求
@@ -217,7 +220,7 @@ class MSPCManagerHelper(tk.Tk):
     # 以管理员身份运行
     def run_as_administrator(self):
         params = __file__
-        AdvancedStartup.run_as_admin(params)
+        AdvancedStartup.run_as_administrator(params)
 
     # 更改语言
     def change_language(self, event):
@@ -266,12 +269,13 @@ class MSPCManagerHelper(tk.Tk):
         self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
         if not (AdvancedStartup.is_devmode() or AdvancedStartup.is_debugdevmode()):
             self.textbox(self.translator.translate('tips_run_as_dev_mode'))
-        if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_admin()):
+        if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_administrator()):
             self.textbox("\n" + self.translator.translate("admin_approval_mode_is_on"))
 
         self.check_system_requirements()    # 检测系统要求
         self.check_admin_approval_mode()  # 检查“管理员保护”是否开启
         self.check_server_levels()  # 检查 Windows Server 安装类型
+        self.get_windows_installation_information()  # 获取 Windows 安装信息
 
     # 更新文本
     def update_texts(self):
@@ -328,7 +332,7 @@ class MSPCManagerHelper(tk.Tk):
             options[self.translator.translate("install_project")].insert(5, self.translator.translate("install_from_appxmanifest")) # 插入到第 5 个位置（从 0 开始）
 
         # 不以管理员身份运行时，只显示不需要管理员身份运行的功能
-        if not AdvancedStartup.is_admin():
+        if not AdvancedStartup.is_administrator():
             options[self.translator.translate("main_project")] = []
             options[self.translator.translate("install_project")] = [self.translator.translate("download_from_msstore")]
             options[self.translator.translate("uninstall_project")] = []
@@ -450,7 +454,7 @@ class MSPCManagerHelper(tk.Tk):
             self.execute_button.config(state="normal")
             self.cancel_button.config(state="disabled")
             self.run_as_administrator_button.config(state="normal")
-            if AdvancedStartup.is_admin():
+            if AdvancedStartup.is_administrator():
                 self.run_as_administrator_button.config(state="disabled")
         except queue.Empty:
             self.after(100, self.process_queue)
@@ -488,7 +492,7 @@ class MSPCManagerHelper(tk.Tk):
             self.after(0, lambda: self.language_combobox.config(state="readonly"))
             self.after(0, lambda: self.execute_button.config(state="normal"))
             self.after(0, lambda: self.run_as_administrator_button.config(state="normal"))
-            if AdvancedStartup.is_admin():
+            if AdvancedStartup.is_administrator():
                 self.after(0, lambda: self.run_as_administrator_button.config(state="disabled"))
 
         threading.Thread(target=kill_process_thread).start()
@@ -542,7 +546,7 @@ class MSPCManagerHelper(tk.Tk):
                 if not (AdvancedStartup.is_devmode() or AdvancedStartup.is_debugdevmode()):
                     self.textbox(self.translator.translate('tips_run_as_dev_mode'))
                 self.textbox(f"{self.translator.translate('pc_manager_beta_installed')}: {pc_manager_beta_version}\n")
-                if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_admin()):
+                if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_administrator()):
                     self.textbox("\n" + self.translator.translate("admin_approval_mode_is_on"))
         elif pc_manager_beta_version:
             self.version_label.config(text=f"{self.translator.translate('current_pc_manager_beta_version')}: {pc_manager_beta_version}")
@@ -562,7 +566,7 @@ class MSPCManagerHelper(tk.Tk):
 
     # 检查“管理员保护”是否开启
     def check_admin_approval_mode(self):
-        if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_admin()):
+        if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_administrator()):
             messagebox.showerror(self.translator.translate("warning"),
                                  self.translator.translate("admin_approval_mode_is_on"))
 
@@ -572,6 +576,9 @@ class MSPCManagerHelper(tk.Tk):
             messagebox.showerror(self.translator.translate("warning"),
                             self.translator.translate("server_installation_type_is_core"))
 
-if __name__ == "__main__":
-    app = MSPCManagerHelper()
-    app.mainloop()
+    # 获取 Windows 安装信息
+    def get_windows_installation_information(self):
+        windows_info = CheckSystemRequirements.get_windows_installation_information()
+        if windows_info:
+            self.textbox("\n" + self.translator.translate("current_windows_installation_information"))
+            self.textbox(f"{windows_info}")

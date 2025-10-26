@@ -1,8 +1,9 @@
-import os
 import textwrap
 import tkinter as tk
 import webbrowser
+from pathlib import Path
 from tkinter import ttk
+
 
 class TopMenu:
     def __init__(self, parent, translator, version):
@@ -87,7 +88,7 @@ class TopMenuUpdate:
 
     @staticmethod
     def open_windowsappruntime_download():
-        webbrowser.open("https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads-archive?wt.mc_id=studentamb_265231")
+        webbrowser.open("https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads-archive/?wt.mc_id=studentamb_474966")
 
 # 条款政策菜单
 class TopMenuTermOfUse:
@@ -97,8 +98,8 @@ class TopMenuTermOfUse:
 
     def show_term_of_use_window(self):
         term_of_use_window = tk.Toplevel(self.parent)
-        term_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper.ico')
-        term_of_use_window.iconbitmap(term_icon_path)
+        term_icon_path = Path(__file__).parent / 'assets' / 'MSPCManagerHelper.ico'
+        term_of_use_window.iconbitmap(str(term_icon_path))
         term_of_use_window.title(self.translator.translate("top_menu_term_of_use"))
         term_of_use_window.geometry("400x300")
         term_of_use_window.resizable(False, False)  # 禁止调整窗口大小
@@ -136,8 +137,8 @@ class TopMenuTermOfUse:
 
     def show_privacy_window(self):
         privacy_window = tk.Toplevel(self.parent)
-        privacy_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper.ico')
-        privacy_window.iconbitmap(privacy_icon_path)
+        privacy_icon_path = Path(__file__).parent / 'assets' / 'MSPCManagerHelper.ico'
+        privacy_window.iconbitmap(str(privacy_icon_path))
         privacy_window.title(self.translator.translate("top_menu_privacy"))
         privacy_window.geometry("400x300")
         privacy_window.resizable(False, False)  # 禁止调整窗口大小
@@ -183,8 +184,8 @@ class TopMenuHelp:
 
     def show_help_about_window(self):
         help_about_window = tk.Toplevel(self.parent)
-        about_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper.ico')
-        help_about_window.iconbitmap(about_icon_path)
+        about_icon_path = Path(__file__).parent / 'assets' / 'MSPCManagerHelper.ico'
+        help_about_window.iconbitmap(str(about_icon_path))
         help_about_window.title(self.translator.translate("top_menu_help_about"))
         help_about_window.geometry("300x150")
         help_about_window.resizable(False, False) # 禁止调整窗口大小

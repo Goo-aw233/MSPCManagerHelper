@@ -14,13 +14,13 @@
 
 
 
-    "@checkSystemRequirements.py": "checkSystemRequirements.py",
+    "@check_system_requirements.py": "check_system_requirements.py",
     "failure_to_meet_system_requirements": "当前 Windows 版本不满足微软电脑管家最低要求：\nWindows 10 版本 19042 或 Windows Server 2022",
     "meet_system_requirements": "当前系统符合微软电脑管家最低系统要求",
 
 
 
-    "@getVersionNumber": "getVersionNumber.py",
+    "@get_version_number": "get_version_number.py",
     "cannot_read_pc_manager_version": "无法读取微软电脑管家版本信息",
     "current_pc_manager_version": "当前微软电脑管家版本号",
     "current_pc_manager_beta_version": "当前微软电脑管家公测版版本号",
@@ -28,7 +28,7 @@
 
 
 
-    "@mainFeature.py": "mainFeature.py",
+    "@main_feature.py": "main_feature.py",
     "repair_pc_manager_notice": "提示",
     "repair_pc_manager_to_perform": "是否修复微软电脑管家无法安装 / 打开？此操作会直接卸载所有版本的微软电脑管家，清理配置文件和残留，并修复 Microsoft Edge (WebView2 Runtime) 无法安装的问题。",
     "repair_pc_manager_success": "修复微软电脑管家无法安装 / 打开成功。",
@@ -55,13 +55,13 @@
     "retrieve_computer_info_success": "成功获取计算机信息。",
     "retrieve_computer_info_error": "获取计算机信息时出错",
     "mspcmanagerhelper_version_label": "MSPCManagerHelper 版本",
-    "User-added_info_notice": "添加额外信息",
-    "User-added_info": "请在此处输入你要添加的额外信息。如果没有，请点击“取消”或关闭该窗口。\n\n样例如下：\n联系方式：QQ：1234567890\n问题描述：微软电脑管家无法清理 Windows.old 文件夹。",
+    "user-added_info_notice": "添加额外信息",
+    "user-added_info": "请在此处输入你要添加的额外信息。如果没有，请点击“取消”或关闭该窗口。\n\n样例如下：\n联系方式：QQ：1234567890\n问题描述：微软电脑管家无法清理 Windows.old 文件夹。",
     "ask_to_retrieve_pc_manager_dumps_notice": "获取微软电脑管家转储文件",
-    "ask_to_retrieve_pc_manager_dumps": "是否获取微软电脑管家转储文件？非必要时可以选择“否”来跳过此步骤。",
+    "ask_to_retrieve_pc_manager_dumps": "是否获取微软电脑管家转储文件？非必要时可以选择“否”来跳过此步骤。\n在获取转储文件时请保证微软电脑管家正在运行，且正处于问题发生时的状态。",
     "no_match_procdump_version": "未找到与当前电脑匹配的 ProcDump 版本。",
     "no_match_nsudo_version": "未找到与当前电脑匹配的 NSudoLC 版本。",
-    "procdump_agreement": "在您使用 ProcDump 时请确保已经阅读并同意软件许可条款。\n软件许可条款：https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_265231",
+    "procdump_agreement": "在您使用 ProcDump 时请确保已经阅读并同意软件许可条款。\n软件许可条款：https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_474966",
     "retrieving_progress_name": "正在获取转储文件的进程",
     "retrieve_pc_manager_dumps_code_4294967294": "进程未在运行，无需获取。",
     "retrieve_pc_manager_dumps_success": "成功获取微软电脑管家转储文件",
@@ -79,8 +79,8 @@
 
 
 
-    "@installationFeature.py": "installationFeature.py",
-    "winget_not_installed": "WinGet 尚未安装，请使用其他解决方案。\n您可以通过 Microsoft Learn (https://learn.microsoft.com/windows/msix/app-installer/install-update-app-installer/?wt.mc_id=studentamb_265231) 或 GitHub (https://github.com/microsoft/winget-cli/releases) 下载并安装 Windows Package Manager 后重试。",
+    "@installation_feature.py": "installation_feature.py",
+    "winget_not_installed": "WinGet 尚未安装，请使用其他解决方案。\n您可以通过 Microsoft Learn (https://learn.microsoft.com/windows/msix/app-installer/install-update-app-installer/?wt.mc_id=studentamb_474966) 或 GitHub (https://github.com/microsoft/winget-cli/releases) 下载并安装 Windows Package Manager 后重试。",
     "winget_source_not_found": "未找到 msstore 源。",
     "winget_not_internet_connection": "无法连接到互联网。请检查互联网连接后重试。",
     "winget_source_reset_needed": "打开源时失败，如果问题仍然存在，请手动尝试“winget.exe source reset --force”命令，或者检查互联网连接。",
@@ -153,7 +153,7 @@
     "install_from_appxmanifest_error": "从 应用包清单 安装微软电脑管家时出错",
 
     "wv2_runtime_install_success": "Microsoft Edge WebView2 Runtime 安装成功。",
-    "wv2_runtime_installer_download_link": "如果您需要单独保存一份 Microsoft Edge WebView2 Runtime 安装程序，请访问 https://developer.microsoft.com/microsoft-edge/webview2/?wt.mc_id=studentamb_265231 并选择 x64 或 ARM64 的“常青独立安装程序”以下载。",
+    "wv2_runtime_installer_download_link": "如果您需要单独保存一份 Microsoft Edge WebView2 Runtime 安装程序，请访问 https://developer.microsoft.com/microsoft-edge/webview2/?wt.mc_id=studentamb_474966 并选择 x64 或 ARM64 的“常青独立安装程序”以下载。",
     "wv2_installer_exit_code": "Microsoft Edge WebView2 Runtime 安装程序退出代码",
     "wv2_runtime_already_installed": "已为您的系统安装 Microsoft Edge WebView2 Runtime，请尝试重新以管理员身份运行。",
     "wv2_installer_exit_code_0x8004070c": "请尝试删除“C:\\Program Files (x86)\\Microsoft\\EdgeWebView”文件夹后重试。如果“C:\\Program Files (x86)\\Microsoft”文件夹下只有 Temp 文件夹，请直接删除“C:\\Program Files (x86)\\Microsoft”文件夹，并重试。",
@@ -167,7 +167,7 @@
 
 
 
-    "@uninstallationFeaure.py": "uninstallationFeaure.py",
+    "@uninstallation_feaure.py": "uninstallation_feaure.py",
     "error_getting_nsudo_path": "获取 NSudoLC 路径时出错",
     "uninstall_for_all_users_in_dism_success": "通过 DISM 为 所有用户 卸载微软电脑管家成功。",
     "uninstall_for_all_users_in_dism_error": "通过 DISM 为 所有用户 卸载微软电脑管家时出错",
@@ -251,7 +251,7 @@
 
 
 
-    "@otherFeature.py": "otherFeature.py",
+    "@other_feature.py": "other_feature.py",
     "Windows_Server_does_not_support_this_feature": "Windows Server 不支持此功能。",
     "display_name": "产品名称",
     "instance_GUID": "产品唯一标识符 (GUID)",
@@ -314,7 +314,7 @@
 
 
 
-    "@topMenu.py": "topMenu.py",
+    "@top_menu.py": "top_menu.py",
     "top_menu_files": "文件",
     "top_menu_files_exit": "退出",
 
@@ -328,8 +328,8 @@
     "top_menu_term_of_use_and_privacy": "使用条款与隐私政策",
     "top_menu_term_of_use": "使用条款",
     "top_menu_privacy": "隐私政策",
-    "TermOfUse_context": "MSPCManagerHelper 使用条款\n\n欢迎使用 MSPCManagerHelper（以下简称“本软件”）。在使用本软件之前，请仔细阅读以下使用条款（以下简称“条款”）。通过下载、安装或使用本软件，即表示您同意遵守这些条款。如果您不同意这些条款，请勿使用本软件。若条款有更新，恕不另行通知。\n\n条款修改日期：2024 年 12 月 22 日\n\n1. 许可使用\n本软件由个人开发者 GuCATs（以下简称“开发者”）授权您个人、非商业性使用。您不得复制、修改、分发、出售或出租本软件的任何部分，除非获得开发者的书面许可。\n\n2. 知识产权\n本软件及其所有内容（包括但不限于文本、图像、图标、界面、代码和商标）均受版权法和其他知识产权法的保护。开发者保留所有未明确授予的权利。\n\n3. 用户责任\n您同意在使用本软件时遵守所有适用的法律法规。您不得使用本软件进行任何非法活动或侵犯他人权利的行为。\n\n4. 隐私政策\n开发者尊重您的隐私权，并致力于保护您的个人信息。有关我们如何收集、使用和保护您的信息的详细信息，请参阅我们的[隐私政策]。\n\n5. 免责声明\n本软件按“现状”提供，不提供任何形式的明示或暗示的保证，包括但不限于适销性、特定用途适用性和非侵权性。开发者不保证本软件的功能将满足您的要求，或本软件的操作将不间断或无错误。因使用本软件引起的任何问题，开发者概不负责。\n\n6. 责任限制\n在适用法律允许的最大范围内，开发者不对因使用或无法使用本软件而导致的任何直接、间接、附带、特殊或后果性损害承担责任，即使开发者已被告知可能发生此类损害。\n\n7. 条款修改\n开发者保留随时修改这些条款的权利。修改后的条款将在本软件或开发者的网站上发布后立即生效。您继续使用本软件即表示您接受修改后的条款。\n\n8. 终止\n如果您违反这些条款，开发者有权立即终止您使用本软件的许可，且无需事先通知。\n\n9. 适用法律\n这些条款受[国家/地区]法律管辖，不考虑其法律冲突原则。\n\n10. 开源协议\n本软件使用 MIT 开源协议。您可以在[MIT 许可证](https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE.txt)中查看详细信息。\n\n11. 第三方软件\n[NSudo](https://github.com/M2TeamArchived/NSudo)。\n[Sysinternals](https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_265231)。",
-    "Privacy_context": "MSPCManagerHelper 隐私政策\n\nMSPCManagerHelper （以下简称“本软件”）不会以任何形式采集并上传任何数据，包括但不限于计算机识别符、地理信息等。\n\n在您访问部分链接时（如 learn.microsoft.com/?wt.mc_id=studentamb_265231），会使用微软学生大使的跟踪符，以帮助开发者统计访客数量。",
+    "TermOfUse_context": "MSPCManagerHelper 使用条款\n\n欢迎使用 MSPCManagerHelper（以下简称“本软件”）。在使用本软件之前，请仔细阅读以下使用条款（以下简称“条款”）。通过下载、安装或使用本软件，即表示您同意遵守这些条款。如果您不同意这些条款，请勿使用本软件。若条款有更新，恕不另行通知。\n\n条款修改日期：2024 年 12 月 22 日\n\n1. 许可使用\n本软件由个人开发者 GuCATs（以下简称“开发者”）授权您个人、非商业性使用。您不得复制、修改、分发、出售或出租本软件的任何部分，除非获得开发者的书面许可。\n\n2. 知识产权\n本软件及其所有内容（包括但不限于文本、图像、图标、界面、代码和商标）均受版权法和其他知识产权法的保护。开发者保留所有未明确授予的权利。\n\n3. 用户责任\n您同意在使用本软件时遵守所有适用的法律法规。您不得使用本软件进行任何非法活动或侵犯他人权利的行为。\n\n4. 隐私政策\n开发者尊重您的隐私权，并致力于保护您的个人信息。有关我们如何收集、使用和保护您的信息的详细信息，请参阅我们的[隐私政策]。\n\n5. 免责声明\n本软件按“现状”提供，不提供任何形式的明示或暗示的保证，包括但不限于适销性、特定用途适用性和非侵权性。开发者不保证本软件的功能将满足您的要求，或本软件的操作将不间断或无错误。因使用本软件引起的任何问题，开发者概不负责。\n\n6. 责任限制\n在适用法律允许的最大范围内，开发者不对因使用或无法使用本软件而导致的任何直接、间接、附带、特殊或后果性损害承担责任，即使开发者已被告知可能发生此类损害。\n\n7. 条款修改\n开发者保留随时修改这些条款的权利。修改后的条款将在本软件或开发者的网站上发布后立即生效。您继续使用本软件即表示您接受修改后的条款。\n\n8. 终止\n如果您违反这些条款，开发者有权立即终止您使用本软件的许可，且无需事先通知。\n\n9. 适用法律\n这些条款受[国家/地区]法律管辖，不考虑其法律冲突原则。\n\n10. 开源协议\n本软件使用 MIT 开源协议。您可以在[MIT 许可证](https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE.txt)中查看详细信息。\n\n11. 第三方软件\n[NSudo](https://github.com/M2TeamArchived/NSudo)。\n[Sysinternals](https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_474966)。",
+    "Privacy_context": "MSPCManagerHelper 隐私政策\n\nMSPCManagerHelper （以下简称“本软件”）不会以任何形式采集并上传任何数据，包括但不限于计算机识别符、地理信息等。\n\n在您访问部分链接时（如 learn.microsoft.com/?wt.mc_id=studentamb_474966），会使用微软学生大使的跟踪符，以帮助开发者统计访客数量。",
 
     "top_menu_help": "帮助",
     "top_menu_help_about": "关于",
@@ -360,7 +360,7 @@
 
 
 
-    "@mainWindow.py": "mainWindow.py",
+    "@mainWindow.py": "main_window.py",
     "refresh": "刷新",
     "notice_select_option": "请选择 (带 * 的功能不需要以管理员身份运行)",
     "select_option": "请选择",
@@ -416,5 +416,6 @@
     "tips_run_as_dev_mode": "以“/DevMode”或“-DevMode”参数运行以启动开发者模式。",
     "excessive_waiting_time": "若等候时间过长，请耐心等待，或取消任务后重试。",
     "admin_approval_mode_is_on": "管理员保护已开启，需要以管理员身份运行的功能将无法正常使用，请关闭管理员保护并重启电脑后再启动 MSPCManagerHelper。",
-    "server_installation_type_is_core": "当前 Windows Server 安装类型为 Core，此系统上将无法使用微软电脑管家。请执行全新安装 Windows Server 以选择“带桌面体验的服务器”。"
+    "server_installation_type_is_core": "当前 Windows Server 安装类型为 Core，此系统上将无法使用微软电脑管家。请执行全新安装 Windows Server 以选择“带桌面体验的服务器”。",
+    "current_windows_installation_information": "当前 Windows 安装信息: "
 }

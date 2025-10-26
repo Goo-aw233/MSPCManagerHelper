@@ -15,13 +15,13 @@
 
 
 
-    "@checkSystemRequirements.py": "checkSystemRequirements.py",
+    "@check_system_requirements.py": "check_system_requirements.py",
     "failure_to_meet_system_requirements": "The Current Windows Version Does Not Meet the Minimum Requirements for Microsoft PC Manager:\nWindows 10 Version 19042 or Windows Server 2022",
     "meet_system_requirements": "The Current System Meets the Minimum Requirements for\nMicrosoft PC Manager",
 
 
 
-    "@getVersionNumber": "getVersionNumber.py",
+    "@get_version_number": "get_version_number.py",
     "cannot_read_pc_manager_version": "Fail to Load Microsoft PC Manager Version",
     "current_pc_manager_version": "Microsoft PC Manager Version",
     "current_pc_manager_beta_version": "Microsoft PC Manager Public Beta Version",
@@ -29,7 +29,7 @@
 
 
 
-    "@mainFeature.py": "mainFeature.py",
+    "@main_feature.py": "main_feature.py",
     "repair_pc_manager_notice": "Notice",
     "repair_pc_manager_to_perform": "Does it repair Microsoft PC Manager installation / launch issues? This action directly uninstalls all versions of Microsoft PC Manager, cleans up configuration files and residuals, and repairs Microsoft Edge (WebView2 Runtime) installer failed to start.",
     "repair_pc_manager_success": "Successfully repaired Microsoft PC Manager installation / launch issues.",
@@ -56,13 +56,13 @@
     "retrieve_computer_info_success": "Successfully retrieved computer information.",
     "retrieve_computer_info_error": "Error occurred while retrieving computer information",
     "mspcmanagerhelper_version_label": "MSPCManagerHelper Version",
-    "User-added_info_notice": "Adding additional information",
-    "User-added_info": "Please enter the additional information you want to add here. If not, click `Cancel` or close the window. \n\nSample:\nContact: Discord User ID number: 1234567890\nProblem Description: Microsoft PC Manager cannot clean the Windows.old folder.",
+    "user-added_info_notice": "Adding additional information",
+    "user-added_info": "Please enter the additional information you want to add here. If not, click `Cancel` or close the window. \n\nSample:\nContact: Discord User ID number: 1234567890\nProblem Description: Microsoft PC Manager cannot clean the Windows.old folder.",
     "ask_to_retrieve_pc_manager_dumps_notice": "Retrieve Microsoft PC Manager dumps",
-    "ask_to_retrieve_pc_manager_dumps": "Would you like to retrieve Microsoft PC Manager dumps? This step can be skipped by selecting `No` if not necessary.",
+    "ask_to_retrieve_pc_manager_dumps": "Would you like to retrieve Microsoft PC Manager dumps? This step can be skipped by selecting `No` if not necessary.\nPlease ensure that Microsoft PC Manager is running and in the state when the problem occurred while retrieving the dumps.",
     "no_match_procdump_version": "The version of ProcDump that matches the current computer was not found.",
     "no_match_nsudo_version": "The version of NSudoLC that matches the current computer was not found.",
-    "procdump_agreement": "Ensure you have read and agreed to the Software License Terms before using ProcDump.\nSoftware License Terms: https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_265231",
+    "procdump_agreement": "Ensure you have read and agreed to the Software License Terms before using ProcDump.\nSoftware License Terms: https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_474966",
     "retrieving_progress_name": "Processes that are fetching the dump file",
     "retrieve_pc_manager_dumps_code_4294967294": "The process is not running and does not need to be acquired.",
     "retrieve_pc_manager_dumps_success": "Successfully retrieved Microsoft PC Manager dumps",
@@ -80,7 +80,7 @@
 
 
 
-    "@installationFeature.py": "installationFeature.py",
+    "@installation_feature.py": "installation_feature.py",
     "winget_not_installed": "WinGet is not installed yet, please use another solution.\nYou can download and install Windows Package Manager via Microsoft Learn (https://learn.microsoft.com/windows/msix/app-installer/install-update-app-installer/?wt.mc_id=studentamb_ 265231) or GitHub (https://github.com/microsoft/winget-cli/releases) and retry after downloading and installing Windows Package Manager.",
     "winget_source_not_found": "The msstore source was not found.",
     "winget_not_internet_connection": "Unable to connect to the Internet. Please check the Internet connection and retry.",
@@ -154,7 +154,7 @@
     "install_from_appxmanifest_error": "Error occurred while installing Microsoft PC Manager from AppxManifest",
 
     "wv2_runtime_install_success": "Successfully installed Microsoft Edge WebView2 Runtime.",
-    "wv2_runtime_installer_download_link": "If you need to save a copy of the Microsoft Edge WebView2 Runtime installer for yourself, please visit https://developer.microsoft.com/microsoft-edge/webview2/?wt.mc_id=studentamb_265231 and select the 'Evergreen Standalone Installer' for x64 or ARM64 to download.",
+    "wv2_runtime_installer_download_link": "If you need to save a copy of the Microsoft Edge WebView2 Runtime installer for yourself, please visit https://developer.microsoft.com/microsoft-edge/webview2/?wt.mc_id=studentamb_474966 and select the 'Evergreen Standalone Installer' for x64 or ARM64 to download.",
     "wv2_installer_exit_code": "Microsoft Edge WebView2 Runtime installer exit code",
     "wv2_runtime_already_installed": "Microsoft Edge WebView2 Runtime is already installed on your system. Please try rerunning as administrator.",
     "wv2_installer_exit_code_0x8004070c": "Please try deleting the 'C:\\Program Files (x86)\\Microsoft\\EdgeWebView' folder and try again. If there is only a Temp folder under 'C:\\Program Files (x86)\\Microsoft', please delete the 'C:\\Program Files (x86)\\Microsoft' folder directly and try again.",
@@ -168,7 +168,7 @@
 
 
 
-    "@uninstallationFeaure.py": "uninstallationFeaure.py",
+    "@uninstallation_feaure.py": "uninstallation_feaure.py",
     "error_getting_nsudo_path": "Error occurred while getting NSudo path",
     "uninstall_for_all_users_in_dism_success": "Successfully uninstalled Microsoft PC Manager via DISM for all users.",
     "uninstall_for_all_users_in_dism_error": "Error occurred while uninstalling Microsoft PC Manager via DISM for all users",
@@ -252,7 +252,7 @@
 
 
 
-    "@otherFeature.py": "otherFeature.py",
+    "@other_feature.py": "other_feature.py",
     "Windows_Server_does_not_support_this_feature": "Windows Server does not support this feature.",
     "display_name": "Product Name",
     "instance_GUID": "Instance GUID",
@@ -315,7 +315,7 @@
 
 
 
-    "@topMenu.py": "topMenu.py",
+    "@top_menu.py": "top_menu.py",
     "top_menu_files": "Files",
     "top_menu_files_exit": "Exit",
 
@@ -329,8 +329,8 @@
     "top_menu_term_of_use_and_privacy": "Terms of Use & Privacy",
     "top_menu_term_of_use": "Term of Use",
     "top_menu_privacy": "Privacy",
-    "TermOfUse_context": "MSPCManagerHelper Terms of Use\n\nWelcome to MSPCManagerHelper (hereinafter referred to as \"the Software\"). Please carefully read the following terms of use (hereinafter referred to as \"the Terms\") before using the Software. By downloading, installing, or using the Software, you agree to comply with these Terms. If you do not agree with these Terms, please do not use the Software. Terms are subject to change without notice.\n\nTerms Modification Date: December 22, 2024\n\n1. License to Use\nThe Software is licensed to you by individual developer GuCATs (hereinafter referred to as \"the Developer\") for personal, non-commercial use only. You may not copy, modify, distribute, sell, or lease any part of the Software without the Developer's written permission.\n\n2. Intellectual Property\nThe Software and all its content (including but not limited to text, images, icons, interfaces, code, and trademarks) are protected by copyright laws and other intellectual property laws. The Developer reserves all rights not expressly granted.\n\n3. User Responsibility\nYou agree to comply with all applicable laws and regulations while using the Software. You may not use the Software for any illegal activities or infringe upon the rights of others.\n\n4. Privacy Policy\nThe Developer respects your privacy and is committed to protecting your personal information. For detailed information on how we collect, use, and protect your information, please refer to our [Privacy Policy].\n\n5. Disclaimer\nThe Software is provided \"as is\" without any express or implied warranties, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement. The Developer does not guarantee that the functions of the Software will meet your requirements or that the operation of the Software will be uninterrupted or error-free. The Developer is not responsible for any issues arising from the use of the Software.\n\n6. Limitation of Liability\nTo the maximum extent permitted by applicable law, the Developer shall not be liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use the Software, even if the Developer has been advised of the possibility of such damages.\n\n7. Modification of Terms\nThe Developer reserves the right to modify these Terms at any time. The modified Terms will take effect immediately upon being posted in the Software or on the Developer's website. Your continued use of the Software signifies your acceptance of the modified Terms.\n\n8. Termination\nIf you violate these Terms, the Developer reserves the right to immediately terminate your license to use the Software without prior notice.\n\n9. Governing Law\nThese Terms are governed by the laws of [Country/Region], without regard to its conflict of law principles.\n\n10. Open Source License\nThe Software uses the MIT open-source license. You can view the details at [MIT License](https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE.txt).\n\n11. Third-Party Software\n[NSudo](https://github.com/M2TeamArchived/NSudo).\n[Sysinternals](https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_265231).",
-    "Privacy_context": "MSPCManagerHelper Privacy Policy\n\nMSPCManagerHelper (hereinafter referred to as \"the Software\") does not collect and upload any data in any form, including, but not limited to, computer identifiers, geographic information, and the like.\n\nWhen you visit some of the links (e.g. learn.microsoft.com/?wt.mc_id=studentamb_265231), Microsoft Student Ambassadors trackers are used to help the developer count the number of visitors.",
+    "TermOfUse_context": "MSPCManagerHelper Terms of Use\n\nWelcome to MSPCManagerHelper (hereinafter referred to as \"the Software\"). Please carefully read the following terms of use (hereinafter referred to as \"the Terms\") before using the Software. By downloading, installing, or using the Software, you agree to comply with these Terms. If you do not agree with these Terms, please do not use the Software. Terms are subject to change without notice.\n\nTerms Modification Date: December 22, 2024\n\n1. License to Use\nThe Software is licensed to you by individual developer GuCATs (hereinafter referred to as \"the Developer\") for personal, non-commercial use only. You may not copy, modify, distribute, sell, or lease any part of the Software without the Developer's written permission.\n\n2. Intellectual Property\nThe Software and all its content (including but not limited to text, images, icons, interfaces, code, and trademarks) are protected by copyright laws and other intellectual property laws. The Developer reserves all rights not expressly granted.\n\n3. User Responsibility\nYou agree to comply with all applicable laws and regulations while using the Software. You may not use the Software for any illegal activities or infringe upon the rights of others.\n\n4. Privacy Policy\nThe Developer respects your privacy and is committed to protecting your personal information. For detailed information on how we collect, use, and protect your information, please refer to our [Privacy Policy].\n\n5. Disclaimer\nThe Software is provided \"as is\" without any express or implied warranties, including but not limited to warranties of merchantability, fitness for a particular purpose, and non-infringement. The Developer does not guarantee that the functions of the Software will meet your requirements or that the operation of the Software will be uninterrupted or error-free. The Developer is not responsible for any issues arising from the use of the Software.\n\n6. Limitation of Liability\nTo the maximum extent permitted by applicable law, the Developer shall not be liable for any direct, indirect, incidental, special, or consequential damages resulting from the use or inability to use the Software, even if the Developer has been advised of the possibility of such damages.\n\n7. Modification of Terms\nThe Developer reserves the right to modify these Terms at any time. The modified Terms will take effect immediately upon being posted in the Software or on the Developer's website. Your continued use of the Software signifies your acceptance of the modified Terms.\n\n8. Termination\nIf you violate these Terms, the Developer reserves the right to immediately terminate your license to use the Software without prior notice.\n\n9. Governing Law\nThese Terms are governed by the laws of [Country/Region], without regard to its conflict of law principles.\n\n10. Open Source License\nThe Software uses the MIT open-source license. You can view the details at [MIT License](https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE.txt).\n\n11. Third-Party Software\n[NSudo](https://github.com/M2TeamArchived/NSudo).\n[Sysinternals](https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_474966).",
+    "Privacy_context": "MSPCManagerHelper Privacy Policy\n\nMSPCManagerHelper (hereinafter referred to as \"the Software\") does not collect and upload any data in any form, including, but not limited to, computer identifiers, geographic information, and the like.\n\nWhen you visit some of the links (e.g. learn.microsoft.com/?wt.mc_id=studentamb_474966), Microsoft Student Ambassadors trackers are used to help the developer count the number of visitors.",
 
     "top_menu_help": "Help",
     "top_menu_help_about": "About",
@@ -361,7 +361,7 @@
 
 
 
-    "@mainWindow.py": "mainWindow.py",
+    "@mainWindow.py": "main_window.py",
     "refresh": "Refresh",
     "notice_select_option": "Please Select \n(Functions with * Do Not Need to Be Run as Administrator)",
     "select_option": "Please Select",
@@ -417,5 +417,6 @@
     "tips_run_as_dev_mode": "Run with `/DevMode` or `-DevMode` parameter to enable developer mode.",
     "excessive_waiting_time": "If the wait time is too long, please be patient or cancel the task and try again.",
     "admin_approval_mode_is_on": "Administrator Protection is turned on, functions that need to be run as administrator will not work properly, please turn off Administrator Protection and restart your PC before starting MSPCManagerHelper.",
-    "server_installation_type_is_core": "The current Windows Server installation type is Core, Microsoft PC Manager will not be available on this system. You'll need to do a clean installation of Windows Server to select Server with Desktop Experience."
+    "server_installation_type_is_core": "The current Windows Server installation type is Core, Microsoft PC Manager will not be available on this system. You'll need to do a clean installation of Windows Server to select Server with Desktop Experience.",
+    "current_windows_installation_information": "Current Windows Installation Information: "
 }

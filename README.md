@@ -13,7 +13,7 @@ Please select your language to continue
 
 請選取你的語言以繼續 | 请选择你的语言以继续
 
-[中文（繁體）](./README.zh-Hant.md) | [中文（简体）](./README.zh-Hans.md)
+[中文 (繁體)](./docs/README.zh-Hant.md) | [中文 (简体)](./docs/README.zh-Hans.md)
 
 ## 👏 Introduction
 

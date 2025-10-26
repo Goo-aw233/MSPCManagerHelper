@@ -13,7 +13,7 @@ ProcDump is a Sysinternals tool provided by Microsoft.
 Copyright (c) Microsoft Corporation.
 
 License: Sysinternals Software License Terms  
-Link: https://learn.microsoft.com/sysinternals/?wt.mc_id=studentamb_265231
+Link: https://learn.microsoft.com/sysinternals/?wt.mc_id=studentamb_474966
 
 Sysinternals Software License Terms:
 

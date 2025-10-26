@@ -8,7 +8,9 @@ import win32api
 import win32service
 import win32serviceutil
 import winreg
+from pathlib import Path
 from tkinter import filedialog, messagebox, ttk
+
 
 class OtherFeature:
     def __init__(self, translator, result_textbox=None):
@@ -29,14 +31,14 @@ class OtherFeature:
 
             if processor_architecture == "AMD64":
                 if hasattr(sys, '_MEIPASS'):
-                    return os.path.join(sys._MEIPASS, "tools", "NSudo", "NSudoLC_x64.exe")
+                    return str(Path(sys._MEIPASS) / "tools" / "NSudo" / "NSudoLC_x64.exe")
                 else:
-                    return os.path.join("tools", "NSudo", "NSudoLC_x64.exe")
+                    return str(Path("tools") / "NSudo" / "NSudoLC_x64.exe")
             elif processor_architecture == "ARM64":
                 if hasattr(sys, '_MEIPASS'):
-                    return os.path.join(sys._MEIPASS, "tools", "NSudo", "NSudoLC_ARM64.exe")
+                    return str(Path(sys._MEIPASS) / "tools" / "NSudo" / "NSudoLC_ARM64.exe")
                 else:
-                    return os.path.join("tools", "NSudo", "NSudoLC_ARM64.exe")
+                    return str(Path("tools") / "NSudo" / "NSudoLC_ARM64.exe")
             else:
                 self.textbox(self.translator.translate("no_match_nsudo_version"))
                 return None
@@ -227,8 +229,8 @@ class OtherFeature:
         root.resizable(False, False)
 
         # 设置自定义图标
-        switch_region_icon_path = os.path.join(os.path.dirname(__file__), 'assets', 'MSPCManagerHelper.ico')
-        root.iconbitmap(switch_region_icon_path)
+        switch_region_icon_path = Path(__file__).parent / 'assets' / 'MSPCManagerHelper.ico'
+        root.iconbitmap(str(switch_region_icon_path))
 
         label = ttk.Label(root, text=self.translator.translate("type_to_switch_pc_manager_region"))
         entry = ttk.Entry(root)  # 创建提示和输入框
