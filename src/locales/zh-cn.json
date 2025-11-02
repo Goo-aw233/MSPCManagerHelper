@@ -187,6 +187,7 @@
     "advanced_cleanup_no_processes_killed_for_all_users_in_dism": "未终止任何进程。",
     "advanced_clearing_folders_for_all_users_in_dism": "正在清理进阶项目（文件夹）",
     "advanced_clearing_config_and_files_for_all_users_in_dism": "正在清理进阶项目（文件）",
+    "advanced_clearing_registries_for_all_users_in_dism": "正在清理进阶项目（注册表）",
     "advanced_fail_to_config_and_files_for_all_users_in_dism": "清理进阶项目时出错",
     "advanced_fail_to_config_and_files_info_for_all_users_in_dism": "错误信息",
     "uninstall_and_cleanup_for_all_users_in_dism_success": "通过 DISM 为 所有用户 卸载微软电脑管家并清理配置文件和残留成功。",
@@ -249,6 +250,22 @@
     "uninstall_pc_manager_beta_error_info": "卸载微软电脑管家时遇到的错误信息",
     "uninstalled_cleanup_pc_manager_beta_config_and_files": "已卸载微软电脑管家公测版并清理配置文件和残留。",
 
+    "remove_microsoft_edge_webview2_folder_title": "强制移除 Microsoft Edge WebView2 Runtime 文件夹",
+    "remove_microsoft_edge_webview2_folder_message": "是否强制移除 Microsoft Edge WebView2 Runtime 文件夹 ({microsoft_edge_webview2_path})？",
+    "microsoft_edge_webview2_folder_removed_successfully": "已成功强制移除 Microsoft Edge WebView2 Runtime 文件夹。",
+    "remove_microsoft_edge_webview2_folder_error_title": "强制移除 Microsoft Edge WebView2 Runtime 文件夹时出错",
+    "remove_microsoft_edge_webview2_folder_error_message": "强制移除 Microsoft Edge WebView2 Runtime 文件夹 ({microsoft_edge_webview2_path}) 时出错。\n\n是否重新尝试移除文件夹？移除文件夹时请确保 msedge.exe、msedgewebview2.exe、MicrosoftEdgeUpdate.exe 等进程未在运行。\n若此时取消操作，已移除的文件夹将不会被还原。",
+    "remove_microsoft_edge_webview2_folder_error_message_with_error_message": "强制移除 Microsoft Edge WebView2 Runtime 文件夹 ({microsoft_edge_webview2_path}) 时出错：{error_message}\n\n是否重新尝试移除文件夹？移除文件夹时请确保 msedge.exe、msedgewebview2.exe、MicrosoftEdgeUpdate.exe 等进程未在运行。\n若此时取消操作，已移除的文件夹将不会被还原。",
+    "remove_microsoft_edge_webview2_folder_error": "强制移除 Microsoft Edge (WebView2 Runtime) 文件夹时出错",
+    "remove_microsoft_edge_webview2_parent_folder_title": "强制移除 Microsoft Edge (WebView2 Runtime) 的父文件夹",
+    "remove_microsoft_edge_webview2_parent_folder_message": "是否强制移除 Microsoft Edge (WebView2 Runtime) 的父文件夹 ({microsoft_edge_webview2_parent_path})？",
+    "microsoft_edge_webview2_parent_folder_removed_successfully": "已成功强制移除 Microsoft Edge (WebView2 Runtime) 的父文件夹 ({microsoft_edge_webview2_parent_path})。",
+    "remove_microsoft_edge_webview2_parent_folder_error_title": "强制移除 Microsoft Edge (WebView2 Runtime) 的父文件夹时出错",
+    "remove_microsoft_edge_webview2_parent_folder_error_message": "强制移除 Microsoft Edge (WebView2 Runtime) 的父文件夹 ({microsoft_edge_webview2_parent_path}) 时出错。\n\n是否重新尝试移除文件夹？移除文件夹时请确保 msedge.exe、msedgewebview2.exe、MicrosoftEdgeUpdate.exe 等进程未在运行。\n若此时取消操作，已移除的文件夹将不会被还原。",
+    "remove_microsoft_edge_webview2_parent_folder_error_message_with_error_message": "强制移除 Microsoft Edge (WebView2 Runtime) 的父文件夹 ({microsoft_edge_webview2_parent_path}) 时出错：{error_message}\n\n是否重新尝试移除文件夹？移除文件夹时请确保 msedge.exe、msedgewebview2.exe、MicrosoftEdgeUpdate.exe 等进程未在运行。\n若此时取消操作，已移除的文件夹将不会被还原。",
+    "microsoft_edge_webview2_folder_not_found": "未找到 Microsoft Edge WebView2 Runtime 文件夹。",
+    "microsoft_edge_webview2_parent_folder_not_found": "未找到 Microsoft Edge WebView2 Runtime 的父文件夹。",
+
 
 
     "@other_feature.py": "other_feature.py",
@@ -304,6 +321,7 @@
     "no_compute_files_selected": "未选择任何文件。",
     "path_to_compute_files": "文件路径",
     "compute_files_hash_success": "计算文件哈希值完成。",
+    "file_not_found_error": "未找到文件",
     "compute_files_hash_error": "计算文件哈希值时出错",
 
     "system_msedge_webview2_version": "当前系统 Microsoft Edge WebView2 Runtime 版本",
@@ -311,12 +329,18 @@
     "get_msedge_webview2_version_powershell_error": "获取系统 Microsoft Edge WebView2 Runtime 版本时出错",
     "msedge_webview2_version_registry_key_not_found": "未找到用户 Microsoft Edge WebView2 Runtime 注册表项",
     "get_msedge_webview2_version_registry_error": "获取用户 Microsoft Edge WebView2 Runtime 版本时出错",
+    "windows_app_runtime_versions": "当前系统 Windows App Runtime 版本",
+    "get_windows_app_runtime_versions_powershell_error": "获取系统 Windows App Runtime 版本时出错",
+    "get_pc_manager_dependencies_version_success": "获取微软电脑管家依赖项版本完成。",
 
 
 
     "@top_menu.py": "top_menu.py",
-    "top_menu_files": "文件",
-    "top_menu_files_exit": "退出",
+    "top_menu_settings": "设置",
+    "top_menu_settings_enable_resolution_awareness": "启用分辨率感知",
+    "top_menu_settings_disable_resolution_awareness": "禁用分辨率感知",
+    "top_menu_settings_disable_resolution_awareness_warning": "禁用分辨率感知需要重启程序，程序将会自动关闭，请在程序关闭后自行启动。",
+    "top_menu_settings_exit": "退出",
 
     "top_menu_update": "下载与更新",
     "top_menu_update_GitHub": "从 GitHub 获取最新版 MSPCManagerHelper",
@@ -334,6 +358,7 @@
     "top_menu_help": "帮助",
     "top_menu_help_about": "关于",
     "top_menu_help_gethelp": "获取帮助",
+    "top_menu_help_gethelp_message": "您将被重定向到微软电脑管家官网。请从微软电脑管家官网底部的“更多联系方式”部分与我们取得帮助。",
     "top_menu_help_official_site": "官方网站",
     "top_menu_help_more_contact": "更多联系方式",
 
@@ -343,8 +368,9 @@
 
 
     "@access_key": "access_key",
-    "top_menu_files_access_key": "(F)",
-    "top_menu_files_exit_access_key": "(E)",
+    "top_menu_settings_access_key": "(S)",
+    "top_menu_settings_enable_resolution_awareness_access_key": "(A)",
+    "top_menu_settings_exit_access_key": "(E)",
 
     "top_menu_update_access_key": "(U)",
 
@@ -391,6 +417,7 @@
     "uninstall_for_all_users": "为 所有用户 卸载微软电脑管家",
     "uninstall_for_current_user": "为 当前用户 卸载微软电脑管家",
     "uninstall_pc_manager_beta": "卸载微软电脑管家公测版",
+    "remove_microsoft_edge_webview2_folder": "移除 Microsoft Edge (WebView2 Runtime) 文件夹",
 
     "view_installed_antivirus": "* 查找当前电脑已安装的防病毒软件",
     "developer_options": "* 开发者选项",
@@ -400,11 +427,15 @@
     "restart_pc_manager_service": "重启微软电脑管家服务",
     "switch_pc_manager_region": "切换微软电脑管家地区",
     "compute_files_hash": "* 计算文件哈希值",
-    "get_msedge_webview2_version": "* 获取 Microsoft Edge WebView2 Runtime 版本",
+    "get_pc_manager_dependencies_version": "* 获取微软电脑管家依赖包版本",
 
     "warning": "警告",
+    "info": "信息",
+    "error": "错误",
+    "error_code": "错误代码",
+    "error_message": "错误信息",
     "select_function": "请选择要执行的功能",
-    "main_executing_operation": "正在执行 {main_feature_name} 的操作。",
+    "main_executing_operation": "正在执行操作: {main_feature_name}",
     "user_canceled": "用户已取消任务。",
     "main_copy": "复制",
     "main_clear": "清除",
@@ -415,7 +446,7 @@
     "see_term_of_use_and_privacy": "使用 MSPCManagerHelper 即代表您已阅读并同意《使用条款》与《隐私政策》，否则，请退出软件并删除。",
     "tips_run_as_dev_mode": "以“/DevMode”或“-DevMode”参数运行以启动开发者模式。",
     "excessive_waiting_time": "若等候时间过长，请耐心等待，或取消任务后重试。",
-    "admin_approval_mode_is_on": "管理员保护已开启，需要以管理员身份运行的功能将无法正常使用，请关闭管理员保护并重启电脑后再启动 MSPCManagerHelper。",
+    "admin_approval_mode_is_on": "管理员保护已开启，需要以管理员身份运行的功能将无法正常使用，请关闭管理员保护并重启电脑后再启动 MSPCManagerHelper。\n若保持管理员保护开启，为当前用户所执行操作的功能将不会生效。",
     "server_installation_type_is_core": "当前 Windows Server 安装类型为 Core，此系统上将无法使用微软电脑管家。请执行全新安装 Windows Server 以选择“带桌面体验的服务器”。",
-    "current_windows_installation_information": "当前 Windows 安装信息: "
+    "current_windows_installation_information": "当前 Windows 安装信息"
 }

@@ -1,9 +1,11 @@
 import glob
 import itertools
 import os
+import random
 import re
 import subprocess
 import sys
+import time
 import winreg
 import tkinter as tk
 from pathlib import Path
@@ -296,6 +298,87 @@ class UninstallationFeature:
                                     except Exception as e:
                                         self.textbox(self.translator.translate("advanced_fail_to_config_and_files_for_all_users_in_dism") + f": {path}")
                                         self.textbox(self.translator.translate("advanced_fail_to_config_and_files_info_for_all_users_in_dism") + f": {str(e)}")
+
+                            # 删除注册表项
+                            # 确切注册表项目
+                            registry_keys_to_delete = [
+                                r'HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\MSPCManager Store'
+                            ]
+                            # 模糊匹配注册表项/值（值为字符串时，匹配并删除键值，值为 None 时，匹配并删除整个项）
+                            fuzzy_registry_items_to_delete = {
+                                r'HKEY_CURRENT_USER\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Compatibility Assistant\Store': r'C:\Program Files\WindowsApps\Microsoft.MicrosoftPCManager_*__8wekyb3d8bbwe\PCManager\MSPCManager.exe',
+                                r'HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\SecurityManager\CapAuthz\ApplicationsEx\Microsoft.MicrosoftPCManager_*__8wekyb3d8bbwe': None,
+                                r'HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\SecurityManager\CapAuthz\ApplicationsEx\Microsoft.PCManager_*__8wekyb3d8bbwe': None,
+                                r'HKEY_LOCAL_MACHINE\SOFTWARE\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\PackageRepository\Packages\Microsoft.PCManager_*__8wekyb3d8bbwe': None
+                            }
+                            # 匹配过后的注册表项/值
+                            matched_registry_keys_to_delete = []
+                            matched_registry_values_to_delete = []
+
+                            for path_pattern, value_pattern in fuzzy_registry_items_to_delete.items():
+                                try:
+                                    # 检查路径本身是否包含通配符
+                                    if '*' in path_pattern or '?' in path_pattern:
+                                        base_key_path, pattern = path_pattern.rsplit('\\', 1)
+                                        hkey_str, subkey_path = base_key_path.split('\\', 1)
+                                        hkey = getattr(winreg, hkey_str)
+
+                                        with winreg.OpenKey(hkey, subkey_path, 0, winreg.KEY_READ | winreg.KEY_WOW64_64KEY) as base_key:
+                                            i = 0
+                                            while True:
+                                                try:
+                                                    subkey_name = winreg.EnumKey(base_key, i)
+                                                    if glob.fnmatch.fnmatch(subkey_name, pattern):
+                                                        full_key_path = f"{base_key_path}\\{subkey_name}"
+                                                        if value_pattern is None:
+                                                            matched_registry_keys_to_delete.append(full_key_path)
+                                                    i += 1
+                                                except OSError:
+                                                    break
+                                    # 如果路径不含通配符，则匹配其下的键值
+                                    else:
+                                        hkey_str, subkey_path = path_pattern.split('\\', 1)
+                                        hkey = getattr(winreg, hkey_str)
+                                        with winreg.OpenKey(hkey, subkey_path, 0, winreg.KEY_READ | winreg.KEY_WOW64_64KEY) as key:
+                                            i = 0
+                                            while True:
+                                                try:
+                                                    value_name, _, _ = winreg.EnumValue(key, i)
+                                                    if glob.fnmatch.fnmatch(value_name, value_pattern):
+                                                        matched_registry_values_to_delete.append((path_pattern, value_name))
+                                                    i += 1
+                                                except OSError:
+                                                    break
+                                except FileNotFoundError:
+                                    pass  # 注册表项/值不存在，忽略
+                                except Exception as e:
+                                    self.textbox(f"advanced_fail_to_config_and_files_for_all_users_in_dism: {path_pattern}\n{e}\n")
+
+                            is_first = True
+                            # 合并并删除所有确切和匹配到的注册表项
+                            all_keys_to_delete = registry_keys_to_delete + matched_registry_keys_to_delete
+                            for key in all_keys_to_delete:
+                                try:
+                                    subprocess.run([nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "reg.exe", "delete", key, "/f"],
+                                                   capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                                    if is_first:
+                                        self.textbox('\n' + self.translator.translate('advanced_clearing_registries_for_all_users_in_dism') + ':\n')  # 显示执行操作
+                                        is_first = False
+                                    self.textbox('-' + key + '\n')  # 显示执行操作
+                                except Exception as e:
+                                    self.textbox(self.translator.translate('advanced_fail_to_config_and_files_for_all_users_in_dism') + ': ' + str(e) + '\n')  # 显示错误内容
+
+                            # 删除匹配到的注册表值
+                            for key, value in matched_registry_values_to_delete:
+                                try:
+                                    subprocess.run([nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "reg.exe", "delete", key, "/v", value, "/f"],
+                                                   capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                                    if is_first:
+                                        self.textbox('\n' + self.translator.translate('advanced_clearing_registries_for_all_users_in_dism') + ':\n')  # 显示执行操作
+                                        is_first = False
+                                    self.textbox('-' + key + ' -> ' + value + '\n')  # 显示执行操作
+                                except Exception as e:
+                                    self.textbox(self.translator.translate('advanced_fail_to_config_and_files_for_all_users_in_dism') + ': ' + str(e) + '\n')  # 显示错误内容
 
                         except Exception as e:
                             self.textbox(self.translator.translate("advanced_cleanup_error") + f": {str(e)}")
@@ -864,3 +947,77 @@ class UninstallationFeature:
                 return self.translator.translate('user_canceled')
         except Exception as e:
             return f"{self.translator.translate('uninstall_pc_manager_beta_error_info')}: {str(e)}"
+
+    def remove_microsoft_edge_webview2_folder(self):
+        try:
+            microsoft_edge_webview2_parent_path = Path(os.environ['ProgramFiles(x86)']) / 'Microsoft'
+            microsoft_edge_webview2_path = microsoft_edge_webview2_parent_path / 'EdgeWebView'
+
+            # Microsoft Edge WebView2 Runtime 文件夹存在
+            if microsoft_edge_webview2_path.exists():
+                if messagebox.askokcancel(
+                    self.translator.translate("remove_microsoft_edge_webview2_folder_title"),
+                    self.translator.translate("remove_microsoft_edge_webview2_folder_message").format(microsoft_edge_webview2_path=microsoft_edge_webview2_path)
+                ):
+                    nsudolc_path = self.get_nsudolc_path()
+                    while True:
+                        try:
+                            subprocess.run(
+                                [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", str(microsoft_edge_webview2_path)],
+                                check=True, capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
+                            )
+                            time.sleep(random.uniform(0.1, 0.5))  # 随即等待 0.1 - 0.5 秒文件系统更新
+                            if not microsoft_edge_webview2_path.exists():
+                                return self.translator.translate("microsoft_edge_webview2_folder_removed_successfully").format(microsoft_edge_webview2_path=microsoft_edge_webview2_path)
+                            else:
+                                if not messagebox.askretrycancel(
+                                    self.translator.translate("remove_microsoft_edge_webview2_folder_error_title"),
+                                    self.translator.translate("remove_microsoft_edge_webview2_folder_error_message").format(microsoft_edge_webview2_path=microsoft_edge_webview2_path)
+                                ):
+                                    return self.translator.translate("user_canceled")
+                        except subprocess.CalledProcessError as e:
+                            if not messagebox.askretrycancel(
+                                self.translator.translate("remove_microsoft_edge_webview2_folder_error_title"),
+                                self.translator.translate("remove_microsoft_edge_webview2_folder_error_message_with_error_message").format(microsoft_edge_webview2_path=microsoft_edge_webview2_path, error=e.stderr)
+                            ):
+                                return self.translator.translate("user_canceled")
+                else:
+                    return self.translator.translate("user_canceled")
+            # Microsoft Edge WebView2 Runtime 文件夹不存在
+            else:
+                self.textbox(self.translator.translate("microsoft_edge_webview2_folder_not_found").format(microsoft_edge_webview2_path=microsoft_edge_webview2_path))
+                # Microsoft Edge WebView2 Runtime 的上层目录存在
+                if microsoft_edge_webview2_parent_path.exists():
+                    if messagebox.askokcancel(
+                        self.translator.translate("remove_microsoft_edge_webview2_parent_folder_title"),
+                        self.translator.translate("remove_microsoft_edge_webview2_parent_folder_message").format(microsoft_edge_webview2_parent_path=microsoft_edge_webview2_parent_path)
+                    ):
+                        nsudolc_path = self.get_nsudolc_path()
+                        while True:
+                            try:
+                                subprocess.run(
+                                    [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", str(microsoft_edge_webview2_parent_path)],
+                                    check=True, capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
+                                )
+                                time.sleep(random.uniform(0.1, 0.5))  # 随即等待 0.1 - 0.5 秒文件系统更新
+                                if not microsoft_edge_webview2_parent_path.exists():
+                                    return self.translator.translate("microsoft_edge_webview2_parent_folder_removed_successfully").format(microsoft_edge_webview2_parent_path=microsoft_edge_webview2_parent_path)
+                                else:
+                                    if not messagebox.askretrycancel(
+                                        self.translator.translate("remove_microsoft_edge_webview2_parent_folder_error_title"),
+                                        self.translator.translate("remove_microsoft_edge_webview2_parent_folder_error_message").format(microsoft_edge_webview2_parent_path=microsoft_edge_webview2_parent_path)
+                                    ):
+                                        return self.translator.translate("user_canceled")
+                            except subprocess.CalledProcessError as e:
+                                if not messagebox.askretrycancel(
+                                    self.translator.translate("remove_microsoft_edge_webview2_parent_folder_error_title"),
+                                    self.translator.translate("remove_microsoft_edge_webview2_parent_folder_error_message_with_error_message").format(microsoft_edge_webview2_parent_path=microsoft_edge_webview2_parent_path, error=e.stderr)
+                                ):
+                                    return self.translator.translate("user_canceled")
+                    else:
+                        return self.translator.translate("user_canceled")
+                # Microsoft Edge WebView2 Runtime 的上层目录不存在
+                else:
+                    return self.translator.translate("microsoft_edge_webview2_parent_folder_not_found").format(microsoft_edge_webview2_parent_path=microsoft_edge_webview2_parent_path)
+        except Exception as e:
+            return f"{self.translator.translate('remove_microsoft_edge_webview2_folder_error')}: {str(e)}"

@@ -106,7 +106,8 @@ class InstallationFeature:
     def install_for_all_users(self):
         # 打开文件选择对话框选择文件
         all_users_application_package_file_path = filedialog.askopenfilename(
-            filetypes=[("Msix / MsixBundle", "*.msix;*.msixbundle"),
+            filetypes=[("MSIX/MSIXBundle", "*.msix;*.msixbundle"),
+                       ("Appx/AppxBundle", "*.appx;*.appxbundle"),
                        ("*", "*")])
 
         if not all_users_application_package_file_path:
@@ -137,7 +138,8 @@ class InstallationFeature:
 
         if response_for_all_users_dependency:  # 选择依赖包
             all_users_dependency_package_paths = filedialog.askopenfilenames(
-                filetypes=[("Msix", "*.msix"),
+                filetypes=[("MSIX", "*.msix"),
+                           ("Appx", "*.appx"),
                            ("*", "*")])
             if not all_users_dependency_package_paths:
                 return self.translator.translate("no_files_selected")
@@ -173,7 +175,8 @@ class InstallationFeature:
     def install_for_current_user(self):
         # 打开文件选择对话框选择文件
         current_user_application_package_file_path = filedialog.askopenfilename(
-            filetypes=[("Msix / MsixBundle", "*.msix;*.msixbundle"),
+            filetypes=[("MSIX/MSIXBundle", "*.msix;*.msixbundle"),
+                       ("Appx/AppxBundle", "*.appx;*.appxbundle"),
                        ("*", "*")])
 
         if not current_user_application_package_file_path:
@@ -188,7 +191,8 @@ class InstallationFeature:
         current_user_dependency_package_paths = None
         if response_for_current_user_dependency:  # 选择依赖包
             current_user_dependency_package_paths = filedialog.askopenfilenames(
-                filetypes=[("Msix", "*.msix"),
+                filetypes=[("MSIX/MSIXBundle", "*.msix;*.msixbundle"),
+                           ("Appx/AppxBundle", "*.appx;*.appxbundle"),
                            ("*", "*")])
             if not current_user_dependency_package_paths:
                 return self.translator.translate("no_files_selected")
@@ -256,7 +260,8 @@ class InstallationFeature:
     def update_from_application_package(self):
         # 打开文件选择对话框选择文件
         update_application_package_file_path = filedialog.askopenfilename(
-            filetypes=[("Msix / MsixBundle", "*.msix;*.msixbundle"),
+            filetypes=[("MSIX/MSIXBundle", "*.msix;*.msixbundle"),
+                       ("Appx/AppxBundle", "*.appx;*.appxbundle"),
                        ("*", "*")])
 
         if not update_application_package_file_path:
@@ -271,7 +276,8 @@ class InstallationFeature:
         update_dependency_package_paths = None
         if response_for_update_dependency:  # 选择依赖包
             update_dependency_package_paths = filedialog.askopenfilenames(
-                filetypes=[("Msix", "*.msix"),
+                filetypes=[("MSIX/MSIXBundle", "*.msix;*.msixbundle"),
+                           ("Appx/AppxBundle", "*.appx;*.appxbundle"),
                            ("*", "*")])
             if not update_dependency_package_paths:
                 return self.translator.translate("no_files_selected")
@@ -311,8 +317,9 @@ class InstallationFeature:
 
         # 打开文件选择对话框选择文件
         pc_manager_package_file_path_str = filedialog.askopenfilename(
-            filetypes=[("Msix / MsixBundle", "*.msix;*.msixbundle"), ("*", "*")]
-        )
+            filetypes=[("MSIX/MSIXBundle", "*.msix;*.msixbundle"),
+                       ("Appx/AppxBundle", "*.appx;*.appxbundle"),
+                       ("*", "*")])
 
         if not pc_manager_package_file_path_str:
             return self.translator.translate("user_canceled")
@@ -336,9 +343,10 @@ class InstallationFeature:
             self.textbox(self.translator.translate("install_from_appxmanifest_unzipping_files"))
             shutil.unpack_archive(pc_manager_zip_package_file_path, pc_manager_package_unpacked_file_path)  # 解压文件
 
-            # 检测解压后的文件夹内是否还有 .msix 文件
+            # 检测解压后的文件夹内是否还有 .msix/.appx 文件
             pc_manager_msix_files = [f.name for f in pc_manager_package_unpacked_file_path.iterdir() if f.suffix == '.msix']
-            if not pc_manager_msix_files:
+            pc_manager_appx_files = [f.name for f in pc_manager_package_unpacked_file_path.iterdir() if f.suffix == '.appx']
+            if not pc_manager_msix_files and not pc_manager_appx_files:
                 pass
             else:
                 # 检查文件名中是否带有 x64 或 arm64
@@ -418,7 +426,10 @@ class InstallationFeature:
             )
 
             if response_for_dependency:  # 选择依赖包
-                dependency_package_paths = filedialog.askopenfilenames(filetypes=[("Msix", "*.msix"), ("*", "*")])
+                dependency_package_paths = filedialog.askopenfilenames(filetypes=[
+                    ("MSIX/MSIXBundle", "*.msix;*.msixbundle"),
+                    ("Appx/AppxBundle", "*.appx;*.appxbundle"),
+                    ("*", "*")])
                 if not dependency_package_paths:    # 如果没有选择文件
                     # 清理 MSPCManagerHelper 临时目录下的文件
                     for temporary_files in mspcmanagerhelper_temp_dir.iterdir():  # 遍历 MSPCManagerHelper 临时目录下的文件

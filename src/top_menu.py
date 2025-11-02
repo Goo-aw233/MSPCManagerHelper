@@ -1,13 +1,15 @@
+import ctypes
+import sys
 import textwrap
 import tkinter as tk
 import webbrowser
 from pathlib import Path
-from tkinter import ttk
+from tkinter import messagebox, ttk
 
 
 class TopMenu:
     def __init__(self, parent, translator, version):
-        self.top_menu_files = None
+        self.top_menu_settings = None
         self.top_menu_update = None
         self.top_menu_term_of_use_and_privacy = None
         self.top_menu_help = None
@@ -21,15 +23,34 @@ class TopMenu:
     def create_menu(self):
         self.top_menu = tk.Menu(self.parent)
         # 创建菜单项
-        self.top_menu_files = tk.Menu(self.top_menu, tearoff=0)
+        self.top_menu_settings = tk.Menu(self.top_menu, tearoff=0)
         self.top_menu_help = tk.Menu(self.top_menu, tearoff=0)
         self.top_menu_term_of_use_and_privacy = tk.Menu(self.top_menu, tearoff=0)
         self.top_menu_update = tk.Menu(self.top_menu, tearoff=0)
 
-        # “文件(F)”菜单（计算翻译值长度，将快捷键索引为翻译值后紧接的 access key 的第一 +1 个字符）
-        self.top_menu.add_cascade(label=f"{self.translator.translate('top_menu_files')}{self.translator.translate('top_menu_files_access_key')}", underline=len(self.translator.translate('top_menu_files')) + 1, menu=self.top_menu_files)
-        self.top_menu_files.add_separator()
-        self.top_menu_files.add_command(label=f"{self.translator.translate('top_menu_files_exit')}{self.translator.translate('top_menu_files_exit_access_key')}", underline=len(self.translator.translate('top_menu_files_exit')) + 1, command=lambda: TopMenuFiles.exit_program(self.parent))
+        # “设置(S)”菜单（计算翻译值长度，将快捷键索引为翻译值后紧接的 access key 的第一 +1 个字符）
+        self.top_menu.add_cascade(label=f"{self.translator.translate('top_menu_settings')}{self.translator.translate('top_menu_settings_access_key')}", underline=len(self.translator.translate('top_menu_settings')) + 1, menu=self.top_menu_settings)
+        
+        # 动态添加开启/关闭分辨率感知按钮
+        if TopMenuSettings.is_dpi_aware():
+            label_text = self.translator.translate('top_menu_settings_disable_resolution_awareness')
+            access_key = self.translator.translate('top_menu_settings_enable_resolution_awareness_access_key')
+            self.top_menu_settings.add_command(
+                label=f"{label_text}{access_key}",
+                underline=len(label_text) + 1,
+                command=lambda: TopMenuSettings.toggle_dpi_awareness(self.parent, self.translator)
+            )
+        else:
+            label_text = self.translator.translate('top_menu_settings_enable_resolution_awareness')
+            access_key = self.translator.translate('top_menu_settings_enable_resolution_awareness_access_key')
+            self.top_menu_settings.add_command(
+                label=f"{label_text}{access_key}",
+                underline=len(label_text) + 1,
+                command=lambda: TopMenuSettings.toggle_dpi_awareness(self.parent, self.translator)
+            )
+
+        self.top_menu_settings.add_separator()
+        self.top_menu_settings.add_command(label=f"{self.translator.translate('top_menu_settings_exit')}{self.translator.translate('top_menu_settings_exit_access_key')}", underline=len(self.translator.translate('top_menu_settings_exit')) + 1, command=TopMenuSettings.exit_program)
 
         # “下载与更新(U)”菜单（计算翻译值长度，将快捷键索引为翻译值后紧接的 access key 的第一 +1 个字符）
         self.top_menu.add_cascade(label=f"{self.translator.translate('top_menu_update')}{self.translator.translate('top_menu_update_access_key')}", underline=len(self.translator.translate('top_menu_update')) + 1, menu=self.top_menu_update)
@@ -49,7 +70,7 @@ class TopMenu:
         # “帮助(H)”菜单（计算翻译值长度，将快捷键索引为翻译值后紧接的 access key 的第一 +1 个字符）
         self.top_menu.add_cascade(label=f"{self.translator.translate('top_menu_help')}{self.translator.translate('top_menu_help_access_key')}", underline=len(self.translator.translate('top_menu_help')) + 1, menu=self.top_menu_help)
         self.top_menu_help.add_command(label=f"{self.translator.translate('top_menu_help_about')}{self.translator.translate('top_menu_help_about_access_key')}", underline=len(self.translator.translate('top_menu_help_about')) + 1, command=self.top_menu_help_about)
-        self.top_menu_help.add_command(label=f"{self.translator.translate('top_menu_help_gethelp')}{self.translator.translate('top_menu_help_gethelp_access_key')}", underline=len(self.translator.translate('top_menu_help_gethelp')) + 1, command=TopMenuHelp.open_gethelp)
+        self.top_menu_help.add_command(label=f"{self.translator.translate('top_menu_help_gethelp')}{self.translator.translate('top_menu_help_gethelp_access_key')}", underline=len(self.translator.translate('top_menu_help_gethelp')) + 1, command=lambda: TopMenuHelp.open_gethelp(self.translator))
         self.top_menu_help.add_command(label=f"{self.translator.translate('top_menu_help_official_site')}{self.translator.translate('top_menu_help_official_site_access_key')}", underline=len(self.translator.translate('top_menu_help_official_site')) + 1, command=TopMenuHelp.open_official_site)
         self.top_menu_help.add_command(label=f"{self.translator.translate('top_menu_help_more_contact')}{self.translator.translate('top_menu_help_more_contact_access_key')}", underline=len(self.translator.translate('top_menu_help_more_contact')) + 1, command=lambda: TopMenuHelp.open_more_contact(self.translator))
 
@@ -62,11 +83,48 @@ class TopMenu:
     def top_menu_help_about(self):
         TopMenuHelp(self.parent, self.translator, self.version)
 
-# 文件菜单
-class TopMenuFiles:
+# 设置菜单
+class TopMenuSettings:
     @staticmethod
-    def exit_program(root):
-        root.destroy()
+    def is_dpi_aware():
+        try:
+            # 0 = DPI_AWARENESS_UNAWARE
+            # 1 = SYSTEM_DPI_AWARE
+            # 2 = PER_MONITOR_DPI_AWARE
+            awareness = ctypes.c_int()
+            ctypes.windll.shcore.GetProcessDpiAwareness(0, ctypes.byref(awareness))
+            return awareness.value != 0
+        except (AttributeError, OSError):
+            # 如果函数不存在或调用失败，则假定为 unaware
+            return False
+
+    @staticmethod
+    def toggle_dpi_awareness(parent, translator):
+        try:
+            if TopMenuSettings.is_dpi_aware():
+                # 当前是开启状态，执行关闭操作
+                messagebox.showwarning(
+                    translator.translate("warning"),
+                    translator.translate("top_menu_settings_disable_resolution_awareness_warning")
+                )
+                sys.exit()
+            else:
+                # 当前是关闭状态，执行开启操作
+                ctypes.windll.shcore.SetProcessDpiAwareness(1)
+                
+                # 刷新整个 UI
+                style = ttk.Style()
+                current_theme = style.theme_use()
+                style.theme_use(current_theme)
+                parent.clear_result_textbox()
+                parent.update_all_widgets()
+
+        except Exception as e:
+            messagebox.showerror(translator.translate("failed_to_set_dpi_awareness"), f"{str(e)}")
+
+    @staticmethod
+    def exit_program():
+        sys.exit()
 
 # 更新菜单
 class TopMenuUpdate:
@@ -218,8 +276,9 @@ class TopMenuHelp:
         help_about_window.bind("<Escape>", lambda event: help_about_window.destroy())
 
     @staticmethod
-    def open_gethelp():
-        webbrowser.open("https://github.com/Goo-aw233/MSPCManagerHelper/wiki")
+    def open_gethelp(translator):
+        if messagebox.showinfo(translator.translate("top_menu_help_gethelp"), translator.translate("top_menu_help_gethelp_message")):
+            webbrowser.open("https://pcmanager.microsoft.com")
 
     @staticmethod
     def open_official_site():

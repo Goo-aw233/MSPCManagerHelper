@@ -1,5 +1,6 @@
 import ctypes
 import locale
+import os
 import queue
 import subprocess
 import threading
@@ -24,7 +25,7 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = Path(__file__).parent / 'assets' / 'MSPCManagerHelper.ico'
         self.iconbitmap(str(main_icon_path))
-        self.mspcmanagerhelper_version = "Beta v0.2.0.17"
+        self.mspcmanagerhelper_version = "Beta v0.2.1.0"
         title = f"MSPCManagerHelper {self.mspcmanagerhelper_version}"
         if AdvancedStartup.is_administrator():
             title += " (Administrator)"
@@ -32,7 +33,6 @@ class MSPCManagerHelper(tk.Tk):
             title += " - DevMode"
         if AdvancedStartup.is_debugdevmode():
             title += " - DebugDevMode"
-        self.set_dpi_awareness()  # 设置 DPI 感知
         self.title(title)
         window_width, window_height = 854, 480  # 窗口大小
         center_x, center_y = self.winfo_screenwidth() // 2 - window_width // 2, self.winfo_screenheight() // 2 - window_height // 2 # 计算窗口位置
@@ -64,11 +64,7 @@ class MSPCManagerHelper(tk.Tk):
         # 设置默认字体样式
         self.default_font_style = ("Segoe UI", 10)
         self.set_font_style()  # 设置字体样式
-
-        self.check_system_requirements()  # 检测系统要求
-        self.check_admin_approval_mode()  # 检查“管理员保护”是否开启
-        self.check_server_levels()  # 检查 Windows Server 安装类型
-        self.get_windows_installation_information()  # 获取 Windows 安装信息
+        self.update_all_widgets() # 更新所有窗口部件
 
     # 设置 DPI 感知
     def set_dpi_awareness(self):
@@ -87,7 +83,7 @@ class MSPCManagerHelper(tk.Tk):
         translators = [Translator(locale=i) for i in ['en-us', 'zh-cn', 'zh-tw']]
         self.languages = dict(zip(self.language_list, translators))
         self.language_combobox = ttk.Combobox(self, values=self.language_list,
-                                              state="readonly", height=6)
+                                              state="readonly", height=6)   # 设置组合框展开后的最大高度为 6
         self.language_combobox.current(0)
         locale_str = locale.getlocale()[0]
         if locale_str.startswith("English"):
@@ -125,13 +121,13 @@ class MSPCManagerHelper(tk.Tk):
                                                         self.translator.translate("install_project"),
                                                         self.translator.translate("uninstall_project"),
                                                         self.translator.translate("other_project")],
-                                          state="readonly", height=8)  # 设置展开后的最大高度为 8
+                                          state="readonly", height=6)  # 设置组合框展开后的最大高度为 6
         self.main_combobox.current(0)
         self.main_combobox.bind("<<ComboboxSelected>>", self.update_feature_combobox)
         self.main_combobox.place(x=35, y=260, width=380, height=25)
 
         # 第二个组合框
-        self.feature_combobox = ttk.Combobox(self, state="readonly", height=6)  # 设置展开后的最大高度为 6
+        self.feature_combobox = ttk.Combobox(self, state="readonly", height=6)  # 设置组合框展开后的最大高度为 6
         self.feature_combobox.place(x=35, y=310, width=380, height=25)
 
         # 执行按钮
@@ -152,11 +148,11 @@ class MSPCManagerHelper(tk.Tk):
         self.result_textbox = tk.Text(self, wrap="word", state="disabled", bg="LightGray")
         self.result_textbox.place(x=435, y=80, width=400, height=310)
         # 创建滚动条
-        scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.result_textbox.yview)
+        self.scrollbar = ttk.Scrollbar(self, orient="vertical", command=self.result_textbox.yview)
         # 将滚动条与 result_textbox 关联
-        self.result_textbox.config(yscrollcommand=scrollbar.set)
+        self.result_textbox.config(yscrollcommand=self.scrollbar.set)
         # 放置滚动条
-        scrollbar.place(x=835, y=80, height=310)
+        self.scrollbar.place(x=835, y=80, height=310)
 
         # 输出所有功能的信息到 result_textbox
         self.main_feature.result_textbox = self.result_textbox
@@ -168,16 +164,6 @@ class MSPCManagerHelper(tk.Tk):
         self.installation_feature.refresh_result_textbox()
         self.uninstallation_feature.refresh_result_textbox()
         self.other_feature.refresh_result_textbox()
-        # 输出提示
-        self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
-        if not (AdvancedStartup.is_devmode() or AdvancedStartup.is_debugdevmode()):
-            self.textbox(self.translator.translate('tips_run_as_dev_mode'))
-        if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_administrator()):
-            self.textbox("\n" + self.translator.translate("admin_approval_mode_is_on"))
-
-        # 初始检测版本号和系统要求
-        self.refresh_version()
-        self.check_system_requirements()
 
         # 创建 result_textbox 的右键菜单
         self.create_result_textbox_context_menu()
@@ -258,27 +244,13 @@ class MSPCManagerHelper(tk.Tk):
         self.installation_feature = InstallationFeature(self.translator, self.result_textbox)  # InstallationFeature
         self.uninstallation_feature = UninstallationFeature(self.translator, self.result_textbox)  # UninstallationFeature
         self.other_feature = OtherFeature(self.translator, self.result_textbox)  # OtherFeature
-        self.update_texts() # 更新文本
-        self.refresh_version()  # 刷新版本号
-        self.set_font_style()  # 字体样式
+        
         self.clear_result_textbox() # 清空 TextBox 的内容
-        self.top_menu = TopMenu(self, self.translator, self.mspcmanagerhelper_version)  # 重新创建顶部菜单
-        self.config(menu=self.top_menu.top_menu)  # 显示顶部菜单
+        self.update_all_widgets() # 更新所有窗口部件
 
-        # 重新输出指定协议与隐私
-        self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
-        if not (AdvancedStartup.is_devmode() or AdvancedStartup.is_debugdevmode()):
-            self.textbox(self.translator.translate('tips_run_as_dev_mode'))
-        if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_administrator()):
-            self.textbox("\n" + self.translator.translate("admin_approval_mode_is_on"))
-
-        self.check_system_requirements()    # 检测系统要求
-        self.check_admin_approval_mode()  # 检查“管理员保护”是否开启
-        self.check_server_levels()  # 检查 Windows Server 安装类型
-        self.get_windows_installation_information()  # 获取 Windows 安装信息
-
-    # 更新文本
-    def update_texts(self):
+    # 更新所有窗口部件
+    def update_all_widgets(self):
+        # 更新文本
         self.version_label.config(text=self.translator.translate("current_pc_manager_version"))
         self.refresh_button.config(text=self.translator.translate("refresh"))
         self.system_requirement_label.config(text=self.translator.translate("system_requirements_checking"))
@@ -297,6 +269,33 @@ class MSPCManagerHelper(tk.Tk):
         self.context_menu.entryconfig(0, label=self.translator.translate("main_copy"))
         self.context_menu.entryconfig(1, label=self.translator.translate("main_clear"))
 
+        # 重新创建顶部菜单
+        self.top_menu = TopMenu(self, self.translator, self.mspcmanagerhelper_version)
+        self.config(menu=self.top_menu.top_menu)
+
+        # 刷新版本号
+        self.refresh_version()
+        # 字体样式
+        self.set_font_style()
+        # 刷新滚动条
+        self.scrollbar.place(x=835, y=80, height=310)
+
+        # 重新输出指定协议与隐私
+        self.textbox(self.translator.translate('see_term_of_use_and_privacy'))
+        if not (AdvancedStartup.is_devmode() or AdvancedStartup.is_debugdevmode()):
+            self.textbox(self.translator.translate('tips_run_as_dev_mode'))
+        if (CheckSystemRequirements.check_system_build_number_and_admin_approval_mode()) and (AdvancedStartup.is_administrator()):
+            self.textbox("\n" + self.translator.translate("admin_approval_mode_is_on"))
+
+        # 检测系统要求
+        self.check_system_requirements()
+        # 检查“管理员保护”是否开启
+        self.check_admin_approval_mode()
+        # 检查 Windows Server 安装类型
+        self.check_server_levels()
+        # 获取 Windows 安装信息
+        self.get_windows_installation_information()
+
     # 更新功能组合框内容
     def update_feature_combobox(self, event):
         selection = self.main_combobox.get()
@@ -313,7 +312,8 @@ class MSPCManagerHelper(tk.Tk):
             self.translator.translate("uninstall_project"): [self.translator.translate("uninstall_for_all_users_in_dism"),
                                                              self.translator.translate("uninstall_for_all_users"),
                                                              self.translator.translate("uninstall_for_current_user"),
-                                                             self.translator.translate("uninstall_pc_manager_beta")],
+                                                             self.translator.translate("uninstall_pc_manager_beta"),
+                                                             self.translator.translate("remove_microsoft_edge_webview2_folder")],
             self.translator.translate("other_project"): [self.translator.translate("view_installed_antivirus"),
                                                          self.translator.translate("developer_options"),
                                                          self.translator.translate("repair_edge_wv2_setup"),
@@ -321,7 +321,7 @@ class MSPCManagerHelper(tk.Tk):
                                                          self.translator.translate("restart_pc_manager_service"),
                                                          self.translator.translate("switch_pc_manager_region"),
                                                          self.translator.translate("compute_files_hash"),
-                                                         self.translator.translate("get_msedge_webview2_version")]
+                                                         self.translator.translate("get_pc_manager_dependencies_version")]
         }
 
         # 根据参数显示或隐藏选项
@@ -341,7 +341,7 @@ class MSPCManagerHelper(tk.Tk):
                 self.translator.translate("developer_options"),
                 self.translator.translate("pc_manager_docs"),
                 self.translator.translate("compute_files_hash"),
-                self.translator.translate("get_msedge_webview2_version")
+                self.translator.translate("get_pc_manager_dependencies_version")
             ]
 
         # 更新功能组合框的值
@@ -358,9 +358,10 @@ class MSPCManagerHelper(tk.Tk):
             self.execute_button.config(state="disabled")
             self.cancel_button.config(state="normal")
             self.run_as_administrator_button.config(state="disabled")
+            self.top_menu.top_menu_settings.entryconfig(0, state="disabled")
             self.clear_result_textbox()  # 清空 TextBox 的内容
             main_feature_name = self.feature_combobox.get()
-            executing_message = self.translator.translate('main_executing_operation').format(main_feature_name=main_feature_name)
+            executing_message = self.translator.translate('main_executing_operation').format(main_feature_name=str(main_feature_name))
             executing_message += '\n' + self.translator.translate('excessive_waiting_time')
             executing_message += '\n'
             self.textbox(executing_message)
@@ -402,6 +403,8 @@ class MSPCManagerHelper(tk.Tk):
                     result = self.uninstallation_feature.uninstall_for_current_user()
                 elif main_feature_name == self.translator.translate("uninstall_pc_manager_beta"):
                     result = self.uninstallation_feature.uninstall_pc_manager_beta()
+                elif main_feature_name == self.translator.translate("remove_microsoft_edge_webview2_folder"):
+                    result = self.uninstallation_feature.remove_microsoft_edge_webview2_folder()
 
                 # OtherFeature
                 elif main_feature_name == self.translator.translate("view_installed_antivirus"):
@@ -420,8 +423,8 @@ class MSPCManagerHelper(tk.Tk):
                     result = self.other_feature.switch_pc_manager_region()
                 elif main_feature_name == self.translator.translate("compute_files_hash"):
                     result = self.other_feature.compute_files_hash()
-                elif main_feature_name == self.translator.translate("get_msedge_webview2_version"):
-                    result = self.other_feature.get_msedge_webview2_version()
+                elif main_feature_name == self.translator.translate("get_pc_manager_dependencies_version"):
+                    result = self.other_feature.get_pc_manager_dependencies_version()
 
                 self.result_queue.put(result)
                 if main_feature_name in [
@@ -454,6 +457,7 @@ class MSPCManagerHelper(tk.Tk):
             self.execute_button.config(state="normal")
             self.cancel_button.config(state="disabled")
             self.run_as_administrator_button.config(state="normal")
+            self.top_menu.top_menu_settings.entryconfig(0, state="normal")
             if AdvancedStartup.is_administrator():
                 self.run_as_administrator_button.config(state="disabled")
         except queue.Empty:
@@ -486,6 +490,7 @@ class MSPCManagerHelper(tk.Tk):
         self.execute_button.config(state="disabled")
         self.cancel_button.config(state="disabled")
         self.run_as_administrator_button.config(state="disabled")
+        self.top_menu.top_menu_settings.entryconfig(0, state="disabled")
 
         def kill_process_thread():
             self.kill_process_by_pid()  # 结束指定进程
@@ -507,8 +512,8 @@ class MSPCManagerHelper(tk.Tk):
 
         font_styles = {
             "lang_en-us": ("Segoe UI", 10),
-            "lang_zh-cn": ("微软雅黑", 10),
-            "lang_zh-tw": ("微軟正黑體", 10),
+            "lang_zh-cn": ("Microsoft YaHei UI", 10),
+            "lang_zh-tw": ("Microsoft JhengHei UI", 10),
             # 在这里添加更多语言及其对应的字体样式
         }
 
@@ -580,5 +585,5 @@ class MSPCManagerHelper(tk.Tk):
     def get_windows_installation_information(self):
         windows_info = CheckSystemRequirements.get_windows_installation_information()
         if windows_info:
-            self.textbox("\n" + self.translator.translate("current_windows_installation_information"))
+            self.textbox("\n" + self.translator.translate("current_windows_installation_information") + ": ")
             self.textbox(f"{windows_info}")

@@ -1,5 +1,6 @@
+import hashlib
 import iso3166
-import os
+import json
 import subprocess
 import sys
 import tkinter as tk
@@ -283,57 +284,33 @@ class OtherFeature:
             for compute_files_path in paths_to_compute_files:
                 self.textbox(f"{self.translator.translate('path_to_compute_files')}: {compute_files_path}")
 
-                sha1_result = subprocess.run(
-                    ["powershell.exe", "-Command",
-                     f"Get-FileHash -Path '{compute_files_path}' -Algorithm SHA1 | Select-Object -ExpandProperty Hash"],
-                    capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
-                )
-                sha1_hash = sha1_result.stdout.strip()
-                self.textbox(f"SHA1:\n{sha1_hash}\n")
+                md5 = hashlib.md5()
+                sha1 = hashlib.sha1()
+                sha256 = hashlib.sha256()
+                sha384 = hashlib.sha384()
+                sha512 = hashlib.sha512()
 
-                sha256_result = subprocess.run(
-                    ["powershell.exe", "-Command",
-                     f"Get-FileHash -Path '{compute_files_path}' -Algorithm SHA256 | Select-Object -ExpandProperty Hash"],
-                    capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
-                )
-                sha256_hash = sha256_result.stdout.strip()
-                self.textbox(f"SHA256:\n{sha256_hash}\n")
+                with open(compute_files_path, 'rb') as f:
+                    while chunk := f.read(8192):
+                        md5.update(chunk)
+                        sha1.update(chunk)
+                        sha256.update(chunk)
+                        sha384.update(chunk)
+                        sha512.update(chunk)
 
-                """
-                sha384_result = subprocess.run(
-                    ["powershell.exe", "-Command",
-                     f"Get-FileHash -Path '{compute_files_path}' -Algorithm SHA384 | Select-Object -ExpandProperty Hash"],
-                    capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
-                )
-                sha384_hash = sha384_result.stdout.strip()
-                self.textbox(f"SHA384:\n{sha384_hash}\n")
-
-                sha512_result = subprocess.run(
-                    ["powershell.exe", "-Command",
-                     f"Get-FileHash -Path '{compute_files_path}' -Algorithm SHA512 | Select-Object -ExpandProperty Hash"],
-                    capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
-                )
-                sha512_hash = sha512_result.stdout.strip()
-                self.textbox(f"SHA512:\n{sha512_hash}\n")
-                """
-
-                md5_result = subprocess.run(
-                    ["powershell.exe", "-Command",
-                     f"Get-FileHash -Path '{compute_files_path}' -Algorithm MD5 | Select-Object -ExpandProperty Hash"],
-                    capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
-                )
-                md5_hash = md5_result.stdout.strip()
-                self.textbox(f"MD5:\n{md5_hash}\n\n")
+                self.textbox(f"MD5:\n{md5.hexdigest()}\n")
+                self.textbox(f"SHA1:\n{sha1.hexdigest()}\n")
+                self.textbox(f"SHA256:\n{sha256.hexdigest()}\n")
+                self.textbox(f"SHA384:\n{sha384.hexdigest()}\n")
+                self.textbox(f"SHA512:\n{sha512.hexdigest()}\n\n")
 
             return self.translator.translate("compute_files_hash_success")
-        except subprocess.CalledProcessError as e:
-            return f"{self.translator.translate('compute_files_hash_error')}: {e.stderr.strip()}"
         except FileNotFoundError as e:
-            return f"{self.translator.translate('powershell_not_found')}\n{str(e)}: {e.filename}"
+            return f"{self.translator.translate('file_not_found_error')}: {e.filename}"
         except Exception as e:
             return f"{self.translator.translate('compute_files_hash_error')}: {str(e)}"
 
-    def get_msedge_webview2_version(self):
+    def get_pc_manager_dependencies_version(self):
         try:
             # 使用 PowerShell 命令读取 System32 的 msedgewebview2.exe 的版本号
             root_msedge_webview2 = (
@@ -341,11 +318,11 @@ class OtherFeature:
                 "$SystemMSEdgeWebView2PathVersionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($SystemMSEdgeWebView2Path); "
                 "$SystemMSEdgeWebView2PathVersionInfo.ProductVersion"
             )
-            result = subprocess.run(
+            root_msedge_webview2_result = subprocess.run(
                 ["powershell.exe", "-Command", root_msedge_webview2],
                 capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
-            system_msedge_webview2_version = result.stdout.strip()
+            system_msedge_webview2_version = root_msedge_webview2_result.stdout.strip()
             self.textbox(f"{self.translator.translate('system_msedge_webview2_version')}:\n{system_msedge_webview2_version}")
         except subprocess.CalledProcessError as e:
             self.textbox(f"{self.translator.translate('get_msedge_webview2_version_powershell_error')}: {e.stderr.strip()}")
@@ -359,8 +336,41 @@ class OtherFeature:
             msedge_webview2_reg_path = r"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, msedge_webview2_reg_path) as key:
                 user_msedge_webview2_version = winreg.QueryValueEx(key, "pv")[0]
-                return f"{self.translator.translate('user_msedge_webview2_version')}:\n{user_msedge_webview2_version}"
+                self.textbox(f"{self.translator.translate('user_msedge_webview2_version')}:\n{user_msedge_webview2_version}")
         except FileNotFoundError:
-            return self.translator.translate("msedge_webview2_version_registry_key_not_found")
+            self.textbox(self.translator.translate("msedge_webview2_version_registry_key_not_found"))
         except Exception as e:
-            return f"{self.translator.translate('get_msedge_webview2_version_registry_error')}: {str(e)}"
+            self.textbox(f"{self.translator.translate('get_msedge_webview2_version_registry_error')}: {str(e)}")
+
+        try:
+            # 读取所有 Windows App Runtime 的版本号
+            get_windows_app_runtime_versions = "Get-AppxPackage -Name '*WindowsAppRuntime*' | Select-Object Name, Version, PackageFullName | Sort-Object Version | ConvertTo-Json"
+            windows_app_runtime_versions_result = subprocess.run(
+                ["powershell.exe", "-Command", get_windows_app_runtime_versions],
+                capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
+            )
+            windows_app_runtime_versions_output = windows_app_runtime_versions_result.stdout.strip()
+
+            self.textbox(f"\n{self.translator.translate('windows_app_runtime_versions')}:\n----------")
+
+            packages = json.loads(windows_app_runtime_versions_output)
+            # 如果只有一个包，结果会是一个字典而不是列表
+            if isinstance(packages, dict):
+                packages = [packages]
+
+            for i, package in enumerate(packages):
+                name = package.get('Name', '')
+                version = package.get('Version', '')
+                package_full_name = package.get('PackageFullName', '')
+                self.textbox(f"{name}\n{version}\n{package_full_name}")
+                if i < len(packages) - 1:
+                    self.textbox("----------")
+            self.textbox("")    # 添加一个空行使其美观
+
+            return self.translator.translate("get_pc_manager_dependencies_version_success")
+        except subprocess.CalledProcessError as e:
+            self.textbox(f"{self.translator.translate('get_windows_app_runtime_versions_powershell_error')}: {e.stderr.strip()}")
+        except FileNotFoundError as e:
+            return f"{self.translator.translate('powershell_not_found')}\n{str(e)}: {e.filename}"
+        except Exception as e:
+            return f"{self.translator.translate('get_windows_app_runtime_versions_powershell_error')}: {str(e)}"
