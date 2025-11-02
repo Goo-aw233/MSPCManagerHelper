@@ -156,8 +156,8 @@
     "wv2_runtime_installer_download_link": "如果您需要單獨保存一份 Microsoft Edge WebView2 執行階段安裝程式，請前往 https://developer.microsoft.com/microsoft-edge/webview2/?wt.mc_id=studentamb_474966 並選取 x64 或 ARM64 的“常青獨立安裝程式”以下載。",
     "wv2_installer_exit_code": "Microsoft Edge WebView2 執行階段 安裝程式結束代碼",
     "wv2_runtime_already_installed": "Microsoft Edge WebView2 執行階段 已針對系統安裝，請嘗試重新以系統管理員身分執行。",
-    "wv2_installer_exit_code_0x8004070c": "請嘗試刪除‘C:\\Program Files (x86)\\Microsoft\\EdgeWebView’資料夾後重試。如果‘C:\\Program Files (x86)\\Microsoft’資料夾下僅包含 Temp 資料夾，請直接刪除‘C:\\Program Files (x86)\\Microsoft’資料夾，並重試。",
-    "wv2_installer_exit_code_0x800700b7": "請嘗試刪除‘C:\\Program Files (x86)\\Microsoft\\EdgeWebView’資料夾後重試。如果‘C:\\Program Files (x86)\\Microsoft’資料夾下僅包含 Temp 資料夾，請直接刪除‘C:\\Program Files (x86)\\Microsoft’資料夾，並重試。若問題依舊，請檢查是否具有對‘C:\\Program Files (x86)\\Microsoft’資料夾的存取權限。",
+    "wv2_installer_exit_code_0x8004070c": "請嘗試移除‘C:\\Program Files (x86)\\Microsoft\\EdgeWebView’資料夾後重試。如果‘C:\\Program Files (x86)\\Microsoft’資料夾下僅包含 Temp 資料夾，請直接移除‘C:\\Program Files (x86)\\Microsoft’資料夾，並重試。",
+    "wv2_installer_exit_code_0x800700b7": "請嘗試移除‘C:\\Program Files (x86)\\Microsoft\\EdgeWebView’資料夾後重試。如果‘C:\\Program Files (x86)\\Microsoft’資料夾下僅包含 Temp 資料夾，請直接移除‘C:\\Program Files (x86)\\Microsoft’資料夾，並重試。若問題依舊，請檢查是否具有對‘C:\\Program Files (x86)\\Microsoft’資料夾的存取權限。",
     "wv2_download_error": "Microsoft Edge WebView2 執行階段 下載錯誤。",
     "wv2_download_error_info": "Microsoft Edge WebView2 執行階段 下載錯誤資訊",
     "edgeupdate_log_export_path": "EdgeUpdate.exe 記錄檔匯出路徑",
@@ -183,10 +183,11 @@
     "fail_to_clear_other_files_info_for_all_users_in_dism": "錯誤資訊",
     "advanced_cleanup_config_and_files_notice_for_all_users_in_dism": "進階清理",
     "advanced_cleanup_config_and_files_for_all_users_in_dism": "是否進階清理 Microsoft 電腦管家設定檔和殘留？這可能會引發不穩定的問題。",
-    "advanced_cleanup_taskkill_process_for_all_users_in_dism": "正在終止程序",
-    "advanced_cleanup_no_processes_killed_for_all_users_in_dism": "未終止任何程序。",
+    "advanced_cleanup_taskkill_process_for_all_users_in_dism": "正在終止程式",
+    "advanced_cleanup_no_processes_killed_for_all_users_in_dism": "未終止任何程式。",
     "advanced_clearing_folders_for_all_users_in_dism": "正在清理進階項目（資料夾）",
     "advanced_clearing_config_and_files_for_all_users_in_dism": "正在清理進階項目（檔案）",
+    "advanced_clearing_registries_for_all_users_in_dism": "正在清理進階項目（登錄表）",
     "advanced_fail_to_config_and_files_for_all_users_in_dism": "清理進階項目時發生錯誤",
     "advanced_fail_to_config_and_files_info_for_all_users_in_dism": "錯誤資訊",
     "uninstall_and_cleanup_for_all_users_in_dism_success": "透過 DISM 為 所有使用者 解除安裝 Microsoft 電腦管家並清理設定檔和殘留成功。",
@@ -208,8 +209,8 @@
     "fail_to_clear_other_files_info_for_all_users": "錯誤資訊",
     "advanced_cleanup_config_and_files_notice_for_all_users": "進階清理",
     "advanced_cleanup_config_and_files_for_all_users": "是否進階清理 Microsoft 電腦管家設定檔和殘留？這可能會引發不穩定的問題。",
-    "advanced_cleanup_taskkill_process_for_all_users": "正在終止程序",
-    "advanced_cleanup_no_processes_killed_for_all_users": "未終止任何程序。",
+    "advanced_cleanup_taskkill_process_for_all_users": "正在終止程式",
+    "advanced_cleanup_no_processes_killed_for_all_users": "未終止任何程式。",
     "advanced_clearing_folders_for_all_users": "正在清理進階項目（資料夾）",
     "advanced_clearing_config_and_files_for_all_users": "正在清理進階項目（檔案）",
     "advanced_fail_to_config_and_files_for_all_users": "清理進階項目時發生錯誤",
@@ -249,6 +250,22 @@
     "uninstall_pc_manager_beta_error_info": "解除安裝 Microsoft 電腦管家時遇到的錯誤資訊",
     "uninstalled_cleanup_pc_manager_beta_config_and_files": "已解除安裝 Microsoft 電腦管家 Beta 並清理設定檔和殘留。",
 
+    "remove_microsoft_edge_webview2_folder_title": "強制移除 Microsoft Edge WebView2 執行階段資料夾",
+    "remove_microsoft_edge_webview2_folder_message": "是否強制移除 Microsoft Edge WebView2 執行階段資料夾 ({microsoft_edge_webview2_path})？",
+    "microsoft_edge_webview2_folder_removed_successfully": "已成功強制移除 Microsoft Edge WebView2 執行階段資料夾。",
+    "remove_microsoft_edge_webview2_folder_error_title": "強制移除 Microsoft Edge WebView2 執行階段資料夾發生錯誤",
+    "remove_microsoft_edge_webview2_folder_error_message": "強制移除 Microsoft Edge WebView2 執行階段資料夾 ({microsoft_edge_webview2_path}) 發生錯誤。\n\n是否重新嘗試移除資料夾？移除資料夾時請確保 msedge.exe、msedgewebview2.exe、MicrosoftEdgeUpdate.exe 等程式未在運行。\n若此時取消操作，已移除的資料夾將不會被還原。",
+    "remove_microsoft_edge_webview2_folder_error_message_with_error_message": "強制移除 Microsoft Edge WebView2 執行階段資料夾 ({microsoft_edge_webview2_path}) 發生錯誤：{error_message}\n\n是否重新嘗試移除資料夾？移除資料夾時請確保 msedge.exe、msedgewebview2.exe、MicrosoftEdgeUpdate.exe 等程式未在運行。\n若此時取消操作，已移除的資料夾將不會被還原。",
+    "remove_microsoft_edge_webview2_folder_error": "強制移除 Microsoft Edge (WebView2 執行階段) 資料夾發生錯誤",
+    "remove_microsoft_edge_webview2_parent_folder_title": "強制移除 Microsoft Edge (WebView2 執行階段) 的父資料夾",
+    "remove_microsoft_edge_webview2_parent_folder_message": "是否強制移除 Microsoft Edge (WebView2 執行階段) 的父資料夾 ({microsoft_edge_webview2_parent_path})？",
+    "microsoft_edge_webview2_parent_folder_removed_successfully": "已成功強制移除 Microsoft Edge (WebView2 執行階段) 的父資料夾 ({microsoft_edge_webview2_parent_path})。",
+    "remove_microsoft_edge_webview2_parent_folder_error_title": "強制移除 Microsoft Edge (WebView2 執行階段) 的父資料夾發生錯誤",
+    "remove_microsoft_edge_webview2_parent_folder_error_message": "強制移除 Microsoft Edge (WebView2 執行階段) 的父資料夾 ({microsoft_edge_webview2_parent_path}) 發生錯誤。\n\n是否重新嘗試移除資料夾？移除資料夾時請確保 msedge.exe、msedgewebview2.exe、MicrosoftEdgeUpdate.exe 等程式未在運行。\n若此時取消操作，已移除的資料夾將不會被還原。",
+    "remove_microsoft_edge_webview2_parent_folder_error_message_with_error_message": "強制移除 Microsoft Edge (WebView2 執行階段) 的父資料夾 ({microsoft_edge_webview2_parent_path}) 發生錯誤：{error_message}\n\n是否重新嘗試移除資料夾？移除資料夾時請確保 msedge.exe、msedgewebview2.exe、MicrosoftEdgeUpdate.exe 等程式未在運行。\n若此時取消操作，已移除的資料夾將不會被還原。",
+    "microsoft_edge_webview2_folder_not_found": "未找到 Microsoft Edge WebView2 執行階段 資料夾。",
+    "microsoft_edge_webview2_parent_folder_not_found": "未找到 Microsoft Edge (WebView2 執行階段) 的父資料夾。",
+
 
 
     "@other_feature.py": "other_feature.py",
@@ -283,7 +300,7 @@
     "pc_manager_service_restarted_successfully": "Microsoft 電腦管家服務已成功重啟。",
     "pc_manager_service_error_code": "錯誤代碼",
     "pc_manager_service_error_code_5": "操作失敗，請嘗試重新以系統管理員身分執行。",
-    "pc_manager_service_error_code_1056": "此服務的實例已在〞ˊ型，請重新執行操作。",
+    "pc_manager_service_error_code_1056": "此服務的實例已在執行，請重新執行操作。",
     "pc_manager_service_error_code_1060": "Microsoft 電腦管家服務未安裝。",
 
     "ask_if_version_above_3_14_0_0": "檢查 Microsoft 電腦管家版本",
@@ -304,6 +321,7 @@
     "no_compute_files_selected": "未選取任何檔案。",
     "path_to_compute_files": "檔案路徑",
     "compute_files_hash_success": "計算檔案雜湊函式完成。",
+    "file_not_found_error": "未找到檔案",
     "compute_files_hash_error": "計算檔案雜湊函式時發生錯誤",
 
     "system_msedge_webview2_version": "系統 Microsoft Edge WebView2 執行階段 版本",
@@ -311,12 +329,18 @@
     "get_msedge_webview2_version_powershell_error": "擷取 Microsoft Edge WebView2 執行階段 版本時發生錯誤",
     "msedge_webview2_version_registry_key_not_found": "未找到使用者 Microsoft Edge WebView2 執行階段 版本的登錄項目",
     "get_msedge_webview2_version_registry_error": "擷取使用者 Microsoft Edge WebView2 執行階段 版本的登錄項目時發生錯誤",
+    "windows_app_runtime_versions": "Windows App Runtime 版本",
+    "get_windows_app_runtime_versions_powershell_error": "擷取 Windows App Runtime 版本時發生錯誤",
+    "get_pc_manager_dependencies_version_success": "擷取 Microsoft 電腦管家相依性版本完成。",
 
 
 
     "@top_menu.py": "top_menu.py",
-    "top_menu_files": "檔案",
-    "top_menu_files_exit": "結束",
+    "top_menu_settings": "設定",
+    "top_menu_settings_enable_resolution_awareness": "啟用解析度感知",
+    "top_menu_settings_disable_resolution_awareness": "禁用解析度感知",
+    "top_menu_settings_disable_resolution_awareness_warning": "禁用解析度感知需要重新啟動本程式。程式將會自動關閉，請在程式關閉後手動重新啟動。",
+    "top_menu_settings_exit": "結束",
 
     "top_menu_update": "檢查更新與下載",
     "top_menu_update_GitHub": "從 GitHub 讀取最新版 MSPCManagerHelper",
@@ -334,6 +358,7 @@
     "top_menu_help": "協助",
     "top_menu_help_about": "關於",
     "top_menu_help_gethelp": "取得說明",
+    "top_menu_help_gethelp_message": "您將被重定向到 Microsoft 電腦管家官方網站。請於官方網站底部的「更多連絡方式」區段尋找並取得協助。",
     "top_menu_help_official_site": "官方網站",
     "top_menu_help_more_contact": "更多連絡方式",
 
@@ -343,8 +368,9 @@
 
 
     "@access_key": "access_key",
-    "top_menu_files_access_key": "(F)",
-    "top_menu_files_exit_access_key": "(E)",
+    "top_menu_settings_access_key": "(S)",
+    "top_menu_settings_enable_resolution_awareness_access_key": "(A)",
+    "top_menu_settings_exit_access_key": "(E)",
 
     "top_menu_update_access_key": "(U)",
 
@@ -391,6 +417,7 @@
     "uninstall_for_all_users": "為 所有使用者 解除安裝 Microsoft 電腦管家",
     "uninstall_for_current_user": "為 目前使用者 解除安裝 Microsoft 電腦管家",
     "uninstall_pc_manager_beta": "解除安裝 Microsoft 電腦管家 Beta",
+    "remove_microsoft_edge_webview2_folder": "移除 Microsoft Edge (WebView2 執行階段) 資料夾",
 
     "view_installed_antivirus": "* 尋找本機已安裝的防毒軟體",
     "developer_options": "* 開發人員專用",
@@ -400,11 +427,15 @@
     "restart_pc_manager_service": "重啟 Microsoft 電腦管家服務",
     "switch_pc_manager_region": "切換 Microsoft 電腦管家地區",
     "compute_files_hash": "* 計算檔案雜湊函式",
-    "get_msedge_webview2_version": "* 擷取 Microsoft Edge WebView2 執行階段 版本",
+    "get_pc_manager_dependencies_version": "* 擷取 Microsoft 電腦管家套件檔案版本",
 
     "warning": "警告",
+    "info": "資訊",
+    "error": "錯誤",
+    "error_code": "錯誤代碼",
+    "error_message": "錯誤資訊",
     "select_function": "請選取要執行的功能",
-    "main_executing_operation": "正在執行 {main_feature_name} 的操作。",
+    "main_executing_operation": "正在執行動作: {main_feature_name}",
     "user_canceled": "使用者已取消工作。",
     "main_copy": "複製",
     "main_clear": "清除",
@@ -412,10 +443,10 @@
     "no_files_selected": "未選取任何檔案。",
     "system_requirements_checking": "系統要求偵測中...",
     "failed_to_set_dpi_awareness": "無法設定 DPI 感知度。",
-    "see_term_of_use_and_privacy": "使用 MSPCManagerHelper 即代表您已閲讀並同意《使用規定》與《隱私權聲明》，否則，請離開軟體並刪除。",
+    "see_term_of_use_and_privacy": "使用 MSPCManagerHelper 即代表您已閲讀並同意《使用規定》與《隱私權聲明》，否則，請離開軟體並移除。",
     "tips_run_as_dev_mode": "以‘/DevMode’或‘-DevMode’參數執行以啟動開發人員模式。",
     "excessive_waiting_time": "若等候時間過長，請耐心等待，或取消任務後重試。",
-    "admin_approval_mode_is_on": "系統管理員保護已開啟，需要以系統管理員身份執行的功能將無法正常執行，請關閉系統管理員保護並重啟電腦後再開啓 MSPCManagerHelper。",
+    "admin_approval_mode_is_on": "系統管理員保護已開啟，需要以系統管理員身份執行的功能將無法正常執行，請關閉系統管理員保護並重啟電腦後再啓動 MSPCManagerHelper。\n若保持系統管理員保護開啟，為當前使用者所執行操作的功能將不會生效。",
     "server_installation_type_is_core": "目前 Windows Server 安裝類型為 Core，此系統上將無法使用 Microsoft 電腦管家。请執行全新安裝 Windows Server 以選擇“具備桌面體驗的伺服器”。",
-    "current_windows_installation_information": "當前 Windows 安裝信息: "
+    "current_windows_installation_information": "當前 Windows 安裝信息"
 }

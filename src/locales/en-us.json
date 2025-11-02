@@ -187,12 +187,13 @@
     "advanced_cleanup_no_processes_killed_for_all_users_in_dism": "No processes were terminated",
     "advanced_clearing_folders_for_all_users_in_dism": "Advanced cleaning (Folders)",
     "advanced_clearing_config_and_files_for_all_users_in_dism": "Advanced cleaning (Files)",
+    "advanced_clearing_registries_for_all_users_in_dism": "Advanced cleaning (Registries)",
     "advanced_fail_to_config_and_files_for_all_users_in_dism": "Error cleaning advanced items",
     "advanced_fail_to_config_and_files_info_for_all_users_in_dism": "Error information",
     "uninstall_and_cleanup_for_all_users_in_dism_success": "Uninstalls Microsoft PC Manager via DISM for all users and cleans up profiles and residual successes.",
     "uninstall_for_all_users_in_dism_error_code": "Error code",
     "uninstall_for_all_users_in_dism_error_code_1": "Uninstallation failed, please try running as administrator again. If the problem persists after running as administrator, please try again or contact your system administrator for assistance.",
-    "uninstall_for_all_users_in_dism_error_code_740": "Uninstallation failed, please try running as administrator. Elevated permissions are required to run DISM. Use an elevated command prompt to complete these tasks.",
+    "uninstall_for_all_users_in_dism_error_code_740": "Uninstallation failed, please try running as administrator. Elevated permissions are required to run DISM. Use an elevated command message to complete these tasks.",
 
     "uninstall_for_all_users_success": "Successfully uninstalled Microsoft PC Manager for all users.",
     "uninstall_for_all_users_error": "Error occurred while uninstalling Microsoft PC Manager for all users",
@@ -249,6 +250,22 @@
     "uninstall_pc_manager_beta_error_info": "Error information encountered while uninstalling Microsoft PC Manager",
     "uninstalled_cleanup_pc_manager_beta_config_and_files": "Microsoft PC Manager Public Beta has been uninstalled, and configuration files and residuals have been cleaned up.",
 
+    "remove_microsoft_edge_webview2_folder_title": "Force remove Microsoft Edge WebView2 Runtime Folder",
+    "remove_microsoft_edge_webview2_folder_message": "Would you like to force remove the Microsoft Edge WebView2 Runtime folder ({microsoft_edge_webview2_path})?",
+    "microsoft_edge_webview2_folder_removed_successfully": "Successfully force removed the Microsoft Edge WebView2 Runtime folder.",
+    "remove_microsoft_edge_webview2_folder_error_title": "Error occurred while force removing Microsoft Edge WebView2 Runtime Folder",
+    "remove_microsoft_edge_webview2_folder_error_message": "Error occurred while force removing the folder of Microsoft Edge WebView2 Runtime ({microsoft_edge_webview2_path}): {error_message}\n\nWould you like to retry removing the folder? Please ensure that processes such as msedge.exe, msedgewebview2.exe, MicrosoftEdgeUpdate.exe are not running when removing the folder.\n\nIf you cancel now, the deleted folders will not be restored.",
+    "remove_microsoft_edge_webview2_folder_error_message_with_error_message": "Error occurred while force removing the folder of Microsoft Edge WebView2 Runtime ({microsoft_edge_webview2_path}): {error_message}\n\nWould you like to retry removing the folder? Please ensure that processes such as msedge.exe, msedgewebview2.exe, MicrosoftEdgeUpdate.exe are not running when removing the folder.\n\nIf you cancel now, the deleted folders will not be restored.",
+    "remove_microsoft_edge_webview2_folder_error": "Error occurred while force removing the Microsoft Edge (WebView2 Runtime) folder.",
+    "remove_microsoft_edge_webview2_parent_folder_title": "Force remove Microsoft Edge (WebView2 Runtime) Parent Folder",
+    "remove_microsoft_edge_webview2_parent_folder_message": "Would you like to force remove the parent folder of Microsoft Edge (WebView2 Runtime) ({microsoft_edge_webview2_parent_path})?",
+    "microsoft_edge_webview2_parent_folder_removed_successfully": "Successfully force removed the parent folder of Microsoft Edge (WebView2 Runtime) ({microsoft_edge_webview2_parent_path}).",
+    "remove_microsoft_edge_webview2_parent_folder_error_title": "Error occurred while force removing Microsoft Edge (WebView2 Runtime) Parent Folder",
+    "remove_microsoft_edge_webview2_parent_folder_error_message": "Error occurred while force removing the parent folder of Microsoft Edge (WebView2 Runtime) ({microsoft_edge_webview2_parent_path}).\n\nWould you like to retry removing the folder? Please ensure that processes such as msedge.exe, msedgewebview2.exe, MicrosoftEdgeUpdate.exe are not running when removing the folder.\n\nIf you cancel now, the deleted folders will not be restored.",
+    "remove_microsoft_edge_webview2_parent_folder_error_message_with_error_message": "Error occurred while force removing the parent folder of Microsoft Edge (WebView2 Runtime) ({microsoft_edge_webview2_parent_path}): {error_message}\n\nWould you like to retry removing the folder? Please ensure that processes such as msedge.exe, msedgewebview2.exe, MicrosoftEdgeUpdate.exe are not running when removing the folder.\n\nIf you cancel now, the deleted folders will not be restored.",
+    "microsoft_edge_webview2_folder_not_found": "Microsoft Edge (WebView2 Runtime) folder not found.",
+    "microsoft_edge_webview2_parent_folder_not_found": "Microsoft Edge (WebView2 Runtime) parent folder not found.",
+
 
 
     "@other_feature.py": "other_feature.py",
@@ -304,6 +321,7 @@
     "no_compute_files_selected": "No files selected.",
     "path_to_compute_files": "Path to compute files",
     "compute_files_hash_success": "Successfully computed file hash.",
+    "file_not_found_error": "File Not Found",
     "compute_files_hash_error": "Error occurred while computing file hash",
 
     "system_msedge_webview2_version": "System Microsoft Edge WebView2 Runtime version",
@@ -311,12 +329,18 @@
     "get_msedge_webview2_version_powershell_error": "Error occurred while getting Microsoft Edge WebView2 Runtime version",
     "msedge_webview2_version_registry_key_not_found": "User Microsoft Edge WebView2 Runtime version registry key not found",
     "get_msedge_webview2_version_registry_error": "Error occurred while getting User Microsoft Edge WebView2 Runtime version from the registry",
+    "windows_app_runtime_versions": "Windows App Runtime Versions",
+    "get_windows_app_runtime_versions_powershell_error": "Error occurred while getting Windows App Runtime versions",
+    "get_pc_manager_dependencies_version_success": "Successfully retrieved Microsoft PC Manager dependency versions.",
 
 
 
     "@top_menu.py": "top_menu.py",
-    "top_menu_files": "Files",
-    "top_menu_files_exit": "Exit",
+    "top_menu_settings": "Settings",
+    "top_menu_settings_enable_resolution_awareness": "Enable Resolution Awareness",
+    "top_menu_settings_disable_resolution_awareness": "Disable Resolution Awareness",
+    "top_menu_settings_disable_resolution_awareness_warning": "Disabling Resolution Awareness requires restarting the program. The program will close automatically; please restart it manually after it exits.",
+    "top_menu_settings_exit": "Exit",
 
     "top_menu_update": "Downloads & Updates",
     "top_menu_update_GitHub": "Get the Latest MSPCManagerHelper from GitHub",
@@ -334,6 +358,7 @@
     "top_menu_help": "Help",
     "top_menu_help_about": "About",
     "top_menu_help_gethelp": "Get Help",
+    "top_menu_help_gethelp_message": "You will be redirected to the Microsoft PC Manager official website. Please contact us through the 'More Contact' section at the bottom of the Microsoft PC Manager official website.",
     "top_menu_help_official_site": "Official Site",
     "top_menu_help_more_contact": "More Contact",
 
@@ -343,8 +368,9 @@
 
 
     "@access_key": "access_key",
-    "top_menu_files_access_key": "(F)",
-    "top_menu_files_exit_access_key": "(E)",
+    "top_menu_settings_access_key": "(S)",
+    "top_menu_settings_enable_resolution_awareness_access_key": "(A)",
+    "top_menu_settings_exit_access_key": "(E)",
 
     "top_menu_update_access_key": "(U)",
 
@@ -391,6 +417,7 @@
     "uninstall_for_all_users": "Uninstall Microsoft PC Manager for All Users",
     "uninstall_for_current_user": "Uninstall Microsoft PC Manager for Current User",
     "uninstall_pc_manager_beta": "Uninstall Microsoft PC Manager Public Beta",
+    "remove_microsoft_edge_webview2_folder": "Remove Microsoft Edge (WebView2 Runtime) Folder",
 
     "view_installed_antivirus": "* View Installed Antivirus Software on This PC",
     "developer_options": "* Developer Options",
@@ -400,11 +427,15 @@
     "restart_pc_manager_service": "Restart Microsoft PC Manager Service",
     "switch_pc_manager_region": "Switch Microsoft PC Manager Region",
     "compute_files_hash": "* Compute Files Hash",
-    "get_msedge_webview2_version": "* Get Microsoft Edge WebView2 Runtime Version",
+    "get_pc_manager_dependencies_version": "* Get Microsoft PC Manager Dependencies Version",
 
     "warning": "Warning",
+    "info": "Info",
+    "error": "Error",
+    "error_code": "Error Code",
+    "error_message": "Error Message",
     "select_function": "Please Select the Function to Execute",
-    "main_executing_operation": "The {main_feature_name} operation is executing.",
+    "main_executing_operation": "Operation In Progress: {main_feature_name}",
     "user_canceled": "User canceled the task.",
     "main_copy": "Copy",
     "main_clear": "Clear",
@@ -415,7 +446,7 @@
     "see_term_of_use_and_privacy": "By using MSPCManagerHelper, you signify that you have read and agree to the `Terms of Use` and `Privacy Policy`, otherwise, please exit and delete the software.",
     "tips_run_as_dev_mode": "Run with `/DevMode` or `-DevMode` parameter to enable developer mode.",
     "excessive_waiting_time": "If the wait time is too long, please be patient or cancel the task and try again.",
-    "admin_approval_mode_is_on": "Administrator Protection is turned on, functions that need to be run as administrator will not work properly, please turn off Administrator Protection and restart your PC before starting MSPCManagerHelper.",
+    "admin_approval_mode_is_on": "Administrator Protection is turned on, functions that need to be run as administrator will not work properly, please turn off Administrator Protection and restart your PC before starting MSPCManagerHelper.\nIf Administrator Protection is kept on, functions performed for the current user will not take effect.",
     "server_installation_type_is_core": "The current Windows Server installation type is Core, Microsoft PC Manager will not be available on this system. You'll need to do a clean installation of Windows Server to select Server with Desktop Experience.",
-    "current_windows_installation_information": "Current Windows Installation Information: "
+    "current_windows_installation_information": "Current Windows Installation Information"
 }
