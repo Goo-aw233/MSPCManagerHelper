@@ -12,7 +12,6 @@ call "%~dp0..\.venv\Scripts\activate.bat"
 echo "Upgrading pip & Installing requirements.txt"
 python.exe -m pip install --upgrade pip
 pip.exe install -r "%~dp0..\requirements.txt"
-pip.exe install requests
 
 pause
 endlocal

@@ -13,36 +13,32 @@ echo %arch%
 echo %cpuName%
 echo %buildLabEx%
 
-if defined lcuVer (
+for /f "tokens=3" %%a in ('reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentMajorVersionNumber 2^>nul') do set "maj=%%a"
+for /f "tokens=3" %%a in ('reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentMinorVersionNumber 2^>nul') do set "min=%%a"
+for /f "tokens=3" %%a in ('reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentBuildNumber 2^>nul') do set "buildNum=%%a"
+for /f "tokens=3" %%a in ('reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v UBR 2^>nul') do set "ubr=%%a"
+
+REM Convert Hexadecimal or Decimal Strings to Decimal (If Conversion Fails, Retain Original String)
+if defined maj (
+    set /a maj=!maj! 2>nul
+)
+if defined min (
+    set /a min=!min! 2>nul
+)
+if defined buildNum (
+    set /a buildNum=!buildNum! 2>nul
+)
+if defined ubr (
+    set /a ubr=!ubr! 2>nul
+) else (
+    set "ubr=0"
+)
+
+if defined maj if defined min if defined buildNum (
+    set "lcuVer=!maj!.!min!.!buildNum!.!ubr!"
     echo !lcuVer!
 ) else (
-    for /f "tokens=3" %%a in ('reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentMajorVersionNumber 2^>nul') do set "maj=%%a"
-    for /f "tokens=3" %%a in ('reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentMinorVersionNumber 2^>nul') do set "min=%%a"
-    for /f "tokens=3" %%a in ('reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentBuildNumber 2^>nul') do set "buildNum=%%a"
-    for /f "tokens=3" %%a in ('reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v UBR 2^>nul') do set "ubr=%%a"
-
-    rem Convert Hexadecimal or Decimal Strings to Decimal (If Conversion Fails, Retain Original String)
-    if defined maj (
-        set /a maj=!maj! 2>nul
-    )
-    if defined min (
-        set /a min=!min! 2>nul
-    )
-    if defined buildNum (
-        set /a buildNum=!buildNum! 2>nul
-    )
-    if defined ubr (
-        set /a ubr=!ubr! 2>nul
-    ) else (
-        set "ubr=0"
-    )
-
-    if defined maj if defined min if defined buildNum (
-        set "lcuVer=!maj!.!min!.!buildNum!.!ubr!"
-        echo !lcuVer!
-    ) else (
-        echo (UNKNOWN LCUVer)
-    )
+    echo (UNKNOWN LCUVer)
 )
 
 echo %editionID%
@@ -54,7 +50,7 @@ if "%arch%"=="AMD64" (
     pyinstaller.exe ^
         --onefile ^
         --windowed ^
-        --name "MSPCManagerHelper_Beta_v0.2.1.0_x64" ^
+        --name "MSPCManagerHelper_Beta_v0.2.1.1_x64" ^
         --add-data "%~dp0..\\..\\src\\locales;locales" ^
         --add-data "%~dp0..\\..\\src\\assets\\MSPCManagerHelper.ico;assets" ^
         --add-binary "%~dp0..\\..\\src\\tools\\ProcDump\\procdump64.exe;tools\\ProcDump" ^
@@ -69,7 +65,7 @@ if "%arch%"=="AMD64" (
     pyinstaller.exe ^
         --onefile ^
         --windowed ^
-        --name "MSPCManagerHelper_Beta_v0.2.1.0_ARM64" ^
+        --name "MSPCManagerHelper_Beta_v0.2.1.1_ARM64" ^
         --add-data "%~dp0..\\..\\src\\locales;locales" ^
         --add-data "%~dp0..\\..\\src\\assets\\MSPCManagerHelper.ico;assets" ^
         --add-binary "%~dp0..\\..\\src\\tools\\ProcDump\\procdump64a.exe;tools\\ProcDump" ^

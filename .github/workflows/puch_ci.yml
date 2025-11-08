@@ -29,13 +29,12 @@ jobs:
       uses: actions/setup-python@v6
       with:
         python-version: "3.11"
-    - name: Install Dependencies
+    - name: Create .venv & Install Dependencies
       run: |
-        python -m pip install --upgrade pip
-        if (Test-Path requirements.txt) { pip install -r requirements.txt }
-    - name: Build EXE
+        ./scripts/install_requirements_.venv.cmd
+    - name: Build EXE in .venv
       run: |
-        ./scripts/build/build.bat
+        ./scripts/build/build_.venv.cmd
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
