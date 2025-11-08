@@ -326,10 +326,11 @@
     "compute_files_hash_error": "Error occurred while computing file hash",
 
     "system_msedge_webview2_version": "System Microsoft Edge WebView2 Runtime version",
-    "user_msedge_webview2_version": "User Microsoft Edge WebView2 Runtime version",
+    "global_msedge_webview2_version": "Global Microsoft Edge WebView2 Runtime version",
     "get_msedge_webview2_version_powershell_error": "Error occurred while getting Microsoft Edge WebView2 Runtime version",
-    "msedge_webview2_version_registry_key_not_found": "User Microsoft Edge WebView2 Runtime version registry key not found",
-    "get_msedge_webview2_version_registry_error": "Error occurred while getting User Microsoft Edge WebView2 Runtime version from the registry",
+    "msedge_webview2_version_registry_key_not_found": "Global Microsoft Edge WebView2 Runtime version registry key not found",
+    "system_msedge_webview2_not_exists": "Microsoft Edge WebView2 Runtime is not installed in the System Root",
+    "get_msedge_webview2_version_registry_error": "Error occurred while getting Global Microsoft Edge WebView2 Runtime version from the registry",
     "windows_app_runtime_versions": "Windows App Runtime Versions",
     "get_windows_app_runtime_versions_powershell_error": "Error occurred while getting Windows App Runtime versions",
     "get_pc_manager_dependencies_version_success": "Successfully retrieved Microsoft PC Manager dependencies versions.",
@@ -449,5 +450,6 @@
     "excessive_waiting_time": "If the wait time is too long, please be patient or cancel the task and try again.",
     "admin_approval_mode_is_on": "Administrator Protection is turned on, functions that need to be run as administrator will not work properly, please turn off Administrator Protection and restart your PC before starting MSPCManagerHelper.\nIf Administrator Protection is kept on, functions performed for the current user will not take effect.",
     "server_installation_type_is_core": "The current Windows Server installation type is Core, Microsoft PC Manager will not be available on this system. You'll need to do a clean installation of Windows Server to select Server with Desktop Experience.",
-    "current_windows_installation_information": "Current Windows Installation Information"
+    "current_windows_installation_information": "Current Windows Installation Information",
+    "narrator_is_running": "The Narrator or another screen reader is running. MSPCManagerHelper cannot be read aloud properly at this time. Please seek assistance from someone else to continue."
 }

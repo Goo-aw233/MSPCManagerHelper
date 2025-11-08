@@ -1,6 +1,7 @@
 import ctypes
 import locale
 import os
+import psutil
 import queue
 import subprocess
 import threading
@@ -25,7 +26,7 @@ class MSPCManagerHelper(tk.Tk):
         super().__init__()
         main_icon_path = Path(__file__).parent / 'assets' / 'MSPCManagerHelper.ico'
         self.iconbitmap(str(main_icon_path))
-        self.mspcmanagerhelper_version = "Beta v0.2.1.0"
+        self.mspcmanagerhelper_version = "Beta v0.2.1.1"
         title = f"MSPCManagerHelper {self.mspcmanagerhelper_version}"
         if AdvancedStartup.is_administrator():
             title += " (Administrator)"
@@ -295,6 +296,8 @@ class MSPCManagerHelper(tk.Tk):
         self.check_server_levels()
         # 获取 Windows 安装信息
         self.get_windows_installation_information()
+        # 检查“讲述人”是否开启
+        self.check_narrator_status()
 
     # 更新功能组合框内容
     def update_feature_combobox(self, event):
@@ -587,3 +590,10 @@ class MSPCManagerHelper(tk.Tk):
         if windows_info:
             self.textbox("\n" + self.translator.translate("current_windows_installation_information") + ": ")
             self.textbox(f"{windows_info}")
+
+    # 检查“讲述人”是否开启
+    def check_narrator_status(self):
+        for proc in psutil.process_iter(attrs=['name']):
+            if 'narrator' in proc.info['name'].lower():
+                messagebox.showwarning(self.translator.translate("warning"), self.translator.translate("narrator_is_running"))
+                break

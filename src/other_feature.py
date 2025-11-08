@@ -1,6 +1,7 @@
 import hashlib
 import iso3166
 import json
+import os
 import subprocess
 import sys
 import tkinter as tk
@@ -312,18 +313,29 @@ class OtherFeature:
 
     def get_pc_manager_dependencies_version(self):
         try:
-            # 使用 PowerShell 命令读取 System32 的 msedgewebview2.exe 的版本号
-            root_msedge_webview2 = (
-                "$SystemMSEdgeWebView2Path = \"$env:SystemRoot\\System32\\Microsoft-Edge-WebView\\msedgewebview2.exe\"; "
-                "$SystemMSEdgeWebView2PathVersionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($SystemMSEdgeWebView2Path); "
-                "$SystemMSEdgeWebView2PathVersionInfo.ProductVersion"
-            )
-            root_msedge_webview2_result = subprocess.run(
-                ["powershell.exe", "-Command", root_msedge_webview2],
-                capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
-            )
-            system_msedge_webview2_version = root_msedge_webview2_result.stdout.strip()
-            self.textbox(f"{self.translator.translate('system_msedge_webview2_version')}:\n{system_msedge_webview2_version}")
+            # 检查 Windows 版本
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows NT\CurrentVersion") as key:
+                current_build_number = winreg.QueryValueEx(key, "CurrentBuildNumber")[0]
+                if int(current_build_number) >= 26100:
+                    # 检查文件是否存在
+                    msedge_webview2_path = Path(os.environ['SystemRoot']) / "System32" / "Microsoft-Edge-WebView" / "msedgewebview2.exe"
+                    if msedge_webview2_path.exists():
+                        # 使用 PowerShell 命令读取 System32 的 msedgewebview2.exe 的版本号
+                        root_msedge_webview2 = (
+                            "$SystemMSEdgeWebView2Path = \"$env:SystemRoot\\System32\\Microsoft-Edge-WebView\\msedgewebview2.exe\"; "
+                            "$SystemMSEdgeWebView2PathVersionInfo = [System.Diagnostics.FileVersionInfo]::GetVersionInfo($SystemMSEdgeWebView2Path); "
+                            "$SystemMSEdgeWebView2PathVersionInfo.ProductVersion"
+                        )
+                        root_msedge_webview2_result = subprocess.run(
+                            ["powershell.exe", "-Command", root_msedge_webview2],
+                            capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
+                        )
+                        system_msedge_webview2_version = root_msedge_webview2_result.stdout.strip()
+                        self.textbox(f"{self.translator.translate('system_msedge_webview2_version')}:\n{system_msedge_webview2_version}")
+                    else:
+                        self.textbox(self.translator.translate("system_msedge_webview2_not_exists"))
+                else:
+                    self.textbox(self.translator.translate("system_msedge_webview2_not_exists"))
         except subprocess.CalledProcessError as e:
             self.textbox(f"{self.translator.translate('get_msedge_webview2_version_powershell_error')}: {e.stderr.strip()}")
         except FileNotFoundError as e:
@@ -335,8 +347,8 @@ class OtherFeature:
             # 读取注册表中的版本号
             msedge_webview2_reg_path = r"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, msedge_webview2_reg_path) as key:
-                user_msedge_webview2_version = winreg.QueryValueEx(key, "pv")[0]
-                self.textbox(f"{self.translator.translate('user_msedge_webview2_version')}:\n{user_msedge_webview2_version}")
+                global_msedge_webview2_version = winreg.QueryValueEx(key, "pv")[0]
+                self.textbox(f"{self.translator.translate('global_msedge_webview2_version')}:\n{global_msedge_webview2_version}")
         except FileNotFoundError:
             self.textbox(self.translator.translate("msedge_webview2_version_registry_key_not_found"))
         except Exception as e:

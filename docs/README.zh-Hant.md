@@ -66,9 +66,9 @@ Please select your language to continue
     pip install requests
     ```
 
-    在 `scripts` 目錄下，您也可以直接執行 `install_requirements.bat` 快速完成安裝，或執行 `install_requirements_.venv.bat` 同時啟用虛擬環境並安裝套件。
+    在 `scripts` 目錄下，您也可以直接執行 `install_requirements.cmd` 快速完成安裝，或執行 `install_requirements_.venv.cmd` 同時啟用虛擬環境並安裝套件。
 
 5. 構建 EXE
 
-    直接執行 `scripts\build` 目錄下的 `build.bat` 或 `build_.venv.bat` 即可自己構建。
+    直接執行 `scripts\build` 目錄下的 `build.cmd` 或 `build_.venv.cmd` 即可自己構建。
     最後，構建好的 `EXE 檔案` 將會存放在根目錄的 `dist` 目錄下，並命名為 `MSPCManagerHelper_..._vx.x.x.x.exe`。

@@ -66,9 +66,9 @@ Please select your language to continue
     pip install requests
     ```
 
-    在 `scripts` 目录下，您也可以直接运行 `install_requirements.bat` 快速完成安装，或运行 `install_requirements_.venv.bat` 同时激活虚拟环境并安装依赖包。
+    在 `scripts` 目录下，您也可以直接运行 `install_requirements.cmd` 快速完成安装，或运行 `install_requirements_.venv.cmd` 同时激活虚拟环境并安装依赖包。
 
 5. 构建 EXE
 
-    直接运行 `scripts\build` 目录下的 `build.bat` 或 `build_.venv.bat` 即可自己构建。
+    直接运行 `scripts\build` 目录下的 `build.cmd` 或 `build_.venv.cmd` 即可自己构建。
     最后，构建好的 `EXE 文件` 将会存放在根目录的 `dist` 目录下，并命名为 `MSPCManagerHelper_..._vx.x.x.x.exe`。

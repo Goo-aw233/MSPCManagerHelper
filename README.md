@@ -66,9 +66,9 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
     pip install requests
     ```
 
-    In the `scripts` directory, you can also run `install_requirements.bat` directly to quickly complete the installation, or run `install_requirements_.venv.bat` to activate the virtual environment and install the dependencies at the same time.
+    In the `scripts` directory, you can also run `install_requirements.cmd` directly to quickly complete the installation, or run `install_requirements_.venv.cmd` to activate the virtual environment and install the dependencies at the same time.
 
 5. Build the EXE
 
-    Run `build.bat` or `build_.venv.bat` directly from the `scripts\build` directory to build it yourself.
+    Run `build.cmd` or `build_.venv.cmd` directly from the `scripts\build` directory to build it yourself.
     Finally, the built `EXE file` will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_... _vx.x.x.x.x.exe`.

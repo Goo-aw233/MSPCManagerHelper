@@ -82,24 +82,39 @@ class InstallationFeature:
 
     def download_from_msstore(self):
         try:
-            # 检测 Microsoft Store 是否安装
+            # 检测 Microsoft Store 是否安装，先检查 store.exe
             result = subprocess.run(
-                ['powershell.exe', '-Command', 'Get-AppxPackage -Name Microsoft.WindowsStore'],
+                ['where.exe', 'store.exe'],
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
-            if 'PackageFamilyName : Microsoft.WindowsStore_8wekyb3d8bbwe' in result.stdout:
+            if result.returncode == 0 or 'store.exe' in result.stdout:
                 try:
-                    # 如果安装了 Microsoft Store，运行命令
+                    # 如果找到 store.exe，打开指定的 URI
                     subprocess.run(
                         ["start", "ms-windows-store://pdp/?ProductId=9PM860492SZD"],
-                           check=True, shell=True)
+                        check=True, shell=True)
                     return self.translator.translate("download_from_msstore_app_opened")
                 except Exception as e:
                     return f"{self.translator.translate('download_from_msstore_app_error')}: {str(e)}"
             else:
-                # 如果没有安装 Microsoft Store，打开指定的 URL
-                webbrowser.open("https://apps.microsoft.com/detail/9PM860492SZD")
-                return self.translator.translate("download_from_msstore_site_opened")
+                # 如果没找到 store.exe，检查 microsoftstore.exe
+                result2 = subprocess.run(
+                    ['where.exe', 'microsoftstore.exe'],
+                    capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
+                )
+                if result2.returncode == 0 or 'microsoftstore.exe' in result2.stdout:
+                    try:
+                        # 如果找到 microsoftstore.exe，打开指定的 URI
+                        subprocess.run(
+                            ["start", "ms-windows-store://pdp/?ProductId=9PM860492SZD"],
+                            check=True, shell=True)
+                        return self.translator.translate("download_from_msstore_app_opened")
+                    except Exception as e:
+                        return f"{self.translator.translate('download_from_msstore_app_error')}: {str(e)}"
+                else:
+                    # 如果都没找到，打开指定的 URL
+                    webbrowser.open("https://apps.microsoft.com/detail/9PM860492SZD")
+                    return self.translator.translate("download_from_msstore_site_opened")
         except Exception as e:
             return f"{self.translator.translate('download_from_msstore_site_error')}: {str(e)}"
 
