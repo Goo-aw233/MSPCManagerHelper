@@ -966,7 +966,7 @@ class UninstallationFeature:
                                 [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", str(microsoft_edge_webview2_path)],
                                 check=True, capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
                             )
-                            time.sleep(random.uniform(0.1, 0.5))  # 随即等待 0.1 - 0.5 秒文件系统更新
+                            time.sleep(random.uniform(0.1, 0.5))  # 随机等待 0.1 - 0.5 秒文件系统更新
                             if not microsoft_edge_webview2_path.exists():
                                 return self.translator.translate("microsoft_edge_webview2_folder_removed_successfully").format(microsoft_edge_webview2_path=microsoft_edge_webview2_path)
                             else:
@@ -999,7 +999,7 @@ class UninstallationFeature:
                                     [nsudolc_path, "-U:T", "-P:E", "-ShowWindowMode:Hide", "cmd.exe", "/C", "rmdir", "/S", "/Q", str(microsoft_edge_webview2_parent_path)],
                                     check=True, capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
                                 )
-                                time.sleep(random.uniform(0.1, 0.5))  # 随即等待 0.1 - 0.5 秒文件系统更新
+                                time.sleep(random.uniform(0.1, 0.5))  # 随机等待 0.1 - 0.5 秒文件系统更新
                                 if not microsoft_edge_webview2_parent_path.exists():
                                     return self.translator.translate("microsoft_edge_webview2_parent_folder_removed_successfully").format(microsoft_edge_webview2_parent_path=microsoft_edge_webview2_parent_path)
                                 else:
