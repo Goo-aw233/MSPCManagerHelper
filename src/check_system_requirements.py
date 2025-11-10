@@ -1,9 +1,14 @@
+import os
+import re
 import winreg
+from pathlib import Path
 
 
 class CheckSystemRequirements:
+    translator = None  # 类变量，用于存储 translator 实例
+
     def __init__(self, translator):
-        self.translator = translator
+        CheckSystemRequirements.translator = translator  # 设置类变量
 
     def check_system_requirements(self):
         try:
@@ -75,6 +80,25 @@ class CheckSystemRequirements:
                 minor_version = winreg.QueryValueEx(key, "CurrentMinorVersionNumber")[0]
                 build_number = winreg.QueryValueEx(key, "CurrentBuildNumber")[0]
                 ubr = winreg.QueryValueEx(key, "UBR")[0]
-                return f"Microsoft Windows {display_version} {major_version}.{minor_version}.{build_number}.{ubr} {edition_id}\n{build_lab_ex}"
+                
+                # 读取 Windows Feature Experience Pack 版本
+                windows_feature_experience_pack = None
+                try:
+                    # 使用 os.path.expandvars 处理环境变量（相对路径部分），然后用 PathLib 构建完整路径
+                    base_path = Path(os.path.expandvars(r"%SystemRoot%"))
+                    manifest_path = base_path / "SystemApps" / "MicrosoftWindows.Client.CBS_cw5n1h2txyewy" / "appxmanifest.xml"
+                    with open(manifest_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                    # 使用正则表达式查找 " Version=\"...\"" 格式，确保前后有空格
+                    match = re.search(r' Version="([^"]*)"', content)
+                    if match:
+                        windows_feature_experience_pack = match.group(1)
+                except (FileNotFoundError, OSError):
+                    pass
+                
+                if windows_feature_experience_pack:
+                    return f"Microsoft Windows {display_version} {major_version}.{minor_version}.{build_number}.{ubr} {edition_id}\n{build_lab_ex}\n{CheckSystemRequirements.translator.translate('windows_feature_experience_pack')}: {windows_feature_experience_pack}"
+                else:
+                    return f"Microsoft Windows {display_version} {major_version}.{minor_version}.{build_number}.{ubr} {edition_id}\n{build_lab_ex}"
         except (FileNotFoundError, OSError):
             return None

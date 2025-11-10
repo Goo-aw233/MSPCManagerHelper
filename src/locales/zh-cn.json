@@ -450,5 +450,6 @@
     "admin_approval_mode_is_on": "管理员保护已开启，需要以管理员身份运行的功能将无法正常使用，请关闭管理员保护并重启电脑后再启动 MSPCManagerHelper。\n若保持管理员保护开启，为当前用户所执行操作的功能将不会生效。",
     "server_installation_type_is_core": "当前 Windows Server 安装类型为 Core，此系统上将无法使用微软电脑管家。请执行全新安装 Windows Server 以选择“带桌面体验的服务器”。",
     "current_windows_installation_information": "当前 Windows 安装信息",
-    "narrator_is_running": "“讲述人”或其他屏幕阅读器正在运行，MSPCManagerHelper 此时不能被正常朗读，请寻求其他人士的帮助以继续。"
+    "narrator_is_running": "“讲述人”或其他屏幕阅读器正在运行，MSPCManagerHelper 此时不能被正常朗读，请寻求其他人士的帮助以继续。",
+    "windows_feature_experience_pack": "Windows 功能体验包"
 }
