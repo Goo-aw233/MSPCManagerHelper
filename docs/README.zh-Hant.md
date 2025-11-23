@@ -42,7 +42,7 @@ Please Select Your Language to Continue
 
     - **Windows**:
 
-        ```Batch
+        ```Batchfile
         py.exe -3.14 -m venv .venv
         ".venv\Scripts\activate"
         ```
@@ -61,7 +61,7 @@ Please Select Your Language to Continue
 
 4. 安裝套件包
 
-    ```Batch
+    ```Batchfile
     python -m pip install --upgrade pip
     pip install -r requirements.txt
     ```

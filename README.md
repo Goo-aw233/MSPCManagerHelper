@@ -42,7 +42,7 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 
     - **Windows**:
 
-        ```Batch
+        ```Batchfile
         py.exe -3.14 -m venv .venv
         ".venv\Scripts\activate"
         ```
@@ -61,7 +61,7 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 
 4. Install the pip Packages
 
-    ```Batch
+    ```Batchfile
     python -m pip install --upgrade pip
     pip install -r requirements.txt
     ```
