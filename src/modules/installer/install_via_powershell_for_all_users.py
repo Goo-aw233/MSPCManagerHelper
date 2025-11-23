@@ -1,0 +1,2 @@
+class InstallViaPowerShellForAllUsers:
+    pass

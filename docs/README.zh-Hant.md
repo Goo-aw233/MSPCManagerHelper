@@ -1,7 +1,7 @@
 <div align=center>
 
 # MSPCManagerHelper
-<img src="../src/assets/icons/MSPCManagerHelper.png" width="140" height="140"/>
+<img src="../src/assets/icons/MSPCManagerHelper.png" width="140" height="140" alt="MSPCManagerHelper 標志" />
 
 </div>
 
@@ -23,6 +23,9 @@ Please Select Your Language to Continue
 
 > [!NOTE]
 > 請注意，本輔助工具部分內容引用了來自第三方（即非 Microsoft 官方）網頁的連結。這些網頁可能提供準確且、安全的資訊來協助您解決問題。然而，請務必留意頁面上的廣告，其中可能包含通常被歸類為 PUP（Potentially Unwanted Products，潛在有害產品）的內容。在您下載及安裝文件或應用前，請徹底地研究網頁中推廣的任何產品。
+
+> [!TIP]
+> 若你想為 MSPCManagerHelper 提交代碼，請參閲 [CONTRIBUTING](./CONTRIBUTING.md)。
 
 ## 💻 開發
 

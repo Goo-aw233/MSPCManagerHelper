@@ -1,448 +1,486 @@
 import ctypes
-import customtkinter
+import os
 import subprocess
 import sys
-import threading
 from pathlib import Path
-from tkinter import messagebox
-from gui.modules import AdvancedStartup, CheckSystemRequirements, GetMicrosoftPCManagerVersionNumber, ProgramSettings
+from tkinter import BooleanVar, messagebox, ttk
+
+from core.advanced_startup import AdvancedStartup
+from core.check_system_requirements import CheckSystemRequirements
+from core.get_microsoft_pc_manager_version_number import GetMicrosoftPCManagerVersionNumber
+from core.program_logger import ProgramLogger
+from core.program_settings import ProgramSettings
+from gui.widgets.scrollable_frame import ScrollableFrame
 
 
-class HomePageFrame(customtkinter.CTkScrollableFrame):
-    def __init__(self, master, font_family=None, translator=None, change_language_callback=None, *args, **kwargs):
-        super().__init__(master, fg_color="transparent", corner_radius=0, *args, **kwargs)
-        self.font_family = font_family
+class HomePage(ttk.Frame):
+    def __init__(self, parent, translator, font_family):
+        super().__init__(parent)
         self.translator = translator
-        self.change_language_callback = change_language_callback
+        self.font_family = font_family
+        self.logger = ProgramLogger.get_logger()
 
-        # 配置网格权重
-        self.grid_columnconfigure(0, weight=1)
-        # 初始化主框架的行计数器
-        current_row = 0
+        self.create_widgets()
+        self.logger.info("Home Page initialized.")
 
-        # Title Label
-        self.title_label = customtkinter.CTkLabel(
-            self,
-            text=self.translator.translate("home_page"),
-            font=(self.font_family, 20, "bold")
-        )
-        self.title_label.grid(row=current_row, column=0, pady=(20, 10), sticky="ew")
-        self.title_label.bind("<Configure>", lambda event: self.title_label.configure(
-            wraplength=self.title_label.winfo_width() - 20))
-        current_row += 1
+    def create_widgets(self):
+        # Configure style for LabelFrame's label.
+        style = ttk.Style(self)
+        style.configure("TLabelframe.Label", font=(self.font_family, 10, "bold"))
 
-        # Welcome Message Frame
-        self.welcome_message_frame = customtkinter.CTkFrame(self, corner_radius=8, border_width=1)
-        self.welcome_message_frame.grid(row=current_row, column=0, padx=20, pady=10, sticky="ew")
-        self.welcome_message_frame.grid_columnconfigure(0, weight=1)
-        current_row += 1
+        # Use the theme background so the canvas matches the rest of UI.
+        frame_bg = style.lookup("TFrame", "background") or self.cget("background")
+        # text_fg = style.lookup("TLabel", "foreground") or "#000000"
 
-        current_row_in_welcome_message_frame = 0
-        self.welcome_title_label = customtkinter.CTkLabel(
-            self.welcome_message_frame,
+        # Page-level Scrollable Frame (Shared Component)
+        scrollable = ScrollableFrame(self, bg=frame_bg)
+        scrollable.pack(fill="both", expand=True)
+        content_frame = scrollable.content_frame
+
+        # Home Page Title
+        title_label = ttk.Label(content_frame, text=self.translator.translate("home_page"),
+                                font=(self.font_family, 16, "bold"))
+        title_label.pack(pady=10)
+
+        # ======================= Introduction Frame Section =======================
+        # Introduction Frame
+        introduction_frame = ttk.LabelFrame(
+            content_frame,
             text=self.translator.translate("introduction"),
-            font=(self.font_family, 16, "bold")
+            padding=10
         )
-        self.welcome_title_label.grid(row=current_row_in_welcome_message_frame, column=0, padx=10, pady=(10, 5), sticky="w")
-        self.welcome_title_label.bind("<Configure>", lambda event: self.welcome_title_label.configure(
-            wraplength=self.welcome_message_frame.winfo_width() - 20))
-        current_row_in_welcome_message_frame += 1
+        introduction_frame.pack(fill="x", padx=10, pady=5)
 
-        # Welcome Message
-        self.welcome_label = customtkinter.CTkLabel(
-            self.welcome_message_frame,
-            text=self.translator.translate("welcome_message"),
-            font=(self.font_family, 12)
+        # Introduction Text Label
+        intro_text = self.translator.translate("home_page_introduction")
+        intro_label = ttk.Label(
+            introduction_frame,
+            text=intro_text,
+            font=(self.font_family, 10),
+            justify="left"
         )
-        self.welcome_label.grid(row=current_row_in_welcome_message_frame, column=0, padx=10, pady=(0, 10), sticky="ew")
-        self.welcome_label.bind("<Configure>", lambda event: self.welcome_label.configure(
-            wraplength=self.welcome_message_frame.winfo_width() - 20))
-        current_row_in_welcome_message_frame += 1
+        intro_label.pack(anchor="w", fill="x", padx=(8, 6))
 
-        # Microsoft PC Manager Information Frame
-        self.info_frame = customtkinter.CTkFrame(self, corner_radius=8, border_width=1)
-        self.info_frame.grid(row=current_row, column=0, padx=20, pady=10, sticky="ew")
-        self.info_frame.grid_columnconfigure(0, weight=1)
-        current_row += 1
+        def _update_intro_wrap(e):
+            wrap = max(30, e.width - 20)
+            intro_label.config(wraplength=wrap)
+        introduction_frame.bind("<Configure>", _update_intro_wrap)
+        # ======================= End of Introduction Frame Section =======================
 
-        current_row_in_info_frame = 0
-        self.info_title_label = customtkinter.CTkLabel(
-            self.info_frame,
-            text=self.translator.translate("microsoft_pc_manager_information"),
-            font=(self.font_family, 16, "bold")
+        # ======================= Microsoft PC Manager Version Information Frame Section =======================
+        # Microsoft PC Manager Version Information Frame
+        mspcm_version_frame = ttk.LabelFrame(
+            content_frame,
+            text=self.translator.translate("microsoft_pc_manager_version_infomation"),
+            padding=10
         )
-        self.info_title_label.grid(row=current_row_in_info_frame, column=0, padx=10, pady=(10, 5), sticky="w")
-        self.info_title_label.bind("<Configure>", lambda event: self.info_title_label.configure(
-            wraplength=self.info_frame.winfo_width() - 20))
-        current_row_in_info_frame += 1
+        mspcm_version_frame.pack(fill="x", padx=10, pady=5)
 
-        # Microsoft PC Manager Version Number
-        version_number = GetMicrosoftPCManagerVersionNumber().get_microsoft_pc_manager_version_number()
-        if version_number:  # Successfully Read the Version Number
-            version_text = (f"{self.translator.translate('current_microsoft_pc_manager_version_number')}: "
-                            f"{version_number}")
-            self.microsoft_pc_manager_version_label = customtkinter.CTkLabel(
-                self.info_frame,
-                text=version_text,
-                font=(self.font_family, 12)
-            )
-            self.microsoft_pc_manager_version_label.grid(row=current_row_in_info_frame, column=0, padx=10,
-                                                         pady=5, sticky="ew")
-            self.microsoft_pc_manager_version_label.bind("<Configure>", lambda
-                event: self.microsoft_pc_manager_version_label.configure(
-                wraplength=self.info_frame.winfo_width() - 20))
-            current_row_in_info_frame += 1
+        # --- Row: Microsoft PC Manager Version Text Label ---
+        show_mspcm_version_frame = ttk.Frame(mspcm_version_frame)
+        show_mspcm_version_frame.pack(anchor="w", fill="x")
+        show_mspcm_version_frame.grid_columnconfigure(0, weight=1)
 
-            # Start Microsoft PC Manager Button
-            self.start_microsoft_pc_manager_button = customtkinter.CTkButton(
-                self.info_frame,
-                text=self.translator.translate("start_microsoft_pc_manager"),
-                font=(self.font_family, 12),
-                command=self._start_microsoft_pc_manager
-            )
-            self.start_microsoft_pc_manager_button.grid(row=current_row_in_info_frame, column=0, padx=20,
-                                                        pady=(5, 10), sticky="ew")
-            current_row_in_info_frame += 1
-        else:  # Failed to Read the Version Number
-            version_text = self.translator.translate('failure_to_read_microsoft_pc_manager_version_number')
-            self.microsoft_pc_manager_version_label = customtkinter.CTkLabel(
-                self.info_frame,
-                text=version_text,
-                font=(self.font_family, 12)
-            )
-            self.microsoft_pc_manager_version_label.grid(row=current_row_in_info_frame, column=0, padx=10,
-                                                         pady=5, sticky="ew")
-            self.microsoft_pc_manager_version_label.bind("<Configure>", lambda
-                event: self.microsoft_pc_manager_version_label.configure(
-                wraplength=self.info_frame.winfo_width() - 20))
-            current_row_in_info_frame += 1
+        version_label = ttk.Label(
+            show_mspcm_version_frame,
+            text="",
+            font=(self.font_family, 10),
+            justify="left"
+        )
+        version_label.grid(row=0, column=0, sticky="we", padx=(8, 6))
 
-        # Microsoft PC Manager Beta Version Number
-        beta_version_number = GetMicrosoftPCManagerVersionNumber().get_microsoft_pc_manager_beta_version_number()
-        if beta_version_number:  # If beta_version_number is None, Nothing is Displayed
-            beta_version_text = (f"{self.translator.translate('current_microsoft_pc_manager_beta_version_number')}: "
-                                 f"{beta_version_number}")
-            self.microsoft_pc_manager_beta_version_label = customtkinter.CTkLabel(
-                self.info_frame,
-                text=beta_version_text,
-                font=(self.font_family, 12)
-            )
-            self.microsoft_pc_manager_beta_version_label.grid(row=current_row_in_info_frame, column=0,
-                                                              padx=10, pady=5, sticky="ew")
-            self.microsoft_pc_manager_beta_version_label.bind("<Configure>", lambda
-                event: self.microsoft_pc_manager_beta_version_label.configure(
-                wraplength=self.info_frame.winfo_width() - 20))
-            current_row_in_info_frame += 1
+        # --- Row: Action Buttons ---
+        action_buttons_frame = ttk.Frame(mspcm_version_frame)
+        action_buttons_frame.pack(anchor="w", fill="x", pady=(5, 0))
 
-            # Start Microsoft PC Manager Beta Button
-            self.start_microsoft_pc_manager_beta_button = customtkinter.CTkButton(
-                self.info_frame, fg_color="transparent", border_width=2,
-                text_color=("gray10", "#DCE4EE"),
-                text=self.translator.translate("start_microsoft_pc_manager_beta"),
-                font=(self.font_family, 12),
-                command=self._start_microsoft_pc_manager_beta
-            )
-            self.start_microsoft_pc_manager_beta_button.grid(row=current_row_in_info_frame, column=0,
-                                                             padx=20, pady=(5, 10), sticky="ew")
-            current_row_in_info_frame += 1
+        start_mspcm_button = ttk.Button(action_buttons_frame, text=self.translator.translate("start_microsoft_pc_manager"), style="Accent.TButton")
+        start_mspcm_beta_button = ttk.Button(action_buttons_frame, text=self.translator.translate("start_microsoft_pc_manager_beta"))
 
+        def _on_start_mspcm_click():
+            registered_class = "shell:AppsFolder\\Microsoft.MicrosoftPCManager_8wekyb3d8bbwe!App"
+            try:
+                os.startfile(registered_class)
+                self.logger.info(f"Successfully started Microsoft PC Manager via os.startfile: {registered_class}")
+            except Exception as e1:
+                self.logger.warning(f"Failed to start via os.startfile: {e1}. Trying cmd.exe fallback...")
+                try:
+                    subprocess.run(["cmd.exe", "/C", "start", "Start Microsoft PC Manager", str(registered_class)], check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                    self.logger.info(f"Successfully started Microsoft PC Manager via cmd.exe: {registered_class}")
+                except Exception as e2:
+                    self.logger.error(f"Failed to start Microsoft PC Manager. Error: {e2}")
+
+        def _on_start_mspcm_beta_click():
+            registered_class_beta = "shell:AppsFolder\\Microsoft.AutoGenerated.{CDBC7B0D-6A70-5A10-4C8A-4B161DDC42A7}"
+            beta_exe_path = Path(os.environ["ProgramFiles"]) / "Microsoft PC Manager" / "MSPCManager.exe"
+            try:
+                os.startfile(registered_class_beta)
+                self.logger.info(f"Successfully started Microsoft PC Manager Public Beta via os.startfile: {registered_class_beta}")
+            except Exception as e1:
+                self.logger.warning(f"Failed to start via os.startfile: {e1}. Trying cmd.exe fallback...")
+                try:
+                    subprocess.run(["cmd.exe", "/C", "start", "Start Microsoft PC Manager Public Beta", str(beta_exe_path)], check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                    self.logger.info(f"Successfully started Microsoft PC Manager Public Beta via cmd.exe: {registered_class_beta}")
+                except Exception as e2:
+                    self.logger.error(f"Failed to start Microsoft PC Manager Public Beta. Error: {e2}")
+
+        start_mspcm_button = ttk.Button(
+            action_buttons_frame,
+            text=self.translator.translate("start_microsoft_pc_manager"),
+            command=_on_start_mspcm_click,
+            style="Accent.TButton"
+        )
+        start_mspcm_beta_button = ttk.Button(
+            action_buttons_frame,
+            text=self.translator.translate("start_microsoft_pc_manager_beta"),
+            command=_on_start_mspcm_beta_click
+        )
+
+        def _update_mspcm_version_info():
+            version_number = GetMicrosoftPCManagerVersionNumber().get_microsoft_pc_manager_version_number()
+            beta_version_number = GetMicrosoftPCManagerVersionNumber().get_microsoft_pc_manager_beta_version_number()
+
+            # Reset Buttons and Frame
+            start_mspcm_button.pack_forget()
+            start_mspcm_beta_button.pack_forget()
+            action_buttons_frame.pack_forget()  # Hide the button container to eliminate empty space.
+
+            # Release & Beta Version
+            if version_number and beta_version_number:
+                version_text = (f"{self.translator.translate('current_microsoft_pc_manager_version_number')}: {version_number}\n"
+                                f"{self.translator.translate('current_microsoft_pc_manager_beta_version_number')}: {beta_version_number}")
+                self.logger.info(f"Microsoft PC Manager Version: {version_number}, Public Beta Version: {beta_version_number}")
+                
+                action_buttons_frame.pack(anchor="w", fill="x", pady=(5, 0))    # Display button container.
+                start_mspcm_button.pack(side="left", padx=(8, 5))
+                start_mspcm_beta_button.pack(side="left", padx=(0, 8))
+
+            # Release Version
+            elif version_number:
+                version_text = f"{self.translator.translate('current_microsoft_pc_manager_version_number')}: {version_number}"
+                self.logger.info(f"Microsoft PC Manager Version: {version_number}")
+                
+                action_buttons_frame.pack(anchor="w", fill="x", pady=(5, 0))    # Display button container.
+                start_mspcm_button.pack(side="left", padx=(8, 8))
+
+            # Beta Version
+            elif beta_version_number:
+                version_text = f"{self.translator.translate('current_microsoft_pc_manager_beta_version_number')}: {beta_version_number}"
+                self.logger.info(f"Microsoft PC Manager Public Beta Version: {beta_version_number}")
+                
+                action_buttons_frame.pack(anchor="w", fill="x", pady=(5, 0))    # Display button container.
+                start_mspcm_beta_button.pack(side="left", padx=(8, 8))
+
+            # Failed to Get Any Version
+            else:
+                version_text = self.translator.translate("failed_to_get_microsoft_pc_manager_version_number")
+            version_label.config(text=version_text)
+
+        # Initial update of version info.
+        _update_mspcm_version_info()
+
+        def _on_refresh_button_click():
+            _update_mspcm_version_info()
+            self.logger.info("Microsoft PC Manager Version has been refreshed.")
+
+        # Refresh Button
+        refresh_button = ttk.Button(
+            show_mspcm_version_frame,
+            text=self.translator.translate("refresh"),
+            command=_on_refresh_button_click
+        )
+        refresh_button.grid(row=0, column=1, padx=(0, 8))
+
+        def _update_version_wrap(e):
+            # Subtract extra space for the button (approx 100px).
+            wrap = max(20, e.width - 120)
+            version_label.config(wraplength=wrap)
+        show_mspcm_version_frame.bind("<Configure>", _update_version_wrap)
+        # ======================= End of Microsoft PC Manager Version Information Frame Section =======================
+
+        # ======================= Check System Requirements Frame Section =======================
         # Check System Requirements Frame
-        self.check_system_requirements_frame = customtkinter.CTkFrame(self, corner_radius=8, border_width=1)
-        self.check_system_requirements_frame.grid(row=current_row, column=0, padx=20, pady=10, sticky="ew")
-        self.check_system_requirements_frame.grid_columnconfigure(0, weight=1)
-        current_row += 1
-
-        current_row_in_check_system_req_frame = 0
-        self.check_system_requirements_title_label = customtkinter.CTkLabel(
-            self.check_system_requirements_frame,
-            text=self.translator.translate("system_requirements_check"),
-            font=(self.font_family, 16, "bold")
+        check_system_requirements_frame = ttk.LabelFrame(
+            content_frame,
+            text=self.translator.translate("check_system_requirements"),
+            padding=10
         )
-        self.check_system_requirements_title_label.grid(row=current_row_in_check_system_req_frame, column=0, padx=10, pady=(10, 5), sticky="w")
-        self.check_system_requirements_title_label.bind("<Configure>", lambda event: self.check_system_requirements_title_label.configure(
-            wraplength=self.check_system_requirements_frame.winfo_width() - 20))
-        current_row_in_check_system_req_frame += 1
+        check_system_requirements_frame.pack(fill="x", padx=10, pady=5)
 
-        # Check System Minimum Requirements
-        system_requirements_status = CheckSystemRequirements().check_system_minimum_requirements()
-        if system_requirements_status is True:
-            requirements_text = self.translator.translate("meet_minimum_system_version_requirements")
-        elif system_requirements_status is False:
-            requirements_text = self.translator.translate("failure_to_meet_minimum_system_version_requirements")
+        # --- Row: Compatibility Check Label ---
+        is_compatible = CheckSystemRequirements.check_system_minimum_requirements()
+        if is_compatible:
+            compatibility_check_text = self.translator.translate("current_system_meet_system_requirements")
+            self.logger.info("The current system meets the minimum system requirements for Microsoft PC Manager.")
         else:
-            requirements_text = self.translator.translate("system_requirement_checks_cannot_be_completed_at_this_time")
+            compatibility_check_text = self.translator.translate("current_system_not_meet_system_requirements")
+            self.logger.warning("The current system does not meet the minimum system requirements for Microsoft PC Manager.")
 
-        self.system_requirements_status_label = customtkinter.CTkLabel(
-            self.check_system_requirements_frame,
-            text=requirements_text,
-            font=(self.font_family, 12)
+        compatibility_check_label = ttk.Label(
+            check_system_requirements_frame,
+            text=compatibility_check_text,
+            font=(self.font_family, 10),
+            justify="left"
         )
-        self.system_requirements_status_label.grid(row=current_row_in_check_system_req_frame, column=0,
-                                                   padx=10, pady=5, sticky="ew")
-        self.system_requirements_status_label.bind("<Configure>", lambda
-            event: self.system_requirements_status_label.configure(
-            wraplength=self.check_system_requirements_frame.winfo_width() - 20))
-        current_row_in_check_system_req_frame += 1
+        compatibility_check_label.pack(anchor="w", padx=5, pady=5)
 
-        # Check Windows Version
-        windows_version = CheckSystemRequirements.get_windows_installation_information()
-
-        if windows_version:
-            self.windows_version_label = customtkinter.CTkLabel(
-                self.check_system_requirements_frame,
-                text=windows_version,
-                font=(self.font_family, 12)
+        # --- Row: Check Windows Server Levels Label ---
+        is_server_core = CheckSystemRequirements.check_windows_server_levels()
+        server_level_label = None
+        if is_server_core:
+            server_level_text = self.translator.translate("windows_server_installation_type_is_core")
+            server_level_label = ttk.Label(
+                check_system_requirements_frame,
+                text=server_level_text,
+                font=(self.font_family, 10),
+                justify="left"
             )
-            self.windows_version_label.grid(row=current_row_in_check_system_req_frame, column=0,
-                                            padx=10,
-                                            pady=5, sticky="ew")
-            self.windows_version_label.bind("<Configure>", lambda
-                event: self.windows_version_label.configure(
-                wraplength=self.check_system_requirements_frame.winfo_width() - 20))
-            current_row_in_check_system_req_frame += 1
+            server_level_label.pack(anchor="w", padx=5, pady=5)
 
-        # Check Windows Server Levels
-        windows_server_levels_status = CheckSystemRequirements().check_windows_server_levels()
-        if windows_server_levels_status is True:
-            windows_server_core_levels_prompt = self.translator.translate("windows_server_installation_type_is_core")
-            self.windows_server_levels_status_label = customtkinter.CTkLabel(
-                self.check_system_requirements_frame,
-                text=windows_server_core_levels_prompt,
-                font=(self.font_family, 12)
+        # --- Row: Check Admin Approval Mode Label ---
+        is_admin_approval_mode = CheckSystemRequirements.check_admin_approval_mode()
+        admin_approval_mode_label = None
+        if is_admin_approval_mode:
+            admin_approval_mode_label = ttk.Label(
+                check_system_requirements_frame,
+                text=self.translator.translate("administrator_protection_is_enabled"),
+                font=(self.font_family, 10),
+                justify="left"
             )
-            self.windows_server_levels_status_label.grid(row=current_row_in_check_system_req_frame, column=0,
-                                                         padx=10,
-                                                         pady=5, sticky="ew")
-            self.windows_server_levels_status_label.bind("<Configure>", lambda
-                event: self.windows_server_levels_status_label.configure(
-                wraplength=self.check_system_requirements_frame.winfo_width() - 20))
-            current_row_in_check_system_req_frame += 1
+            admin_approval_mode_label.pack(anchor="w", padx=5, pady=5)
 
-        # Check Admin Approval Mode
-        admin_approval_status = CheckSystemRequirements().check_admin_approval_mode()
-        if admin_approval_status is True:
-            admin_approval_text = self.translator.translate("administrator_protection_is_enabled")
-            self.admin_approval_status_label = customtkinter.CTkLabel(
-                self.check_system_requirements_frame,
-                text=admin_approval_text,
-                font=(self.font_family, 12)
+        # --- Row: Windows Installation Information Label ---
+        windows_installation_info = CheckSystemRequirements.get_windows_installation_information()
+        if windows_installation_info:
+            windows_info_frame = ttk.Frame(check_system_requirements_frame)
+            windows_info_frame.pack(fill="x", padx=5, pady=5)
+            windows_info_frame.grid_columnconfigure(0, weight=1)
+
+            windows_installation_info_label = ttk.Label(
+                windows_info_frame,
+                text=f"{self.translator.translate('windows_installation_information')}:\n{windows_installation_info}",
+                font=(self.font_family, 10),
+                justify="left"
             )
-            self.admin_approval_status_label.grid(row=current_row_in_check_system_req_frame, column=0, padx=10,
-                                                  pady=5, sticky="ew")
-            self.admin_approval_status_label.bind("<Configure>", lambda
-                event: self.admin_approval_status_label.configure(
-                wraplength=self.check_system_requirements_frame.winfo_width() - 20))
-            current_row_in_check_system_req_frame += 1
+            windows_installation_info_label.grid(row=0, column=0, sticky="we")
 
+            def _on_about_windows_click():
+                about_windows_uri = "ms-settings:about"
+                try:
+                    os.startfile(about_windows_uri)
+                    self.logger.info(f"Successfully opened {about_windows_uri} via os.startfile")
+                except Exception as e1:
+                    self.logger.warning(f"Failed to open {about_windows_uri} via os.startfile: {e1}. Trying cmd.exe fallback...")
+                    try:
+                        subprocess.run(["cmd.exe", "/C", "start", about_windows_uri], check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                        self.logger.info(f"Successfully opened {about_windows_uri} via cmd.exe")
+                    except Exception as e2:
+                        self.logger.error(f"Failed to open {about_windows_uri}. Error: {e2}")
+
+            about_windows_button = ttk.Button(
+                windows_info_frame,
+                text=self.translator.translate("about_windows_in_mssettings"),
+                command=_on_about_windows_click
+            )
+            about_windows_button.grid(row=0, column=1, padx=(10, 0))
+
+            def _update_windows_info_wrap(e):
+                wrap = max(20, e.width - 120)
+                windows_installation_info_label.config(wraplength=wrap)
+            windows_info_frame.bind("<Configure>", _update_windows_info_wrap)
+
+        def _update_requirements_wrap(e):
+            wrap = max(30, e.width - 20)
+            compatibility_check_label.config(wraplength=wrap)
+            if server_level_label:
+                server_level_label.config(wraplength=wrap)
+            if admin_approval_mode_label:
+                admin_approval_mode_label.config(wraplength=wrap)
+        check_system_requirements_frame.bind("<Configure>", _update_requirements_wrap)
+        # ======================= End of Check System Requirements Frame Section =======================
+
+        # ======================= Program Settings Frame Section =======================
         # Program Settings Frame
-        self.program_settings_frame = customtkinter.CTkFrame(self, corner_radius=8, border_width=1)
-        self.program_settings_frame.grid(row=current_row, column=0, padx=20, pady=10, sticky="ew")
-        self.program_settings_frame.grid_columnconfigure(1, weight=1)
-        current_row += 1
-
-        current_row_in_program_settings_frame = 0
-        self.program_settings_title_label = customtkinter.CTkLabel(
-            self.program_settings_frame,
-            text=self.translator.translate("settings"),
-            font=(self.font_family, 16, "bold")
+        program_settings_frame = ttk.LabelFrame(
+            content_frame,
+            text=self.translator.translate("program_settings"),
+            padding=10
         )
-        self.program_settings_title_label.grid(row=current_row_in_program_settings_frame, column=0, columnspan=2, padx=10, pady=(10, 5), sticky="w")
-        self.program_settings_title_label.bind("<Configure>", lambda event: self.program_settings_title_label.configure(
-            wraplength=self.program_settings_frame.winfo_width() - 20))
-        current_row_in_program_settings_frame += 1
+        program_settings_frame.pack(fill="x", padx=10, pady=5)
 
-        # Run as Administrator Button
-        self.run_as_administrator_button = customtkinter.CTkButton(
-            self.program_settings_frame,
-            text=self.translator.translate("run_as_administrator"),
-            font=(self.font_family, 12),
-            command=self._restart_as_administrator
+        # --- Row: Run as Administrator ---
+        run_as_admin_frame = ttk.Frame(program_settings_frame)
+        run_as_admin_frame.pack(fill="x", padx=5, pady=5)
+        run_as_admin_frame.grid_columnconfigure(0, weight=1)
+
+        run_as_admin_desc_label = ttk.Label(
+            run_as_admin_frame,
+            text=self.translator.translate("run_as_administrator_description"),
+            font=(self.font_family, 10),
+            justify="left"
         )
-        self.run_as_administrator_button.grid(row=current_row_in_program_settings_frame, column=0, columnspan=2,
-                                              padx=20, pady=(5, 5), sticky="ew")
-        if AdvancedStartup.is_administrator():
-            self.run_as_administrator_button.configure(state="disabled")
-        current_row_in_program_settings_frame += 1
+        run_as_admin_desc_label.grid(row=0, column=0, sticky="w")
 
-        # Language Selection OptionMenu
-        self.language_selection_label = customtkinter.CTkLabel(self.program_settings_frame,
-                                                               text=self.translator.translate("current_language"),
-                                                               font=(self.font_family, 12)
-                                                               )
-        self.language_selection_label.grid(row=current_row_in_program_settings_frame, column=0, padx=(20, 5),
-                                           pady=(5, 5), sticky="w")
+        def _restart_as_administrator():
+            if AdvancedStartup.is_administrator():
+                self.logger.info("Already running as administrator; no action taken.")
+                return
 
-        # 从翻译值动态构建语言菜单
-        # 1. 定义语言代码到其翻译键的映射
-        self.language_code_to_key_map = {
-            "en-us": "lang_en-us",
-            "zh-cn": "lang_zh-cn",
-            "zh-tw": "lang_zh-tw"
-        }
+            # Determine the original launch path (exe/script).
+            boot_file_path = str(Path(sys.argv[0]).resolve())
+            self.logger.debug(f"Determined boot file path: {boot_file_path}")
 
-        # 2. 创建一个从翻译后的显示名称到语言代码的新映射，用于回调
-        self.language_display_map = {
-            self.translator.translate(key): code for code, key in self.language_code_to_key_map.items()
-        }
+            original_args = AdvancedStartup.get_runtime_arguments()
+            params_list = [f'"{boot_file_path}"'] + [f'"{arg}"' if " " in arg else arg for arg in original_args]
 
-        # 3. 获取当前语言的正确显示名称，用于设置默认值
-        current_language_translation_key = self.language_code_to_key_map.get(self.translator.locale, "lang_en-us")
-        current_language_display = self.translator.translate(current_language_translation_key)
-
-        # 4. 创建 OptionMenu，值为翻译后的语言列表
-        self.language_optionmenu = customtkinter.CTkOptionMenu(self.program_settings_frame,
-                                                                    values=list(self.language_display_map.keys()),
-                                                                    font=(self.font_family, 12),
-                                                                    dropdown_font=(self.font_family, 12),
-                                                                    command=self._change_language_event)
-        self.language_optionmenu.set(current_language_display)
-        self.language_optionmenu.grid(row=current_row_in_program_settings_frame, column=1, padx=(5, 20),
-                                            pady=(5, 5), sticky="ew")
-        current_row_in_program_settings_frame += 1
-
-        # Appearance Mode OptionMenu
-        self.appearance_mode_label = customtkinter.CTkLabel(self.program_settings_frame,
-                                                            text=self.translator.translate("appearance_mode"),
-                                                            font=(self.font_family, 12)
-                                                            )
-        self.appearance_mode_label.grid(row=current_row_in_program_settings_frame, column=0, padx=(20, 5),
-                                        pady=(5, 5), sticky="w")
-
-        # Define English to translated string mapping for Appearance Modes.
-        self.appearance_mode_translations = {
-            "Light": self.translator.translate("light_theme"),
-            "Dark": self.translator.translate("dark_theme"),
-            "System": self.translator.translate("follow_windows_theme")
-        }
-
-        # Values to display in the OptionMenu (translated).
-        appearance_display_values = [
-            self.appearance_mode_translations["Light"],
-            self.appearance_mode_translations["Dark"],
-            self.appearance_mode_translations["System"]
-        ]
-
-        self.appearance_mode_optionmenu = customtkinter.CTkOptionMenu(self.program_settings_frame,
-                                                                     values=appearance_display_values,
-                                                                     font=(self.font_family, 12),
-                                                                     dropdown_font=(self.font_family, 12),
-                                                                     command=self._change_appearance_mode_event)
-        self.appearance_mode_optionmenu.grid(row=current_row_in_program_settings_frame, column=1, padx=(5, 20),
-                                              pady=(5, 5), sticky="ew")
-
-        # Set default value based on current Appearance Mode.
-        current_appearance_mode = customtkinter.get_appearance_mode()  # Returns "Light", "Dark", or "System"
-
-        if current_appearance_mode == "Light":
-            self.appearance_mode_optionmenu.set(self.appearance_mode_translations["Light"])
-        elif current_appearance_mode == "Dark":
-            self.appearance_mode_optionmenu.set(self.appearance_mode_translations["Dark"])
-        else:  # System or other unexpected values.
-            self.appearance_mode_optionmenu.set(self.appearance_mode_translations["System"])
-        current_row_in_program_settings_frame += 1
-
-        # Support Developer CheckBox
-        self.support_developer_checkbox = customtkinter.CTkCheckBox(
-            self.program_settings_frame,
-            text=self.translator.translate("support_developer"),
-            font=(self.font_family, 12),
-            command=ProgramSettings.toggle_support_developer
-        )
-        if ProgramSettings.is_support_developer_enabled():
-            self.support_developer_checkbox.select()
-        else:
-            self.support_developer_checkbox.deselect()
-        self.support_developer_checkbox.grid(row=current_row_in_program_settings_frame, column=0, columnspan=2,
-                                             padx=20,
-                                             pady=(5, 10), sticky="w")
-        current_row_in_program_settings_frame += 1
-
-        # Compatibility Mode CheckBox
-        self.compatibility_mode_checkbox = customtkinter.CTkCheckBox(
-            self.program_settings_frame,
-            text=self.translator.translate("compatibility_mode"),
-            font=(self.font_family, 12),
-            command=ProgramSettings.toggle_compatibility_mode
-        )
-        self.compatibility_mode_checkbox.grid(row=current_row_in_program_settings_frame, column=0, columnspan=2,
-                                              padx=20, pady=(0, 10), sticky="w")
-
-    def _change_language_event(self, new_language_display: str):
-        # 使用 self.language_display_map 来查找对应的语言代码
-        new_language_code = self.language_display_map.get(new_language_display)
-        if new_language_code and self.change_language_callback:
-            self.change_language_callback(new_language_code)
-
-    def _change_appearance_mode_event(self, new_appearance_mode_translated: str):
-        # Find the English key corresponding to the translated value.
-        appearance_mode_to_set = "System"  # Default to "System"
-        for appearance_mode_key, translated_value in self.appearance_mode_translations.items():
-            if translated_value == new_appearance_mode_translated:
-                appearance_mode_to_set = appearance_mode_key
-                break
-        customtkinter.set_appearance_mode(appearance_mode_to_set)
-
-    def _restart_as_administrator(self):
-        if not AdvancedStartup.is_administrator():
-            """
-            Construct the path to main.py in the program root directory.
-            __file__ is ".../src/gui/pages/home_page.py".
-            Program root is three levels up from os.path.dirname(__file__).
-            """
-            main_py_path = str(Path(__file__).resolve().parents[2] / "main.py")
-
-            """
-            Prepare parameters: script path + original arguments (e.g., /DevMode).
-            Ensure paths/args with spaces are quoted for ShellExecuteW.
-            """
             formatted_original_args = [
-                f'"{arg}"' if " " in arg else arg for arg in sys.argv[1:]
+                f'"{arg}"' if " " in arg else arg for arg in original_args
             ]
 
-            """
-            Construct the argument string for ShellExecuteW:
-            "{main.py_script_path}" "arg1" "arg2_with_space" ...
-            The main.py path itself also needs to be enclosed in double quotes to prevent spaces in the path.
-            """
-            params_list = [f'"{main_py_path}"'] + formatted_original_args
+            params_list = [f'"{boot_file_path}"'] + formatted_original_args
             params_str = " ".join(params_list)
+            self.logger.info(f"Attempting to restart as admin. Executable: {boot_file_path}; Params: {params_str}")
 
-            if not AdvancedStartup.run_as_administrator(params_str):
-                failure_to_run_as_administrator_error_code = ctypes.get_last_error()
-                failure_to_run_as_administrator_error_message = ctypes.FormatError(
-                    failure_to_run_as_administrator_error_code).strip()
+            try:
+                result = AdvancedStartup.run_as_administrator(params_str)
+                if not result:
+                    failed_code = ctypes.get_last_error()
+                    failed_msg = ctypes.FormatError(failed_code).strip()
+                    self.logger.error(
+                        f"Failed to request elevation (ShellExecute returned failure). "
+                        f"ErrorCode={failed_code}; Message={failed_msg}"
+                    )
+                    messagebox.showerror(
+                        self.translator.translate("error"),
+                        f"{self.translator.translate('failed_to_run_as_administrator')}\n"
+                        f"{self.translator.translate('error_code')}: {failed_code}\n"
+                        f"{self.translator.translate('error_message')}: {failed_msg}"
+                    )
+                else:
+                    self.logger.info("Elevation request succeeded (process elevated or ShellExecute triggered).")
+            except Exception as e:
+                self.logger.exception("Exception while attempting to restart as administrator.")
+                failed_code = ctypes.get_last_error()
+                failed_msg = ctypes.FormatError(failed_code).strip()
                 messagebox.showerror(
                     self.translator.translate("error"),
-                    f"{self.translator.translate('failure_to_run_as_administrator')}\n"
-                    f"{self.translator.translate('error_code')}: {failure_to_run_as_administrator_error_code}\n"
-                    f"{self.translator.translate('error_message')}: {failure_to_run_as_administrator_error_message}"
+                    f"{self.translator.translate('failed_to_run_as_administrator')}\n"
+                    f"{self.translator.translate('error_code')}: {failed_code}\n"
+                    f"{self.translator.translate('error_message')}: {failed_msg}"
                 )
 
-    def _start_microsoft_pc_manager(self):
-        self.start_microsoft_pc_manager_button.configure(state="disabled")
+        is_admin = AdvancedStartup.is_administrator()
 
-        def run_start_microsoft_pc_manager_command():
+        run_as_admin_button = ttk.Button(
+            run_as_admin_frame,
+            text=self.translator.translate("run_as_administrator"),
+            style="Accent.TButton",
+            command=_restart_as_administrator,
+            state="disabled" if is_admin else "normal"
+        )
+        run_as_admin_button.grid(row=0, column=1, sticky="e", padx=(10, 0))
+
+        def _update_run_as_admin_desc_wrap(e):
             try:
-                start_microsoft_pc_manager_command = ["cmd.exe", "/C", "start",
-                                                      "shell:AppsFolder\\Microsoft.MicrosoftPCManager_8wekyb3d8bbwe!App"
-                                                      ]
-                subprocess.run(start_microsoft_pc_manager_command, creationflags=subprocess.CREATE_NO_WINDOW)
-            finally:
-                # Ensure that UI components are updated in the main thread.
-                self.master.after(0, lambda: self.start_microsoft_pc_manager_button.configure(state="normal"))
+                button_width = run_as_admin_button.winfo_width() or run_as_admin_button.winfo_reqwidth()
+            except Exception:
+                button_width = 120
+            padding = 30
+            wrap = max(30, e.width - button_width - padding)
+            run_as_admin_desc_label.config(wraplength=wrap)
 
-        threading.Thread(target=run_start_microsoft_pc_manager_command).start()
+        run_as_admin_frame.bind("<Configure>", _update_run_as_admin_desc_wrap)
 
-    def _start_microsoft_pc_manager_beta(self):
-        self.start_microsoft_pc_manager_beta_button.configure(state="disabled")
+        # --- Row: Switch Program Language ---
 
-        def run_start_microsoft_pc_manager_beta_command():
+        # --- Row: Switch Program Theme ---
+
+        # --- Row: Support Developer ---
+        support_developer_frame = ttk.Frame(program_settings_frame)
+        support_developer_frame.pack(fill="x", padx=5, pady=5)
+
+        support_developer_desc_label = ttk.Label(
+            support_developer_frame,
+            text=self.translator.translate("support_developer_description"),
+            font=(self.font_family, 10),
+            justify="left"
+        )
+        support_developer_desc_label.grid(row=0, column=0, sticky="w")
+
+        # Support Developer
+        self.support_developer_var = BooleanVar(value=ProgramSettings.is_support_developer_enabled())
+
+        def _on_toggle_support_developer():
             try:
-                start_microsoft_pc_manager_beta_command = ["cmd.exe", "/C", "start", "Start Microsoft PC Manager",
-                                                           "%ProgramFiles%\\Microsoft PC Manager\\MSPCManager.exe"]
-                subprocess.run(start_microsoft_pc_manager_beta_command, creationflags=subprocess.CREATE_NO_WINDOW)
-            finally:
-                # Ensure that UI components are updated in the main thread.
-                self.master.after(0, lambda: self.start_microsoft_pc_manager_beta_button.configure(state="normal"))
+                new_state = self.support_developer_var.get()
+                ProgramSettings.set_support_developer_enabled(new_state)
+                self.logger.info(f"Support Developer Setting Set to: {new_state}")
+            except Exception as e:
+                self.logger.exception(f"Failed to Set Support Developer: {e}")
 
-        threading.Thread(target=run_start_microsoft_pc_manager_beta_command).start()
+        style.configure("Big.TCheckbutton", font=(self.font_family, 10))
+        support_developer_checkbutton = ttk.Checkbutton(
+            support_developer_frame,
+            text=self.translator.translate("support_developer"),
+            variable=self.support_developer_var,
+            style="Big.TCheckbutton",
+            command=_on_toggle_support_developer
+        )
+        support_developer_checkbutton.grid(row=0, column=1, sticky="e", padx=(10, 0))
+        support_developer_frame.grid_columnconfigure(0, weight=1)
+
+        def _update_support_developer_desc_wrap(e):
+            try:
+                checkbox_width = support_developer_checkbutton.winfo_width() or support_developer_checkbutton.winfo_reqwidth()
+            except Exception:
+                checkbox_width = 120
+            padding = 30
+            wrap = max(30, e.width - checkbox_width - padding)
+            support_developer_desc_label.config(wraplength=wrap)
+
+        support_developer_frame.bind("<Configure>", _update_support_developer_desc_wrap)
+
+        # --- Row: Compatibility Mode ---
+        compatibility_mode_frame = ttk.Frame(program_settings_frame)
+        compatibility_mode_frame.pack(fill="x", padx=5, pady=5)
+
+        compatibility_mode_desc_label = ttk.Label(
+            compatibility_mode_frame,
+            text=self.translator.translate("compatibility_mode_description"),
+            font=(self.font_family, 10),
+            justify="left"
+        )
+        compatibility_mode_desc_label.grid(row=0, column=0, sticky="w")
+
+        # Compatibility Mode
+        self.compatibility_mode_var = BooleanVar(value=ProgramSettings.is_compatibility_mode_enabled())
+
+        def _on_toggle_compatibility_mode():
+            try:
+                new_state = self.compatibility_mode_var.get()
+                ProgramSettings.set_compatibility_mode_enabled(new_state)
+                self.logger.info(f"Compatibility Mode Setting Set to: {new_state}")
+            except Exception as e:
+                self.logger.exception(f"Failed to Set Compatibility Mode: {e}")
+
+        style.configure("Big.TCheckbutton", font=(self.font_family, 10))
+        compatibility_mode_checkbutton = ttk.Checkbutton(
+            compatibility_mode_frame,
+            text=self.translator.translate("compatibility_mode"),
+            variable=self.compatibility_mode_var,
+            style="Big.TCheckbutton",
+            command=_on_toggle_compatibility_mode
+        )
+        compatibility_mode_checkbutton.grid(row=0, column=1, sticky="e", padx=(10, 0))
+        compatibility_mode_frame.grid_columnconfigure(0, weight=1)
+
+        def _update_compatibility_mode_desc_wrap(e):
+            try:
+                checkbox_width = compatibility_mode_checkbutton.winfo_width() or compatibility_mode_checkbutton.winfo_reqwidth()
+            except Exception:
+                checkbox_width = 120
+            padding = 30
+            wrap = max(30, e.width - checkbox_width - padding)
+            compatibility_mode_desc_label.config(wraplength=wrap)
+
+        compatibility_mode_frame.bind("<Configure>", _update_compatibility_mode_desc_wrap)
+        # ======================= End of Program Settings Frame Section =======================

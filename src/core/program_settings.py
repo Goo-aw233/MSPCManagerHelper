@@ -1,0 +1,76 @@
+import darkdetect
+import sv_ttk
+from core.program_logger import ProgramLogger
+
+
+class ProgramSettings:
+    _THEME_MODE: str = "auto"
+
+    _MS_STUDENT_AMBASSADOR_CID_DEFAULT: str = "/?wt.mc_id=studentamb_474966"
+    _is_support_developer_enabled: bool = True
+    _is_compatibility_mode_enabled: bool = False
+
+    # ======================= Theme Mode Settings =======================
+    @classmethod
+    def get_THEME_MODE(cls) -> str:
+        return cls._THEME_MODE
+
+    @classmethod
+    def set_THEME_MODE(cls, mode: str) -> None:
+        if mode not in ("auto", "light", "dark"):
+            raise ValueError("Invalid theme mode. Use 'auto', 'light' or 'dark'.")
+        cls._THEME_MODE = mode
+
+    @classmethod
+    def apply_theme(cls) -> None:
+        logger = ProgramLogger.get_logger()
+        try:
+            if cls._THEME_MODE == "auto":
+                theme = darkdetect.theme()
+                if theme == "Light":
+                    sv_ttk.set_theme("light")
+                    logger.info("System theme is Light, setting theme to light.")
+                else:
+                    sv_ttk.set_theme("dark")
+                    logger.info("System theme is Dark, setting theme to dark.")
+            elif cls._THEME_MODE == "light":
+                sv_ttk.set_theme("light")
+                logger.info("Forced theme to light.")
+            else:
+                sv_ttk.set_theme("dark")
+                logger.info("Forced theme to dark.")
+        except Exception as e:
+            logger.warning(f"Failed to apply theme: {e}")
+    # ======================= End of Theme Mode Settings =======================
+
+    # ======================= Support Developer Mode Settings =======================
+    @classmethod
+    def is_support_developer_enabled(cls) -> bool:
+        return cls._is_support_developer_enabled
+
+    @classmethod
+    def set_support_developer_enabled(cls, enabled: bool) -> None:
+        cls._is_support_developer_enabled = bool(enabled)
+
+    @classmethod
+    def toggle_support_developer(cls) -> None:
+        cls.set_support_developer_enabled(not cls._is_support_developer_enabled)
+
+    @classmethod
+    def get_student_ambassador_cid(cls) -> str:
+        return cls._MS_STUDENT_AMBASSADOR_CID_DEFAULT if cls._is_support_developer_enabled else ""
+    # ======================= End of Support Developer Mode Settings =======================
+
+    # ======================= Compatibility Mode Settings =======================
+    @classmethod
+    def is_compatibility_mode_enabled(cls) -> bool:
+        return cls._is_compatibility_mode_enabled
+
+    @classmethod
+    def set_compatibility_mode_enabled(cls, enabled: bool) -> None:
+        cls._is_compatibility_mode_enabled = bool(enabled)
+
+    @classmethod
+    def toggle_compatibility_mode(cls) -> None:
+        cls.set_compatibility_mode_enabled(not cls._is_compatibility_mode_enabled)
+    # ======================= End of Compatibility Mode Settings =======================

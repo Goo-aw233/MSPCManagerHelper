@@ -1,0 +1,2 @@
+class ProgramLogsCollection:
+    pass

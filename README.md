@@ -1,7 +1,7 @@
 <div align=center>
 
 # MSPCManagerHelper
-<img src="./src/assets/icons/MSPCManagerHelper.png" width="140" height="140"/>
+<img src="./src/assets/icons/MSPCManagerHelper.png" width="140" height="140" alt="MSPCManagerHelper Logo" />
 
 </div>
 
@@ -24,11 +24,14 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 > [!NOTE]
 > Some features of `MSPCManagerHelper` include references to third-party (non-Microsoft) web pages. While these pages may offer accurate and helpful information, they might also contain advertisements categorized as PUPs (Potentially Unwanted Products). Please exercise caution and thoroughly review any products or files before downloading or installing them.
 
+> [!TIP]
+> If you wish to develop for MSPCManagerHelper, please refer to [CONTRIBUTING](./docs/CONTRIBUTING.md).
+
 ## 💻 Development
 
 1. Download Python 3.14 from [Python](https://www.python.org/downloads)
 
-2. Clone the code
+2. Clone the Code
 
     ```bash
     git clone https://github.com/Goo-aw233/MSPCManagerHelper.git
@@ -67,8 +70,8 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 
 5. Build the EXE
 
-    > [!IMPORTANT]
-    > If this is the first build, run `cleanup-before-first-build.cmd` in the `scripts` directory to clean up unneeded files.
+> [!IMPORTANT]
+> If this is the first build, run `cleanup-before-first-build.cmd` in the `scripts` directory to clean up unneeded files.
 
     Run `build.cmd` or `build_.venv.cmd` directly from the `scripts\build` directory to build it yourself.
     Finally, the built `EXE file` will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_... _vx.x.x.x.x.exe`.

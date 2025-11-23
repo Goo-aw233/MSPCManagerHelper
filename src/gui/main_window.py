@@ -1,75 +1,165 @@
-import customtkinter
+import ctypes
 import locale
+import os
+import sys
+import tkinter
 import tkinter.font
-from tkinter import messagebox
+from pathlib import Path
+from tkinter import messagebox, ttk
+
 from windows_toasts import Toast, WindowsToaster
-from gui.modules.program_metadata import ProgramMetadata
-from gui.modules import (AdvancedStartup, CheckSystemRequirements, GetProgramResources)
-from gui.navigation import NavigationFrame
-from gui.pages import (
-    HomePageFrame, MaintenancePageFrame, InstallationFeaturesPageFrame,
-    UninstallationFeaturesPageFrame, UtilsPageFrame, ToolboxPageFrame, AboutPageFrame
-)
-from gui.translator import Translator
+
+from core.advanced_startup import AdvancedStartup
+from core.check_system_requirements import CheckSystemRequirements
+from core.get_program_resources import GetProgramResources
+from core.program_logger import ProgramLogger
+from core.program_metadata import ProgramMetadata
+from core.program_settings import ProgramSettings
+from core.system_utilities_availability_check import SystemUtilitiesAvailabilityCheck
+from core.translator import Translator
+from gui.widgets.navigation import Navigation
 
 
-class MSPCManagerHelperMainWindow(customtkinter.CTk):
+class MSPCManagerHelperMainWindow(tkinter.Tk):
+
     def __init__(self):
         super().__init__()
+        # self.withdraw() # Hide window to prevent flashing.
+        self.logger = ProgramLogger.get_logger()
+        program_launch_message = f"{ProgramMetadata.PROGRAM_NAME} {ProgramMetadata.PROGRAM_VERSION}"
+        if AdvancedStartup.is_devmode():
+            program_launch_message += " (in DevMode)"
+        if AdvancedStartup.is_debugmode():
+            program_launch_message += " (in DebugMode)"
+        program_launch_message += " launched."
+        self.logger.info(program_launch_message)
+        self.logger.info(f"Launched From: {Path(sys.argv[0]).resolve()}")
+        self.logger.info(f"Runtime Arguments: {AdvancedStartup.get_runtime_arguments()}")
+        self.logger.info(f"Current Working Directory: {os.getcwd()}")
+        self.logger.info("========================= Initializing Base GUI =========================")
+        ProgramSettings.apply_theme()
+        self._set_dpi_awareness()
         self._configure_window()
         self._set_language()
         self._check_system_requirements()
-        self._init_ui()
+        self._configure_ui()
+        self.logger.info("========================= Base GUI Initialized =========================")
+        # self.deiconify()    # Show window after all configurations are done.
 
     def _configure_window(self):
-        # Set the Window Title
+        # Create a Background Frame that will hold all other widgets.
+        self.background_frame = ttk.Frame(self)
+        self.background_frame.pack(fill="both", expand=True)
+
+        # Set the window title.
         program_title_str = f"{ProgramMetadata.PROGRAM_NAME} {ProgramMetadata.PROGRAM_VERSION}"
         if AdvancedStartup.is_administrator():
             program_title_str += " (Administrator)"
         if AdvancedStartup.is_devmode():
             program_title_str += " - DevMode"
+        if AdvancedStartup.is_debugmode():
+            program_title_str += " - DebugMode"
         self.title(program_title_str)
-        # Set Font Family
+        # Set font family.
         self.font_family = tkinter.font.nametofont("TkDefaultFont").actual()["family"]
-        # Set Window Size
+        self.logger.info(f"Font Family: {self.font_family}")
+        # Set window size.
         self._adjust_window_size(default_width=984, default_height=661)
-        # Set Window Icon
+        # Set window icon.
         program_icon_path = GetProgramResources.get_program_icon()
         if program_icon_path:
             self.iconbitmap(program_icon_path)
+            self.logger.info(f"Window Icon: {program_icon_path}")
 
-    def _set_language(self, language=None):
-        if language is None:
-            language_map = {
-                ('en_', 'en-'): 'en-us',    # English
-                ('zh_CN', 'zh_Hans', 'zh_Hans_CN', 'zh_Hans_HK', 'zh_Hans_MO', 'zh_Hans_SG', 'zh_SG', 'zh-CN',
-                 'zh-Hans', 'zh-Hans-CN', 'zh-Hans-HK', 'zh-Hans-MO', 'zh-Hans-SG', 'zh-SG',): 'zh-cn',
-                # Simplified Chinese
-                ('zh_Hant', 'zh_Hant_HK', 'zh_Hant_MO', 'zh_Hant_TW', 'zh_HK', 'zh_MO', 'zh_TW', 'zh-Hant',
-                 'zh-Hant-HK', 'zh-Hant-MO', 'zh-Hant-TW', 'zh-HK', 'zh-MO', 'zh_TW'): 'zh-tw'  # Traditional Chinese
-            }
-            locale_str = locale.getdefaultlocale()[0]
-            default_language = 'en-us'
-            language = default_language
-            for prefixes, trans_locale in language_map.items():
-                if any(locale_str.startswith(prefix) for prefix in prefixes):
-                    language = trans_locale
-                    break
+    def _set_dpi_awareness(self):
+        # Tell Windows to use this program's DPI awareness and adjust Tk scaling.
+        self._dpi_scale_ratio = 1.0
+        try:
+            if sys.platform == "win32":
+                if hasattr(ctypes.windll, "shcore"):
+                    try:
+                        ctypes.windll.shcore.SetProcessDpiAwareness(1)
+                    except Exception:
+                        pass
+                    try:
+                        scale_factor = ctypes.windll.shcore.GetScaleFactorForDevice(0)
+                        # Save DPI ratio for use when setting window size.
+                        self._dpi_scale_ratio = float(scale_factor) / 100.0
+                        self.tk.call('tk', 'scaling', float(scale_factor) / 75)
+                        self.logger.info(f"DPI Scaling Set: scale_factor={scale_factor}")
+                    except Exception:
+                        self._dpi_scale_ratio = 1.0
+                        self.logger.warning("Failed to obtain or apply device scale factor.")
+                else:
+                    self.logger.debug("shcore.dll not available; skipping DPI awareness setting.")
+        except Exception as e:
+            self._dpi_scale_ratio = 1.0
+            self.logger.warning(f"Failed to set DPI awareness: {e}")
+
+    def _set_language(self):
+        language_map = {
+            # English
+            ('en_', 'en-'): 'en-us',
+            # Simplified Chinese
+            ('zh_CN', 'zh_Hans', 'zh_Hans_', 'zh_Hans_CN', 'zh_Hans_HK', 'zh_Hans_MO', 'zh_Hans_SG', 'zh_SG', 'zh-CN',
+             'zh-Hans', 'zh-Hans-', 'zh-Hans-CN', 'zh-Hans-HK', 'zh-Hans-MO', 'zh-Hans-SG', 'zh-SG',): 'zh-cn',
+            # Traditional Chinese
+            ('zh_Hant', 'zh_Hant_', 'zh_Hant_HK', 'zh_Hant_MO', 'zh_Hant_TW', 'zh_HK', 'zh_MO', 'zh_TW', 'zh-Hant',
+             'zh-Hant-',
+             'zh-Hant-HK', 'zh-Hant-MO', 'zh-Hant-TW', 'zh-HK', 'zh-MO', 'zh_TW'): 'zh-tw'
+        }
+        locale_str = locale.getdefaultlocale()[0]
+        language = 'en-us'  # Default language.
+        for prefixes, trans_locale in language_map.items():
+            if any(locale_str.startswith(prefix) for prefix in prefixes):
+                language = trans_locale
+                break
         self.language = language
         self.translator = Translator(self.language)
+        CheckSystemRequirements.translator = self.translator
+        self.logger.info(f"Program Language: {self.language}")
 
     def _check_system_requirements(self):
+        found_issue = False
+    
+        if not CheckSystemRequirements.check_if_windows_nt():
+            found_issue = True
+            self.logger.error("Operating system is not Windows NT-based.")
+            messagebox.showerror(
+                self.translator.translate("error"),
+                self.translator.translate("operating_system_is_not_windows_nt_based")
+            )
+            sys.exit(1)
+
         if CheckSystemRequirements.check_admin_approval_mode():
+            found_issue = True
+            self.logger.warning("Admin Approval Mode is enabled.")
             messagebox.showwarning(
                 self.translator.translate("warning"),
                 self.translator.translate("administrator_protection_is_enabled")
             )
+
         if CheckSystemRequirements.check_windows_server_levels():
+            found_issue = True
+            self.logger.warning("Windows Server installation type is Core.")
             messagebox.showwarning(
                 self.translator.translate("warning"),
                 self.translator.translate("windows_server_installation_type_is_core")
             )
+
+        SystemUtilitiesAvailabilityCheck.check_system_path_availability()
+
+        utility_availability = SystemUtilitiesAvailabilityCheck.check_system_utilities_availability()
+        for utility, is_available in utility_availability.items():
+            if not is_available:
+                found_issue = True
+                self.logger.warning(f"{utility} is not available.")
+
+        SystemUtilitiesAvailabilityCheck.check_system_utilities_version()
+
         if not AdvancedStartup.is_administrator():
+            found_issue = True
+            self.logger.warning("Program is not running as administrator.")
             toaster = WindowsToaster(self.translator.translate("mspcmanagerhelper"))
             toast_notification = Toast()
             toast_notification.text_fields = [
@@ -78,62 +168,41 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
             ]
             toaster.show_toast(toast_notification)
 
-    def _init_ui(self):
-        # Destroy all Widgets
-        for widget in self.winfo_children():
-            widget.destroy()
+        if SystemUtilitiesAvailabilityCheck.check_narrator_status():
+            found_issue = True
+            self.logger.warning("Narrator is running.")
+            messagebox.showwarning(
+                self.translator.translate("warning"),
+                self.translator.translate("narrator_is_running")
+            )
 
-        # 设置主窗口的 grid
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=40)
+        if not found_issue:
+            self.logger.info("No system requirement issues were found.")
 
-        # Create Frames For Each Page
-        self.frames = {
-            "home_page": HomePageFrame(self, font_family=self.font_family, translator=self.translator, change_language_callback=self.change_language),
-            "maintenance_page": MaintenancePageFrame(self, font_family=self.font_family, translator=self.translator),
-            "installation_features_page": InstallationFeaturesPageFrame(self, font_family=self.font_family, translator=self.translator),
-            "uninstallation_features_page": UninstallationFeaturesPageFrame(self, font_family=self.font_family, translator=self.translator),
-            "utils_page": UtilsPageFrame(self, font_family=self.font_family, translator=self.translator),
-            "toolbox_page": ToolboxPageFrame(self, font_family=self.font_family, translator=self.translator),
-            "about_page": AboutPageFrame(self, font_family=self.font_family, translator=self.translator),
-        }
-        for frame in self.frames.values():
-            frame.grid(row=0, column=1, sticky="nsew")
-            frame.grid_remove()
-
-        # Create the Navigation
-        self.navigation_frame = NavigationFrame(
-            self,
-            self._on_page_change,
-            font_family=self.font_family,
-            translator=self.translator
-        )
-        self.navigation_frame.grid(row=0, column=0, sticky="nsw")
-
-        # Default Home Page Display
-        self.navigation_frame.select_page("home_page")
-
-    def change_language(self, new_language_code: str):
-        self._set_language(new_language_code)
-        self._init_ui()
-
-    def _on_page_change(self, page_name):
-        self._show_page(page_name)
-
-    def _show_page(self, page_name):
-        for name, frame in self.frames.items():
-            if name == page_name:
-                frame.grid()
-            else:
-                frame.grid_remove()
+    def _configure_ui(self):
+        self.background_frame.grid_columnconfigure(1, weight=1)
+        self.background_frame.grid_rowconfigure(0, weight=1)
+        self.navigation = Navigation(self.background_frame, self.translator, self.font_family)
+        self.navigation.grid(row=0, column=0, sticky="ns", padx=10, pady=10)
 
     def _adjust_window_size(self, default_width, default_height, offset_ratio=0.05):
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         min_offset = int(min(screen_width, screen_height) * offset_ratio)
-        width = min(default_width, screen_width - min_offset)
-        height = min(default_height, screen_height - min_offset)
+        scale_ratio = getattr(self, "_dpi_scale_ratio", 1.0)
+        width = min(int(default_width * scale_ratio), screen_width - min_offset)
+        height = min(int(default_height * scale_ratio), screen_height - min_offset)
         x = max(0, (screen_width - width) // 2)
         y = max(0, (screen_height - height) // 2)
         self.geometry(f"{width}x{height}+{x}+{y}")
+        self.update_idletasks()  # Update window information.
+        self.logger.info(f"Window Size: {self.winfo_width()} x {self.winfo_height()} (scale={scale_ratio})")
+
+    def refresh_all_window_contents(self):
+        ProgramSettings.apply_theme()
+        self._set_dpi_awareness()
+        self._configure_window()
+        self._set_language()
+        self._check_system_requirements()
+        self._configure_ui()
+        self.logger.info("All window contents have been refreshed.")

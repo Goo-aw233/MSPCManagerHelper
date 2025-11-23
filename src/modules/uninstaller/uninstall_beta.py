@@ -1,0 +1,2 @@
+class UninstallBeta:
+    pass

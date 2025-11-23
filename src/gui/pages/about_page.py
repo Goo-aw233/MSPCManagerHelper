@@ -1,213 +1,368 @@
+import os
 import subprocess
-import threading
+import tkinter
 import webbrowser
-from tkinter import messagebox
+from tkinter import messagebox, ttk
 
-import customtkinter
+from core.program_logger import ProgramLogger
+from core.program_metadata import ProgramMetadata
+from gui.widgets.scrollable_frame import ScrollableFrame
 
-from gui.modules.program_metadata import ProgramMetadata
-from gui.modules.check_system_requirements import CheckSystemRequirements
 
-
-class AboutPageFrame(customtkinter.CTkScrollableFrame):
-    def __init__(self, master, font_family=None, translator=None, *args, **kwargs):
-        super().__init__(master, fg_color="transparent", corner_radius=0, *args, **kwargs)
-        self.font_family = font_family
+class AboutPage(ttk.Frame):
+    def __init__(self, parent, translator, font_family):
+        super().__init__(parent)
         self.translator = translator
+        self.font_family = font_family
+        self.logger = ProgramLogger.get_logger()
 
-        # 配置网格权重
-        self.grid_columnconfigure(0, weight=1)
-        # 初始化主框架的行计数器
-        current_row = 0
+        self.create_widgets()
+        self.logger.info("About Page initialized.")
 
-        # Title Label
-        self.title_label = customtkinter.CTkLabel(
-            self,
-            text=self.translator.translate("about_page"),
-            font=(self.font_family, 20, "bold")
-        )
-        self.title_label.grid(row=current_row, column=0, padx=20, pady=(20, 10), sticky="ew")
-        self.title_label.bind("<Configure>", lambda event: self.title_label.configure(
-            wraplength=self.title_label.winfo_width() - 20))
-        current_row += 1
+    def create_widgets(self):
+        # Configure style for LabelFrame's label.
+        style = ttk.Style(self)
+        style.configure("TLabelframe.Label", font=(self.font_family, 10, "bold"))
 
-        # Program Information Frame
-        self.program_info_frame = customtkinter.CTkFrame(self, corner_radius=8, border_width=1)
-        self.program_info_frame.grid(row=current_row, column=0, padx=20, pady=10, sticky="ew")
-        self.program_info_frame.grid_columnconfigure(0, weight=1)
-        current_row += 1
+        # Use the theme background so the canvas matches the rest of UI.
+        frame_bg = style.lookup("TFrame", "background") or self.cget("background")
+        text_fg = style.lookup("TLabel", "foreground") or "#000000"
 
-        self.program_info_label_title = customtkinter.CTkLabel(self.program_info_frame,
-                                                               text=self.translator.translate("program_information"),
-                                                               font=(self.font_family, 16, "bold"))
-        self.program_info_label_title.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="w")
+        # Page-level Scrollable Frame (Shared Component)
+        scrollable = ScrollableFrame(self, bg=frame_bg)
+        scrollable.pack(fill="both", expand=True)
+        content_frame = scrollable.content_frame
 
-        self.program_info_content_label = customtkinter.CTkLabel(self.program_info_frame, justify="left")
-        translated_program_info_content_1 = f'{self.translator.translate("program_name")}: {ProgramMetadata.PROGRAM_NAME}'
-        translated_program_info_content_2 = f'{self.translator.translate("program_version")}: {ProgramMetadata.PROGRAM_VERSION}'
-        combined_program_info = (f"{translated_program_info_content_1}\n"
-                                 f"{translated_program_info_content_2}")
-        self.program_info_content_label.configure(text=combined_program_info, font=(self.font_family, 12),
-                                                  anchor="center")
-        self.program_info_content_label.bind("<Configure>", lambda event: self.program_info_content_label.configure(
-            wraplength=self.program_info_frame.winfo_width() - 20))
-        self.program_info_content_label.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="ew")
+        # About Page Title
+        title_label = ttk.Label(content_frame, text=self.translator.translate("about_page"),
+                                font=(self.font_family, 16, "bold"))
+        title_label.pack(pady=10)
 
-        # Contributors Frame
-        self.contributors_frame = customtkinter.CTkFrame(self, corner_radius=8, border_width=1)
-        self.contributors_frame.grid(row=current_row, column=0, padx=20, pady=10, sticky="ew")
-        self.contributors_frame.grid_columnconfigure(0, weight=1)
-        current_row += 1
+        # ======================= Basic Information Frame Section =======================
+        basic_information_frame = ttk.LabelFrame(content_frame, text=self.translator.translate("program_information"))
+        basic_information_frame.pack(padx=10, pady=10, fill="x")
 
-        self.contributors_label_title = customtkinter.CTkLabel(self.contributors_frame,
-                                                               text=self.translator.translate("contributors"),
-                                                               font=(self.font_family, 16, "bold"))
-        self.contributors_label_title.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="w")
+        # Program version + download channels displayed inline in same row.
+        version_and_download_frame = ttk.Frame(basic_information_frame)
+        version_and_download_frame.pack(anchor="w", padx=10, pady=5, fill="x")
 
-        self.contributors_name_label = customtkinter.CTkLabel(self.contributors_frame, justify="left")
-        translated_contributors_name = self.translator.translate("contributors_name")
-        self.contributors_name_label.configure(text=translated_contributors_name, font=(self.font_family, 12),
-                                               anchor="center")
-        self.contributors_name_label.bind("<Configure>", lambda event: self.contributors_name_label.configure(
-            wraplength=self.contributors_frame.winfo_width() - 20))
-        self.contributors_name_label.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="ew")
+        # Version Label
+        version_label = ttk.Label(version_and_download_frame,
+                                text=f"{self.translator.translate('program_version')}: {ProgramMetadata.PROGRAM_VERSION}",
+                                font=(self.font_family, 10))
+        version_label.pack(side="left")
 
-        # Translators Frame
-        self.translators_frame = customtkinter.CTkFrame(self, corner_radius=8, border_width=1)
-        self.translators_frame.grid(row=current_row, column=0, padx=20, pady=10, sticky="ew")
-        self.translators_frame.grid_columnconfigure(0, weight=1)
-        current_row += 1
+        # Two download channel links, displayed inline after version, with hard-coded suffixes.
+        download_links = [
+            ("https://github.com/Goo-aw233/MSPCManagerHelper/releases", " 1 (GitHub)"),
+            ("https://gbcs6-my.sharepoint.com/:f:/g/personal/gucats_gbcs6_onmicrosoft_com/EtKwa-2la71HmG2RxkB5lngBvvRt9CFOYsyJG_HOwYIzNA",
+             " 2 (OneDrive)")
+        ]
 
-        self.translators_label_title = customtkinter.CTkLabel(self.translators_frame,
-                                                              text=self.translator.translate("translators"),
-                                                              font=(self.font_family, 16, "bold"))
-        self.translators_label_title.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="w")
+        for url, suffix in download_links:
+            display_text = f"{self.translator.translate('program_download_channel')}{suffix}"
+            link = ttk.Label(version_and_download_frame,
+                            text=display_text,
+                            foreground="#0078D7",
+                            cursor="hand2",
+                            font=(self.font_family, 10, "underline"))
+            link.pack(side="left", padx=5)
+            # bind with default parameter to avoid closure capture problem in loop.
+            link.bind("<Button-1>", lambda e, url_to_open=url: webbrowser.open_new(url_to_open))
 
-        self.translators_name_label = customtkinter.CTkLabel(self.translators_frame, justify="left")
-        translated_translators_name = self.translator.translate("translators_name")
-        self.translators_name_label.configure(text=translated_translators_name, font=(self.font_family, 12),
-                                              anchor="center")
-        self.translators_name_label.bind("<Configure>", lambda event: self.translators_name_label.configure(
-            wraplength=self.translators_frame.winfo_width() - 20))
-        self.translators_name_label.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="ew")
+        # Project Contributors Frame in basic_information_frame
+        contributors_frame = ttk.Frame(basic_information_frame)
+        contributors_frame.pack(anchor="w", padx=10, pady=5, fill="x")
 
-        # Terms of Use Frame
-        self.terms_of_use_frame = customtkinter.CTkFrame(self, corner_radius=8, border_width=1)
-        self.terms_of_use_frame.grid(row=current_row, column=0, padx=20, pady=10, sticky="ew")
-        self.terms_of_use_frame.grid_columnconfigure(0, weight=1)
-        current_row += 1
+        # Project Contributors Label
+        ttk.Label(contributors_frame, text=self.translator.translate("project_contributors") + ":",
+                  font=(self.font_family, 10)).pack(side="left")
 
-        self.terms_of_use_label_title = customtkinter.CTkLabel(self.terms_of_use_frame,
-                                                               text=self.translator.translate("terms_of_use"),
-                                                               font=(self.font_family, 16, "bold"))
-        self.terms_of_use_label_title.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="w")
+        # Contributors with their links.
+        contributors = {
+            "ArcticFoxPro": "https://github.com/ArcticFoxPro",
+            "GuCATs": "https://github.com/Goo-aw233",
+            "LuYang114": "https://github.com/LuYang114",
+            "zwJimRaynor": "https://github.com/zwJimRaynor"
+        }
 
-        self.terms_of_use_content_label = customtkinter.CTkTextbox(
-            self.terms_of_use_frame,
+        # Create and pack contributor links.
+        for contributor, contributor_url in contributors.items():
+            link = ttk.Label(contributors_frame, text=contributor, foreground="#0078D7", cursor="hand2",
+                            font=(self.font_family, 10, "underline"))
+            link.pack(side="left", padx=5)
+            link.bind("<Button-1>", lambda e, url_to_open=contributor_url: webbrowser.open_new(url_to_open))
+
+        # Localization Translators in basic_information_frame
+        localization_translators = self._get_localization_translators()
+        if localization_translators:
+            localization_frame = ttk.Frame(basic_information_frame)
+            localization_frame.pack(anchor="w", padx=10, pady=5, fill="x")
+
+            ttk.Label(localization_frame, text=self.translator.translate("localization_translator") + ":",
+                      font=(self.font_family, 10)).pack(side="left")
+
+            for username, display_name in localization_translators:
+                github_profile_url = f"https://github.com/{username}"
+                link = ttk.Label(localization_frame, text=display_name, foreground="#0078D7", cursor="hand2",
+                                 font=(self.font_family, 10, "underline"))
+                link.pack(side="left", padx=5)
+                link.bind("<Button-1>", lambda e, url_to_open=github_profile_url: webbrowser.open_new(url_to_open))
+    
+        # Source Code Repo Frame in basic_information_frame
+        source_code_repo_frame = ttk.Frame(basic_information_frame)
+        source_code_repo_frame.pack(anchor="w", padx=10, pady=5, fill="x")
+
+        # Source Code Repo Label
+        ttk.Label(source_code_repo_frame, text=self.translator.translate("project_source_code_repo") + ":",
+                  font=(self.font_family, 10)).pack(side="left")
+        
+        # Project Source Code Repo Link
+        github_repo_url = "https://github.com/Goo-aw233/MSPCManagerHelper"
+        github_repo_link = ttk.Label(source_code_repo_frame,
+                            text="GitHub",
+                            foreground="#0078D7",
+                            cursor="hand2",
+                            font=(self.font_family, 10, "underline"))
+        github_repo_link.pack(side="left", padx=5)
+        github_repo_link.bind("<Button-1>", lambda e, url_to_open=github_repo_url: webbrowser.open_new(url_to_open))
+
+        # License Frame in basic_information_frame
+        license_frame = ttk.Frame(basic_information_frame)
+        license_frame.pack(anchor="w", padx=10, pady=5, fill="x")
+
+        # License Label
+        ttk.Label(license_frame, text=self.translator.translate('open_source_license') + ":",
+                  font=(self.font_family, 10)).pack(side="left")
+        
+        # License Link
+        license_url = "https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE.txt"
+        license_link = ttk.Label(license_frame,
+                                text=f"{ProgramMetadata.PROGRAM_LICENSE}",
+                                foreground="#0078D7",
+                                cursor="hand2",
+                                font=(self.font_family, 10, "underline"))
+        license_link.pack(side="left", padx=5)
+        license_link.bind("<Button-1>", lambda e, url_to_open=license_url: webbrowser.open_new(url_to_open))
+        # ======================= End of Basic Information Frame Section =======================
+
+        # ======================= Terms of Use Frame Section =======================
+        terms_of_use_frame = ttk.LabelFrame(content_frame, text=self.translator.translate("terms_of_use"))
+        terms_of_use_frame.pack(padx=10, pady=(0, 10), fill="x")
+
+        # Card-like container using tkinter.Frame to support custom border.
+        border_color = style.lookup("TLabel", "background") or "#cfcfcf"
+        card = tkinter.Frame(terms_of_use_frame, background=frame_bg, highlightbackground=border_color,
+                             highlightthickness=1, bd=0)
+        card.pack(fill="both", padx=10, pady=5, expand=True)
+
+        # The inner frame to hold text + scrollbar (small padding).
+        terms_inner_frame = ttk.Frame(card)
+        terms_inner_frame.pack(fill="both", expand=True, padx=6, pady=6)
+
+        terms_of_use_text_box = tkinter.Text(
+            terms_inner_frame,
             wrap="word",
-            fg_color="transparent",
-            border_width=0,
-            height=200,
-            font=(self.font_family, 12)
+            height=8,
+            font=(self.font_family, 10),
+            bg=frame_bg,
+            fg=text_fg,
+            insertbackground=text_fg,
+            relief="flat",
+            borderwidth=0,
+            highlightthickness=0,
+            padx=6, pady=6
         )
-        translated_terms_of_use_content = self.translator.translate("terms_of_use_content")
-        self.terms_of_use_content_label.insert("1.0", translated_terms_of_use_content)
-        self.terms_of_use_content_label.configure(state="disabled")
-        self.terms_of_use_content_label.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="ew")
+        terms_of_use_text_box.pack(side="left", fill="both", expand=True)
 
-        # Privacy Policy Frame
-        self.privacy_policy_frame = customtkinter.CTkFrame(self, corner_radius=8, border_width=1)
-        self.privacy_policy_frame.grid(row=current_row, column=0, padx=20, pady=10, sticky="ew")
-        self.privacy_policy_frame.grid_columnconfigure(0, weight=1)
-        current_row += 1
+        # Vertical themed scrollbar local to the text area.
+        terms_of_use_text_scrollbar = ttk.Scrollbar(terms_inner_frame, orient="vertical",
+                                                    command=terms_of_use_text_box.yview)
+        terms_of_use_text_scrollbar.pack(side="right", fill="y")
+        terms_of_use_text_box.configure(yscrollcommand=terms_of_use_text_scrollbar.set)
 
-        self.privacy_policy_label_title = customtkinter.CTkLabel(self.privacy_policy_frame,
-                                                                 text=self.translator.translate("privacy_policy"),
-                                                                 font=(self.font_family, 16, "bold"))
-        self.privacy_policy_label_title.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="w")
+        # Populate and set readonly.
+        terms_of_use_text = self.translator.translate("terms_of_use_content")
+        if terms_of_use_text:
+            terms_of_use_text_box.insert("1.0", terms_of_use_text)
+        terms_of_use_text_box.configure(state="disabled")
+        # ======================= End of Terms of Use Frame Section =======================
 
-        self.privacy_policy_content_label = customtkinter.CTkTextbox(
-            self.privacy_policy_frame,
+        # ======================= Privacy Policy Frame Section =======================
+        privacy_policy_frame = ttk.LabelFrame(content_frame, text=self.translator.translate("privacy_policy"))
+        privacy_policy_frame.pack(padx=10, pady=(0, 10), fill="x")
+
+        privacy_card = tkinter.Frame(privacy_policy_frame, background=frame_bg, highlightbackground=border_color,
+                                     highlightthickness=1, bd=0)
+        privacy_card.pack(fill="both", padx=10, pady=5, expand=True)
+
+        privacy_inner_frame = ttk.Frame(privacy_card)
+        privacy_inner_frame.pack(fill="both", expand=True, padx=6, pady=6)
+
+        privacy_text_box = tkinter.Text(
+            privacy_inner_frame,
             wrap="word",
-            fg_color="transparent",
-            border_width=0,
-            height=100,
-            font=(self.font_family, 12)
+            height=8,
+            font=(self.font_family, 10),
+            bg=frame_bg,
+            fg=text_fg,
+            insertbackground=text_fg,
+            relief="flat",
+            borderwidth=0,
+            highlightthickness=0,
+            padx=6, pady=6
         )
-        translated_privacy_policy_content = self.translator.translate("privacy_policy_content")
-        self.privacy_policy_content_label.insert("1.0", translated_privacy_policy_content)
-        self.privacy_policy_content_label.configure(state="disabled")
-        self.privacy_policy_content_label.grid(row=1, column=0, padx=10, pady=(0, 10), sticky="ew")
+        privacy_text_box.pack(side="left", fill="both", expand=True)
 
-        # Privacy Settings Button
-        self.privacy_settings_button = customtkinter.CTkButton(
-            self.privacy_policy_frame,
+        privacy_text_scrollbar = ttk.Scrollbar(privacy_inner_frame, orient="vertical", command=privacy_text_box.yview)
+        privacy_text_scrollbar.pack(side="right", fill="y")
+        privacy_text_box.configure(yscrollcommand=privacy_text_scrollbar.set)
+
+        # Populate and set readonly.
+        privacy_text = self.translator.translate("privacy_policy_content")
+        if privacy_text:
+            privacy_text_box.insert("1.0", privacy_text)
+        privacy_text_box.configure(state="disabled")
+
+        # Button container placed under the card but inside the LabelFrame.
+        privacy_button_frame = ttk.Frame(privacy_policy_frame)
+        privacy_button_frame.pack(anchor="w", padx=10, pady=(0, 8), fill="x")
+        privacy_button_frame.grid_columnconfigure(0, weight=1)
+
+        privacy_settings_description_label = ttk.Label(
+            privacy_button_frame,
+            text=self.translator.translate("privacy_settings_description"),
+            font=(self.font_family, 10),
+            justify="left"
+        )
+        privacy_settings_description_label.grid(row=0, column=0, sticky="we", padx=(8, 6))
+
+        privacy_settings_button = ttk.Button(
+            privacy_button_frame,
             text=self.translator.translate("privacy_settings"),
-            font=(self.font_family, 12),
-            command=self._open_privacy_settings_window
+            command=self._open_privacy_settings
         )
-        self.privacy_settings_button.grid(row=2, column=0, padx=20, pady=(5, 10), sticky="ew")
-        if CheckSystemRequirements.check_windows_server_levels():
-            self.privacy_settings_button.configure(state="disabled")
+        privacy_settings_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
 
-        # Help Frame
-        self.help_frame = customtkinter.CTkFrame(self, corner_radius=8, border_width=1)
-        self.help_frame.grid(row=current_row, column=0, padx=20, pady=10, sticky="ew")
-        self.help_frame.grid_columnconfigure(0, weight=1)
-        current_row += 1
+        def _privacy_settings_wrap(e):
+            btn_w = privacy_settings_button.winfo_width() or 0
+            wrap = max(20, e.width - btn_w - 20)
+            privacy_settings_description_label.config(wraplength=wrap)
+        privacy_button_frame.bind("<Configure>", _privacy_settings_wrap)
+        # ======================= End of Privacy Policy Frame Section =======================
 
-        self.help_label_title = customtkinter.CTkLabel(self.help_frame,
-                                                       text=self.translator.translate("help"),
-                                                       font=(self.font_family, 16, "bold"))
-        self.help_label_title.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="w")
+        # ======================= Get Help Frame Section =======================
+        get_help_frame = ttk.LabelFrame(content_frame, text=self.translator.translate("get_help"))
+        get_help_frame.pack(padx=10, pady=(0, 10), fill="x")
 
-        # Repository URL Button
-        self.repository_url_button = customtkinter.CTkButton(self.help_frame,
-                                                             text=self.translator.translate("repository_url"),
-                                                             font=(self.font_family, 12),
-                                                             command=lambda: webbrowser.open_new_tab(
-                                                                 "https://github.com/Goo-aw233/MSPCManagerHelper"))
-        self.repository_url_button.grid(row=1, column=0, padx=20, pady=5, sticky="ew")
+        # --- Row 1: Get Help Button and Description ---
+        get_help_row_frame = ttk.Frame(get_help_frame)
+        get_help_row_frame.pack(anchor="w", padx=10, pady=(5, 8), fill="x")
+        get_help_row_frame.grid_columnconfigure(0, weight=1)
 
-        # Get Help Button
-        self.get_help_button = customtkinter.CTkButton(self.help_frame,
-                                                       text=self.translator.translate("get_help"),
-                                                       font=(self.font_family, 12),
-                                                       command=lambda: webbrowser.open_new_tab(
-                                                           "https://mspcmanager.github.io/mspcm-docs"))
-        self.get_help_button.grid(row=2, column=0, padx=20, pady=5, sticky="ew")
-
-        # Official Website Button
-        self.official_website_button = customtkinter.CTkButton(self.help_frame,
-                                                               text=self.translator.translate("official_website"),
-                                                               font=(self.font_family, 12),
-                                                               command=lambda: webbrowser.open_new_tab(
-                                                                   "https://pcmanager.microsoft.com"))
-        self.official_website_button.grid(row=3, column=0, padx=20, pady=5, sticky="ew")
-
-        # Contact Us Button
-        self.contact_us_button = customtkinter.CTkButton(self.help_frame,
-                                                         text=self.translator.translate("contact_us"),
-                                                         font=(self.font_family, 12),
-                                                         command=self._open_the_official_website_for_more_contact)
-        self.contact_us_button.grid(row=4, column=0, padx=20, pady=(5, 10), sticky="ew")
-
-    def _open_the_official_website_for_more_contact(self):
-        messagebox.showinfo(
-            self.translator.translate("info"),
-            self.translator.translate("get_more_contact_from_official_website")
+        get_help_description_label = ttk.Label(
+            get_help_row_frame,
+            text=self.translator.translate("redirect_to_official_website_to_get_help"),
+            font=(self.font_family, 10),
+            justify="left"
         )
-        webbrowser.open_new_tab("https://pcmanager.microsoft.com")
+        get_help_description_label.grid(row=0, column=0, sticky="we", padx=(8, 6))
 
-    def _open_privacy_settings_window(self):
-        self.privacy_settings_button.configure(state="disabled")
+        get_help_button = ttk.Button(
+            get_help_row_frame,
+            text=self.translator.translate("get_help"),
+            command=self._on_get_help_button_click
+        )
+        get_help_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
 
-        def open_privacy_settings_window_command():
+        def _get_help_wrap(e):
+            btn_w = get_help_button.winfo_width() or 0
+            wrap = max(20, e.width - btn_w - 20)
+            get_help_description_label.config(wraplength=wrap)
+        get_help_row_frame.bind("<Configure>", _get_help_wrap)
+
+        # --- Row 2: Official Website Button and Description ---
+        official_website_row_frame = ttk.Frame(get_help_frame)
+        official_website_row_frame.pack(anchor="w", padx=10, pady=(0, 8), fill="x")
+        official_website_row_frame.grid_columnconfigure(0, weight=1)
+
+        official_website_description_label = ttk.Label(
+            official_website_row_frame,
+            text=self.translator.translate("official_website_description"),
+            font=(self.font_family, 10),
+            justify="left"
+        )
+        official_website_description_label.grid(row=0, column=0, sticky="we", padx=(8, 6))
+
+        official_website_button = ttk.Button(
+            official_website_row_frame,
+            text=self.translator.translate("official_website"),
+            command=lambda: webbrowser.open_new("https://pcmanager.microsoft.com")
+        )
+        official_website_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
+
+        def _official_website_wrap(e):
+            btn_w = official_website_button.winfo_width() or 0
+            wrap = max(20, e.width - btn_w - 20)
+            official_website_description_label.config(wraplength=wrap)
+        official_website_row_frame.bind("<Configure>", _official_website_wrap)
+        # ======================= End of Get Help Frame Section =======================
+
+    def _get_localization_translators(self):
+        translations = getattr(self.translator, "translations", {})
+        if not isinstance(translations, dict):
+            return []
+
+        keys = list(translations.keys())
+        # Attempt to find the start and end indices.
+        try:
+            start_index = keys.index("__localization_translator_list__") + 1
+            end_index = keys.index("__localization_translator_list_end__")
+        except ValueError:
+            # If the markers are missing, return an empty list.
+            return []
+
+        translator_list_result = []
+        for key in keys[start_index:end_index]:
+            # Filter out additional internal markers (starting with "__").
+            if key.startswith("__"):
+                continue
+            display_name = translations.get(key, key)
+            translator_list_result.append((key, display_name))
+        return translator_list_result
+
+    def _open_privacy_settings(self):
+        privacy_settings_uri = "ms-settings:privacy"
+
+        try:
+            os.startfile(privacy_settings_uri)
+            self.logger.info("Opened privacy settings via os.startfile.")
+        except Exception as e1:
+            self.logger.warning(f"os.startfile failed: {e1}. Trying CMD fallback...")
+
+            cmd_success = False
             try:
-                subprocess.run(["cmd.exe", "/C", "start", "ms-settings:privacy"], check=True,
-                               creationflags=subprocess.CREATE_NO_WINDOW)
-            finally:
-                # Ensure that UI components are updated in the main thread.
-                self.master.after(0, lambda: self.privacy_settings_button.configure(state="normal"))
+                subprocess.run(
+                    ["cmd.exe", "/C", "start", "Privacy Settings", privacy_settings_uri],
+                    check=True,
+                    creationflags=subprocess.CREATE_NO_WINDOW
+                )
+                self.logger.info("Opened privacy settings via CMD.")
+                cmd_success = True
+            except Exception as e2:
+                self.logger.warning(f"CMD start failed: {e2}. Trying webbrowser fallback...")
 
-        threading.Thread(target=open_privacy_settings_window_command).start()
+            if not cmd_success:
+                try:
+                    webbrowser.open(privacy_settings_uri)
+                    self.logger.info("Opened privacy settings via webbrowser.")
+                except Exception as e3:
+                    self.logger.error(f"Failed to open privacy settings via all methods. Error: {e3}")
+
+    def _on_get_help_button_click(self):
+        messagebox.showinfo(
+            title=self.translator.translate("info"),
+            message=self.translator.translate("redirect_to_official_website_to_get_help")
+        )
+        webbrowser.open_new("https://pcmanager.microsoft.com")
+        self.logger.info("Redirected user to official website for help.")

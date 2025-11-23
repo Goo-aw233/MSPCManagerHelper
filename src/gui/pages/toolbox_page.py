@@ -1,133 +1,214 @@
-import webbrowser
+from tkinter import ttk
 
-import customtkinter
+from core.program_logger import ProgramLogger
+from gui.widgets.scrollable_frame import ScrollableFrame
+from modules.toolbox.download_microsoft_edge_webview2_runtime import DownloadMicrosoftEdgeWebView2Runtime
+from modules.toolbox.download_microsoft_pc_manager_application_package_from_azure_blob import \
+    DownloadMicrosoftPCManagerApplicationPackageFromAzureBlob
+from modules.toolbox.download_microsoft_pc_manager_application_package_from_onedrive import \
+    DownloadMicrosoftPCManagerApplicationPackageFromOneDrive
+from modules.toolbox.download_program_from_github import DownloadProgramFromGitHub
+from modules.toolbox.download_program_from_onedrive import DownloadProgramFromOneDrive
+from modules.toolbox.download_windows_app_runtime_from_microsoft_learn import \
+    DownloadWindowsAppRuntimeFromMicrosoftLearn
 
-from gui.modules.program_settings import ProgramSettings
 
-
-class ToolboxPageFrame(customtkinter.CTkScrollableFrame):
-    def __init__(self, master, font_family=None, translator=None, *args, **kwargs):
-        super().__init__(master, fg_color="transparent", corner_radius=0, *args, **kwargs)
-        self.font_family = font_family
+class ToolboxPage(ttk.Frame):
+    def __init__(self, parent, translator, font_family):
+        super().__init__(parent)
         self.translator = translator
+        self.font_family = font_family
+        self.logger = ProgramLogger.get_logger()
 
-        # 配置网格权重
-        self.grid_columnconfigure(0, weight=1)
-        # 初始化主框架的行计数器
-        current_row = 0
+        self.create_widgets()
+        self.logger.info("Toolbox Page initialized.")
 
-        # Title Label
-        self.title_label = customtkinter.CTkLabel(
-            self,
-            text=self.translator.translate("toolbox_page"),
-            font=(self.font_family, 20, "bold"),
-            anchor="center"
+    def create_widgets(self):
+        # Configure style for LabelFrame's label.
+        style = ttk.Style(self)
+        style.configure("TLabelframe.Label", font=(self.font_family, 10, "bold"))
+
+        # Use the theme background so the canvas matches the rest of UI.
+        frame_bg = style.lookup("TFrame", "background") or self.cget("background")
+        # text_fg = style.lookup("TLabel", "foreground") or "#000000"
+
+        # Page-level Scrollable Frame (Shared Component)
+        scrollable = ScrollableFrame(self, bg=frame_bg)
+        scrollable.pack(fill="both", expand=True)
+        content_frame = scrollable.content_frame
+
+        # Toolbox Page Title
+        title_label = ttk.Label(content_frame, text=self.translator.translate("toolbox_page"),
+                                font=(self.font_family, 16, "bold"))
+        title_label.pack(pady=10)
+
+        # ======================= Program Update Frame Section =======================
+        program_update_frame = ttk.LabelFrame(content_frame, text=self.translator.translate("program_update"), padding=10)
+        program_update_frame.pack(fill="x", padx=10, pady=5)
+
+        # --- Row 1: Update from GitHub Button and Description ---
+        update_from_github_row_frame = ttk.Frame(program_update_frame)
+        update_from_github_row_frame.pack(anchor="w", fill="x")
+        update_from_github_row_frame.grid_columnconfigure(0, weight=1)
+
+        update_from_github_description_label = ttk.Label(
+            update_from_github_row_frame,
+            text=self.translator.translate("update_from_github_description"),
+            font=(self.font_family, 10),
+            justify="left"
         )
-        self.title_label.grid(row=current_row, column=0, padx=20, pady=(20, 10), sticky="ew")
-        self.title_label.bind("<Configure>", lambda event: self.title_label.configure(
-            wraplength=self.title_label.winfo_width() - 20))
-        current_row += 1
+        update_from_github_description_label.grid(row=0, column=0, sticky="we", padx=(8, 6))
 
-        """ Program Update Frame """
-        self.program_update_frame = customtkinter.CTkFrame(self, corner_radius=8, border_width=1)
-        self.program_update_frame.grid(row=current_row, column=0, padx=20, pady=10, sticky="ew")
-        self.program_update_frame.grid_columnconfigure(0, weight=1)
-
-        self.program_update_label_title = customtkinter.CTkLabel(self.program_update_frame,
-                                                                 text=self.translator.translate("program_update"),
-                                                                 font=(self.font_family, 16, "bold"))
-        self.program_update_label_title.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="w")
-
-        self.get_mspcmanagerhelper_github_button = customtkinter.CTkButton(
-            self.program_update_frame,
-            text=self.translator.translate("get_mspcmanagerhelper_from_github"),
-            font=(self.font_family, 12),
-            command=lambda: webbrowser.open_new_tab("https://github.com/Goo-aw233/MSPCManagerHelper/releases")
+        update_from_github_button = ttk.Button(
+            update_from_github_row_frame,
+            text=self.translator.translate("update_from_github"),
+            command=lambda: DownloadProgramFromGitHub(self.logger).execute(),
         )
-        self.get_mspcmanagerhelper_github_button.grid(row=1, column=0, padx=20, pady=5, sticky="ew")
+        update_from_github_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
 
-        self.get_mspcmanagerhelper_onedrive_button = customtkinter.CTkButton(
-            self.program_update_frame,
-            text=self.translator.translate("get_mspcmanagerhelper_from_onedrive"),
-            font=(self.font_family, 12),
-            command=lambda: webbrowser.open_new_tab("https://gbcs6-my.sharepoint.com/:f:/g/personal/gucats_gbcs6_onmicrosoft_com/EtKwa-2la71HmG2RxkB5lngBvvRt9CFOYsyJG_HOwYIzNA")
+        def _update_from_github_wrap(e):
+            btn_w = update_from_github_button.winfo_width() or 0
+            wrap = max(20, e.width - btn_w - 20)
+            update_from_github_description_label.config(wraplength=wrap)
+        update_from_github_row_frame.bind("<Configure>", _update_from_github_wrap)
+
+        # --- Row 2: Update from OneDrive Button and Description ---
+        update_from_onedrive_row_frame = ttk.Frame(program_update_frame)
+        update_from_onedrive_row_frame.pack(anchor="w", fill="x", pady=(10, 0))
+        update_from_onedrive_row_frame.grid_columnconfigure(0, weight=1)
+
+        update_from_onedrive_description_label = ttk.Label(
+            update_from_onedrive_row_frame,
+            text=self.translator.translate("update_from_onedrive_description"),
+            font=(self.font_family, 10),
+            justify="left"
         )
-        self.get_mspcmanagerhelper_onedrive_button.grid(row=2, column=0, padx=20, pady=(5, 10), sticky="ew")
-        current_row += 1
+        update_from_onedrive_description_label.grid(row=0, column=0, sticky="we", padx=(8, 6))
 
-        """ Microsoft PC Manager Update Frame """
-        self.ms_pc_manager_update_frame = customtkinter.CTkFrame(self, corner_radius=8, border_width=1)
-        self.ms_pc_manager_update_frame.grid(row=current_row, column=0, padx=20, pady=10, sticky="ew")
-        self.ms_pc_manager_update_frame.grid_columnconfigure(0, weight=1)
-
-        self.ms_pc_manager_update_label_title = customtkinter.CTkLabel(
-            self.ms_pc_manager_update_frame,
-            text=self.translator.translate("microsoft_pc_manager_update"),
-            font=(self.font_family, 16, "bold")
+        update_from_onedrive_button = ttk.Button(
+            update_from_onedrive_row_frame,
+            text=self.translator.translate("update_from_onedrive"),
+            command=lambda: DownloadProgramFromOneDrive(self.logger).execute()
         )
-        self.ms_pc_manager_update_label_title.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="w")
+        update_from_onedrive_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
 
-        self.get_ms_pc_manager_licaoz_button = customtkinter.CTkButton(
-            self.ms_pc_manager_update_frame,
-            text=self.translator.translate("get_microsoft_pc_manager_from_licaoz_azure_blob"),
-            font=(self.font_family, 12),
-            command=lambda: webbrowser.open_new_tab("https://kaoz.uk/PCManagerOFL")
+        def _update_from_onedrive_wrap(e):
+            btn_w = update_from_onedrive_button.winfo_width() or 0
+            wrap = max(20, e.width - btn_w - 20)
+            update_from_onedrive_description_label.config(wraplength=wrap)
+        update_from_onedrive_row_frame.bind("<Configure>", _update_from_onedrive_wrap)
+        # ======================= End of Program Update Frame Section =======================
+
+        # ======================= Microsoft PC Manager Update Frame Section =======================
+        mspcm_update_frame = ttk.LabelFrame(content_frame, text=self.translator.translate("microsoft_pc_manager_update"), padding=10)
+        mspcm_update_frame.pack(fill="x", padx=10, pady=5)
+
+        # --- Row 1: Update from Azure Button and Description ---
+        update_mspcm_azure_row_frame = ttk.Frame(mspcm_update_frame)
+        update_mspcm_azure_row_frame.pack(anchor="w", fill="x")
+        update_mspcm_azure_row_frame.grid_columnconfigure(0, weight=1)
+
+        update_mspcm_azure_description_label = ttk.Label(
+            update_mspcm_azure_row_frame,
+            text=self.translator.translate("update_microsoft_pc_manager_from_azure_description"),
+            font=(self.font_family, 10),
+            justify="left"
         )
-        self.get_ms_pc_manager_licaoz_button.grid(row=1, column=0, padx=20, pady=5, sticky="ew")
+        update_mspcm_azure_description_label.grid(row=0, column=0, sticky="we", padx=(8, 6))
 
-        self.get_ms_pc_manager_onedrive_button = customtkinter.CTkButton(
-            self.ms_pc_manager_update_frame,
-            text=self.translator.translate("get_microsoft_pc_manager_from_onedrive"),
-            font=(self.font_family, 12),
-            command=lambda: webbrowser.open_new_tab(
-                "https://gbcs6-my.sharepoint.com/:f:/g/personal/gucats_gbcs6_onmicrosoft_com/EoscJOQ9taJFtx9LZLPiBM0BEmVm7wsLuJOuHnwmo9EQ5w")
+        update_mspcm_azure_button = ttk.Button(
+            update_mspcm_azure_row_frame,
+            text=self.translator.translate("update_from_azure"),
+            command=lambda: DownloadMicrosoftPCManagerApplicationPackageFromAzureBlob(self.logger).execute()
         )
-        self.get_ms_pc_manager_onedrive_button.grid(row=2, column=0, padx=20, pady=(5, 10), sticky="ew")
-        current_row += 1
+        update_mspcm_azure_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
 
-        """ Runtime Download Frame """
-        self.runtime_download_frame = customtkinter.CTkFrame(self, corner_radius=8, border_width=1)
-        self.runtime_download_frame.grid(row=current_row, column=0, padx=20, pady=10, sticky="ew")
-        self.runtime_download_frame.grid_columnconfigure(0, weight=1)
+        def _update_mspcm_azure_wrap(e):
+            btn_w = update_mspcm_azure_button.winfo_width() or 0
+            wrap = max(20, e.width - btn_w - 20)
+            update_mspcm_azure_description_label.config(wraplength=wrap)
+        update_mspcm_azure_row_frame.bind("<Configure>", _update_mspcm_azure_wrap)
 
-        self.runtime_download_label_title = customtkinter.CTkLabel(
-            self.runtime_download_frame,
-            text=self.translator.translate("runtime_download"),
-            font=(self.font_family, 16, "bold")
+        # --- Row 2: Update from OneDrive Button and Description ---
+        update_mspcm_onedrive_row_frame = ttk.Frame(mspcm_update_frame)
+        update_mspcm_onedrive_row_frame.pack(anchor="w", fill="x", pady=(10, 0))
+        update_mspcm_onedrive_row_frame.grid_columnconfigure(0, weight=1)
+
+        update_mspcm_onedrive_description_label = ttk.Label(
+            update_mspcm_onedrive_row_frame,
+            text=self.translator.translate("update_microsoft_pc_manager_from_onedrive_description"),
+            font=(self.font_family, 10),
+            justify="left"
         )
-        self.runtime_download_label_title.grid(row=0, column=0, padx=10, pady=(10, 5), sticky="w")
+        update_mspcm_onedrive_description_label.grid(row=0, column=0, sticky="we", padx=(8, 6))
 
-        self.get_microsoft_edge_webview2_button = customtkinter.CTkButton(
-            self.runtime_download_frame,
-            text=self.translator.translate("get_microsoft_edge_webview2_from_microsoft_edge_developer"),
-            font=(self.font_family, 12),
-            command=self._open_microsoft_edge_webview2_download_link
+        update_mspcm_onedrive_button = ttk.Button(
+            update_mspcm_onedrive_row_frame,
+            text=self.translator.translate("update_from_onedrive"),
+            command=lambda: DownloadMicrosoftPCManagerApplicationPackageFromOneDrive(self.logger).execute()
         )
-        self.get_microsoft_edge_webview2_button.grid(row=1, column=0, padx=20, pady=5, sticky="ew")
+        update_mspcm_onedrive_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
 
-        self.get_windows_app_runtime_button = customtkinter.CTkButton(
-            self.runtime_download_frame,
-            text=self.translator.translate("get_windows_app_runtime_from_microsoft_learn"),
-            font=(self.font_family, 12),
-            command=self._open_windows_app_runtime_download_link
+        def _update_mspcm_onedrive_wrap(e):
+            btn_w = update_mspcm_onedrive_button.winfo_width() or 0
+            wrap = max(20, e.width - btn_w - 20)
+            update_mspcm_onedrive_description_label.config(wraplength=wrap)
+        update_mspcm_onedrive_row_frame.bind("<Configure>", _update_mspcm_onedrive_wrap)
+        # ======================= End of Microsoft PC Manager Update Frame Section =======================
+
+        # ======================= Runtime Download Frame Section =======================
+        runtime_download_frame = ttk.LabelFrame(content_frame, text=self.translator.translate("runtime_download"), padding=10)
+        runtime_download_frame.pack(fill="x", padx=10, pady=5)
+
+        # --- Row 1: Download Microsoft Edge WebView2 Runtime ---
+        download_webview2_row_frame = ttk.Frame(runtime_download_frame)
+        download_webview2_row_frame.pack(anchor="w", fill="x")
+        download_webview2_row_frame.grid_columnconfigure(0, weight=1)
+
+        download_webview2_description_label = ttk.Label(
+            download_webview2_row_frame,
+            text=self.translator.translate("download_webview2_runtime_description"),
+            font=(self.font_family, 10),
+            justify="left"
         )
-        self.get_windows_app_runtime_button.grid(row=2, column=0, padx=20, pady=(5, 10), sticky="ew")
-        current_row += 1
+        download_webview2_description_label.grid(row=0, column=0, sticky="we", padx=(8, 6))
 
-    @staticmethod
-    def _open_microsoft_edge_webview2_download_link():
-        base_url = "https://developer.microsoft.com/microsoft-edge/webview2"
-        if ProgramSettings.is_support_developer_enabled():
-            url_to_open = base_url + ProgramSettings.microsoft_student_ambassadors_cid
-        else:
-            url_to_open = base_url
-        webbrowser.open_new_tab(url_to_open)
+        download_webview2_button = ttk.Button(
+            download_webview2_row_frame,
+            text=self.translator.translate("download_webview2_runtime"),
+            command=lambda: DownloadMicrosoftEdgeWebView2Runtime(self.logger).execute()
+        )
+        download_webview2_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
 
-    @staticmethod
-    def _open_windows_app_runtime_download_link():
-        base_url = "https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads-archive"
-        if ProgramSettings.is_support_developer_enabled():
-            url_to_open = base_url + ProgramSettings.microsoft_student_ambassadors_cid
-        else:
-            url_to_open = base_url
-        webbrowser.open_new_tab(url_to_open)
+        def _download_webview2_wrap(e):
+            btn_w = download_webview2_button.winfo_width() or 0
+            wrap = max(20, e.width - btn_w - 20)
+            download_webview2_description_label.config(wraplength=wrap)
+        download_webview2_row_frame.bind("<Configure>", _download_webview2_wrap)
+
+        # --- Row 2: Download Windows App Runtime ---
+        download_windows_app_runtime_row_frame = ttk.Frame(runtime_download_frame)
+        download_windows_app_runtime_row_frame.pack(anchor="w", fill="x", pady=(10, 0))
+        download_windows_app_runtime_row_frame.grid_columnconfigure(0, weight=1)
+
+        download_windows_app_runtime_description_label = ttk.Label(
+            download_windows_app_runtime_row_frame,
+            text=self.translator.translate("download_windows_app_runtime_description"),
+            font=(self.font_family, 10),
+            justify="left"
+        )
+        download_windows_app_runtime_description_label.grid(row=0, column=0, sticky="we", padx=(8, 6))
+
+        download_windows_app_runtime_button = ttk.Button(
+            download_windows_app_runtime_row_frame,
+            text=self.translator.translate("download_windows_app_runtime"),
+            command=lambda: DownloadWindowsAppRuntimeFromMicrosoftLearn(self.logger).execute()
+        )
+        download_windows_app_runtime_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
+
+        def _download_windows_app_runtime_wrap(e):
+            btn_w = download_windows_app_runtime_button.winfo_width() or 0
+            wrap = max(20, e.width - btn_w - 20)
+            download_windows_app_runtime_description_label.config(wraplength=wrap)
+        download_windows_app_runtime_row_frame.bind("<Configure>", _download_windows_app_runtime_wrap)
+        # ======================= End of Runtime Download Frame Section =======================

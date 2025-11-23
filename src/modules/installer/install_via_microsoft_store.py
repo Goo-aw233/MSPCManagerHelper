@@ -1,0 +1,2 @@
+class InstallViaMicrosoftStore:
+    pass

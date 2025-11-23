@@ -2,8 +2,8 @@ import gui
 
 
 def main():
-    app = gui.MSPCManagerHelperMainWindow()
-    app.mainloop()
+    program = gui.MSPCManagerHelperMainWindow()
+    program.mainloop()
 
 
 if __name__ == "__main__":

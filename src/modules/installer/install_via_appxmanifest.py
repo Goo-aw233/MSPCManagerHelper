@@ -1,0 +1,2 @@
+class InstallViaAppxManifest:
+    pass

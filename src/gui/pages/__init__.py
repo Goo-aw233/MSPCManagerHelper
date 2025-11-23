@@ -1,21 +1,21 @@
 """
-Page Packages
+Pages Package for MSPCManagerHelper GUI
 """
 
-from .about_page import AboutPageFrame
-from .home_page import HomePageFrame
-from .installation_features_page import InstallationFeaturesPageFrame
-from .maintenance_page import MaintenancePageFrame
-from .toolbox_page import ToolboxPageFrame
-from .uninstallation_features_page import UninstallationFeaturesPageFrame
-from .utils_page import UtilsPageFrame
+from .about_page import AboutPage
+from .home_page import HomePage
+from .installer_page import InstallerPage
+from .maintenance_page import MaintenancePage
+from .toolbox_page import ToolboxPage
+from .uninstaller_page import UninstallerPage
+from .utilities_page import UtilitiesPage
 
 __all__ = [
-    "AboutPageFrame",
-    "HomePageFrame",
-    "InstallationFeaturesPageFrame",
-    "MaintenancePageFrame",
-    "ToolboxPageFrame",
-    "UninstallationFeaturesPageFrame",
-    "UtilsPageFrame"
+    "AboutPage",
+    "HomePage",
+    "InstallerPage",
+    "MaintenancePage",
+    "ToolboxPage",
+    "UninstallerPage",
+    "UtilitiesPage"
 ]
