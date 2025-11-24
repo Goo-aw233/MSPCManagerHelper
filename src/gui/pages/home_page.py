@@ -4,7 +4,7 @@ import subprocess
 import sys
 import webbrowser
 from pathlib import Path
-from tkinter import BooleanVar, messagebox, ttk
+from tkinter import BooleanVar, messagebox, StringVar, ttk
 
 from core.advanced_startup import AdvancedStartup
 from core.check_system_requirements import CheckSystemRequirements
@@ -415,6 +415,7 @@ class HomePage(ttk.Frame):
 
         is_admin = AdvancedStartup.is_administrator()
 
+        style.configure("Accent.TButton", font=(self.font_family, 10))
         run_as_admin_button = ttk.Button(
             run_as_admin_frame,
             text=self.translator.translate("run_as_administrator"),
@@ -438,6 +439,67 @@ class HomePage(ttk.Frame):
         # --- Row: Switch Program Language ---
 
         # --- Row: Switch Program Theme ---
+        theme_frame = ttk.Frame(program_settings_frame)
+        theme_frame.pack(fill="x", padx=5, pady=5)
+        theme_frame.grid_columnconfigure(0, weight=1)
+
+        theme_desc_label = ttk.Label(
+            theme_frame,
+            text=self.translator.translate("program_theme_description"),
+            font=(self.font_family, 10),
+            justify="left"
+        )
+        theme_desc_label.grid(row=0, column=0, sticky="w")
+
+        theme_options = [
+            self.translator.translate("match_system_theme"),
+            self.translator.translate("light_theme"),
+            self.translator.translate("dark_theme"),
+        ]
+        theme_mode_map = {
+            self.translator.translate("match_system_theme"): "auto",
+            self.translator.translate("light_theme"): "light",
+            self.translator.translate("dark_theme"): "dark",
+        }
+        current_theme_mode = ProgramSettings.get_theme_mode()
+        reverse_theme_mode_map = {v: k for k, v in theme_mode_map.items()}
+        self.theme_var = StringVar(value=reverse_theme_mode_map.get(current_theme_mode, theme_options[0]))
+
+        def _on_theme_selected(event=None):
+            selected = self.theme_var.get()
+            mode = theme_mode_map.get(selected, "auto")
+            try:
+                ProgramSettings.set_theme_mode(mode)
+                ProgramSettings.apply_theme()
+                self.logger.info(f"Theme Mode Switched to: {mode}")
+                # Refresh the main window UI to apply the new theme.
+                main_window = self.winfo_toplevel()
+                if hasattr(main_window, "refresh_ui"):
+                    main_window.refresh_ui()
+            except Exception as e:
+                self.logger.exception(f"Failed to Switch Theme: {e}")
+
+        theme_combobox = ttk.Combobox(
+            theme_frame,
+            textvariable=self.theme_var,
+            values=theme_options,
+            state="readonly"
+        )
+        theme_combobox.grid(row=0, column=1, sticky="e", padx=(10, 0))
+        theme_combobox.bind("<<ComboboxSelected>>", _on_theme_selected)
+        theme_combobox.option_add("*TCombobox*Listbox*Font", (self.font_family, 10))
+        theme_combobox.configure(font=(self.font_family, 10))
+
+        def _update_theme_desc_wrap(e):
+            try:
+                combobox_width = theme_combobox.winfo_width() or theme_combobox.winfo_reqwidth()
+            except Exception:
+                combobox_width = 120
+            padding = 30
+            wrap = max(30, e.width - combobox_width - padding)
+            theme_desc_label.config(wraplength=wrap)
+
+        theme_frame.bind("<Configure>", _update_theme_desc_wrap)
 
         # --- Row: Support Developer ---
         support_developer_frame = ttk.Frame(program_settings_frame)

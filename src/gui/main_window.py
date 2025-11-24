@@ -198,11 +198,14 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
         self.update_idletasks()  # Update window information.
         self.logger.info(f"Window Size: {self.winfo_width()} x {self.winfo_height()} (scale={scale_ratio})")
 
-    def refresh_all_window_contents(self):
+    def refresh_ui(self):
+        self.logger.info("Refreshing Main Window UI...")
+        # Apply theme settings again.
         ProgramSettings.apply_theme()
-        self._set_dpi_awareness()
+        # Rebuild the UI.
+        if hasattr(self, "background_frame") and self.background_frame.winfo_exists():
+            self.background_frame.destroy()
         self._configure_window()
-        self._set_language()
-        self._check_system_requirements()
         self._configure_ui()
-        self.logger.info("All window contents have been refreshed.")
+        self.update_idletasks()
+        self.logger.info("Main Window UI refreshed.")
