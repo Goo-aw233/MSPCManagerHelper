@@ -33,6 +33,7 @@ class HomePage(ttk.Frame):
         style.configure("TLabelframe.Label", font=(self.font_family, 10, "bold"))
         style.configure("HomePage.Accent.TButton", font=(self.font_family, 10))
         style.configure("HomePage.TButton", font=(self.font_family, 10))
+        style.configure("HomePage.Switch.TCheckbutton", font=(self.font_family, 10))
 
         # Use the theme background so the canvas matches the rest of UI.
         frame_bg = style.lookup("TFrame", "background") or self.cget("background")
@@ -532,12 +533,11 @@ class HomePage(ttk.Frame):
             except Exception as e:
                 self.logger.exception(f"Failed to Set Support Developer: {e}")
 
-        style.configure("Big.TCheckbutton", font=(self.font_family, 10))
         support_developer_checkbutton = ttk.Checkbutton(
             support_developer_frame,
             text=self.translator.translate("support_developer"),
             variable=self.support_developer_var,
-            style="Big.TCheckbutton",
+            style="HomePage.Switch.TCheckbutton",
             command=_on_toggle_support_developer
         )
         support_developer_checkbutton.grid(row=0, column=1, sticky="e", padx=(10, 0))
@@ -577,12 +577,11 @@ class HomePage(ttk.Frame):
             except Exception as e:
                 self.logger.exception(f"Failed to Set Compatibility Mode: {e}")
 
-        style.configure("Big.TCheckbutton", font=(self.font_family, 10))
         compatibility_mode_checkbutton = ttk.Checkbutton(
             compatibility_mode_frame,
             text=self.translator.translate("compatibility_mode"),
             variable=self.compatibility_mode_var,
-            style="Big.TCheckbutton",
+            style="HomePage.Switch.TCheckbutton",
             command=_on_toggle_compatibility_mode
         )
         compatibility_mode_checkbutton.grid(row=0, column=1, sticky="e", padx=(10, 0))
