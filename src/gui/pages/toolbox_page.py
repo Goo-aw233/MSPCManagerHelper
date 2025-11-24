@@ -24,9 +24,13 @@ class ToolboxPage(ttk.Frame):
         self.logger.info("Toolbox Page initialized.")
 
     def create_widgets(self):
-        # Configure style for LabelFrame's label.
+        """
+        Use `#.TButton` instead of using `TButton` directly.
+        E.g.: `Nav.TButton`, `Nav.Accent.TButton`, etc.
+        """
         style = ttk.Style(self)
         style.configure("TLabelframe.Label", font=(self.font_family, 10, "bold"))
+        style.configure("ToolboxPage.TButton", font=(self.font_family, 10))
 
         # Use the theme background so the canvas matches the rest of UI.
         frame_bg = style.lookup("TFrame", "background") or self.cget("background")
@@ -62,6 +66,7 @@ class ToolboxPage(ttk.Frame):
         update_from_github_button = ttk.Button(
             update_from_github_row_frame,
             text=self.translator.translate("update_from_github"),
+            style="ToolboxPage.TButton",
             command=lambda: DownloadProgramFromGitHub(self.logger).execute(),
         )
         update_from_github_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
@@ -88,6 +93,7 @@ class ToolboxPage(ttk.Frame):
         update_from_onedrive_button = ttk.Button(
             update_from_onedrive_row_frame,
             text=self.translator.translate("update_from_onedrive"),
+            style="ToolboxPage.TButton",
             command=lambda: DownloadProgramFromOneDrive(self.logger).execute()
         )
         update_from_onedrive_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
@@ -119,6 +125,7 @@ class ToolboxPage(ttk.Frame):
         update_mspcm_azure_button = ttk.Button(
             update_mspcm_azure_row_frame,
             text=self.translator.translate("update_from_azure"),
+            style="ToolboxPage.TButton",
             command=lambda: DownloadMicrosoftPCManagerApplicationPackageFromAzureBlob(self.logger).execute()
         )
         update_mspcm_azure_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
@@ -145,6 +152,7 @@ class ToolboxPage(ttk.Frame):
         update_mspcm_onedrive_button = ttk.Button(
             update_mspcm_onedrive_row_frame,
             text=self.translator.translate("update_from_onedrive"),
+            style="ToolboxPage.TButton",
             command=lambda: DownloadMicrosoftPCManagerApplicationPackageFromOneDrive(self.logger).execute()
         )
         update_mspcm_onedrive_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
@@ -176,6 +184,7 @@ class ToolboxPage(ttk.Frame):
         download_webview2_button = ttk.Button(
             download_webview2_row_frame,
             text=self.translator.translate("download_webview2_runtime"),
+            style="ToolboxPage.TButton",
             command=lambda: DownloadMicrosoftEdgeWebView2Runtime(self.logger).execute()
         )
         download_webview2_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
@@ -202,6 +211,7 @@ class ToolboxPage(ttk.Frame):
         download_windows_app_runtime_button = ttk.Button(
             download_windows_app_runtime_row_frame,
             text=self.translator.translate("download_windows_app_runtime"),
+            style="ToolboxPage.TButton",
             command=lambda: DownloadWindowsAppRuntimeFromMicrosoftLearn(self.logger).execute()
         )
         download_windows_app_runtime_button.grid(row=0, column=1, sticky="e", padx=(6, 8))

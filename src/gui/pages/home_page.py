@@ -25,9 +25,14 @@ class HomePage(ttk.Frame):
         self.logger.info("Home Page initialized.")
 
     def create_widgets(self):
-        # Configure style for LabelFrame's label.
+        """
+        Use `#.TButton` instead of using `TButton` directly.
+        E.g.: `Nav.TButton`, `Nav.Accent.TButton`, etc.
+        """
         style = ttk.Style(self)
         style.configure("TLabelframe.Label", font=(self.font_family, 10, "bold"))
+        style.configure("HomePage.Accent.TButton", font=(self.font_family, 10))
+        style.configure("HomePage.TButton", font=(self.font_family, 10))
 
         # Use the theme background so the canvas matches the rest of UI.
         frame_bg = style.lookup("TFrame", "background") or self.cget("background")
@@ -94,7 +99,7 @@ class HomePage(ttk.Frame):
         action_buttons_frame = ttk.Frame(mspcm_version_frame)
         action_buttons_frame.pack(anchor="w", fill="x", pady=(5, 0))
 
-        start_mspcm_button = ttk.Button(action_buttons_frame, text=self.translator.translate("start_microsoft_pc_manager"), style="Accent.TButton")
+        start_mspcm_button = ttk.Button(action_buttons_frame, text=self.translator.translate("start_microsoft_pc_manager"), style="HomePage.Accent.TButton")
         start_mspcm_beta_button = ttk.Button(action_buttons_frame, text=self.translator.translate("start_microsoft_pc_manager_beta"))
 
         def _on_start_mspcm_click():
@@ -157,12 +162,14 @@ class HomePage(ttk.Frame):
         start_mspcm_button = ttk.Button(
             action_buttons_frame,
             text=self.translator.translate("start_microsoft_pc_manager"),
-            command=_on_start_mspcm_click,
-            style="Accent.TButton"
+            style="HomePage.Accent.TButton",
+            command=_on_start_mspcm_click
         )
+
         start_mspcm_beta_button = ttk.Button(
             action_buttons_frame,
             text=self.translator.translate("start_microsoft_pc_manager_beta"),
+            style="HomePage.TButton",
             command=_on_start_mspcm_beta_click
         )
 
@@ -217,6 +224,7 @@ class HomePage(ttk.Frame):
         refresh_button = ttk.Button(
             show_mspcm_version_frame,
             text=self.translator.translate("refresh"),
+            style="HomePage.TButton",
             command=_on_refresh_button_click
         )
         refresh_button.grid(row=0, column=1, padx=(0, 8))
@@ -324,6 +332,7 @@ class HomePage(ttk.Frame):
             about_windows_button = ttk.Button(
                 windows_info_frame,
                 text=self.translator.translate("about_windows_in_mssettings"),
+                style="HomePage.TButton",
                 command=_on_about_windows_click
             )
             about_windows_button.grid(row=0, column=1, padx=(10, 0))
@@ -415,11 +424,10 @@ class HomePage(ttk.Frame):
 
         is_admin = AdvancedStartup.is_administrator()
 
-        style.configure("Accent.TButton", font=(self.font_family, 10))
         run_as_admin_button = ttk.Button(
             run_as_admin_frame,
             text=self.translator.translate("run_as_administrator"),
-            style="Accent.TButton",
+            style="HomePage.Accent.TButton",
             command=_restart_as_administrator,
             state="disabled" if is_admin else "normal"
         )

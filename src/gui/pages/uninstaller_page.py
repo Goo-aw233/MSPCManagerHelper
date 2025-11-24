@@ -15,7 +15,10 @@ class UninstallerPage(ttk.Frame):
         self.logger.info("Uninstaller Page initialized.")
 
     def create_widgets(self):
-        # Configure style for LabelFrame's label.
+        """
+        Use `#.TButton` instead of using `TButton` directly.
+        E.g.: `Nav.TButton`, `Nav.Accent.TButton`, etc.
+        """
         style = ttk.Style(self)
         style.configure("TLabelframe.Label", font=(self.font_family, 10, "bold"))
 

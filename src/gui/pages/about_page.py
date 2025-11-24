@@ -20,9 +20,13 @@ class AboutPage(ttk.Frame):
         self.logger.info("About Page initialized.")
 
     def create_widgets(self):
-        # Configure style for LabelFrame's label.
+        """
+        Use `#.TButton` instead of using `TButton` directly.
+        E.g.: `Nav.TButton`, `Nav.Accent.TButton`, etc.
+        """
         style = ttk.Style(self)
         style.configure("TLabelframe.Label", font=(self.font_family, 10, "bold"))
+        style.configure("AboutPage.TButton", font=(self.font_family, 10))
 
         # Use the theme background so the canvas matches the rest of UI.
         frame_bg = style.lookup("TFrame", "background") or self.cget("background")
@@ -240,6 +244,7 @@ class AboutPage(ttk.Frame):
         privacy_settings_button = ttk.Button(
             privacy_button_frame,
             text=self.translator.translate("privacy_settings"),
+            style="AboutPage.TButton",
             command=self._open_privacy_settings
         )
         privacy_settings_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
@@ -271,6 +276,7 @@ class AboutPage(ttk.Frame):
         get_help_button = ttk.Button(
             get_help_row_frame,
             text=self.translator.translate("get_help"),
+            style="AboutPage.TButton",
             command=self._on_get_help_button_click
         )
         get_help_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
@@ -297,6 +303,7 @@ class AboutPage(ttk.Frame):
         official_website_button = ttk.Button(
             official_website_row_frame,
             text=self.translator.translate("official_website"),
+            style="AboutPage.TButton",
             command=lambda: webbrowser.open_new("https://pcmanager.microsoft.com")
         )
         official_website_button.grid(row=0, column=1, sticky="e", padx=(6, 8))

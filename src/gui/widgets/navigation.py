@@ -15,9 +15,14 @@ class Navigation(ttk.Frame):
         self.translator = translator
         self.font_family = font_family
 
-        # Configure font style.
+        # Configure Font Style
+        """
+        Use `#.TButton` instead of using `TButton` directly.
+        E.g.: `Nav.TButton`, `Nav.Accent.TButton`, etc.
+        """
         style = ttk.Style()
-        style.configure("TButton", font=(self.font_family, 12))
+        style.configure("Nav.Accent.TButton", font=(self.font_family, 12))
+        style.configure("Nav.TButton", font=(self.font_family, 12))
         style.configure("Title.TLabel", font=(self.font_family, 12, "bold"))
 
         self.pages = {}
@@ -39,7 +44,7 @@ class Navigation(ttk.Frame):
         self.show_page("home_page")
 
     def create_buttons(self):
-        # Translation keys.
+        # Translation Keys
         page_names = ["home_page", "maintenance_page", "installer_page", "uninstaller_page", "utilities_page", "toolbox_page", "about_page"]
         for i, page_name in enumerate(page_names):
             button = ttk.Button(
@@ -47,7 +52,7 @@ class Navigation(ttk.Frame):
                 text=self.translator.translate(page_name),
                 command=lambda n=page_name: self.show_page(n),
                 width=-12,
-                style="TButton"
+                style="Nav.TButton"
             )
             # Start buttons from row 1 to make space for the title.
             button.grid(row=i + 1, column=0, sticky="ew", padx=8, pady=4)
@@ -78,7 +83,7 @@ class Navigation(ttk.Frame):
                     button = self.buttons.get(p_name)
                     if button:
                         button.state(["!focus"])
-                        button.config(style="TButton")
+                        button.config(style="Nav.TButton")
                     break
 
         page = self.pages.get(page_name)
@@ -89,4 +94,4 @@ class Navigation(ttk.Frame):
             button = self.buttons.get(page_name)
             if button:
                 button.focus_set()
-                button.config(style="Accent.TButton")
+                button.config(style="Nav.Accent.TButton")
