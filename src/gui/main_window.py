@@ -94,7 +94,7 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
                     self.logger.debug("shcore.dll not available; skipping DPI awareness setting.")
         except Exception as e:
             self._dpi_scale_ratio = 1.0
-            self.logger.warning(f"Failed to set DPI awareness: {e}")
+            self.logger.warning(f"Failed to Set DPI Awareness: {e}")
 
     def _set_language(self):
         language_map = {

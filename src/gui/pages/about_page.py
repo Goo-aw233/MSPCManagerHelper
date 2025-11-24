@@ -337,27 +337,40 @@ class AboutPage(ttk.Frame):
         try:
             os.startfile(privacy_settings_uri)
             self.logger.info("Opened privacy settings via os.startfile.")
-        except Exception as e1:
-            self.logger.warning(f"os.startfile failed: {e1}. Trying CMD fallback...")
+        except Exception as e_os:
+            self.logger.warning(f"os.startfile failed: {e_os}. Trying CMD fallback...")
 
             cmd_success = False
             try:
                 subprocess.run(
-                    ["cmd.exe", "/C", "start", "Privacy Settings", privacy_settings_uri],
+                    ["cmd.exe", "/C", "start", "Privacy Settings", f"{privacy_settings_uri}"],
                     check=True,
                     creationflags=subprocess.CREATE_NO_WINDOW
                 )
                 self.logger.info("Opened privacy settings via CMD.")
                 cmd_success = True
-            except Exception as e2:
-                self.logger.warning(f"CMD start failed: {e2}. Trying webbrowser fallback...")
+            except Exception as e_cmd:
+                self.logger.warning(f"CMD start failed: {e_cmd}. Trying webbrowser fallback...")
 
             if not cmd_success:
+                powershell_success = False
                 try:
-                    webbrowser.open(privacy_settings_uri)
-                    self.logger.info("Opened privacy settings via webbrowser.")
-                except Exception as e3:
-                    self.logger.error(f"Failed to open privacy settings via all methods. Error: {e3}")
+                    subprocess.run(
+                        ["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{privacy_settings_uri}'"],
+                        check=True,
+                        creationflags=subprocess.CREATE_NO_WINDOW
+                    )
+                    self.logger.info("Opened privacy settings via PowerShell Start-Process.")
+                    powershell_success = True
+                except Exception as e_windows_powersshell:
+                    self.logger.warning(f"PowerShell Start-Process failed: {e_windows_powersshell}. Trying webbrowser fallback...")
+
+                if not powershell_success:
+                    try:
+                        webbrowser.open(privacy_settings_uri)
+                        self.logger.info("Opened privacy settings via webbrowser.")
+                    except Exception as e_webbrowser:
+                        self.logger.error(f"Failed to open privacy settings via all methods. Error: {e_webbrowser}")
 
     def _on_get_help_button_click(self):
         messagebox.showinfo(
