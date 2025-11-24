@@ -12,11 +12,11 @@ class ProgramSettings:
 
     # ======================= Theme Mode Settings =======================
     @classmethod
-    def get_THEME_MODE(cls) -> str:
+    def get_theme_mode(cls) -> str:
         return cls._THEME_MODE
 
     @classmethod
-    def set_THEME_MODE(cls, mode: str) -> None:
+    def set_theme_mode(cls, mode: str) -> None:
         if mode not in ("auto", "light", "dark"):
             raise ValueError("Invalid theme mode. Use 'auto', 'light' or 'dark'.")
         cls._THEME_MODE = mode
@@ -40,7 +40,7 @@ class ProgramSettings:
                 sv_ttk.set_theme("dark")
                 logger.info("Forced theme to dark.")
         except Exception as e:
-            logger.warning(f"Failed to apply theme: {e}")
+            logger.warning(f"Failed to Apply Theme: {e}")
     # ======================= End of Theme Mode Settings =======================
 
     # ======================= Support Developer Mode Settings =======================
@@ -57,7 +57,7 @@ class ProgramSettings:
         cls.set_support_developer_enabled(not cls._is_support_developer_enabled)
 
     @classmethod
-    def get_student_ambassador_cid(cls) -> str:
+    def get_ms_student_ambassador_cid(cls) -> str:
         return cls._MS_STUDENT_AMBASSADOR_CID_DEFAULT if cls._is_support_developer_enabled else ""
     # ======================= End of Support Developer Mode Settings =======================
 
