@@ -5,10 +5,10 @@ from core.program_logger import ProgramLogger
 
 class ProgramSettings:
     _THEME_MODE: str = "auto"
-
     _MS_STUDENT_AMBASSADOR_CID_DEFAULT: str = "/?wt.mc_id=studentamb_474966"
     _is_support_developer_enabled: bool = True
     _is_compatibility_mode_enabled: bool = False
+    _cleanup_after_exit_enabled: bool = False
 
     # ======================= Theme Mode Settings =======================
     @classmethod
@@ -74,3 +74,17 @@ class ProgramSettings:
     def toggle_compatibility_mode(cls) -> None:
         cls.set_compatibility_mode_enabled(not cls._is_compatibility_mode_enabled)
     # ======================= End of Compatibility Mode Settings =======================
+
+    # ======================= Cleanup After Exit Settings =======================
+    @classmethod
+    def is_cleanup_after_exit_enabled(cls) -> bool:
+        return cls._cleanup_after_exit_enabled
+
+    @classmethod
+    def set_cleanup_after_exit_enabled(cls, enabled: bool) -> None:
+        cls._cleanup_after_exit_enabled = bool(enabled)
+
+    @classmethod
+    def toggle_cleanup_after_exit(cls) -> None:
+        cls.set_cleanup_after_exit_enabled(not cls._cleanup_after_exit_enabled)
+    # ======================= End of Cleanup After Exit Settings =======================

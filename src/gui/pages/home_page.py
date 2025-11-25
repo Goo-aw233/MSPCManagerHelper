@@ -6,6 +6,8 @@ import webbrowser
 from pathlib import Path
 from tkinter import BooleanVar, messagebox, StringVar, ttk
 
+from tktooltip import ToolTip
+
 from core.advanced_startup import AdvancedStartup
 from core.check_system_requirements import CheckSystemRequirements
 from core.get_microsoft_pc_manager_version_number import GetMicrosoftPCManagerVersionNumber
@@ -17,6 +19,10 @@ from gui.widgets.scrollable_frame import ScrollableFrame
 class HomePage(ttk.Frame):
     def __init__(self, parent, translator, font_family):
         super().__init__(parent)
+        self.theme_var = None
+        self.support_developer_var = None
+        self.compatibility_mode_var = None
+        self.cleanup_after_exit_var = None
         self.translator = translator
         self.font_family = font_family
         self.logger = ProgramLogger.get_logger()
@@ -32,6 +38,7 @@ class HomePage(ttk.Frame):
         style = ttk.Style(self)
         style.configure("TLabelframe.Label", font=(self.font_family, 10, "bold"))
         style.configure("HomePage.Accent.TButton", font=(self.font_family, 10))
+        style.configure("HomePage.Big.TCheckbutton", font=(self.font_family, 10))
         style.configure("HomePage.TButton", font=(self.font_family, 10))
         style.configure("HomePage.Switch.TCheckbutton", font=(self.font_family, 10))
 
@@ -597,4 +604,43 @@ class HomePage(ttk.Frame):
             compatibility_mode_desc_label.config(wraplength=wrap)
 
         compatibility_mode_frame.bind("<Configure>", _update_compatibility_mode_desc_wrap)
+
+        # --- Row: Cleanup After Exit ---
+        cleanup_after_exit_frame = ttk.Frame(program_settings_frame)
+        cleanup_after_exit_frame.pack(fill="x", padx=5, pady=5)
+
+        cleanup_after_exit_desc_label = ttk.Label(
+            cleanup_after_exit_frame,
+            text=self.translator.translate("cleanup_after_exit_description"),
+            font=(self.font_family, 10),
+            justify="left"
+        )
+        cleanup_after_exit_desc_label.grid(row=0, column=0, sticky="w")
+
+        self.cleanup_after_exit_var = BooleanVar(value=ProgramSettings.is_cleanup_after_exit_enabled())
+
+        def _on_toggle_cleanup_after_exit():
+            try:
+                new_state = self.cleanup_after_exit_var.get()
+                ProgramSettings.set_cleanup_after_exit_enabled(new_state)
+                self.logger.info(f"Cleanup After Exit Setting Set to: {new_state}")
+            except Exception as e:
+                self.logger.exception(f"Failed to Set Cleanup After Exit: {e}")
+
+        cleanup_after_exit_checkbutton = ttk.Checkbutton(
+            cleanup_after_exit_frame,
+            text=self.translator.translate("cleanup_after_exit"),
+            variable=self.cleanup_after_exit_var,
+            style="HomePage.Big.TCheckbutton",
+            command=_on_toggle_cleanup_after_exit
+        )
+        cleanup_after_exit_checkbutton.grid(row=0, column=1, sticky="e", padx=(10, 0))
+
+        ToolTip(
+            cleanup_after_exit_checkbutton,
+            msg=self.translator.translate("cleanup_after_exit_tooltip"),
+            delay=0.5,
+            follow=True
+        )
+        cleanup_after_exit_frame.grid_columnconfigure(0, weight=1)
         # ======================= End of Program Settings Frame Section =======================

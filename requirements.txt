@@ -14,6 +14,7 @@ RapidFuzz==3.14.3
 setuptools==80.9.0
 sv_ttk==2.6.1
 thefuzz==0.22.1
+tkinter-tooltip==3.1.2
 typing_extensions==4.15.0
 Unidecode==1.4.0
 Windows-Toasts==1.3.1
