@@ -4,6 +4,8 @@ import tkinter
 import webbrowser
 from tkinter import messagebox, ttk
 
+from tktooltip import ToolTip
+
 from core.program_logger import ProgramLogger
 from core.program_metadata import ProgramMetadata
 from gui.widgets.scrollable_frame import ScrollableFrame
@@ -248,6 +250,13 @@ class AboutPage(ttk.Frame):
             command=self._open_privacy_settings
         )
         privacy_settings_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
+
+        ToolTip(
+            privacy_settings_button,
+            msg=self.translator.translate("privacy_settings_button_tooltip"),
+            delay=0.5,
+            follow=True
+        )
 
         def _privacy_settings_wrap(e):
             btn_w = privacy_settings_button.winfo_width() or 0

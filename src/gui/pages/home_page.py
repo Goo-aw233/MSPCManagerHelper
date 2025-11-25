@@ -224,18 +224,25 @@ class HomePage(ttk.Frame):
         # Initial update of version info.
         _update_mspcm_version_info()
 
-        def _on_refresh_button_click():
+        def _on_refresh_mspcm_version_button_click():
             _update_mspcm_version_info()
             self.logger.info("Microsoft PC Manager Version has been refreshed.")
 
-        # Refresh Button
-        refresh_button = ttk.Button(
+        # Refresh Microsoft PC Manager Version Button
+        refresh_mspcm_version_button = ttk.Button(
             show_mspcm_version_frame,
             text=self.translator.translate("refresh"),
             style="HomePage.TButton",
-            command=_on_refresh_button_click
+            command=_on_refresh_mspcm_version_button_click
         )
-        refresh_button.grid(row=0, column=1, padx=(0, 8))
+        refresh_mspcm_version_button.grid(row=0, column=1, padx=(0, 8))
+
+        ToolTip(
+            refresh_mspcm_version_button,
+            msg=self.translator.translate("refresh_mspcm_version_button_tooltip"),
+            delay=0.5,
+            follow=True
+        )
 
         def _update_version_wrap(e):
             # Subtract extra space for the button (approx 100px).
@@ -345,6 +352,13 @@ class HomePage(ttk.Frame):
             )
             about_windows_button.grid(row=0, column=1, padx=(10, 0))
 
+            ToolTip(
+            about_windows_button,
+            msg=self.translator.translate("about_windows_button_tooltip"),
+            delay=0.5,
+            follow=True
+            )
+
             def _update_windows_info_wrap(e):
                 wrap = max(20, e.width - 120)
                 windows_installation_info_label.config(wraplength=wrap)
@@ -441,6 +455,13 @@ class HomePage(ttk.Frame):
         )
         run_as_admin_button.grid(row=0, column=1, sticky="e", padx=(10, 0))
 
+        ToolTip(
+            run_as_admin_button,
+            msg=self.translator.translate("run_as_admin_button_tooltip"),
+            delay=0.5,
+            follow=True
+        )
+
         def _update_run_as_admin_desc_wrap(e):
             try:
                 button_width = run_as_admin_button.winfo_width() or run_as_admin_button.winfo_reqwidth()
@@ -506,6 +527,13 @@ class HomePage(ttk.Frame):
         theme_combobox.option_add("*TCombobox*Listbox*Font", (self.font_family, 10))
         theme_combobox.configure(font=(self.font_family, 10))
 
+        ToolTip(
+            theme_combobox,
+            msg=self.translator.translate("theme_combobox_tooltip"),
+            delay=0.5,
+            follow=True
+        )
+
         def _update_theme_desc_wrap(e):
             try:
                 combobox_width = theme_combobox.winfo_width() or theme_combobox.winfo_reqwidth()
@@ -548,6 +576,14 @@ class HomePage(ttk.Frame):
             command=_on_toggle_support_developer
         )
         support_developer_checkbutton.grid(row=0, column=1, sticky="e", padx=(10, 0))
+
+        ToolTip(
+            support_developer_checkbutton,
+            msg=self.translator.translate("support_developer_checkbutton_tooltip"),
+            delay=0.5,
+            follow=True
+        )
+
         support_developer_frame.grid_columnconfigure(0, weight=1)
 
         def _update_support_developer_desc_wrap(e):
@@ -592,6 +628,13 @@ class HomePage(ttk.Frame):
             command=_on_toggle_compatibility_mode
         )
         compatibility_mode_checkbutton.grid(row=0, column=1, sticky="e", padx=(10, 0))
+
+        ToolTip(
+            compatibility_mode_checkbutton,
+            msg=self.translator.translate("compatibility_mode_tooltip"),
+            delay=0.5,
+            follow=True
+        )
         compatibility_mode_frame.grid_columnconfigure(0, weight=1)
 
         def _update_compatibility_mode_desc_wrap(e):
