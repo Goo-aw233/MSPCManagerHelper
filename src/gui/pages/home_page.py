@@ -595,6 +595,7 @@ class HomePage(ttk.Frame):
         # --- Row: Support Developer ---
         support_developer_frame = ttk.Frame(program_settings_frame)
         support_developer_frame.pack(fill="x", padx=5, pady=5)
+        support_developer_frame.grid_columnconfigure(0, weight=1)
 
         support_developer_desc_label = ttk.Label(
             support_developer_frame,
@@ -631,8 +632,6 @@ class HomePage(ttk.Frame):
             follow=True
         )
 
-        support_developer_frame.grid_columnconfigure(0, weight=1)
-
         def _update_support_developer_desc_wrap(e):
             try:
                 checkbox_width = support_developer_checkbutton.winfo_width() or support_developer_checkbutton.winfo_reqwidth()
@@ -647,6 +646,7 @@ class HomePage(ttk.Frame):
         # --- Row: Compatibility Mode ---
         compatibility_mode_frame = ttk.Frame(program_settings_frame)
         compatibility_mode_frame.pack(fill="x", padx=5, pady=5)
+        compatibility_mode_frame.grid_columnconfigure(0, weight=1)
 
         compatibility_mode_desc_label = ttk.Label(
             compatibility_mode_frame,
@@ -682,7 +682,6 @@ class HomePage(ttk.Frame):
             delay=0.5,
             follow=True
         )
-        compatibility_mode_frame.grid_columnconfigure(0, weight=1)
 
         def _update_compatibility_mode_desc_wrap(e):
             try:
@@ -698,6 +697,7 @@ class HomePage(ttk.Frame):
         # --- Row: Cleanup After Exit ---
         cleanup_after_exit_frame = ttk.Frame(program_settings_frame)
         cleanup_after_exit_frame.pack(fill="x", padx=5, pady=5)
+        cleanup_after_exit_frame.grid_columnconfigure(0, weight=1)
 
         cleanup_after_exit_desc_label = ttk.Label(
             cleanup_after_exit_frame,
@@ -732,5 +732,4 @@ class HomePage(ttk.Frame):
             delay=0.5,
             follow=True
         )
-        cleanup_after_exit_frame.grid_columnconfigure(0, weight=1)
         # ======================= End of Program Settings Frame Section =======================
