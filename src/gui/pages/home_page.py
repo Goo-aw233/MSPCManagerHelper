@@ -19,6 +19,7 @@ from gui.widgets.scrollable_frame import ScrollableFrame
 class HomePage(ttk.Frame):
     def __init__(self, parent, translator, font_family):
         super().__init__(parent)
+        self.language_var = None
         self.theme_var = None
         self.support_developer_var = None
         self.compatibility_mode_var = None
@@ -474,6 +475,52 @@ class HomePage(ttk.Frame):
         run_as_admin_frame.bind("<Configure>", _update_run_as_admin_desc_wrap)
 
         # --- Row: Switch Program Language ---
+        language_frame = ttk.Frame(program_settings_frame)
+        language_frame.pack(fill="x", padx=5, pady=5)
+        language_frame.grid_columnconfigure(0, weight=1)
+
+        language_desc_label = ttk.Label(
+            language_frame,
+            text=self.translator.translate("program_language_description"),
+            font=(self.font_family, 10),
+            justify="left"
+        )
+        language_desc_label.grid(row=0, column=0, sticky="w")
+
+        language_options = [
+            self.translator.translate("lang_en-us"),
+            self.translator.translate("lang_zh-cn"),
+            self.translator.translate("lang_zh-tw"),
+        ]
+        self.language_var = StringVar(value=language_options[0])
+
+        language_combobox = ttk.Combobox(
+            language_frame,
+            textvariable=self.language_var,
+            values=language_options,
+            state="readonly"
+        )
+        language_combobox.grid(row=0, column=1, sticky="e", padx=(10, 0))
+        language_combobox.option_add("*TCombobox*Listbox*Font", (self.font_family, 10))
+        language_combobox.configure(font=(self.font_family, 10))
+
+        ToolTip(
+            language_combobox,
+            msg=self.translator.translate("program_language_tooltip"),
+            delay=2.0,
+            follow=True
+        )
+
+        def _update_language_desc_wrap(e):
+            try:
+                combobox_width = language_combobox.winfo_width() or language_combobox.winfo_reqwidth()
+            except Exception:
+                combobox_width = 120
+            padding = 30
+            wrap = max(30, e.width - combobox_width - padding)
+            language_desc_label.config(wraplength=wrap)
+
+        language_frame.bind("<Configure>", _update_language_desc_wrap)
 
         # --- Row: Switch Program Theme ---
         theme_frame = ttk.Frame(program_settings_frame)
@@ -530,7 +577,7 @@ class HomePage(ttk.Frame):
         ToolTip(
             theme_combobox,
             msg=self.translator.translate("theme_combobox_tooltip"),
-            delay=0.5,
+            delay=2.0,
             follow=True
         )
 

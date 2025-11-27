@@ -84,6 +84,7 @@
     "microsoft_pc_manager_version_infomation": "Microsoft 電腦管家版本資訊",
     "program_language": "程式語言",
     "program_language_description": "選擇程式使用的顯示語言。",
+    "program_language_tooltip": "預設情況下，程式將根據 Windows 顯示語言自動選擇程式語言。",
     "program_settings": "程式設定",
     "program_theme": "程式主題",
     "program_theme_description": "選擇程式使用的顯示主題。",

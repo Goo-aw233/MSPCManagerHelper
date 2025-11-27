@@ -84,6 +84,7 @@
     "microsoft_pc_manager_version_infomation": "Microsoft PC Manager Version Information",
     "program_language": "Program Language",
     "program_language_description": "Select the display language used by program.",
+    "program_language_tooltip": "By default, the program language will match the Windows display language.",
     "program_settings": "Program Settings",
     "program_theme": "Program Theme",
     "program_theme_description": "Select the display theme used by program.",

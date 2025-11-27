@@ -85,6 +85,7 @@
     "microsoft_pc_manager_version_infomation": "微软电脑管家版本信息",
     "program_language": "程序语言",
     "program_language_description": "选择程序使用的显示语言。",
+    "program_language_tooltip": "默认情况下，程序将根据 Windows 显示语言自动选择程序语言。",
     "program_settings": "程序设置",
     "program_theme": "程序主题",
     "program_theme_description": "选择程序使用的显示主题。",

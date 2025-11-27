@@ -116,6 +116,7 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
                 break
         self.language = language
         self.translator = Translator(self.language)
+        # Synchronize the language to CheckSystemRequirements class.
         CheckSystemRequirements.translator = self.translator
         self.logger.info(f"Program Language: {self.language}")
 
@@ -200,12 +201,11 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
 
     def refresh_ui(self):
         self.logger.info("Refreshing Main Window UI...")
-        # Apply theme settings again.
-        ProgramSettings.apply_theme()
-        # Rebuild the UI.
         if hasattr(self, "background_frame") and self.background_frame.winfo_exists():
             self.background_frame.destroy()
+        ProgramSettings.apply_theme()
         self._configure_window()
+        self._set_language()
         self._configure_ui()
         self.update_idletasks()
         self.logger.info("Main Window UI refreshed.")
