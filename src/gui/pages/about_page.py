@@ -254,8 +254,7 @@ class AboutPage(ttk.Frame):
         ToolTip(
             privacy_settings_button,
             msg=self.translator.translate("privacy_settings_button_tooltip"),
-            delay=0.5,
-            follow=True
+            delay=0.5
         )
 
         def _privacy_settings_wrap(e):

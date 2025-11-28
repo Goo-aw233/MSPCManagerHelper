@@ -241,8 +241,7 @@ class HomePage(ttk.Frame):
         ToolTip(
             refresh_mspcm_version_button,
             msg=self.translator.translate("refresh_mspcm_version_button_tooltip"),
-            delay=0.5,
-            follow=True
+            delay=0.5
         )
 
         def _update_version_wrap(e):
@@ -356,8 +355,7 @@ class HomePage(ttk.Frame):
             ToolTip(
             about_windows_button,
             msg=self.translator.translate("about_windows_button_tooltip"),
-            delay=0.5,
-            follow=True
+            delay=0.5
             )
 
             def _update_windows_info_wrap(e):
@@ -459,8 +457,7 @@ class HomePage(ttk.Frame):
         ToolTip(
             run_as_admin_button,
             msg=self.translator.translate("run_as_admin_button_tooltip"),
-            delay=0.5,
-            follow=True
+            delay=0.5
         )
 
         def _update_run_as_admin_desc_wrap(e):
@@ -507,8 +504,7 @@ class HomePage(ttk.Frame):
         ToolTip(
             language_combobox,
             msg=self.translator.translate("program_language_tooltip"),
-            delay=2.0,
-            follow=True
+            delay=2.0
         )
 
         def _update_language_desc_wrap(e):
@@ -577,8 +573,7 @@ class HomePage(ttk.Frame):
         ToolTip(
             theme_combobox,
             msg=self.translator.translate("theme_combobox_tooltip"),
-            delay=2.0,
-            follow=True
+            delay=2.0
         )
 
         def _update_theme_desc_wrap(e):
@@ -628,8 +623,7 @@ class HomePage(ttk.Frame):
         ToolTip(
             support_developer_checkbutton,
             msg=self.translator.translate("support_developer_checkbutton_tooltip"),
-            delay=0.5,
-            follow=True
+            delay=0.5
         )
 
         def _update_support_developer_desc_wrap(e):
@@ -679,8 +673,7 @@ class HomePage(ttk.Frame):
         ToolTip(
             compatibility_mode_checkbutton,
             msg=self.translator.translate("compatibility_mode_tooltip"),
-            delay=0.5,
-            follow=True
+            delay=0.5
         )
 
         def _update_compatibility_mode_desc_wrap(e):
@@ -729,8 +722,7 @@ class HomePage(ttk.Frame):
         ToolTip(
             cleanup_after_exit_checkbutton,
             msg=self.translator.translate("cleanup_after_exit_tooltip"),
-            delay=0.5,
-            follow=True
+            delay=0.5
         )
 
         # --- Row: Restart Program ---
@@ -761,8 +753,7 @@ class HomePage(ttk.Frame):
         ToolTip(
             restart_program_button,
             msg=self.translator.translate("restart_program_description"),
-            delay=0.5,
-            follow=True
+            delay=0.5
         )
 
         def _update_restart_program_desc_wrap(e):
