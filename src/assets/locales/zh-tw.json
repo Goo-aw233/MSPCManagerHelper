@@ -89,6 +89,8 @@
     "program_theme": "程式主題",
     "program_theme_description": "選擇程式使用的顯示主題。",
     "refresh_mspcm_version_button_tooltip": "重新獲取 Microsoft 電腦管家版本號。",
+    "restart_program": "重啓",
+    "restart_program_description": "保留參數並重新啓動程式。",
     "run_as_administrator": "以系統管理員身份執行",
     "run_as_administrator_description": "以系統管理員身份重新啟動程式來啟用所有功能。",
     "run_as_admin_button_tooltip": "保留參數並以系統管理員身份重新執行程式。",

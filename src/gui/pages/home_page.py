@@ -732,4 +732,47 @@ class HomePage(ttk.Frame):
             delay=0.5,
             follow=True
         )
+
+        # --- Row: Restart Program ---
+        restart_program_frame = ttk.Frame(program_settings_frame)
+        restart_program_frame.pack(fill="x", padx=5, pady=5)
+        restart_program_frame.grid_columnconfigure(0, weight=1)
+
+        restart_program_desc_label = ttk.Label(
+            restart_program_frame,
+            text=self.translator.translate("restart_program_description"),
+            font=(self.font_family, 10),
+            justify="left"
+        )
+        restart_program_desc_label.grid(row=0, column=0, sticky="w")
+
+        def _on_restart_program_click():
+            # Placeholder: not implemented yet.
+            self.logger.info("Restart Program clicked (not implemented).")
+
+        restart_program_button = ttk.Button(
+            restart_program_frame,
+            text=self.translator.translate("restart_program"),
+            style="HomePage.Accent.TButton",
+            command=_on_restart_program_click
+        )
+        restart_program_button.grid(row=0, column=1, sticky="e", padx=(10, 0))
+
+        ToolTip(
+            restart_program_button,
+            msg=self.translator.translate("restart_program_description"),
+            delay=0.5,
+            follow=True
+        )
+
+        def _update_restart_program_desc_wrap(e):
+            try:
+                button_width = restart_program_button.winfo_width() or restart_program_button.winfo_reqwidth()
+            except Exception:
+                button_width = 120
+            padding = 30
+            wrap = max(30, e.width - button_width - padding)
+            restart_program_desc_label.config(wraplength=wrap)
+
+        restart_program_frame.bind("<Configure>", _update_restart_program_desc_wrap)
         # ======================= End of Program Settings Frame Section =======================
