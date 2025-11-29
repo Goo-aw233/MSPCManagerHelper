@@ -75,6 +75,8 @@
     "current_system_meet_system_requirements": "The Current System Meets the Minimum System Requirements for Microsoft PC Manager",
     "current_system_not_meet_system_requirements": "The Current System Does Not Meet the Minimum System Requirements for Microsoft PC Manager: Windows 10 Version 20H2 (Build 19042), Windows Server 2022 with Desktop Experience or Later",
     "dark_theme": "Dark Theme",
+    "exit_program": "Exit Program",
+    "exit_program_description": "Close and exit the program.",
     "failed_to_get_microsoft_pc_manager_version_number": "Currently unable to obtain the Microsoft PC Manager version number, which may be due to Microsoft PC Manager not being installed or installed incorrectly.",
     "failed_to_run_as_administrator": "Failed to restart as administrator. Please manually run program as administrator to enable all features.",
     "home_page_introduction": "Welcome to MSPCManagerHelper!\nThis program is designed to help you manage Microsoft PC Manager. Please select a feature from the navigation menu to continue. Before using MSPCManagerHelper, please read the Terms of Use and Privacy Policy carefully. By continuing to use, you agree to these terms.",

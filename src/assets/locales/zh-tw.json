@@ -75,6 +75,8 @@
     "current_system_meet_system_requirements": "當前系統符合 Microsoft 電腦管家最低系統要求",
     "current_system_not_meet_system_requirements": "當前系統不符合 Microsoft 電腦管家最低系統要求：Windows 10 版本 20H2（內部版本 19042），具有桌面體驗的 Windows Server 2022 或更高版本。",
     "dark_theme": "深色主題",
+    "exit_program": "退出程式",
+    "exit_program_description": "關閉並退出程式。",
     "failed_to_get_microsoft_pc_manager_version_number": "當前無法獲取 Microsoft 電腦管家版本號，可能由 Microsoft 電腦管家尚未安裝或安裝不正確導致。",
     "failed_to_run_as_administrator": "以系統管理員身份重新啟動失敗，請手動以系統管理員身份執行程式以啟用所有功能。",
     "home_page_introduction": "歡迎使用 MSPCManagerHelper！\n此工具旨在幫助您管理 Microsoft 電腦管家。請從導航選單中選擇一個功能以繼續。在您使用 MSPCManagerHelper 前，請充分閱讀《使用條款》與《隱私權聲明》。若繼續使用，即代表您已經同意這些條款。",
