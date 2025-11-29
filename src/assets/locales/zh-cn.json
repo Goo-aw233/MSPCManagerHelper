@@ -85,7 +85,6 @@
     "microsoft_pc_manager_version_infomation": "微软电脑管家版本信息",
     "program_language": "程序语言",
     "program_language_description": "选择程序使用的显示语言。",
-    "program_language_tooltip": "默认情况下，程序将根据 Windows 显示语言自动选择程序语言。",
     "program_settings": "程序设置",
     "program_theme": "程序主题",
     "program_theme_description": "选择程序使用的显示主题。",
@@ -100,7 +99,6 @@
     "support_developer": "支持开发者",
     "support_developer_checkbutton_tooltip": "访问 https://learn.microsoft.com/training/student-hub/become-a-student-ambassador/?wt.mc_id=studentamb_474966 以获取详细信息。",
     "support_developer_description": "在您访问部分 Microsoft 链接时将添加“微软学生大使”的跟踪符，以帮助开发者统计访客量。",
-    "theme_combobox_tooltip": "默认情况下，程序将根据 Windows 主题自动切换浅色和深色主题。",
     "windows_installation_information": "Windows 安装信息",
 
   "__installer_page__": "安装功能页部分",

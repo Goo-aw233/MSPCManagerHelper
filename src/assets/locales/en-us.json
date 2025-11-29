@@ -84,7 +84,6 @@
     "microsoft_pc_manager_version_infomation": "Microsoft PC Manager Version Information",
     "program_language": "Program Language",
     "program_language_description": "Select the display language used by program.",
-    "program_language_tooltip": "By default, the program language will match the Windows display language.",
     "program_settings": "Program Settings",
     "program_theme": "Program Theme",
     "program_theme_description": "Select the display theme used by program.",
@@ -99,7 +98,6 @@
     "support_developer": "Support Developer",
     "support_developer_checkbutton_tooltip": "Visit https://learn.microsoft.com/training/student-hub/become-a-student-ambassador/?wt.mc_id=studentamb_474966 for more information.",
     "support_developer_description": "A Microsoft Student Ambassadors tracking code will be added when you visit certain Microsoft links to help developers track visitor traffic.",
-    "theme_combobox_tooltip": "By default, the program will automatically switch between light and dark themes based on the Windows theme.",
     "windows_installation_information": "Windows Installation Information",
 
   "__installer_page__": "Installer Section",

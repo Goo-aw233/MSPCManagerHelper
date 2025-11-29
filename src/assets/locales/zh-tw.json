@@ -84,7 +84,6 @@
     "microsoft_pc_manager_version_infomation": "Microsoft 電腦管家版本資訊",
     "program_language": "程式語言",
     "program_language_description": "選擇程式使用的顯示語言。",
-    "program_language_tooltip": "預設情況下，程式將根據 Windows 顯示語言自動選擇程式語言。",
     "program_settings": "程式設定",
     "program_theme": "程式主題",
     "program_theme_description": "選擇程式使用的顯示主題。",
@@ -99,7 +98,6 @@
     "support_developer": "支援開發者",
     "support_developer_checkbutton_tooltip": "造訪 https://learn.microsoft.com/training/student-hub/become-a-student-ambassador/?wt.mc_id=studentamb_474966 以取得詳細資訊。",
     "support_developer_description": "在您造訪部分 Microsoft 連結時將添加「微軟學生大使」的追蹤碼，以協助開發者統計訪客量。",
-    "theme_combobox_tooltip": "預設情況下，程式將根據 Windows 主題自動切換淺色和深色主題。",
     "windows_installation_information": "Windows 安裝資訊",
 
   "__installer_page__": "安裝功能頁部分",

@@ -501,12 +501,6 @@ class HomePage(ttk.Frame):
         language_combobox.option_add("*TCombobox*Listbox*Font", (self.font_family, 10))
         language_combobox.configure(font=(self.font_family, 10))
 
-        ToolTip(
-            language_combobox,
-            msg=self.translator.translate("program_language_tooltip"),
-            delay=2.0
-        )
-
         def _update_language_desc_wrap(e):
             try:
                 combobox_width = language_combobox.winfo_width() or language_combobox.winfo_reqwidth()
@@ -569,12 +563,6 @@ class HomePage(ttk.Frame):
         theme_combobox.bind("<<ComboboxSelected>>", _on_theme_selected)
         theme_combobox.option_add("*TCombobox*Listbox*Font", (self.font_family, 10))
         theme_combobox.configure(font=(self.font_family, 10))
-
-        ToolTip(
-            theme_combobox,
-            msg=self.translator.translate("theme_combobox_tooltip"),
-            delay=2.0
-        )
 
         def _update_theme_desc_wrap(e):
             try:
