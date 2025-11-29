@@ -733,7 +733,7 @@ class HomePage(ttk.Frame):
         restart_program_button = ttk.Button(
             restart_program_frame,
             text=self.translator.translate("restart_program"),
-            style="HomePage.Accent.TButton",
+            style="HomePage.TButton",
             command=_on_restart_program_click
         )
         restart_program_button.grid(row=0, column=1, sticky="e", padx=(10, 0))
@@ -775,7 +775,7 @@ class HomePage(ttk.Frame):
         exit_program_button = ttk.Button(
             exit_program_frame,
             text=self.translator.translate("exit_program"),
-            style="HomePage.Accent.TButton",
+            style="HomePage.TButton",
             command=_on_exit_program_click
         )
         exit_program_button.grid(row=0, column=1, sticky="e", padx=(10, 0))
