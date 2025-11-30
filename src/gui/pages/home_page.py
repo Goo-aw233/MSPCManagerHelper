@@ -727,20 +727,24 @@ class HomePage(ttk.Frame):
         restart_program_desc_label.grid(row=0, column=0, sticky="w")
 
         def _on_restart_program_click():
-            # Placeholder: not implemented yet.
-            self.logger.info("Restart Program clicked (not implemented).")
+            # TODO: Implement actual restart functionality.
+            self.logger.info("Restart program clicked (not implemented).")
+
+        is_exe = str(sys.argv[0]).lower().endswith(".exe")
 
         restart_program_button = ttk.Button(
             restart_program_frame,
             text=self.translator.translate("restart_program"),
             style="HomePage.TButton",
-            command=_on_restart_program_click
+            command=_on_restart_program_click,
+            state="normal" if is_exe else "disabled"
         )
         restart_program_button.grid(row=0, column=1, sticky="e", padx=(10, 0))
 
         ToolTip(
             restart_program_button,
-            msg=self.translator.translate("restart_program_description"),
+            msg=self.translator.translate("restart_program_description") if is_exe else self.translator.translate(
+                "restart_program_disabled_tooltip"),
             delay=0.5
         )
 

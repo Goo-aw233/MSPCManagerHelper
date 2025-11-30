@@ -93,6 +93,7 @@
     "refresh_mspcm_version_button_tooltip": "重新获取微软电脑管家版本号。",
     "restart_program": "重启",
     "restart_program_description": "保留参数并重新启动程序。",
+    "restart_program_disabled_tooltip": "仅在以 EXE 模式运行时可用。",
     "run_as_administrator": "以管理员身份运行",
     "run_as_administrator_description": "以管理员身份重新启动程序来启用所有功能。",
     "run_as_admin_button_tooltip": "保留参数并以管理员身份重新运行程序。",

@@ -36,6 +36,10 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
         self.logger.info(f"Launched From: {Path(sys.argv[0]).resolve()}")
         self.logger.info(f"Runtime Arguments: {AdvancedStartup.get_runtime_arguments()}")
         self.logger.info(f"Current Working Directory: {os.getcwd()}")
+        if hasattr(sys, "_MEIPASS"):
+            self.logger.info(f"PyInstaller Extraction Path: {sys._MEIPASS}")
+        else:
+            self.logger.info("PyInstaller Extraction Path: Not running from PyInstaller bundle.")
         self.logger.info("========================= Initializing Base GUI =========================")
         ProgramSettings.apply_theme()
         self._set_dpi_awareness()

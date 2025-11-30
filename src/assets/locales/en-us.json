@@ -92,6 +92,7 @@
     "refresh_mspcm_version_button_tooltip": "Reacquire the Microsoft PC Manager version number.",
     "restart_program": "Restart",
     "restart_program_description": "Retain parameters and restart the program.",
+    "restart_program_disabled_tooltip": "Only available when running in EXE mode.",
     "run_as_administrator": "Run as Administrator",
     "run_as_administrator_description": "Restart program as administrator to enable all features.",
     "run_as_admin_button_tooltip": "Retain parameters and rerun the program as administrator.",
