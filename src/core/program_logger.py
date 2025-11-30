@@ -5,6 +5,7 @@ import tempfile
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
+from core.advanced_startup import AdvancedStartup
 from core.program_metadata import ProgramMetadata
 
 
@@ -52,17 +53,18 @@ class ProgramLogger:
                 f.write("\n")
 
         logger = logging.getLogger(ProgramMetadata.PROGRAM_NAME)
-        logger.setLevel(logging.INFO)
+        log_level = logging.DEBUG if AdvancedStartup.is_debugmode() else logging.INFO
+        logger.setLevel(log_level)
 
         # Create a rotating file handler.
         file_handler = RotatingFileHandler(
             log_file, maxBytes=5 * 1024 * 1024, backupCount=5, encoding="utf-8"
         )
-        file_handler.setLevel(logging.INFO)
+        file_handler.setLevel(log_level)
 
         # Create a console handler.
         console_handler = logging.StreamHandler()
-        console_handler.setLevel(logging.INFO)
+        console_handler.setLevel(log_level)
 
         # Create a formatter and set it for both handlers.
         formatter = logging.Formatter(
