@@ -302,6 +302,50 @@ class HomePage(ttk.Frame):
             )
             admin_approval_mode_label.pack(anchor="w", padx=5, pady=5)
 
+        # --- Row: Long Paths Enabled Label ---
+        is_long_paths_enabled = CheckSystemRequirements.check_if_long_paths_enabled()
+        if not is_long_paths_enabled:
+            long_paths_frame = ttk.Frame(check_system_requirements_frame)
+            long_paths_frame.pack(fill="x", padx=5, pady=5)
+            long_paths_frame.grid_columnconfigure(0, weight=1)
+
+            long_paths_desc_label = ttk.Label(
+                long_paths_frame,
+                text=self.translator.translate("long_paths_not_enabled"),
+                font=(self.font_family, 10),
+                justify="left"
+            )
+            long_paths_desc_label.grid(row=0, column=0, sticky="w")
+
+            def _on_enable_long_paths_click():
+                # TODO: Enable Long Paths Handler
+                self.logger.info("TODO: Enable long paths - handler not implemented yet.")
+
+            enable_long_paths_button = ttk.Button(
+                long_paths_frame,
+                text=self.translator.translate("long_paths_enabled_button"),
+                style="HomePage.Accent.TButton",
+                command=_on_enable_long_paths_click
+            )
+            enable_long_paths_button.grid(row=0, column=1, sticky="e", padx=(10, 0))
+
+            ToolTip(
+                enable_long_paths_button,
+                msg=self.translator.translate("long_paths_enabled_button_tooltip"),
+                delay=0.5
+            )
+
+            def _update_long_paths_wrap(e):
+                try:
+                    button_width = enable_long_paths_button.winfo_width() or enable_long_paths_button.winfo_reqwidth()
+                except Exception:
+                    button_width = 120
+                padding = 30
+                wrap = max(30, e.width - button_width - padding)
+                long_paths_desc_label.config(wraplength=wrap)
+
+            long_paths_frame.bind("<Configure>", _update_long_paths_wrap)
+
         # --- Row: Windows Installation Information Label ---
         windows_installation_info = CheckSystemRequirements.get_windows_installation_information()
         if windows_installation_info:

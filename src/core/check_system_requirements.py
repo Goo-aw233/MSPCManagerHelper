@@ -76,6 +76,21 @@ class CheckSystemRequirements:
             return None
 
     @staticmethod
+    def check_if_long_paths_enabled():
+        try:
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
+                                r"SYSTEM\\CurrentControlSet\\Control\\FileSystem") as key:
+                long_paths_enabled = int(winreg.QueryValueEx(key, "LongPathsEnabled")[0])
+                # Enabled
+                if long_paths_enabled == 1:
+                    return True
+                # Disabled or Unknown
+                else:
+                    return False
+        except (FileNotFoundError, ValueError, OSError):
+            return False
+
+    @staticmethod
     def get_windows_installation_information():
         try:
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion") as key:

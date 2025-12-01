@@ -187,6 +187,10 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
             ]
             toaster.show_toast(toast_notification)
 
+        if not CheckSystemRequirements.check_if_long_paths_enabled():
+            found_issue = True
+            self.logger.warning("Long paths are not enabled.")
+
         if SystemUtilitiesAvailabilityCheck.check_narrator_status():
             found_issue = True
             self.logger.warning("Narrator is running.")
