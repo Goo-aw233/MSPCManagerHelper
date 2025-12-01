@@ -5,7 +5,7 @@ name: Python Program - MSPCMangerHelper
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "dev-gucats", "dev-gucats_legacy" ]
   pull_request:
     branches: [ "main" ]
 

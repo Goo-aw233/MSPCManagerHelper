@@ -451,5 +451,6 @@
     "admin_approval_mode_is_on": "Administrator Protection is turned on, functions that need to be run as administrator will not work properly, please turn off Administrator Protection and restart your PC before starting MSPCManagerHelper.\nIf Administrator Protection is kept on, functions performed for the current user will not take effect.",
     "server_installation_type_is_core": "The current Windows Server installation type is Core, Microsoft PC Manager will not be available on this system. You'll need to do a clean installation of Windows Server to select Server with Desktop Experience.",
     "current_windows_installation_information": "Current Windows Installation Information",
-    "narrator_is_running": "The Narrator or another screen reader is running. MSPCManagerHelper cannot be read aloud properly at this time. Please seek assistance from someone else to continue."
+    "narrator_is_running": "The Narrator or another screen reader is running. MSPCManagerHelper cannot be read aloud properly at this time. Please seek assistance from someone else to continue.",
+    "windows_feature_experience_pack": "Windows Feature Experience Pack"
 }

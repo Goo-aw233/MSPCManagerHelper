@@ -450,5 +450,6 @@
     "admin_approval_mode_is_on": "系統管理員保護已開啟，需要以系統管理員身份執行的功能將無法正常執行，請關閉系統管理員保護並重啟電腦後再啓動 MSPCManagerHelper。\n若保持系統管理員保護開啟，為當前使用者所執行操作的功能將不會生效。",
     "server_installation_type_is_core": "目前 Windows Server 安裝類型為 Core，此系統上將無法使用 Microsoft 電腦管家。请執行全新安裝 Windows Server 以選擇“具備桌面體驗的伺服器”。",
     "current_windows_installation_information": "當前 Windows 安裝信息",
-    "narrator_is_running": "朗讀程式或其他螢幕閱讀器正在運行，MSPCManagerHelper 此時無法被正常朗讀，請尋求其他人士的協助以繼續。"
+    "narrator_is_running": "朗讀程式或其他螢幕閱讀器正在運行，MSPCManagerHelper 此時無法被正常朗讀，請尋求其他人士的協助以繼續。",
+    "windows_feature_experience_pack": "Windows 功能體驗包"
 }
