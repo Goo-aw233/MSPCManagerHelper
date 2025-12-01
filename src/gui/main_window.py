@@ -64,6 +64,7 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
         if AdvancedStartup.is_debugmode():
             program_title_str += " - DebugMode"
         self.title(program_title_str)
+
         # Set font family.
         language_font_map = {
             "en-us": "Segoe UI",
@@ -78,8 +79,10 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
         else:
             self.font_family = mapped_font if mapped_font else system_font
         self.logger.info(f"System Font: {system_font}; Language Mapped Font: {mapped_font}; Using Font: {self.font_family}")
+
         # Set window size.
         self._adjust_window_size(default_width=984, default_height=661)
+
         # Set window icon.
         program_icon_path = GetProgramResources.get_program_icon()
         if program_icon_path:
@@ -100,7 +103,7 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
                         scale_factor = ctypes.windll.shcore.GetScaleFactorForDevice(0)
                         # Save DPI ratio for use when setting window size.
                         self._dpi_scale_ratio = float(scale_factor) / 100.0
-                        self.tk.call('tk', 'scaling', float(scale_factor) / 75)
+                        self.tk.call("tk", "scaling", float(scale_factor) / 75)
                         self.logger.info(f"DPI Scaling Set: scale_factor={scale_factor}")
                     except Exception:
                         self._dpi_scale_ratio = 1.0
@@ -114,17 +117,17 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
     def _set_language(self):
         language_map = {
             # English
-            ('en_', 'en-'): 'en-us',
+            ("en_", "en-"): "en-us",
             # Simplified Chinese
-            ('zh_CN', 'zh_Hans', 'zh_Hans_', 'zh_Hans_CN', 'zh_Hans_HK', 'zh_Hans_MO', 'zh_Hans_SG', 'zh_SG', 'zh-CN',
-             'zh-Hans', 'zh-Hans-', 'zh-Hans-CN', 'zh-Hans-HK', 'zh-Hans-MO', 'zh-Hans-SG', 'zh-SG',): 'zh-cn',
+            ("zh_CN", "zh_Hans", "zh_Hans_", "zh_Hans_CN", "zh_Hans_HK", "zh_Hans_MO", "zh_Hans_SG", "zh_SG", "zh-CN",
+             "zh-Hans", "zh-Hans-", "zh-Hans-CN", "zh-Hans-HK", "zh-Hans-MO", "zh-Hans-SG", "zh-SG",): "zh-cn",
             # Traditional Chinese
-            ('zh_Hant', 'zh_Hant_', 'zh_Hant_HK', 'zh_Hant_MO', 'zh_Hant_TW', 'zh_HK', 'zh_MO', 'zh_TW', 'zh-Hant',
-             'zh-Hant-',
-             'zh-Hant-HK', 'zh-Hant-MO', 'zh-Hant-TW', 'zh-HK', 'zh-MO', 'zh_TW'): 'zh-tw'
+            ("zh_Hant", "zh_Hant_", "zh_Hant_HK", "zh_Hant_MO", "zh_Hant_TW", "zh_HK", "zh_MO", "zh_TW", "zh-Hant",
+             "zh-Hant-",
+             "zh-Hant-HK", "zh-Hant-MO", "zh-Hant-TW", "zh-HK", "zh-MO", "zh_TW"): "zh-tw"
         }
         locale_str = locale.getdefaultlocale()[0]
-        language = 'en-us'  # Default language.
+        language = "en-us"  # Default Language
         for prefixes, trans_locale in language_map.items():
             if any(locale_str.startswith(prefix) for prefix in prefixes):
                 language = trans_locale
