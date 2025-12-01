@@ -43,8 +43,8 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
         self.logger.info("========================= Initializing Base GUI =========================")
         ProgramSettings.apply_theme()
         self._set_dpi_awareness()
-        self._configure_window()
         self._set_language()
+        self._configure_window()
         self._check_system_requirements()
         self._configure_ui()
         self.logger.info("========================= Base GUI Initialized =========================")
@@ -65,8 +65,19 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
             program_title_str += " - DebugMode"
         self.title(program_title_str)
         # Set font family.
-        self.font_family = tkinter.font.nametofont("TkDefaultFont").actual()["family"]
-        self.logger.info(f"Font Family: {self.font_family}")
+        language_font_map = {
+            "en-us": "Segoe UI",
+            "zh-cn": "Microsoft YaHei UI",
+            "zh-tw": "Microsoft JhengHei UI"
+        }
+        system_font = tkinter.font.nametofont("TkDefaultFont").actual().get("family", "")
+        mapped_font = language_font_map.get(getattr(self, "language", "").lower(), system_font)
+        # Use system font when it matches the mapping; otherwise use the mapped font.
+        if system_font and system_font.lower() == mapped_font.lower():
+            self.font_family = system_font
+        else:
+            self.font_family = mapped_font if mapped_font else system_font
+        self.logger.info(f"System Font: {system_font}; Language Mapped Font: {mapped_font}; Using Font: {self.font_family}")
         # Set window size.
         self._adjust_window_size(default_width=984, default_height=661)
         # Set window icon.
