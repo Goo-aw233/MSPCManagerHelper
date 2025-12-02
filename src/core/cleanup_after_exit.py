@@ -34,6 +34,8 @@ class CleanupAfterExit:
     @staticmethod
     def cleanup_prefetch():
         try:
+            if not ProgramSettings.is_cleanup_after_exit_enabled():
+                return
             if not AdvancedStartup.is_administrator():
                 CleanupAfterExit.logger.info("Skip Prefetch Clean Up: Not Running as Administrator")
                 return
