@@ -43,7 +43,7 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
     - **Windows**:
 
         ```Batchfile
-        py.exe -3.14 -m venv .venv
+        py -3.14 -m venv .venv
         ".venv\Scripts\activate"
         ```
 
@@ -70,8 +70,5 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 
 5. Build the EXE
 
-> [!IMPORTANT]
-> If this is the first build, run `cleanup-before-first-build.cmd` in the `scripts` directory to clean up unneeded files.
-
     Run `build.cmd` or `build_.venv.cmd` directly from the `scripts\build` directory to build it yourself.
-    Finally, the built `EXE file` will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_... _vx.x.x.x.x.exe`.
+    Finally, the built `EXE file` will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_..._v#.#.#.#_<Architecture>.exe`.

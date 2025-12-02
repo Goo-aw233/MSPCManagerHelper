@@ -43,7 +43,7 @@ Please Select Your Language to Continue
     - **Windows**:
 
         ```Batchfile
-        py.exe -3.14 -m venv .venv
+        py -3.14 -m venv .venv
         ".venv\Scripts\activate"
         ```
 
@@ -70,7 +70,5 @@ Please Select Your Language to Continue
 
 5. 构建 EXE
 
-    > 如果是首次构建，请运行 `scripts` 目录下的 `cleanup-before-first-build.cmd` 来清理不需要的文件。
-
     直接运行 `scripts\build` 目录下的 `build.cmd` 或 `build_.venv.cmd` 即可自己构建。
-    最后，构建好的 `EXE 文件` 将会存放在根目录的 `dist` 目录下，并命名为 `MSPCManagerHelper_..._vx.x.x.x.exe`。
+    最后，构建好的 `EXE 文件` 将会存放在根目录的 `dist` 目录下，并命名为 `MSPCManagerHelper_..._v#.#.#.#_<架构>.exe`。
