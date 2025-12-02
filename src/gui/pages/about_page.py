@@ -276,7 +276,7 @@ class AboutPage(ttk.Frame):
 
         get_help_description_label = ttk.Label(
             get_help_row_frame,
-            text=self.translator.translate("redirect_to_official_website_to_get_help"),
+            text=self.translator.translate("get_help_description"),
             font=(self.font_family, 10),
             justify="left"
         )
