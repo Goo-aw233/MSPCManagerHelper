@@ -22,17 +22,17 @@ class AdvancedStartup:
 
     @staticmethod
     def get_runtime_arguments():
-        # Return parameter list (excluding the program itself).
+        # Return argument list (excluding the program itself).
         return sys.argv[1:].copy()
 
     @staticmethod
     def format_runtime_arguments(args=None):
-        # Format args into a shell argument string, adapting parameters with spaces (by adding quotes).
+        # Format args into a shell argument string, adapting arguments with spaces (by adding quotes).
         args = args if args is not None else AdvancedStartup.get_runtime_arguments()
         return " ".join(f'"{a}"' if " " in a else a for a in args)
 
     @staticmethod
-    def run_as_administrator(params):
-        result = ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, params, None, 0)
+    def run_as_administrator(args):
+        result = ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, args, None, 0)
         if result > 32:
             sys.exit(0)
