@@ -1,13 +1,14 @@
-import os
-import subprocess
 import tkinter
 import webbrowser
-from tkinter import messagebox, ttk
+from tkinter import ttk
 
 from tktooltip import ToolTip
 
 from core.program_logger import ProgramLogger
 from core.program_metadata import ProgramMetadata
+from gui.pages.events.get_localization_translators import get_localization_translators
+from gui.pages.events.on_get_help_button_click import on_get_help_button_click
+from gui.pages.events.on_privacy_settings_click import on_privacy_settings_click
 from gui.widgets.scrollable_frame import ScrollableFrame
 
 
@@ -100,7 +101,7 @@ class AboutPage(ttk.Frame):
             link.bind("<Button-1>", lambda e, url_to_open=contributor_url: webbrowser.open_new(url_to_open))
 
         # Localization Translators in basic_information_frame
-        localization_translators = self._get_localization_translators()
+        localization_translators = get_localization_translators(self.translator)
         if localization_translators:
             localization_frame = ttk.Frame(basic_information_frame)
             localization_frame.pack(anchor="w", padx=10, pady=5, fill="x")
@@ -247,7 +248,7 @@ class AboutPage(ttk.Frame):
             privacy_button_frame,
             text=self.translator.translate("privacy_settings"),
             style="AboutPage.TButton",
-            command=self._open_privacy_settings
+            command=lambda: on_privacy_settings_click(self.logger)
         )
         privacy_settings_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
 
@@ -285,7 +286,7 @@ class AboutPage(ttk.Frame):
             get_help_row_frame,
             text=self.translator.translate("get_help"),
             style="AboutPage.TButton",
-            command=self._on_get_help_button_click
+            command=lambda: on_get_help_button_click(self.logger, self.translator)
         )
         get_help_button.grid(row=0, column=1, sticky="e", padx=(6, 8))
 
@@ -322,75 +323,3 @@ class AboutPage(ttk.Frame):
             official_website_description_label.config(wraplength=wrap)
         official_website_row_frame.bind("<Configure>", _official_website_wrap)
         # ======================= End of Get Help Frame Section =======================
-
-    def _get_localization_translators(self):
-        translations = getattr(self.translator, "translations", {})
-        if not isinstance(translations, dict):
-            return []
-
-        keys = list(translations.keys())
-        # Attempt to find the start and end indices.
-        try:
-            start_index = keys.index("__localization_translator_list__") + 1
-            end_index = keys.index("__localization_translator_list_end__")
-        except ValueError:
-            # If the markers are missing, return an empty list.
-            return []
-
-        translator_list_result = []
-        for key in keys[start_index:end_index]:
-            # Filter out additional internal markers (starting with "__").
-            if key.startswith("__"):
-                continue
-            display_name = translations.get(key, key)
-            translator_list_result.append((key, display_name))
-        return translator_list_result
-
-    def _open_privacy_settings(self):
-        privacy_settings_uri = "ms-settings:privacy"
-
-        try:
-            os.startfile(privacy_settings_uri)
-            self.logger.info("Opened privacy settings via os.startfile.")
-        except Exception as e_os:
-            self.logger.warning(f"os.startfile failed: {e_os}. Trying CMD fallback...")
-
-            cmd_success = False
-            try:
-                subprocess.run(
-                    ["cmd.exe", "/C", "start", "Privacy Settings", f"{privacy_settings_uri}"],
-                    check=True,
-                    creationflags=subprocess.CREATE_NO_WINDOW
-                )
-                self.logger.info("Opened privacy settings via CMD.")
-                cmd_success = True
-            except Exception as e_cmd:
-                self.logger.warning(f"CMD start failed: {e_cmd}. Trying webbrowser fallback...")
-
-            if not cmd_success:
-                powershell_success = False
-                try:
-                    subprocess.run(
-                        ["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{privacy_settings_uri}'"],
-                        check=True,
-                        creationflags=subprocess.CREATE_NO_WINDOW
-                    )
-                    self.logger.info("Opened privacy settings via PowerShell Start-Process.")
-                    powershell_success = True
-                except Exception as e_windows_powersshell:
-                    self.logger.warning(f"PowerShell Start-Process failed: {e_windows_powersshell}. Trying webbrowser fallback...")
-
-                if not powershell_success:
-                    try:
-                        webbrowser.open(privacy_settings_uri)
-                        self.logger.info("Opened privacy settings via webbrowser.")
-                    except Exception as e_webbrowser:
-                        self.logger.error(f"Failed to open privacy settings via all methods. Error: {e_webbrowser}")
-
-    def _on_get_help_button_click(self):
-        messagebox.showinfo(
-            title=self.translator.translate("info"),
-            message=self.translator.translate("redirect_to_official_website_to_get_help")
-        )
-        webbrowser.open_new("https://pcmanager.microsoft.com")
-        self.logger.info("Redirected user to official website for help.")
