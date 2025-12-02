@@ -10,6 +10,7 @@ from .get_program_resources import GetProgramResources
 from .program_logger import ProgramLogger
 from .program_metadata import ProgramMetadata
 from .program_settings import ProgramSettings
+from .set_font_family import SetFontFamily
 from .system_utilities_availability_check import SystemUtilitiesAvailabilityCheck
 from .translator import Translator
 
@@ -22,6 +23,7 @@ __all__ = [
     "ProgramLogger",
     "ProgramMetadata",
     "ProgramSettings",
+    "set_font_family",
     "SystemUtilitiesAvailabilityCheck",
     "Translator"
 ]

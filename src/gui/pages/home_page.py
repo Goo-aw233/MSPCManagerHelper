@@ -558,6 +558,55 @@ class HomePage(ttk.Frame):
 
         compatibility_mode_frame.bind("<Configure>", _update_compatibility_mode_desc_wrap)
 
+        # --- Row: Follow System Font ---
+        follow_system_font_frame = ttk.Frame(program_settings_frame)
+        follow_system_font_frame.pack(fill="x", padx=5, pady=5)
+        follow_system_font_frame.grid_columnconfigure(0, weight=1)
+
+        follow_system_font_desc_label = ttk.Label(
+            follow_system_font_frame,
+            text=self.translator.translate("follow_system_font_description"),
+            font=(self.font_family, 10),
+            justify="left"
+        )
+        follow_system_font_desc_label.grid(row=0, column=0, sticky="w")
+
+        follow_system_font_var = BooleanVar(value=ProgramSettings.is_follow_system_font_enabled())
+
+        def on_follow_system_font_toggle():
+            ProgramSettings.set_follow_system_font_enabled(follow_system_font_var.get())
+            self.winfo_toplevel().refresh_ui()
+
+        follow_system_font_checkbutton = ttk.Checkbutton(
+            follow_system_font_frame,
+            text=self.translator.translate("follow_system_font"),
+            variable=follow_system_font_var,
+            style="HomePage.Switch.TCheckbutton",
+            command=lambda: on_follow_system_font_toggle()
+        )
+        follow_system_font_checkbutton.grid(row=0, column=1, sticky="e", padx=(10, 0))
+
+        ToolTip(
+            follow_system_font_checkbutton,
+            msg=self.translator.translate("follow_system_font_tooltip"),
+            delay=0.5
+        )
+
+        def _update_follow_system_font_desc_wrap(e):
+            try:
+                checkbox_width = follow_system_font_checkbutton.winfo_width() or follow_system_font_checkbutton.winfo_reqwidth()
+            except Exception:
+                checkbox_width = 120
+            padding = 30
+            wrap = max(30, e.width - checkbox_width - padding)
+            follow_system_font_desc_label.config(wraplength=wrap)
+
+        follow_system_font_frame.bind("<Configure>", _update_follow_system_font_desc_wrap)
+
+        # --- Row: Separator ---
+        separator = ttk.Separator(program_settings_frame, orient="horizontal")
+        separator.pack(fill="x", padx=5, pady=5)
+
         # --- Row: Cleanup After Exit ---
         cleanup_after_exit_frame = ttk.Frame(program_settings_frame)
         cleanup_after_exit_frame.pack(fill="x", padx=5, pady=5)

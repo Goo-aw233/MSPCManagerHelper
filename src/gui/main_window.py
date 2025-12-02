@@ -15,6 +15,7 @@ from core.get_program_resources import GetProgramResources
 from core.program_logger import ProgramLogger
 from core.program_metadata import ProgramMetadata
 from core.program_settings import ProgramSettings
+from core.set_font_family import SetFontFamily
 from core.system_utilities_availability_check import SystemUtilitiesAvailabilityCheck
 from core.translator import Translator
 from gui.widgets.navigation import Navigation
@@ -66,19 +67,11 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
         self.title(program_title_str)
 
         # Set font family.
-        language_font_map = {
-            "en-us": "Segoe UI",
-            "zh-cn": "Microsoft YaHei UI",
-            "zh-tw": "Microsoft JhengHei UI"
-        }
-        system_font = tkinter.font.nametofont("TkDefaultFont").actual().get("family", "")
-        mapped_font = language_font_map.get(getattr(self, "language", "").lower(), system_font)
-        # Use system font when it matches the mapping; otherwise use the mapped font.
-        if system_font and system_font.lower() == mapped_font.lower():
-            self.font_family = system_font
-        else:
-            self.font_family = mapped_font if mapped_font else system_font
-        self.logger.info(f"System Font: {system_font}; Language Mapped Font: {mapped_font}; Using Font: {self.font_family}")
+        language = getattr(self, "language", "").lower()
+        # Determine whether to follow system font through ProgramSettings.
+        follow_system_font = ProgramSettings.is_follow_system_font_enabled()
+        self.font_family = SetFontFamily.apply_font_setting(follow_system_font=follow_system_font, language=language)
+        self.logger.info(f"Font Setting: follow_system_font={follow_system_font}")
 
         # Set window size.
         self._adjust_window_size(default_width=984, default_height=661)
@@ -222,7 +215,7 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
         self.logger.info(f"Window Size: {self.winfo_width()} x {self.winfo_height()} (scale={scale_ratio})")
 
     def refresh_ui(self):
-        self.logger.info("Refreshing Main Window UI...")
+        self.logger.info("========================= Refreshing Main Window UI =========================")
         if hasattr(self, "background_frame") and self.background_frame.winfo_exists():
             self.background_frame.destroy()
         ProgramSettings.apply_theme()
@@ -230,4 +223,4 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
         self._set_language()
         self._configure_ui()
         self.update_idletasks()
-        self.logger.info("Main Window UI refreshed.")
+        self.logger.info("========================= Main Window UI Refreshed =========================")

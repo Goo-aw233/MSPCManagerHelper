@@ -1,6 +1,8 @@
 import darkdetect
 import sv_ttk
+
 from core.program_logger import ProgramLogger
+from core.set_font_family import SetFontFamily
 
 
 class ProgramSettings:
@@ -8,6 +10,7 @@ class ProgramSettings:
     _MS_STUDENT_AMBASSADOR_CID_DEFAULT: str = "/?wt.mc_id=studentamb_474966"
     _is_support_developer_enabled: bool = True
     _is_compatibility_mode_enabled: bool = False
+    _is_follow_system_font_enabled: bool = False
     _cleanup_after_exit_enabled: bool = False
 
     # ======================= Theme Mode Settings =======================
@@ -74,6 +77,23 @@ class ProgramSettings:
     def toggle_compatibility_mode(cls) -> None:
         cls.set_compatibility_mode_enabled(not cls._is_compatibility_mode_enabled)
     # ======================= End of Compatibility Mode Settings =======================
+
+    # ======================= Follow System Font Settings =======================
+    @classmethod
+    def is_follow_system_font_enabled(cls) -> bool:
+        return cls._is_follow_system_font_enabled
+
+    @classmethod
+    def set_follow_system_font_enabled(cls, enabled: bool) -> None:
+        cls._is_follow_system_font_enabled = bool(enabled)
+        logger = ProgramLogger.get_logger()
+        logger.info(f"Follow System Font Set to: {enabled}")
+        SetFontFamily.apply_font_setting(follow_system_font=enabled)
+
+    @classmethod
+    def toggle_follow_system_font(cls) -> None:
+        cls.set_follow_system_font_enabled(not cls._is_follow_system_font_enabled)
+    # ======================= End of Follow System Font Settings =======================
 
     # ======================= Cleanup After Exit Settings =======================
     @classmethod
