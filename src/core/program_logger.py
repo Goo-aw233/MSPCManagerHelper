@@ -19,12 +19,19 @@ class ProgramLogger:
     CRITICAL A serious error, indicating that the program itself may be unable to continue
     """
     _logger = None
+    _log_file = None
 
     @staticmethod
     def get_logger():
         if ProgramLogger._logger is None:
             ProgramLogger._initialize_logger()
         return ProgramLogger._logger
+
+    @staticmethod
+    def get_log_file_path():
+        if ProgramLogger._log_file is None:
+            ProgramLogger._initialize_logger()
+        return str(ProgramLogger._log_file)
 
     @staticmethod
     def _initialize_logger():
@@ -46,6 +53,7 @@ class ProgramLogger:
 
         # Use a fixed log file name to enable rotation.
         log_file = log_dir / f"{ProgramMetadata.PROGRAM_NAME}.log"
+        ProgramLogger._log_file = log_file  # Path to the log file.
 
         # Add a newline to separate logs from different runs, if the log file already exists.
         if log_file.exists() and log_file.stat().st_size > 0:
