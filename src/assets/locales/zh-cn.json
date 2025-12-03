@@ -14,6 +14,7 @@
   "__initialization__": "初始化部分",
     "administrator_protection_is_enabled": "管理员保护已开启，部分功能将无法正常使用。请关闭管理员保护并重新启动 Windows 以继续。",
     "administrator_required": "需要管理员权限",
+    "check_the_logs_for_more_details": "点击“确定”后将打开日志文件夹，请查看程序日志以获取更多详细信息。\n日志文件路径: {log_path}",
     "copy": "复制",
     "error": "错误",
     "error_code": "错误代码",

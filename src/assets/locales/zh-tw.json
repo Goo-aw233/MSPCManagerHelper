@@ -13,6 +13,7 @@
   "__initialization__": "初始化部分",
     "administrator_protection_is_enabled": "系統管理員保護已開啟，部分功能將無法正常使用。請關閉系統管理員保護並重新啟動 Windows 以繼續。",
     "administrator_required": "需要系統管理員權限",
+    "check_the_logs_for_more_details": "點擊「確定」後將打開記錄檔資料夾，請查看程式記錄檔以獲取更多詳細資訊。\n記錄檔路徑: {log_path}",
     "copy": "複製",
     "error": "錯誤",
     "error_code": "錯誤碼",

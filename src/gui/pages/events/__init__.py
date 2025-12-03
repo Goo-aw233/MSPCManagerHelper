@@ -4,7 +4,7 @@ Events Package for MSPCManagerHelper GUI Pages
 
 from .get_localization_translators import get_localization_translators
 from .on_about_windows_click import on_about_windows_click
-from .on_enable_long_paths_click import on_enable_long_paths_click
+from .on_enable_long_paths_click import EnableLongPathsHandler
 from .on_get_help_button_click import on_get_help_button_click
 from .on_privacy_settings_click import on_privacy_settings_click
 from .on_restart_as_administrator import on_restart_as_administrator
@@ -19,7 +19,7 @@ from .on_toggle_support_developer import on_toggle_support_developer
 __all__ = [
     "get_localization_translators",
     "on_about_windows_click",
-    "on_enable_long_paths_click",
+    "EnableLongPathsHandler",
     "on_get_help_button_click",
     "on_privacy_settings_click",
     "on_restart_as_administrator",

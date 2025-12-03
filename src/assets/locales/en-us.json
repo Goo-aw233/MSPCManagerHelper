@@ -13,6 +13,7 @@
   "__initialization__": "Initialization Section",
     "administrator_protection_is_enabled": "Administrator Protection is enabled, some features may not work properly. Please disable Administrator Protection and restart Windows to continue.",
     "administrator_required": "Administrator Required",
+    "check_the_logs_for_more_details": "Click 'OK' to open the log folder. Please check the program logs for more details.\nLog Path: {log_path}",
     "copy": "Copy",
     "error": "Error",
     "error_code": "Error Code",

@@ -9,7 +9,7 @@ from core.get_microsoft_pc_manager_version_number import GetMicrosoftPCManagerVe
 from core.program_logger import ProgramLogger
 from core.program_settings import ProgramSettings
 from gui.pages.events.on_about_windows_click import on_about_windows_click
-from gui.pages.events.on_enable_long_paths_click import on_enable_long_paths_click
+from gui.pages.events.on_enable_long_paths_click import EnableLongPathsHandler
 from gui.pages.events.on_restart_as_administrator import on_restart_as_administrator
 from gui.pages.events.on_restart_program_click import on_restart_program_click
 from gui.pages.events.on_start_mspcm_beta_click import on_start_mspcm_beta_click
@@ -252,43 +252,50 @@ class HomePage(ttk.Frame):
 
         # --- Row: Long Paths Enabled Label ---
         is_long_paths_enabled = CheckSystemRequirements.check_if_long_paths_enabled()
+        self.long_paths_frame = None
         if not is_long_paths_enabled:
-            long_paths_frame = ttk.Frame(check_system_requirements_frame)
-            long_paths_frame.pack(fill="x", padx=5, pady=5)
-            long_paths_frame.grid_columnconfigure(0, weight=1)
+            self.long_paths_frame = ttk.Frame(check_system_requirements_frame)
+            self.long_paths_frame.pack(fill="x", padx=5, pady=5)
+            self.long_paths_frame.grid_columnconfigure(0, weight=1)
 
-            long_paths_desc_label = ttk.Label(
-                long_paths_frame,
+            self.long_paths_desc_label = ttk.Label(
+                self.long_paths_frame,
                 text=self.translator.translate("long_paths_not_enabled"),
                 font=(self.font_family, 10),
                 justify="left"
             )
-            long_paths_desc_label.grid(row=0, column=0, sticky="w")
+            self.long_paths_desc_label.grid(row=0, column=0, sticky="w")
 
-            enable_long_paths_button = ttk.Button(
-                long_paths_frame,
+            def on_enable_long_paths_and_refresh():
+                EnableLongPathsHandler(self.logger, self.translator).on_enable_long_paths_click()
+                if CheckSystemRequirements.check_if_long_paths_enabled():
+                    self.long_paths_frame.pack_forget()
+
+            self.enable_long_paths_button = ttk.Button(
+                self.long_paths_frame,
                 text=self.translator.translate("long_paths_enabled_button"),
                 style="HomePage.Accent.TButton",
-                command=lambda: on_enable_long_paths_click(self.logger)
+                command=on_enable_long_paths_and_refresh,
+                state="normal" if AdvancedStartup.is_administrator() else "disabled"
             )
-            enable_long_paths_button.grid(row=0, column=1, sticky="e", padx=(10, 0))
+            self.enable_long_paths_button.grid(row=0, column=1, sticky="e", padx=(10, 0))
 
             ToolTip(
-                enable_long_paths_button,
+                self.enable_long_paths_button,
                 msg=self.translator.translate("long_paths_enabled_button_tooltip"),
                 delay=0.5
             )
 
             def _update_long_paths_wrap(e):
                 try:
-                    button_width = enable_long_paths_button.winfo_width() or enable_long_paths_button.winfo_reqwidth()
+                    button_width = self.enable_long_paths_button.winfo_width() or self.enable_long_paths_button.winfo_reqwidth()
                 except Exception:
                     button_width = 120
                 padding = 30
                 wrap = max(30, e.width - button_width - padding)
-                long_paths_desc_label.config(wraplength=wrap)
+                self.long_paths_desc_label.config(wraplength=wrap)
 
-            long_paths_frame.bind("<Configure>", _update_long_paths_wrap)
+            self.long_paths_frame.bind("<Configure>", _update_long_paths_wrap)
 
         # --- Row: Windows Installation Information Label ---
         windows_installation_info = CheckSystemRequirements.get_windows_installation_information()
