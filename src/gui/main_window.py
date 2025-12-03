@@ -173,13 +173,14 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
         if not AdvancedStartup.is_administrator():
             found_issue = True
             self.logger.warning("Program is not running as administrator.")
-            toaster = WindowsToaster(self.translator.translate("mspcmanagerhelper"))
-            toast_notification = Toast()
-            toast_notification.text_fields = [
+            toaster = WindowsToaster(ProgramMetadata.PROGRAM_NAME)
+            run_as_administrator_toast = Toast()
+            run_as_administrator_toast.text_fields = [
                 self.translator.translate("administrator_required"),
                 self.translator.translate("program_is_not_running_as_administrator")
             ]
-            toaster.show_toast(toast_notification)
+            run_as_administrator_toast.tag = "administrator_required_toast"
+            toaster.show_toast(run_as_administrator_toast)
 
         if not CheckSystemRequirements.check_if_long_paths_enabled():
             found_issue = True

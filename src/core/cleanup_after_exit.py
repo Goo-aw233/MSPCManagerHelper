@@ -3,6 +3,8 @@ import sys
 import tempfile
 from pathlib import Path
 
+from windows_toasts import WindowsToaster, Toast
+
 from core.advanced_startup import AdvancedStartup
 from core.program_logger import ProgramLogger
 from core.program_metadata import ProgramMetadata
@@ -15,6 +17,7 @@ class CleanupAfterExit:
     @staticmethod
     def cleanup_all():
         CleanupAfterExit.cleanup_prefetch()
+        CleanupAfterExit.cleanup_toast_notifications()
         CleanupAfterExit.cleanup_logs()
 
     @staticmethod
@@ -66,3 +69,16 @@ class CleanupAfterExit:
                 CleanupAfterExit.logger.info("Skip Prefetch Clean Up: Not Running as EXE")
         except Exception as e:
             CleanupAfterExit.logger.warning(f"Failed to Clean Up Prefetch: {e}")
+
+    @staticmethod
+    def cleanup_toast_notifications():
+        if not ProgramSettings.is_cleanup_after_exit_enabled():
+            return
+        try:
+            toaster = WindowsToaster(ProgramMetadata.PROGRAM_NAME)
+            run_as_administrator_toast = Toast()
+            run_as_administrator_toast.tag = "administrator_required_toast"
+            toaster.remove_toast(run_as_administrator_toast)
+            CleanupAfterExit.logger.info("Toast notifications cleaned up.")
+        except Exception as e:
+            CleanupAfterExit.logger.warning(f"Failed to clean up toast notifications: {e}")
