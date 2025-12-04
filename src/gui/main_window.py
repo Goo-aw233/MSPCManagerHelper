@@ -3,7 +3,6 @@ import locale
 import os
 import sys
 import tkinter
-import tkinter.font
 from pathlib import Path
 from tkinter import messagebox, ttk
 
