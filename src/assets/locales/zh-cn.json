@@ -113,10 +113,30 @@
     "windows_installation_information": "Windows 安装信息",
 
   "__installer_page__": "安装功能页部分",
+    "install_microsoft_edge_webview2_runtime": "安装 Microsoft Edge WebView2 运行时",
+    "install_microsoft_edge_webview2_runtime_description": "安装 Microsoft Edge WebView2 运行时，以确保微软电脑管家能够正常运行",
+    "install_via_appxmanifest": "通过 AppxManifest.xml 安装微软电脑管家",
+    "install_via_appxmanifest_description": "通过 AppxManifest.xml 安装微软电脑管家，以绕过微软电脑管家对于系统要求的检查",
+    "install_via_dism_for_all_users": "通过 DISM 为所有用户安装微软电脑管家",
+    "install_via_dism_for_all_users_description": "使用 DISM，通过微软电脑管家应用程序包，为当前 Windows 或其他 Windows 安装微软电脑管家预配包",
+    "install_via_microsoft_store": "通过 Microsoft Store 安装微软电脑管家",
+    "install_via_microsoft_store_description": "打开 Microsoft Store 中的微软电脑管家页面以进行安装",
+    "install_via_powershell_for_all_users": "通过 PowerShell 为所有用户安装微软电脑管家",
+    "install_via_powershell_for_all_users_description": "使用 PowerShell，通过微软电脑管家应用程序包，为当前 Windows 或其他 Windows 安装微软电脑管家预配包",
+    "install_via_powershell_for_current_user": "通过 PowerShell 为当前用户安装微软电脑管家",
+    "install_via_powershell_for_current_user_description": "使用 PowerShell，通过微软电脑管家应用程序包，为当前用户安装微软电脑管家",
+    "install_via_winget": "通过 WinGet 安装微软电脑管家",
+    "install_via_winget_description": "使用 WinGet 中的 msstore 源安装微软电脑管家",
+    "reinstall_via_powershell": "通过 PowerShell 重新安装微软电脑管家",
+    "reinstall_via_powershell_description": "使用 PowerShell，为当前用户重新安装微软电脑管家",
 
   "__installer_modules__": "安装模块部分",
 
   "__maintenance_page__": "维护功能页部分",
+    "logs_collection": "收集微软电脑管家日志",
+    "logs_collection_description": "收集微软电脑管家相关日志文件、转储文件及系统信息",
+    "repair_microsoft_pc_manager": "修复微软电脑管家",
+    "repair_microsoft_pc_manager_description": "尝试修复已安装的微软电脑管家，以解决常见问题",
 
   "__maintenance_module__": "维护功能模块部分",
 
@@ -139,10 +159,34 @@
   "__toolbox_modules__": "工具箱部分",
 
   "__uninstaller_page__": "卸载功能页部分",
+    "uninstall_beta": "卸载微软电脑管家公测版",
+    "uninstall_beta_description": "卸载已安装的微软电脑管家公测版，并清理相关残留文件",
+    "uninstall_via_dism_for_all_users": "通过 DISM 为所有用户卸载微软电脑管家",
+    "uninstall_via_dism_for_all_users_description": "使用 DISM 与 PowerShell 为系统中的所有用户卸载微软电脑管家，并清理相关残留文件",
+    "uninstall_via_powershell_for_all_users": "通过 PowerShell 为所有用户卸载微软电脑管家",
+    "uninstall_via_powershell_for_all_users_description": "使用 PowerShell 为系统中的所有用户卸载微软电脑管家，并清理相关残留文件",
+    "uninstall_via_powershell_for_current_user": "通过 PowerShell 为当前用户卸载微软电脑管家",
+    "uninstall_via_powershell_for_current_user_description": "使用 PowerShell 为当前用户卸载微软电脑管家，并清理相关残留文件",
 
   "__uninstaller_modules__": "卸载模块部分",
 
   "__utilities_module__": "实用工具模块部分",
 
-  "__utilities_page__": "实用工具页部分"
+  "__utilities_page__": "实用工具页部分",
+    "compute_file_hash": "计算文件哈希值",
+    "compute_file_hash_description": "计算多个指定文件的哈希值",
+    "get_microsoft_pc_manager_dependencies_version": "获取微软电脑管家依赖项版本",
+    "get_microsoft_pc_manager_dependencies_version_description": "获取当前系统中已安装的微软电脑管家依赖项的版本信息",
+    "open_developer_settings": "开发者设置",
+    "open_developer_settings_description": "打开 Windows 开发者设置页面",
+    "open_product_documentation": "打开微软电脑管家帮助文档",
+    "open_product_documentation_description": "打开微软电脑管家官方帮助文档页面以获取更多信息",
+    "repair_microsoftedgeupdate_not_working": "修复 MicrosoftEdgeUpdate 无法正常工作",
+    "repair_microsoftedgeupdate_not_working_description": "尝试修复 MicrosoftEdgeUpdate.exe 无法正常工作的问题，以确保 Microsoft Edge 组件能够正常更新",
+    "restart_services": "重启服务",
+    "restart_services_description": "快速重启与微软电脑管家相关的服务",
+    "switch_regions": "切换地区",
+    "switch_regions_description": "切换微软电脑管家使用的地区以访问不同的内容",
+    "view_installed_antivirus_products": "查看已安装的防病毒软件",
+    "view_installed_antivirus_products_description": "使用 Windows API 查看当前系统中已安装的防病毒软件列表"
 }

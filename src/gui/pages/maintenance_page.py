@@ -1,6 +1,7 @@
 from tkinter import ttk
 
 from core.program_logger import ProgramLogger
+from gui.widgets.expander import ExpanderFrame
 from gui.widgets.scrollable_frame import ScrollableFrame
 
 
@@ -35,3 +36,37 @@ class MaintenancePage(ttk.Frame):
         title_label = ttk.Label(content_frame, text=self.translator.translate("maintenance_page"),
                                 font=(self.font_family, 16, "bold"))
         title_label.pack(pady=10)
+
+        # --- Row: Logs Collection Expander ---
+        logs_collection_expander = ExpanderFrame(
+            content_frame,
+            title=self.translator.translate("logs_collection"),
+            font=(self.font_family, 10, "bold"),
+            width=40,
+            expanded=True
+        )
+        logs_collection_expander.pack(fill="x", pady=10)
+
+        logs_collection_expander_label = ttk.Label(
+            logs_collection_expander.content_frame,
+            text=self.translator.translate("logs_collection_description"),
+            font=(self.font_family, 10)
+        )
+        logs_collection_expander.add_widget(logs_collection_expander_label)
+
+        # --- Row: Repair Microsoft PC Manager Expander ---
+        repair_mspcm_expander = ExpanderFrame(
+            content_frame,
+            title=self.translator.translate("repair_microsoft_pc_manager"),
+            font=(self.font_family, 10, "bold"),
+            width=40,
+            expanded=False
+        )
+        repair_mspcm_expander.pack(fill="x", pady=10)
+
+        repair_mspcm_expander_label = ttk.Label(
+            repair_mspcm_expander.content_frame,
+            text=self.translator.translate("repair_microsoft_pc_manager_description"),
+            font=(self.font_family, 10)
+        )
+        repair_mspcm_expander.add_widget(repair_mspcm_expander_label)

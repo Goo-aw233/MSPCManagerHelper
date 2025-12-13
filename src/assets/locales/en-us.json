@@ -112,10 +112,30 @@
     "windows_installation_information": "Windows Installation Information",
 
   "__installer_page__": "Installer Section",
+    "install_microsoft_edge_webview2_runtime": "Install Microsoft Edge WebView2 Runtime",
+    "install_microsoft_edge_webview2_runtime_description": "Install Microsoft Edge WebView2 Runtime to Ensure That Microsoft PC Manager Can Run Properly",
+    "install_via_appxmanifest": "Install Microsoft PC Manager via AppxManifest.xml",
+    "install_via_appxmanifest_description": "Install Microsoft PC Manager via AppxManifest.xml to Bypass the System Requirements Check of Microsoft PC Manager",
+    "install_via_dism_for_all_users": "Install Microsoft PC Manager for All Users via DISM",
+    "install_via_dism_for_all_users_description": "Use DISM to Install Microsoft PC Manager Provisioned Package for the Current Windows or Other Windows Installations via Microsoft PC Manager Application Package",
+    "install_via_microsoft_store": "Install Microsoft PC Manager via Microsoft Store",
+    "install_via_microsoft_store_description": "Open the Microsoft PC Manager Page in Microsoft Store to Install",
+    "install_via_powershell_for_all_users": "Install Microsoft PC Manager for All Users via PowerShell",
+    "install_via_powershell_for_all_users_description": "Use PowerShell to Install Microsoft PC Manager Provisioned Package for the Current Windows or Other Windows Installations via Microsoft PC Manager Application Package",
+    "install_via_powershell_for_current_user": "Install Microsoft PC Manager for Current User via PowerShell",
+    "install_via_powershell_for_current_user_description": "Use PowerShell to Install Microsoft PC Manager Package for Current User via Microsoft PC Manager Application Package",
+    "install_via_winget": "Install Microsoft PC Manager via Winget",
+    "install_via_winget_description": "Use Winget to Install Microsoft PC Manager from msstore Source",
+    "reinstall_via_powershell": "Reinstall Microsoft PC Manager via PowerShell",
+    "reinstall_via_powershell_description": "Use PowerShell to Reinstall Microsoft PC Manager for Current User",
 
   "__installer_modules__": "Installer Modules",
 
   "__maintenance_page__": "Maintenance Section",
+    "logs_collection": "Collect Microsoft PC Manager Logs",
+    "logs_collection_description": "Collect Microsoft PC Manager Related Log Files, Dump Files, and System Information",
+    "repair_microsoft_pc_manager": "Repair Microsoft PC Manager",
+    "repair_microsoft_pc_manager_description": "Attempt to Repair the Installed Microsoft PC Manager to Resolve Common Issues",
 
   "__maintenance_module__": "Maintenance Modules",
 
@@ -138,10 +158,34 @@
   "__toolbox_modules__": "Toolbox Modules",
 
   "__uninstaller_page__": "Uninstaller Section",
+    "uninstall_beta": "Uninstall Microsoft PC Manager Public Beta",
+    "uninstall_beta_description": "Uninstall the Installed Microsoft PC Manager Public Beta and Clean Up Related Residual Files",
+    "uninstall_via_dism_for_all_users": "Uninstall Microsoft PC Manager for All Users via DISM",
+    "uninstall_via_dism_for_all_users_description": "Use DISM & PowerShell to Uninstall Microsoft PC Manager for All Users in the System and Clean Up Related Residual Files",
+    "uninstall_via_powershell_for_all_users": "Uninstall Microsoft PC Manager for All Users via PowerShell",
+    "uninstall_via_powershell_for_all_users_description": "Use PowerShell to Uninstall Microsoft PC Manager for All Users in the System and Clean Up Related Residual Files",
+    "uninstall_via_powershell_for_current_user": "Uninstall Microsoft PC Manager for Current User via PowerShell",
+    "uninstall_via_powershell_for_current_user_description": "Use PowerShell to Uninstall Microsoft PC Manager for Current User and Clean Up Related Residual Files",
 
   "__uninstaller_modules__": "Uninstaller Modules",
 
   "__utilities_module__": "Utilities Modules",
 
-  "__utilities_page__": "Utilities Section"
+  "__utilities_page__": "Utilities Section",
+    "compute_file_hash": "Compute File Hash",
+    "compute_file_hash_description": "Compute the Hash Values of Multiple Specified Files",
+    "get_microsoft_pc_manager_dependencies_version": "Get Microsoft PC Manager Dependencies Version",
+    "get_microsoft_pc_manager_dependencies_version_description": "Get the Version Information of Microsoft PC Manager Dependencies in the Current System",
+    "open_developer_settings": "Developer Settings",
+    "open_developer_settings_description": "Open the Windows Developer Settings Page",
+    "open_product_documentation": "Open Microsoft PC Manager FAQ",
+    "open_product_documentation_description": "Open the Microsoft PC Manager FAQ Page for More Information",
+    "repair_microsoftedgeupdate_not_working": "Repair MicrosoftEdgeUpdate Not Working",
+    "repair_microsoftedgeupdate_not_working_description": "Attempt to Repair the Issue of MicrosoftEdgeUpdate.exe Not Working to Ensure That Microsoft Edge Components Can be Updated Properly",
+    "restart_services": "Restart Services",
+    "restart_services_description": "Restart Microsoft PC Manager Related Services Quickly",
+    "switch_regions": "Switch Regions",
+    "switch_regions_description": "Switch the Region Used by Microsoft PC Manager to Access Different Content",
+    "view_installed_antivirus_products": "View Installed Antivirus Products",
+    "view_installed_antivirus_products_description": "View the Antivirus Software Currently Installed on the System via Windows API"
 }

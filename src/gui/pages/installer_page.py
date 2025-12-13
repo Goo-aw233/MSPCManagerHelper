@@ -1,6 +1,8 @@
 from tkinter import ttk
 
+from core.advanced_startup import AdvancedStartup
 from core.program_logger import ProgramLogger
+from gui.widgets.expander import ExpanderFrame
 from gui.widgets.scrollable_frame import ScrollableFrame
 
 
@@ -35,3 +37,140 @@ class InstallerPage(ttk.Frame):
         title_label = ttk.Label(content_frame, text=self.translator.translate("installer_page"),
                                 font=(self.font_family, 16, "bold"))
         title_label.pack(pady=10)
+
+        # --- Row: Install Microsoft Edge WebView2 Runtime Expander ---
+        install_webview2_expander = ExpanderFrame(
+            content_frame,
+            title=self.translator.translate("install_microsoft_edge_webview2_runtime"),
+            font=(self.font_family, 10, "bold"),
+            width=40,
+            expanded=True
+        )
+        install_webview2_expander.pack(fill="x", pady=10)
+
+        install_webview2_expander_label = ttk.Label(
+            install_webview2_expander.content_frame,
+            text=self.translator.translate("install_microsoft_edge_webview2_runtime_description"),
+            font=(self.font_family, 10)
+        )
+        install_webview2_expander.add_widget(install_webview2_expander_label)
+
+        # --- Row: Install via AppxManifest.xml Expander ---
+        if AdvancedStartup.is_devmode() or AdvancedStartup.is_debugmode():
+            install_via_appxmanifest_expander = ExpanderFrame(
+                content_frame,
+                title=self.translator.translate("install_via_appxmanifest"),
+                font=(self.font_family, 10, "bold"),
+                width=40,
+                expanded=False
+            )
+            install_via_appxmanifest_expander.pack(fill="x", pady=10)
+
+            install_via_appxmanifest_expander_label = ttk.Label(
+                install_via_appxmanifest_expander.content_frame,
+                text=self.translator.translate("install_via_appxmanifest_description"),
+                font=(self.font_family, 10)
+            )
+            install_via_appxmanifest_expander.add_widget(install_via_appxmanifest_expander_label)
+
+        # --- Row: Install via DISM for All Users Expander ---
+        install_via_dism_for_all_users_expander = ExpanderFrame(
+            content_frame,
+            title=self.translator.translate("install_via_dism_for_all_users"),
+            font=(self.font_family, 10, "bold"),
+            width=40,
+            expanded=True
+        )
+        install_via_dism_for_all_users_expander.pack(fill="x", pady=10)
+
+        install_via_dism_for_all_users_expander_label = ttk.Label(
+            install_via_dism_for_all_users_expander.content_frame,
+            text=self.translator.translate("install_via_dism_for_all_users_description"),
+            font=(self.font_family, 10)
+        )
+        install_via_dism_for_all_users_expander.add_widget(install_via_dism_for_all_users_expander_label)
+
+        # --- Row: Install via Microsoft Store Expander ---
+        install_via_msstore_expander = ExpanderFrame(
+            content_frame,
+            title=self.translator.translate("install_via_microsoft_store"),
+            font=(self.font_family, 10, "bold"),
+            width=40,
+            expanded=True
+        )
+        install_via_msstore_expander.pack(fill="x", pady=10)
+
+        install_via_msstore_expander_label = ttk.Label(
+            install_via_msstore_expander.content_frame,
+            text=self.translator.translate("install_via_microsoft_store_description"),
+            font=(self.font_family, 10)
+        )
+        install_via_msstore_expander.add_widget(install_via_msstore_expander_label)
+
+        # --- Row: Install via PowerShell for All Users Expander ---
+        install_via_powershell_for_all_users_expander = ExpanderFrame(
+            content_frame,
+            title=self.translator.translate("install_via_powershell_for_all_users"),
+            font=(self.font_family, 10, "bold"),
+            width=40,
+            expanded=False
+        )
+        install_via_powershell_for_all_users_expander.pack(fill="x", pady=10)
+
+        install_via_powershell_for_all_users_expander_label = ttk.Label(
+            install_via_powershell_for_all_users_expander.content_frame,
+            text=self.translator.translate("install_via_powershell_for_all_users_description"),
+            font=(self.font_family, 10)
+        )
+        install_via_powershell_for_all_users_expander.add_widget(install_via_powershell_for_all_users_expander_label)
+
+        # --- Row: Install via PowerShell for Current User Expander ---
+        install_via_powershell_for_current_user_expander = ExpanderFrame(
+            content_frame,
+            title=self.translator.translate("install_via_powershell_for_current_user"),
+            font=(self.font_family, 10, "bold"),
+            width=40,
+            expanded=True
+        )
+        install_via_powershell_for_current_user_expander.pack(fill="x", pady=10)
+
+        install_via_powershell_for_current_user_expander_label = ttk.Label(
+            install_via_powershell_for_current_user_expander.content_frame,
+            text=self.translator.translate("install_via_powershell_for_current_user_description"),
+            font=(self.font_family, 10)
+        )
+        install_via_powershell_for_current_user_expander.add_widget(install_via_powershell_for_current_user_expander_label)
+
+        # --- Row: Install via WinGet Expander ---
+        install_via_winget_expander = ExpanderFrame(
+            content_frame,
+            title=self.translator.translate("install_via_winget"),
+            font=(self.font_family, 10, "bold"),
+            width=40,
+            expanded=False
+        )
+        install_via_winget_expander.pack(fill="x", pady=10)
+
+        install_via_winget_expander_label = ttk.Label(
+            install_via_winget_expander.content_frame,
+            text=self.translator.translate("install_via_winget_description"),
+            font=(self.font_family, 10)
+        )
+        install_via_winget_expander.add_widget(install_via_winget_expander_label)
+
+        # --- Row: Reinstall via PowerShell Expander ---
+        reinstall_via_powershell_expander = ExpanderFrame(
+            content_frame,
+            title=self.translator.translate("reinstall_via_powershell"),
+            font=(self.font_family, 10, "bold"),
+            width=40,
+            expanded=False
+        )
+        reinstall_via_powershell_expander.pack(fill="x", pady=10)
+
+        reinstall_via_powershell_expander_label = ttk.Label(
+            reinstall_via_powershell_expander.content_frame,
+            text=self.translator.translate("reinstall_via_powershell_description"),
+            font=(self.font_family, 10)
+        )
+        reinstall_via_powershell_expander.add_widget(reinstall_via_powershell_expander_label)

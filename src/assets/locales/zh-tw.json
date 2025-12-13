@@ -112,10 +112,30 @@
     "windows_installation_information": "Windows 安裝資訊",
 
   "__installer_page__": "安裝功能頁部分",
+    "install_microsoft_edge_webview2_runtime": "安裝 Microsoft Edge WebView2 執行階段",
+    "install_microsoft_edge_webview2_runtime_description": "安裝 Microsoft Edge WebView2 執行階段，以確保 Microsoft 電腦管家能夠正常運行",
+    "install_via_appxmanifest": "透過 AppxManifest.xml 安裝 Microsoft 電腦管家",
+    "install_via_appxmanifest_description": "透過 AppxManifest.xml 安裝 Microsoft 電腦管家，以繞過 Microsoft 電腦管家對於系統要求的檢查",
+    "install_via_dism_for_all_users": "透過 DISM 為所有使用者安裝 Microsoft 電腦管家",
+    "install_via_dism_for_all_users_description": "使用 DISM，透過 Microsoft 電腦管家應用程式包，為當前 Windows 或其他 Windows 安裝 Microsoft 電腦管家預配包",
+    "install_via_microsoft_store": "透過 Microsoft Store 安裝 Microsoft 電腦管家",
+    "install_via_microsoft_store_description": "打開 Microsoft Store 中的 Microsoft 電腦管家頁面以進行安裝",
+    "install_via_powershell_for_all_users": "透過 PowerShell 為所有使用者安裝 Microsoft 電腦管家",
+    "install_via_powershell_for_all_users_description": "使用 PowerShell，透過 Microsoft 電腦管家應用程式包，為當前 Windows 或其他 Windows 安裝 Microsoft 電腦管家預配包",
+    "install_via_powershell_for_current_user": "透過 PowerShell 為當前使用者安裝 Microsoft 電腦管家",
+    "install_via_powershell_for_current_user_description": "使用 PowerShell，透過 Microsoft 電腦管家應用程式包，為當前使用者安裝 Microsoft 電腦管家應用程式包",
+    "install_via_winget": "透過 WinGet 安裝 Microsoft 電腦管家",
+    "install_via_winget_description": "使用 WinGet 中的 msstore 源安裝 Microsoft 電腦管家",
+    "reinstall_via_powershell": "透過 PowerShell 重新安裝 Microsoft 電腦管家",
+    "reinstall_via_powershell_description": "使用 PowerShell，重新安裝 Microsoft 電腦管家以修復常見問題",
 
   "__installer_modules__": "安裝模組部分",
 
   "__maintenance_page__": "維護功能頁部分",
+    "logs_collection": "收集 Microsoft 電腦管家日誌",
+    "logs_collection_description": "收集 Microsoft 電腦管家相關日誌檔案、轉儲檔案及系統資訊",
+    "repair_microsoft_pc_manager": "修復 Microsoft 電腦管家",
+    "repair_microsoft_pc_manager_description": "嘗試修復已安裝的 Microsoft 電腦管家，以解決常見問題",
 
   "__maintenance_module__": "維護功能模組部分",
 
@@ -138,10 +158,34 @@
   "__toolbox_modules__": "工具箱部分",
 
   "__uninstaller_page__": "卸載功能頁部分",
+    "uninstall_beta": "卸載 Microsoft 電腦管家 Beta",
+    "uninstall_beta_description": "卸載已安裝的 Microsoft 電腦管家 Beta，並清理相關殘留檔案",
+    "uninstall_via_dism_for_all_users": "透過 DISM 為所有使用者卸載 Microsoft 電腦管家",
+    "uninstall_via_dism_for_all_users_description": "使用 DISM 與 PowerShell 為系統中的所有使用者卸載 Microsoft 電腦管家，並清理相關殘留檔案",
+    "uninstall_via_powershell_for_all_users": "透過 PowerShell 為所有使用者卸載 Microsoft 電腦管家",
+    "uninstall_via_powershell_for_all_users_description": "使用 PowerShell 為系統中的所有使用者卸載 Microsoft 電腦管家，並清理相關殘留檔案",
+    "uninstall_via_powershell_for_current_user": "透過 PowerShell 為當前使用者卸載 Microsoft 電腦管家",
+    "uninstall_via_powershell_for_current_user_description": "使用 PowerShell 為當前使用者卸載 Microsoft 電腦管家，並清理相關殘留檔案",
 
   "__uninstaller_modules__": "卸載模組部分",
 
   "__utilities_module__": "公用程式模組部分",
 
-  "__utilities_page__": "公用程式頁部分"
+  "__utilities_page__": "公用程式頁部分",
+    "compute_file_hash": "計算檔案雜湊值",
+    "compute_file_hash_description": "計算多個指定檔案的雜湊值",
+    "get_microsoft_pc_manager_dependencies_version": "獲取 Microsoft 電腦管家依賴項版本",
+    "get_microsoft_pc_manager_dependencies_version_description": "獲取當前系統中 Microsoft 電腦管家依賴項的版本資訊",
+    "open_developer_settings": "開發人員設定",
+    "open_developer_settings_description": "打開 Windows 開發人員設定頁面",
+    "open_product_documentation": "打開 Microsoft 電腦管家常見問題",
+    "open_product_documentation_description": "打開 Microsoft 電腦管家常見問題頁面以獲取更多資訊",
+    "repair_microsoftedgeupdate_not_working": "修復 MicrosoftEdgeUpdate 無法正常工作",
+    "repair_microsoftedgeupdate_not_working_description": "嘗試修復 MicrosoftEdgeUpdate.exe 無法正常工作的问题，以確保 Microsoft Edge 組件能夠正常更新",
+    "restart_services": "重啟服務",
+    "restart_services_description": "快速重啓與 Microsoft 電腦管家相關的服務",
+    "switch_regions": "切換地區",
+    "switch_regions_description": "切換 Microsoft 電腦管家使用的地區以訪問不同的內容",
+    "view_installed_antivirus_products": "查看已安裝的防病毒軟體",
+    "view_installed_antivirus_products_description": "使用 Windows API 查看當前系統中已安裝的防病毒軟體列表"
 }
