@@ -10,7 +10,7 @@ from .download_program_from_onedrive import DownloadProgramFromOneDrive
 from .download_windows_app_runtime_from_microsoft_learn import DownloadWindowsAppRuntimeFromMicrosoftLearn
 
 __all__ = [
-    "DownloadMicrosoftEdgeWebView2Runtime"
+    "DownloadMicrosoftEdgeWebView2Runtime",
     "DownloadMicrosoftPCManagerApplicationPackageFromAzureBlob",
     "DownloadMicrosoftPCManagerApplicationPackageFromOneDrive",
     "DownloadProgramFromGitHub",
