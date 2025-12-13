@@ -10,12 +10,12 @@ def on_start_mspcm_beta_click(logger):
 
             try:
                 os.startfile(registered_class_beta)
-                logger.info(f"Successfully Started Microsoft PC Manager Public Beta Via os.startfile: {registered_class_beta}")
+                logger.info(f"Successfully Started Microsoft PC Manager Public Beta via os.startfile: {registered_class_beta}")
             except Exception as e_os:
                 logger.warning(f"Failed to start via os.startfile: {e_os}. Trying CMD fallback...")
                 try:
                     subprocess.run(["cmd.exe", "/C", "start", "Start Microsoft PC Manager Public Beta", f"{registered_class_beta}"], check=True, creationflags=subprocess.CREATE_NO_WINDOW)
-                    logger.info(f"Successfully Started Microsoft PC Manager Public Beta Via CMD: {registered_class_beta}")
+                    logger.info(f"Successfully Started Microsoft PC Manager Public Beta via CMD: {registered_class_beta}")
                 except Exception as e_cmd:
                     logger.warning(f"Failed to start Microsoft PC Manager Public Beta via CMD: {e_cmd}. Trying Windows PowerShell fallback...")
                     try:
@@ -24,11 +24,11 @@ def on_start_mspcm_beta_click(logger):
                             check=True,
                             creationflags=subprocess.CREATE_NO_WINDOW
                         )
-                        logger.info(f"Successfully Started Microsoft PC Manager Public Beta Via Windows PowerShell: {registered_class_beta}")
+                        logger.info(f"Successfully Started Microsoft PC Manager Public Beta via Windows PowerShell: {registered_class_beta}")
                     except Exception as e_windows_powershell:
                         logger.warning(f"Failed to start Microsoft PC Manager Public Beta via Windows PowerShell: {e_windows_powershell}. Trying webbrowser fallback...")
                         try:
                             webbrowser.open(registered_class_beta)
-                            logger.info(f"Successfully Started Microsoft PC Manager Public Beta Via webbrowser: {registered_class_beta}")
+                            logger.info(f"Successfully Started Microsoft PC Manager Public Beta via webbrowser: {registered_class_beta}")
                         except Exception as e_webbrowser:
                             logger.error(f"Failed to start Microsoft PC Manager Public Beta. Error: {e_webbrowser}")
