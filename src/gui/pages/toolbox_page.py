@@ -2,15 +2,7 @@ from tkinter import ttk
 
 from core.program_logger import ProgramLogger
 from gui.widgets.scrollable_frame import ScrollableFrame
-from modules.toolbox.download_microsoft_edge_webview2_runtime import DownloadMicrosoftEdgeWebView2Runtime
-from modules.toolbox.download_microsoft_pc_manager_application_package_from_azure_blob import \
-    DownloadMicrosoftPCManagerApplicationPackageFromAzureBlob
-from modules.toolbox.download_microsoft_pc_manager_application_package_from_onedrive import \
-    DownloadMicrosoftPCManagerApplicationPackageFromOneDrive
-from modules.toolbox.download_program_from_github import DownloadProgramFromGitHub
-from modules.toolbox.download_program_from_onedrive import DownloadProgramFromOneDrive
-from modules.toolbox.download_windows_app_runtime_from_microsoft_learn import \
-    DownloadWindowsAppRuntimeFromMicrosoftLearn
+from modules.toolbox import *
 
 
 class ToolboxPage(ttk.Frame):

@@ -1,12 +1,6 @@
 from tkinter import ttk
 
-from gui.pages.about_page import AboutPage
-from gui.pages.home_page import HomePage
-from gui.pages.installer_page import InstallerPage
-from gui.pages.maintenance_page import MaintenancePage
-from gui.pages.toolbox_page import ToolboxPage
-from gui.pages.uninstaller_page import UninstallerPage
-from gui.pages.utilities_page import UtilitiesPage
+from gui.pages import *
 
 
 class Navigation(ttk.Frame):
