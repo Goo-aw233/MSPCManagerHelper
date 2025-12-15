@@ -1,3 +1,7 @@
+import os
+import subprocess
+import sys
+
 import darkdetect
 import sv_ttk
 
@@ -6,12 +10,53 @@ from core.set_font_family import SetFontFamily
 
 
 class ProgramSettings:
+    logger = ProgramLogger.get_logger()
+
     _THEME_MODE: str = "auto"
     _MS_STUDENT_AMBASSADOR_CID_DEFAULT: str = "/?wt.mc_id=studentamb_474966"
     _is_support_developer_enabled: bool = True
     _is_compatibility_mode_enabled: bool = False
     _is_follow_system_font_enabled: bool = False
     _cleanup_after_exit_enabled: bool = False
+
+    # ======================= JIT Settings =======================
+    @classmethod
+    def is_jit_enabled(cls) -> bool:
+        try:
+            jit = getattr(sys, "_jit", None)
+            is_enabled = getattr(jit, "is_enabled", None)
+            return bool(jit and callable(is_enabled) and is_enabled())
+        except Exception as e:
+            ProgramSettings.logger.warning(f"Failed to Check JIT Status: {e}")
+            return False
+
+    @classmethod
+    def enable_jit_and_exit(cls, is_admin: bool) -> None:
+        cmd = ["setx.exe", "/M", "PYTHON_JIT", "1"] if is_admin else ["setx.exe", "PYTHON_JIT", "1"]
+        target_scope = "System" if is_admin else "User"
+
+        try:
+            result = subprocess.run(
+                cmd,
+                check=True,
+                text=True,
+                capture_output=True,
+                creationflags=subprocess.CREATE_NO_WINDOW,
+                shell=False
+            )
+            ProgramSettings.logger.info(f"Enabled JIT via {target_scope} environment variable. Return code: {result.returncode}. Stdout: {result.stdout}.")
+        except Exception as e:
+            ProgramSettings.logger.error(f"Failed to Enable JIT ({target_scope} Scope): {e}")
+        sys.exit(0)
+
+    @staticmethod
+    def enable_jit_in_subprocess() -> None:
+        try:
+            os.environ["PYTHON_JIT"] = "1"
+            ProgramSettings.logger.info(f"Enabled JIT Compilation in current subprocess environment.")
+        except Exception as e:
+            ProgramSettings.logger.warning(f"Failed to Enable JIT Compilation in Subprocess: {e}")
+    # ======================= End of JIT Settings =======================
 
     # ======================= Theme Mode Settings =======================
     @classmethod
@@ -26,24 +71,23 @@ class ProgramSettings:
 
     @classmethod
     def apply_theme(cls) -> None:
-        logger = ProgramLogger.get_logger()
         try:
             if cls._THEME_MODE == "auto":
                 theme = darkdetect.theme()
                 if theme == "Light":
                     sv_ttk.set_theme("light")
-                    logger.info("System theme is Light, setting theme to light.")
+                    ProgramSettings.logger.info("System theme is Light, setting theme to light.")
                 else:
                     sv_ttk.set_theme("dark")
-                    logger.info("System theme is Dark, setting theme to dark.")
+                    ProgramSettings.logger.info("System theme is Dark, setting theme to dark.")
             elif cls._THEME_MODE == "light":
                 sv_ttk.set_theme("light")
-                logger.info("Forced theme to light.")
+                ProgramSettings.logger.info("Forced theme to light.")
             else:
                 sv_ttk.set_theme("dark")
-                logger.info("Forced theme to dark.")
+                ProgramSettings.logger.info("Forced theme to dark.")
         except Exception as e:
-            logger.warning(f"Failed to Apply Theme: {e}")
+            ProgramSettings.logger.warning(f"Failed to Apply Theme: {e}")
     # ======================= End of Theme Mode Settings =======================
 
     # ======================= Support Developer Mode Settings =======================
@@ -86,8 +130,7 @@ class ProgramSettings:
     @classmethod
     def set_follow_system_font_enabled(cls, enabled: bool) -> None:
         cls._is_follow_system_font_enabled = bool(enabled)
-        logger = ProgramLogger.get_logger()
-        logger.info(f"Follow System Font Set to: {enabled}")
+        ProgramSettings.logger.info(f"Follow System Font Set to: {enabled}")
         SetFontFamily.apply_font_setting(follow_system_font=enabled)
 
     @classmethod

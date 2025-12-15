@@ -1,5 +1,5 @@
 import sys
-from tkinter import BooleanVar, StringVar, ttk
+from tkinter import BooleanVar, messagebox, StringVar, ttk
 
 from tktooltip import ToolTip
 
@@ -480,6 +480,73 @@ class HomePage(ttk.Frame):
             theme_desc_label.config(wraplength=wrap)
 
         theme_frame.bind("<Configure>", _update_theme_desc_wrap)
+
+        # --- Row: Separator ---
+        separator = ttk.Separator(program_settings_frame, orient="horizontal")
+        separator.pack(fill="x", padx=5, pady=5)
+
+        # --- Row: Enable JIT ---
+        enable_jit_frame = ttk.Frame(program_settings_frame)
+        enable_jit_frame.pack(fill="x", padx=5, pady=5)
+        enable_jit_frame.grid_columnconfigure(0, weight=1)
+
+        enable_jit_desc_label = ttk.Label(
+            enable_jit_frame,
+            text=self.translator.translate("enable_jit_description"),
+            font=(self.font_family, 10),
+            justify="left"
+        )
+        enable_jit_desc_label.grid(row=0, column=0, sticky="w")
+
+        self.enable_jit_var = BooleanVar(value=ProgramSettings.is_jit_enabled())
+
+        def _on_enable_jit_toggle():
+            if not self.enable_jit_var.get():
+                self.enable_jit_var.set(ProgramSettings.is_jit_enabled())
+                return
+            confirm = messagebox.askyesnocancel(
+                title=self.translator.translate("enable_jit"),
+                message=self.translator.translate("enable_jit_restart_prompt")
+            )
+            if confirm is True:
+                ProgramSettings.enable_jit_and_exit(is_admin)
+                enable_jit_checkbutton.config(state="disabled")
+            elif confirm is False:
+                ProgramSettings.enable_jit_in_subprocess()
+                enable_jit_checkbutton.config(state="disabled")
+            else:
+                messagebox.showerror(
+                    title=self.translator.translate("error"),
+                    message=self.translator.translate("user_has_canceled_the_operation")
+                )
+                self.enable_jit_var.set(False)
+
+        enable_jit_checkbutton = ttk.Checkbutton(
+            enable_jit_frame,
+            text=self.translator.translate("enable_jit"),
+            variable=self.enable_jit_var,
+            style="HomePage.Switch.TCheckbutton",
+            state="disabled" if self.enable_jit_var.get() else "normal",
+            command=_on_enable_jit_toggle
+        )
+        enable_jit_checkbutton.grid(row=0, column=1, sticky="e", padx=(10, 0))
+
+        ToolTip(
+            enable_jit_checkbutton,
+            msg=self.translator.translate("enable_jit_tooltip"),
+            delay=0.5
+        )
+
+        def _update_enable_jit_desc_wrap(e):
+            try:
+                checkbox_width = enable_jit_checkbutton.winfo_width() or enable_jit_checkbutton.winfo_reqwidth()
+            except Exception:
+                checkbox_width = 120
+            padding = 30
+            wrap = max(30, e.width - checkbox_width - padding)
+            enable_jit_desc_label.config(wraplength=wrap)
+
+        enable_jit_frame.bind("<Configure>", _update_enable_jit_desc_wrap)
 
         # --- Row: Support Developer ---
         support_developer_frame = ttk.Frame(program_settings_frame)
