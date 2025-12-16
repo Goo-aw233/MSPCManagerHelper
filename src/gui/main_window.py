@@ -43,12 +43,13 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
             self.logger.info("PyInstaller Extraction Path: Not running from PyInstaller bundle.")
         self.logger.info(f"CPython JIT Available: {sys._jit.is_available()}, Enabled: {sys._jit.is_enabled()}")
         self.logger.info("========================= Initializing Base GUI =========================")
-        ProgramSettings.apply_theme()
+        ProgramSettings.apply_theme(self)
         self._set_dpi_awareness()
         self._set_language()
         self._configure_window()
         self._check_system_requirements()
         self._configure_ui()
+        self.update_idletasks()
         self.logger.info("========================= Base GUI Initialized =========================")
         # self.deiconify()    # Show window after all configurations are done.
 
@@ -220,7 +221,7 @@ class MSPCManagerHelperMainWindow(tkinter.Tk):
         self.logger.info("========================= Refreshing Main Window UI =========================")
         if hasattr(self, "background_frame") and self.background_frame.winfo_exists():
             self.background_frame.destroy()
-        ProgramSettings.apply_theme()
+        ProgramSettings.apply_theme(self)
         self._configure_window()
         self._set_language()
         self._configure_ui()

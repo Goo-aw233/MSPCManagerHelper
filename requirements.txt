@@ -10,6 +10,7 @@ pyinstaller==6.17.0
 pyinstaller-hooks-contrib==2025.10
 pywin32==311
 pywin32-ctypes==0.2.3
+pywinstyles==1.8
 RapidFuzz==3.14.3
 setuptools==80.9.0
 sv_ttk==2.6.1

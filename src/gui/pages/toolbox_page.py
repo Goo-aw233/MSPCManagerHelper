@@ -1,5 +1,8 @@
 from tkinter import ttk
 
+import darkdetect
+import sv_ttk
+
 from core.program_logger import ProgramLogger
 from gui.widgets.scrollable_frame import ScrollableFrame
 from modules.toolbox import *
@@ -25,8 +28,15 @@ class ToolboxPage(ttk.Frame):
         style.configure("ToolboxPage.TButton", font=(self.font_family, 10))
 
         # Use the theme background so the canvas matches the rest of UI.
-        frame_bg = style.lookup("TFrame", "background") or self.cget("background")
-        # text_fg = style.lookup("TLabel", "foreground") or "#000000"
+        theme = sv_ttk.get_theme() if hasattr(sv_ttk, "get_theme") else (darkdetect.theme().lower() if darkdetect.theme() else "light")
+        if theme == "dark":
+            default_bg = "#1c1c1c"
+            # default_fg = "#fafafa"
+        else:
+            default_bg = "#fafafa"
+            # default_fg = "#1c1c1c"
+        frame_bg = style.lookup("TFrame", "background") or default_bg
+        # text_fg = style.lookup("TLabel", "foreground") or default_fg
 
         # Page-level Scrollable Frame (Shared Component)
         scrollable = ScrollableFrame(self, bg=frame_bg)

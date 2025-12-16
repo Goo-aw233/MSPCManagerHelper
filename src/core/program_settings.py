@@ -3,6 +3,7 @@ import subprocess
 import sys
 
 import darkdetect
+import pywinstyles
 import sv_ttk
 
 from core.program_logger import ProgramLogger
@@ -70,22 +71,30 @@ class ProgramSettings:
         cls._THEME_MODE = mode
 
     @classmethod
-    def apply_theme(cls) -> None:
+    def apply_theme(cls, window=None) -> None:
         try:
             if cls._THEME_MODE == "auto":
                 theme = darkdetect.theme()
                 if theme == "Light":
                     sv_ttk.set_theme("light")
                     ProgramSettings.logger.info("System theme is Light, setting theme to light.")
+                    if window:
+                        pywinstyles.apply_style(window, "light")
                 else:
                     sv_ttk.set_theme("dark")
                     ProgramSettings.logger.info("System theme is Dark, setting theme to dark.")
+                    if window:
+                        pywinstyles.apply_style(window, "dark")
             elif cls._THEME_MODE == "light":
                 sv_ttk.set_theme("light")
                 ProgramSettings.logger.info("Forced theme to light.")
+                if window:
+                    pywinstyles.apply_style(window, "light")
             else:
                 sv_ttk.set_theme("dark")
                 ProgramSettings.logger.info("Forced theme to dark.")
+                if window:
+                    pywinstyles.apply_style(window, "dark")
         except Exception as e:
             ProgramSettings.logger.warning(f"Failed to Apply Theme: {e}")
     # ======================= End of Theme Mode Settings =======================
