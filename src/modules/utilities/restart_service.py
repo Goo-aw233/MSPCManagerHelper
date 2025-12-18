@@ -1,0 +1,2 @@
+class RestartService:
+    pass

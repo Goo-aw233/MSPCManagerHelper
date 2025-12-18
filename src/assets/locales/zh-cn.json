@@ -1,0 +1,48 @@
+{
+  "mspcmanagerhelper": "MSPCManagerHelper",
+
+  "__i18n_name_list__": "语言名称列表",
+    "lang_en-us": "English (United States)",
+    "lang_zh-cn": "中文 (简体)",
+    "lang_zh-tw": "中文 (繁體)",
+
+  "__localization_translator_list__": "本地化翻译者列表（GitHub 个人资料名称: 显示昵称）",
+    "Goo-aw233": "GuCATs",
+    "Lingggao": "Ling Gao",
+  "__localization_translator_list_end__": "此处为本地化翻译者列表的结束标记，请勿删除此行。",
+
+  "__initialization__": "初始化部分",
+    "administrator_protection_is_enabled": "“管理员保护”已启用，部分功能将被禁用。请关闭“管理员保护”并重启 Windows 以继续。",
+    "administrator_required": "需要以管理员身份运行",
+    "error": "错误",
+    "operating_system_is_not_windows_nt_based": "当前操作系统不是基于 Windows NT，程序将无法运行。",
+    "program_is_not_running_as_administrator": "MSPCManagerHelper 未以管理员身份运行，部分功能将被禁用。请从“主页”部分选择“以管理员身份运行”以继续。",
+    "windows_feature_experience_pack": "Windows 功能体验包",
+    "windows_server_installation_type_is_core": "当前 Windows Server 安装类型不为“带桌面体验的 Windows Server”，部分功能将被禁用。请重新安装“带桌面体验的 Windows Server”以继续。",
+
+  "__navigation__": "导航部分",
+
+  "__about_page__": "关于部分",
+
+  "__home_page__": "主页部分",
+
+  "__installer_page__": "安装功能页部分",
+
+  "__installer_modules__": "安装模块部分",
+
+  "__maintenance_page__": "维护功能页部分",
+
+  "__maintenance_module__": "维护功能模块部分",
+
+  "__toolbox_page__": "工具箱部分",
+
+  "__toolbox_modules__": "工具箱部分",
+
+  "__uninstaller_page__": "卸载功能页部分",
+
+  "__uninstaller_modules__": "卸载模块部分",
+
+  "__utilities_module__": "实用工具模块部分",
+
+  "__utilities_page__": "实用工具页部分"
+}

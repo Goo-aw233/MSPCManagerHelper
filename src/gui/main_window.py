@@ -1,0 +1,153 @@
+import locale
+import tkinter
+import os
+import sys
+from tkinter import messagebox
+from pathlib import Path
+
+import customtkinter
+from windows_toasts import Toast, WindowsToaster
+
+from core.advanced_startup import AdvancedStartup
+from core.check_system_requirements import CheckSystemRequirements
+from core.get_program_resources import GetProgramResources
+from core.program_logger import ProgramLogger
+from core.program_metadata import ProgramMetadata
+from core.program_settings import ProgramSettings
+from core.set_font_family import SetFontFamily
+from core.translator import Translator
+
+
+class MSPCManagerHelperMainWindow(customtkinter.CTk):
+    def __init__(self):
+        super().__init__()
+        self.logger = ProgramLogger.get_logger()
+        program_launch_message = f"{ProgramMetadata.PROGRAM_NAME} {ProgramMetadata.PROGRAM_VERSION}"
+        if AdvancedStartup.is_devmode():
+            program_launch_message += " (in DevMode)"
+        if AdvancedStartup.is_debugmode():
+            program_launch_message += " (in DebugMode)"
+        program_launch_message += " Launched"
+        self.logger.info(program_launch_message)
+        self.logger.info(f"Launched From: {Path(sys.argv[0]).resolve()}")
+        self.logger.info(f"Runtime Arguments: {AdvancedStartup.get_runtime_arguments()}")
+        self.logger.info(f"Current Working Directory: {os.getcwd()}")
+        self.logger.info(f"Log File Path: {ProgramLogger.get_log_file_path()}")
+        if hasattr(sys, "_MEIPASS"):
+            self.logger.info(f"PyInstaller Extraction Path: {sys._MEIPASS}")
+        else:
+            self.logger.info("PyInstaller Extraction Path: Not Running from PyInstaller Bundle")
+        self.logger.info(f"CPython JIT Available: {sys._jit.is_available()}, Enabled: {sys._jit.is_enabled()}")
+        self.logger.info("========================= Initializing Base GUI =========================")
+        self._configure_window()
+        self._set_language()
+        self._check_system_requirements()
+        self.logger.info("========================= Base GUI Initialized =========================")
+
+    def _configure_window(self):
+        # Set the Window Title
+        program_title_str = f"{ProgramMetadata.PROGRAM_NAME} {ProgramMetadata.PROGRAM_VERSION}"
+        if AdvancedStartup.is_administrator():
+            program_title_str += " (Administrator)"
+        if AdvancedStartup.is_devmode():
+            program_title_str += " - DevMode"
+        if AdvancedStartup.is_debugmode():
+            program_title_str += " - DebugMode"
+        self.title(program_title_str)
+    
+        # Set Font Family
+        language = getattr(self, "language", "").lower()
+        # Determine whether to follow system font through ProgramSettings.
+        follow_system_font = ProgramSettings.is_follow_system_font_enabled()
+        self.font_family = SetFontFamily.apply_font_setting(follow_system_font=follow_system_font, language=language)
+        self.logger.info(f"Font Setting: follow_system_font={follow_system_font}")
+    
+        # Set Window Size
+        self._adjust_window_size(default_width=984, default_height=661)
+
+        # Set Window Icon
+        program_icon_path = GetProgramResources.get_program_icon()
+        if program_icon_path:
+            self.iconbitmap(program_icon_path)
+            self.logger.info(f"Window Icon: {program_icon_path}")
+
+    def _set_language(self):
+        language_map = {
+            # English
+            ("en_", "en-"): "en-us",
+            # Simplified Chinese
+            ("zh_CN", "zh_Hans", "zh_Hans_", "zh_Hans_CN", "zh_Hans_HK", "zh_Hans_MO", "zh_Hans_SG", "zh_SG", "zh-CN",
+             "zh-Hans", "zh-Hans-", "zh-Hans-CN", "zh-Hans-HK", "zh-Hans-MO", "zh-Hans-SG", "zh-SG",): "zh-cn",
+            # Traditional Chinese
+            ("zh_Hant", "zh_Hant_", "zh_Hant_HK", "zh_Hant_MO", "zh_Hant_TW", "zh_HK", "zh_MO", "zh_TW", "zh-Hant",
+             "zh-Hant-",
+             "zh-Hant-HK", "zh-Hant-MO", "zh-Hant-TW", "zh-HK", "zh-MO", "zh_TW"): "zh-tw"
+        }
+        locale_str = locale.getdefaultlocale()[0]
+        language = "en-us"  # Default Language
+        for prefixes, trans_locale in language_map.items():
+            if any(locale_str.startswith(prefix) for prefix in prefixes):
+                language = trans_locale
+                break
+        self.language = language
+        self.translator = Translator(self.language)
+        # Synchronize the Language to CheckSystemRequirements Class
+        CheckSystemRequirements.translator = self.translator
+        self.logger.info(f"Program Language: {self.language}")
+
+    def _check_system_requirements(self):
+        found_issue = False
+    
+        if not CheckSystemRequirements.check_if_windows_nt():
+            found_issue = True
+            self.logger.error("Operating system is not Windows NT-based.")
+            messagebox.showerror(
+                self.translator.translate("error"),
+                self.translator.translate("operating_system_is_not_windows_nt_based")
+            )
+            sys.exit(1)
+
+        if CheckSystemRequirements.check_admin_approval_mode():
+            found_issue = True
+            self.logger.warning("Admin Approval Mode is enabled.")
+            messagebox.showwarning(
+                self.translator.translate("warning"),
+                self.translator.translate("administrator_protection_is_enabled")
+            )
+
+        if CheckSystemRequirements.check_windows_server_levels():
+            found_issue = True
+            self.logger.warning("Windows Server installation type is Core.")
+            messagebox.showwarning(
+                self.translator.translate("warning"),
+                self.translator.translate("windows_server_installation_type_is_core")
+            )
+
+        if not AdvancedStartup.is_administrator():
+            found_issue = True
+            self.logger.warning("Program is not running as administrator.")
+            toaster = WindowsToaster(ProgramMetadata.PROGRAM_NAME)
+            run_as_administrator_toast = Toast()
+            run_as_administrator_toast.text_fields = [
+                self.translator.translate("administrator_required"),
+                self.translator.translate("program_is_not_running_as_administrator")
+            ]
+            run_as_administrator_toast.tag = "administrator_required_toast"
+            toaster.show_toast(run_as_administrator_toast)
+
+        if not CheckSystemRequirements.check_if_long_paths_enabled():
+            found_issue = True
+            self.logger.warning("Long paths are not enabled.")
+
+        if not found_issue:
+            self.logger.info("No system requirement issues were found.")
+
+    def _adjust_window_size(self, default_width, default_height, offset_ratio=0.05):
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        min_offset = int(min(screen_width, screen_height) * offset_ratio)
+        width = min(default_width, screen_width - min_offset)
+        height = min(default_height, screen_height - min_offset)
+        x = max(0, (screen_width - width) // 2)
+        y = max(0, (screen_height - height) // 2)
+        self.geometry(f"{width}x{height}+{x}+{y}")

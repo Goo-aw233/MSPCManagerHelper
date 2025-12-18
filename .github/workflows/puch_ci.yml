@@ -5,7 +5,7 @@ name: Python Program - MSPCMangerHelper
 
 on:
   push:
-    branches: [ "dev-gucats", "dev-gucats_legacy" ]
+    branches: [ "main", "dev-gucats", "dev-gucats_legacy" ]
   pull_request:
     branches: [ "main" ]
 
@@ -25,13 +25,16 @@ jobs:
 
     steps:
     - uses: actions/checkout@v6
-    - name: Set Up Python 3.11
+    - name: Set Up Python 3.14
       uses: actions/setup-python@v6
       with:
-        python-version: "3.11"
+        python-version: "3.14"
     - name: Create .venv & Install Dependencies
       run: |
         ./scripts/install_requirements_.venv.cmd
+    - name: Cleanup Before Build
+      run: |
+        ./scripts/build/cleanup-before-first-build.cmd
     - name: Build EXE in .venv
       run: |
         ./scripts/build/build_.venv.cmd

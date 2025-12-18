@@ -1,15 +1,13 @@
 <div align=center>
 
 # MSPCManagerHelper
-<img src="./src/assets/MSPCManagerHelper.png" width="140" height="140"/>
-</div>
+<img src="../src/assets/icons/MSPCManagerHelper.png" width="140" height="140" alt="MSPCManagerHelper 標志" />
 
-> [!IMPORTANT]
-> 此倉庫將進入慢速模式，短時間內不會有更新，除非有重大錯誤、漏洞或 Microsoft 電腦管家更新需要適應等。
+</div>
 
 ## 🖹 選取語言
 
-Please select your language to continue
+Please Select Your Language to Continue
 
 請選取你的語言以繼續 | 请选择你的语言以继续
 
@@ -26,9 +24,12 @@ Please select your language to continue
 > [!NOTE]
 > 請注意，本輔助工具部分內容引用了來自第三方（即非 Microsoft 官方）網頁的連結。這些網頁可能提供準確且、安全的資訊來協助您解決問題。然而，請務必留意頁面上的廣告，其中可能包含通常被歸類為 PUP（Potentially Unwanted Products，潛在有害產品）的內容。在您下載及安裝文件或應用前，請徹底地研究網頁中推廣的任何產品。
 
+> [!TIP]
+> 若你想為 MSPCManagerHelper 提交代碼，請參閲 [CONTRIBUTING](./CONTRIBUTING.md)。
+
 ## 💻 開發
 
-1. 從 [Python](https://www.python.org/downloads) 下載 Python 3.11 版本
+1. 從 [Python](https://www.python.org/downloads) 下載 Python 3.14 版本
 
 2. 克隆代碼
 
@@ -41,9 +42,9 @@ Please select your language to continue
 
     - **Windows**:
 
-        ```Batch
-        py -3.11 -m venv .venv
-        .venv\Scripts\activate
+        ```Batchfile
+        py -3.14 -m venv .venv
+        ".venv\Scripts\activate"
         ```
 
     <details>
@@ -60,10 +61,9 @@ Please select your language to continue
 
 4. 安裝套件包
 
-    ```Batch
+    ```Batchfile
     python -m pip install --upgrade pip
     pip install -r requirements.txt
-    pip install requests
     ```
 
     在 `scripts` 目錄下，您也可以直接執行 `install_requirements.cmd` 快速完成安裝，或執行 `install_requirements_.venv.cmd` 同時啟用虛擬環境並安裝套件。
@@ -71,4 +71,4 @@ Please select your language to continue
 5. 構建 EXE
 
     直接執行 `scripts\build` 目錄下的 `build.cmd` 或 `build_.venv.cmd` 即可自己構建。
-    最後，構建好的 `EXE 檔案` 將會存放在根目錄的 `dist` 目錄下，並命名為 `MSPCManagerHelper_..._vx.x.x.x.exe`。
+    最後，構建好的 `EXE 檔案` 將會存放在根目錄的 `dist` 目錄下，並命名為 `MSPCManagerHelper_..._v#.#.#.#_<架構>.exe`。

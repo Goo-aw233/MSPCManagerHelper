@@ -1,0 +1,2 @@
+class GetDependenciesVersion:
+    pass

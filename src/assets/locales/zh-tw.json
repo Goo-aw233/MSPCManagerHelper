@@ -1,0 +1,47 @@
+{
+  "mspcmanagerhelper": "MSPCManagerHelper",
+
+  "__i18n_name_list__": "語言名稱列表",
+    "lang_en-us": "English (United States)",
+    "lang_zh-cn": "中文 (简体)",
+    "lang_zh-tw": "中文 (繁體)",
+
+  "__localization_translator_list__": "本地化翻譯者列表（GitHub 個人資料名稱: 顯示暱稱）",
+    "jay900604": "吳宥叡",
+  "__localization_translator_list_end__": "此處為本地化翻譯者列表的結束標記，請勿刪除此行。",
+
+  "__initialization__": "初始化部分",
+    "administrator_protection_is_enabled": "「系統管理員保護」已啟用，部分功能將被停用。請關閉「系統管理員保護」並重新啟動 Windows 以繼續。",
+    "administrator_required": "需要以系統管理員身份執行",
+    "error": "錯誤",
+    "operating_system_is_not_windows_nt_based": "當前操作系統不是基於 Windows NT，程式將無法執行。",
+    "program_is_not_running_as_administrator": "MSPCManagerHelper 未以系統管理員身份執行，部分功能將被停用。請從「主頁」部分選擇「以系統管理員身份執行」以繼續。",
+    "windows_feature_experience_pack": "Windows 功能體驗包",
+    "windows_server_installation_type_is_core": "當前 Windows Server 安裝類型不為「具有桌面體驗的 Windows Server」，部分功能將被停用。請重新安裝「具有桌面體驗的 Windows Server」以繼續。",
+
+  "__navigation__": "導航部分",
+
+  "__about_page__": "關於部分",
+
+  "__home_page__": "主頁部分",
+
+  "__installer_page__": "安裝功能頁部分",
+
+  "__installer_modules__": "安裝模組部分",
+
+  "__maintenance_page__": "維護功能頁部分",
+
+  "__maintenance_module__": "維護功能模組部分",
+
+  "__toolbox_page__": "工具箱部分",
+
+  "__toolbox_modules__": "工具箱部分",
+
+  "__uninstaller_page__": "卸載功能頁部分",
+
+  "__uninstaller_modules__": "卸載模組部分",
+
+  "__utilities_module__": "公用程式模組部分",
+
+  "__utilities_page__": "公用程式頁部分"
+}

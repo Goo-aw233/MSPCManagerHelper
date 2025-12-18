@@ -1,15 +1,13 @@
 <div align=center>
 
 # MSPCManagerHelper
-<img src="./src/assets/MSPCManagerHelper.png" width="140" height="140"/>
-</div>
+<img src="./src/assets/icons/MSPCManagerHelper.png" width="140" height="140" alt="MSPCManagerHelper Logo" />
 
-> [!IMPORTANT]
-> This repository will go into slow mode and there will be no updates for a short period of time unless there are major bugs, vulnerabilities, or Microsoft PC Manager updates that need to be adapted, etc.
+</div>
 
 ## 🖹 Choose Your Language
 
-Please select your language to continue
+Please Select Your Language to Continue
 
 請選取你的語言以繼續 | 请选择你的语言以继续
 
@@ -26,11 +24,14 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 > [!NOTE]
 > Some features of `MSPCManagerHelper` include references to third-party (non-Microsoft) web pages. While these pages may offer accurate and helpful information, they might also contain advertisements categorized as PUPs (Potentially Unwanted Products). Please exercise caution and thoroughly review any products or files before downloading or installing them.
 
+> [!TIP]
+> If you wish to develop for MSPCManagerHelper, please refer to [CONTRIBUTING](./docs/CONTRIBUTING.md).
+
 ## 💻 Development
 
-1. Download Python 3.11 from [Python](https://www.python.org/downloads)
+1. Download Python 3.14 from [Python](https://www.python.org/downloads)
 
-2. Clone the code
+2. Clone the Code
 
     ```bash
     git clone https://github.com/Goo-aw233/MSPCManagerHelper.git
@@ -41,13 +42,13 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 
     - **Windows**:
 
-        ```Batch
-        py -3.11 -m venv .venv
-        .venv\Scripts\activate
+        ```Batchfile
+        py -3.14 -m venv .venv
+        ".venv\Scripts\activate"
         ```
 
     <details>
-    <summary>The <code>install_requirements.sh</code> for macOS and Linux is no longer available</summary>
+    <summary>The <code>install_requirements.sh</code> for macOS and Linux is No Longer Available</summary>
 
     - **macOS / Linux**:
 
@@ -60,10 +61,9 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 
 4. Install the pip Packages
 
-    ```Batch
+    ```Batchfile
     python -m pip install --upgrade pip
     pip install -r requirements.txt
-    pip install requests
     ```
 
     In the `scripts` directory, you can also run `install_requirements.cmd` directly to quickly complete the installation, or run `install_requirements_.venv.cmd` to activate the virtual environment and install the dependencies at the same time.
@@ -71,4 +71,4 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 5. Build the EXE
 
     Run `build.cmd` or `build_.venv.cmd` directly from the `scripts\build` directory to build it yourself.
-    Finally, the built `EXE file` will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_... _vx.x.x.x.x.exe`.
+    Finally, the built `EXE file` will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_..._v#.#.#.#_<Architecture>.exe`.

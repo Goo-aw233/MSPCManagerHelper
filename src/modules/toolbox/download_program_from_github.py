@@ -1,0 +1,2 @@
+class DownloadProgramFromGitHub:
+    pass

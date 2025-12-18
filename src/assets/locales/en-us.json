@@ -1,0 +1,47 @@
+{
+  "mspcmanagerhelper": "MSPCManagerHelper",
+
+  "__i18n_name_list__": "Language Name List",
+    "lang_en-us": "English (United States)",
+    "lang_zh-cn": "中文 (简体)",
+    "lang_zh-tw": "中文 (繁體)",
+
+  "__localization_translator_list__": "Localization Translator List (GitHub Profile Name: Display Nickname)",
+    "Goo-aw233": "GuCATs",
+  "__localization_translator_list_end__": "This is the end marker for the localization translator list. Please do not delete this line.",
+
+  "__initialization__": "Initialization Section",
+    "administrator_protection_is_enabled": "Administrator Protection is enabled, some features will be disabled. Please disable Administrator Protection and restart Windows to continue.",
+    "administrator_required": "Administrator Required",
+    "error": "Error",
+    "operating_system_is_not_windows_nt_based": "The current operating system is not Windows NT-based. The program will not run.",
+    "program_is_not_running_as_administrator": "MSPCManagerHelper is not running as an administrator. Some features will be disabled. Please select Run as Administrator from the Home Page to continue.",
+    "windows_feature_experience_pack": "Windows Feature Experience Pack",
+    "windows_server_installation_type_is_core": "The current Windows Server installation type is not Windows Server with Desktop Experience. Some features will be disabled. Please reinstall Windows Server with Desktop Experience to continue.",
+
+  "__navigation__": "Navigation Section",
+
+  "__about_page__": "About Section",
+
+  "__home_page__": "Home Section",
+
+  "__installer_page__": "Installer Section",
+
+  "__installer_modules__": "Installer Modules",
+
+  "__maintenance_page__": "Maintenance Section",
+
+  "__maintenance_module__": "Maintenance Modules",
+
+  "__toolbox_page__": "Toolbox Section",
+
+  "__toolbox_modules__": "Toolbox Modules",
+
+  "__uninstaller_page__": "Uninstaller Section",
+
+  "__uninstaller_modules__": "Uninstaller Modules",
+
+  "__utilities_module__": "Utilities Modules",
+
+  "__utilities_page__": "Utilities Section"
+}

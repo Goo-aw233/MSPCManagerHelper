@@ -1,8 +1,8 @@
-import main_window
+from gui import MSPCManagerHelperMainWindow
 
 
 def main():
-    program = main_window.MSPCManagerHelper()
+    program = MSPCManagerHelperMainWindow()
     program.mainloop()
 
 
