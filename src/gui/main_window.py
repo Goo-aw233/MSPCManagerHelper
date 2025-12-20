@@ -1,9 +1,8 @@
 import locale
-import tkinter
 import os
 import sys
-from tkinter import messagebox
 from pathlib import Path
+from tkinter import messagebox
 
 import customtkinter
 from windows_toasts import Toast, WindowsToaster
@@ -41,7 +40,10 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
         self.logger.info("========================= Initializing Base GUI =========================")
         self._configure_window()
         self._set_language()
-        self._check_system_requirements()
+        if AdvancedStartup.is_bypasscheck():
+            self.logger.info("System Requirements Check Bypassed")
+        else:
+            self._check_system_requirements()
         self.logger.info("========================= Base GUI Initialized =========================")
 
     def _configure_window(self):

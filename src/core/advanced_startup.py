@@ -21,6 +21,11 @@ class AdvancedStartup:
         return any(arg.lower() in debugmode_args for arg in sys.argv)
 
     @staticmethod
+    def is_bypasscheck():
+        bypass_args = ["/bypasscheck", "-bypasscheck", "--bypasscheck"]
+        return any(arg.lower() in bypass_args for arg in sys.argv)
+
+    @staticmethod
     def get_runtime_arguments():
         # Return argument list (excluding the program itself).
         return sys.argv[1:].copy()
