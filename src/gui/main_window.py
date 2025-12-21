@@ -169,31 +169,58 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
 
     def _build_pages(self):
         page_specs = [
-            ("home", "home_page"),
-            ("maintenance", "maintenance_page"),
-            ("installer", "installer_page"),
-            ("uninstaller", "uninstaller_page"),
-            ("utilities", "utilities_page"),
-            ("toolbox", "toolbox_page"),
-            ("about", "about_page"),
-            ("settings", "settings_page"),
+            ("home", "home_page", "home_page_subtitle", "home_page_hint"),
+            ("maintenance", "maintenance_page", "maintenance_page_subtitle", "maintenance_page_hint"),
+            ("installer", "installer_page", "installer_page_subtitle", "installer_page_hint"),
+            ("uninstaller", "uninstaller_page", "uninstaller_page_subtitle", "uninstaller_page_hint"),
+            ("utilities", "utilities_page", "utilities_page_subtitle", "utilities_page_hint"),
+            ("toolbox", "toolbox_page", "toolbox_page_subtitle", "toolbox_page_hint"),
+            ("about", "about_page", "about_page_subtitle", "about_page_hint"),
+            ("settings", "settings_page", "settings_page_subtitle", "settings_page_hint"),
         ]
 
-        for name, translation_key in page_specs:
-            frame = self._build_placeholder_page(self.translator.translate(translation_key))
+        for name, title_key, subtitle_key, hint_key in page_specs:
+            frame = self._build_placeholder_page(
+                title=self.translator.translate(title_key),
+                subtitle=self.translator.translate(subtitle_key),
+                hint=self.translator.translate(hint_key),
+            )
             self.pages[name] = frame
 
-    def _build_placeholder_page(self, title: str):
+    def _build_placeholder_page(self, title: str, subtitle: str, hint: str):
         frame = customtkinter.CTkFrame(self.content_container, fg_color="transparent", corner_radius=0)
         frame.grid_rowconfigure(1, weight=1)
         frame.grid_columnconfigure(0, weight=1)
 
+        header = customtkinter.CTkFrame(frame, fg_color="transparent", corner_radius=0)
+        header.grid(row=0, column=0, sticky="ew", padx=24, pady=(20, 10))
+        header.grid_columnconfigure(1, weight=1)
+
         title_label = customtkinter.CTkLabel(
-            frame,
+            header,
             text=title,
             font=(self.font_family, 28, "bold"),
         )
-        title_label.grid(row=0, column=0, pady=(24, 12), padx=24, sticky="w")
+        title_label.grid(row=0, column=0, sticky="w")
+
+        subtitle_label = customtkinter.CTkLabel(
+            header,
+            text=subtitle,
+            font=(self.font_family, 14),
+        )
+        subtitle_label.grid(row=1, column=0, sticky="w", pady=(4, 0))
+
+        hint_chip = customtkinter.CTkLabel(
+            header,
+            text=hint,
+            font=(self.font_family, 12),
+            fg_color="#e5f1fb",
+            text_color="#0f6cbd",
+            corner_radius=8,
+            padx=12,
+            pady=6,
+        )
+        hint_chip.grid(row=0, column=1, rowspan=2, sticky="e")
 
         placeholder = customtkinter.CTkFrame(frame, fg_color="transparent")
         placeholder.grid(row=1, column=0, padx=24, pady=12, sticky="nsew")
