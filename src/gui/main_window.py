@@ -15,6 +15,7 @@ from core.program_metadata import ProgramMetadata
 from core.program_settings import ProgramSettings
 from core.set_font_family import SetFontFamily
 from core.translator import Translator
+from gui.widgets.navigation_frame import NavigationFrame
 
 
 class MSPCManagerHelperMainWindow(customtkinter.CTk):
@@ -44,6 +45,7 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
             self.logger.info("System Requirements Check Bypassed")
         else:
             self._check_system_requirements()
+        self._initialize_layout()
         self.logger.info("========================= Base GUI Initialized =========================")
 
     def _configure_window(self):
@@ -65,13 +67,34 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
         self.logger.info(f"Font Setting: follow_system_font={follow_system_font}")
     
         # Set Window Size
-        self._adjust_window_size(default_width=984, default_height=661)
+        self._adjust_window_size(default_width=1100, default_height=720)
 
         # Set Window Icon
         program_icon_path = GetProgramResources.get_program_icon()
         if program_icon_path:
             self.iconbitmap(program_icon_path)
             self.logger.info(f"Window Icon: {program_icon_path}")
+
+    def _initialize_layout(self):
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+
+        self.navigation_frame = NavigationFrame(
+            self,
+            translator=self.translator,
+            font_family=self.font_family,
+            on_nav=self._switch_page,
+        )
+        self.navigation_frame.grid(row=0, column=0, sticky="ns")
+
+        self.content_container = customtkinter.CTkFrame(self, fg_color="transparent", corner_radius=0)
+        self.content_container.grid(row=0, column=1, sticky="nsew")
+        self.content_container.grid_rowconfigure(0, weight=1)
+        self.content_container.grid_columnconfigure(0, weight=1)
+
+        self.pages = {}
+        self._build_pages()
+        self._switch_page("home")
 
     def _set_language(self):
         language_map = {
@@ -143,6 +166,51 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
 
         if not found_issue:
             self.logger.info("No system requirement issues were found.")
+
+    def _build_pages(self):
+        page_specs = [
+            ("home", "home_page"),
+            ("maintenance", "maintenance_page"),
+            ("installer", "installer_page"),
+            ("uninstaller", "uninstaller_page"),
+            ("utilities", "utilities_page"),
+            ("toolbox", "toolbox_page"),
+            ("about", "about_page"),
+            ("settings", "settings_page"),
+        ]
+
+        for name, translation_key in page_specs:
+            frame = self._build_placeholder_page(self.translator.translate(translation_key))
+            self.pages[name] = frame
+
+    def _build_placeholder_page(self, title: str):
+        frame = customtkinter.CTkFrame(self.content_container, fg_color="transparent", corner_radius=0)
+        frame.grid_rowconfigure(1, weight=1)
+        frame.grid_columnconfigure(0, weight=1)
+
+        title_label = customtkinter.CTkLabel(
+            frame,
+            text=title,
+            font=(self.font_family, 28, "bold"),
+        )
+        title_label.grid(row=0, column=0, pady=(24, 12), padx=24, sticky="w")
+
+        placeholder = customtkinter.CTkFrame(frame, fg_color="transparent")
+        placeholder.grid(row=1, column=0, padx=24, pady=12, sticky="nsew")
+        placeholder.grid_rowconfigure(0, weight=1)
+        placeholder.grid_columnconfigure(0, weight=1)
+        return frame
+
+    def _switch_page(self, page_key: str):
+        for frame in self.pages.values():
+            frame.grid_forget()
+
+        target = self.pages.get(page_key)
+        if target:
+            target.grid(row=0, column=0, sticky="nsew")
+
+        if hasattr(self, "navigation_frame"):
+            self.navigation_frame.set_active(page_key)
 
     def _adjust_window_size(self, default_width, default_height, offset_ratio=0.05):
         screen_width = self.winfo_screenwidth()

@@ -1,6 +1,4 @@
 {
-  "mspcmanagerhelper": "MSPCManagerHelper",
-
   "__i18n_name_list__": "語言名稱列表",
     "lang_en-us": "English (United States)",
     "lang_zh-cn": "中文 (简体)",
@@ -20,6 +18,14 @@
     "windows_server_installation_type_is_core": "當前 Windows Server 安裝類型不為「具有桌面體驗的 Windows Server」，部分功能將被停用。請重新安裝「具有桌面體驗的 Windows Server」以繼續。",
 
   "__navigation__": "導航部分",
+    "about_page": "關於",
+    "home_page": "主頁",
+    "installer_page": "安裝",
+    "maintenance_page": "維護",
+    "settings_page": "設定",
+    "toolbox_page": "工具箱",
+    "uninstaller_page": "卸載",
+    "utilities_page": "公用程式",
 
   "__about_page__": "關於部分",
 

@@ -1,6 +1,4 @@
 {
-  "mspcmanagerhelper": "MSPCManagerHelper",
-
   "__i18n_name_list__": "Language Name List",
     "lang_en-us": "English (United States)",
     "lang_zh-cn": "中文 (简体)",
@@ -20,6 +18,14 @@
     "windows_server_installation_type_is_core": "The current Windows Server installation type is not Windows Server with Desktop Experience. Some features will be disabled. Please reinstall Windows Server with Desktop Experience to continue.",
 
   "__navigation__": "Navigation Section",
+    "about_page": "About",
+    "home_page": "Home",
+    "installer_page": "Installer",
+    "maintenance_page": "Maintenance",
+    "settings_page": "Settings",
+    "toolbox_page": "Toolbox",
+    "uninstaller_page": "Uninstaller",
+    "utilities_page": "Utilities",
 
   "__about_page__": "About Section",
 

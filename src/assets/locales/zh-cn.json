@@ -1,6 +1,4 @@
 {
-  "mspcmanagerhelper": "MSPCManagerHelper",
-
   "__i18n_name_list__": "语言名称列表",
     "lang_en-us": "English (United States)",
     "lang_zh-cn": "中文 (简体)",
@@ -21,6 +19,14 @@
     "windows_server_installation_type_is_core": "当前 Windows Server 安装类型不为“带桌面体验的 Windows Server”，部分功能将被禁用。请重新安装“带桌面体验的 Windows Server”以继续。",
 
   "__navigation__": "导航部分",
+    "about_page": "关于",
+    "home_page": "主页",
+    "installer_page": "安装",
+    "maintenance_page": "维护",
+    "settings_page": "设置",
+    "toolbox_page": "工具箱",
+    "uninstaller_page": "卸载",
+    "utilities_page": "实用工具",
 
   "__about_page__": "关于部分",
 

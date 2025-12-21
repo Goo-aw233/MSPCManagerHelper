@@ -1,0 +1,2 @@
+class SettingsPage():
+    pass
