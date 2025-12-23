@@ -3,6 +3,7 @@ from typing import Callable, Dict
 import customtkinter
 
 from core.program_metadata import ProgramMetadata
+from core.program_settings import ProgramSettings
 
 
 class NavigationFrame(customtkinter.CTkFrame):
@@ -14,13 +15,14 @@ class NavigationFrame(customtkinter.CTkFrame):
         super().__init__(master, fg_color=self.colors["nav_bg"], corner_radius=0)
 
         self.nav_buttons: Dict[str, customtkinter.CTkButton] = {}
+        self.active_key: str | None = None
         self.grid_rowconfigure(99, weight=1)
 
         self._build_header()
         self._build_navigation()
 
     def _get_palette(self) -> Dict[str, str]:
-        appearance = customtkinter.get_appearance_mode().lower()
+        appearance = ProgramSettings.get_effective_theme_mode().lower()
         if appearance == "dark":
             return {
                 "accent": "#3aa0ff",
@@ -40,14 +42,14 @@ class NavigationFrame(customtkinter.CTkFrame):
         }
 
     def _build_header(self) -> None:
-        header = customtkinter.CTkLabel(
+        self.header_label = customtkinter.CTkLabel(
             self,
             text=f"{ProgramMetadata.PROGRAM_NAME}",
             font=(self.font_family, 20, "bold"),
             text_color=self.colors["text_primary"],
             anchor="w",
         )
-        header.grid(row=0, column=0, padx=16, pady=(18, 10), sticky="w")
+        self.header_label.grid(row=0, column=0, padx=16, pady=(18, 10), sticky="w")
 
     def _build_navigation(self) -> None:
         pages = [
@@ -83,8 +85,20 @@ class NavigationFrame(customtkinter.CTkFrame):
         self.set_active(key)
 
     def set_active(self, key: str) -> None:
+        self.active_key = key
         for name, button in self.nav_buttons.items():
             if name == key:
                 button.configure(fg_color=self.colors["accent"], text_color="#ffffff", hover_color=self.colors["accent_hover"])
             else:
                 button.configure(fg_color="transparent", text_color=self.colors["text_primary"], hover_color=self.colors["nav_hover"])
+
+    def refresh_palette(self) -> None:
+        self.colors = self._get_palette()
+        self.configure(fg_color=self.colors["nav_bg"])
+
+        self.header_label.configure(text_color=self.colors["text_primary"])
+        for _, button in self.nav_buttons.items():
+            button.configure(text_color=self.colors["text_primary"], hover_color=self.colors["nav_hover"], fg_color="transparent")
+
+        if self.active_key:
+            self.set_active(self.active_key)

@@ -55,6 +55,13 @@
 
   "__maintenance_module__": "維護功能模組部分",
 
+  "__settings_page__": "設定部分",
+    "dark_theme": "深色主題",
+    "light_theme": "淺色主題",
+    "match_system_theme": "匹配系統主題",
+    "program_theme": "程式主題",
+    "program_theme_desc": "選擇程式的顯示外觀",
+
   "__toolbox_page__": "工具箱部分",
 
   "__toolbox_modules__": "工具箱部分",

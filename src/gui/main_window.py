@@ -15,6 +15,7 @@ from core.program_metadata import ProgramMetadata
 from core.program_settings import ProgramSettings
 from core.set_font_family import SetFontFamily
 from core.translator import Translator
+from gui.pages import *
 from gui.widgets.navigation_frame import NavigationFrame
 
 
@@ -39,6 +40,7 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
             self.logger.info("PyInstaller Extraction Path: Not Running from PyInstaller Bundle")
         self.logger.info(f"CPython JIT Available: {sys._jit.is_available()}, Enabled: {sys._jit.is_enabled()}")
         self.logger.info("========================= Initializing Base GUI =========================")
+        ProgramSettings.set_theme_mode(ProgramSettings.get_theme_mode())
         self._configure_window()
         self._set_language()
         if AdvancedStartup.is_bypasscheck():
@@ -180,11 +182,19 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
         ]
 
         for name, title_key, subtitle_key, hint_key in page_specs:
-            frame = self._build_placeholder_page(
-                title=self.translator.translate(title_key),
-                subtitle=self.translator.translate(subtitle_key),
-                hint=self.translator.translate(hint_key),
-            )
+            if name == "settings":
+                frame = SettingsPage(
+                    self.content_container,
+                    translator=self.translator,
+                    font_family=self.font_family,
+                    on_theme_change=self._on_theme_changed,
+                )
+            else:
+                frame = self._build_placeholder_page(
+                    title=self.translator.translate(title_key),
+                    subtitle=self.translator.translate(subtitle_key),
+                    hint=self.translator.translate(hint_key),
+                )
             self.pages[name] = frame
 
     def _build_placeholder_page(self, title: str, subtitle: str, hint: str):
@@ -238,6 +248,10 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
 
         if hasattr(self, "navigation_frame"):
             self.navigation_frame.set_active(page_key)
+
+    def _on_theme_changed(self, mode: str):
+        if hasattr(self, "navigation_frame"):
+            self.navigation_frame.refresh_palette()
 
     def _adjust_window_size(self, default_width, default_height, offset_ratio=0.05):
         screen_width = self.winfo_screenwidth()

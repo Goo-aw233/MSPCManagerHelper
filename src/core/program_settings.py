@@ -2,6 +2,9 @@ import os
 import subprocess
 import sys
 
+import customtkinter
+import darkdetect
+
 from core.program_logger import ProgramLogger
 from core.set_font_family import SetFontFamily
 
@@ -10,6 +13,7 @@ class ProgramSettings:
     logger = ProgramLogger.get_logger()
 
     _THEME_MODE: str = "auto"
+    _EFFECTIVE_THEME_MODE: str = "auto"
     _MS_STUDENT_AMBASSADOR_CID_DEFAULT: str = "/?wt.mc_id=studentamb_474966"
     _is_support_developer_enabled: bool = True
     _is_compatibility_mode_enabled: bool = False
@@ -54,6 +58,51 @@ class ProgramSettings:
         except Exception as e:
             ProgramSettings.logger.warning(f"Failed to Enable JIT Compilation in Subprocess: {e}")
     # ======================= End of JIT Settings =======================
+
+    # ======================= Theme Settings =======================
+    @classmethod
+    def get_theme_mode(cls) -> str:
+        return cls._THEME_MODE
+
+    @classmethod
+    def get_effective_theme_mode(cls) -> str:
+        return cls._EFFECTIVE_THEME_MODE
+
+    @classmethod
+    def set_theme_mode(cls, mode: str) -> None:
+        normalized = str(mode).lower() if mode else "auto"
+        if normalized in ("auto", "system"):
+            normalized = "auto"
+            ctk_mode = "System"
+        elif normalized == "light":
+            ctk_mode = "Light"
+        elif normalized == "dark":
+            ctk_mode = "Dark"
+        else:
+            cls.logger.warning(f"Invalid appearance mode '{mode}' provided. Falling back to 'auto'.")
+            normalized = "auto"
+            ctk_mode = "System"
+
+        cls._THEME_MODE = normalized
+        try:
+            customtkinter.set_appearance_mode(ctk_mode)
+            cls._EFFECTIVE_THEME_MODE = cls._resolve_effective_mode(ctk_mode)
+            cls.logger.info(f"Applied Appearance Mode: {normalized} (Effective={cls._EFFECTIVE_THEME_MODE})")
+        except Exception as e:
+            cls.logger.error(f"Failed to Apply Appearance Mode '{mode}': {e}")
+
+    @classmethod
+    def _resolve_effective_mode(cls, ctk_mode: str) -> str:
+        try:
+            # CustomTkinter may report "System"; map it using darkdetect so dependent UI can pick correct palette.
+            if str(ctk_mode).lower() == "system":
+                return "dark" if darkdetect.isDark() else "light"
+            lowered = str(ctk_mode).lower()
+            return "dark" if lowered == "dark" else "light"
+        except Exception as e:
+            cls.logger.warning(f"Failed to Resolve Effective Appearance Mode from '{ctk_mode}': {e}")
+            return "light"
+    # ======================= End of Theme Settings =======================
 
     # ======================= Support Developer Mode Settings =======================
     @classmethod
