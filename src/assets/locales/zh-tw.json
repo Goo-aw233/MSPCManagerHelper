@@ -65,6 +65,8 @@
     "program_language_desc": "選擇程式介面的顯示語言",
     "program_appearance": "程式外觀",
     "program_appearance_desc": "選擇程式的顯示外觀",
+    "support_developer": "支援開發人員",
+    "support_developer_desc": "程式將在開啓部分 Microsoft 頁面時添加「微軟學生大使」的追蹤符以協助開發人員統計資料",
 
   "__toolbox_page__": "工具箱部分",
 

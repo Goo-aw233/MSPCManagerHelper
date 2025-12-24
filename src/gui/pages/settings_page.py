@@ -56,6 +56,7 @@ class SettingsPage(customtkinter.CTkFrame):
 
         self._build_language_section(content, row=0)
         self._build_appearance_section(content, row=1)
+        self._build_support_developer_section(content, row=2)
 
     def _build_language_section(self, parent, row: int):
         card = customtkinter.CTkFrame(parent, fg_color=("white", "#1f1f1f"), corner_radius=12)
@@ -171,6 +172,41 @@ class SettingsPage(customtkinter.CTkFrame):
 
         self._set_initial_follow_system_font()
 
+    def _build_support_developer_section(self, parent, row: int):
+        card = customtkinter.CTkFrame(parent, fg_color=("white", "#1f1f1f"), corner_radius=12)
+        card.grid(row=row, column=0, sticky="ew", pady=(14, 0))
+        card.grid_columnconfigure(0, weight=1)
+
+        section_title = customtkinter.CTkLabel(
+            card,
+            text=self.translator.translate("support_developer"),
+            font=(self.font_family, 18, "bold"),
+        )
+        section_title.grid(row=0, column=0, sticky="w", padx=18, pady=(16, 6))
+
+        section_desc = customtkinter.CTkLabel(
+            card,
+            text=self.translator.translate("support_developer_desc"),
+            font=(self.font_family, 12),
+            text_color=("#404040", "#c7c7c7"),
+            wraplength=620,
+            justify="left",
+        )
+        section_desc.grid(row=1, column=0, sticky="w", padx=18)
+
+        switch_frame = customtkinter.CTkFrame(card, fg_color="transparent")
+        switch_frame.grid(row=2, column=0, sticky="w", padx=14, pady=(14, 18))
+
+        self.support_developer_switch = customtkinter.CTkSwitch(
+            switch_frame,
+            text=self.translator.translate("support_developer"),
+            command=self._handle_support_developer_toggle,
+            font=(self.font_family, 12, "bold"),
+        )
+        self.support_developer_switch.grid(row=0, column=0, sticky="w")
+
+        self._set_initial_support_developer()
+
     def _set_initial_language(self, option_labels):
         current_language = ProgramSettings.get_language() or self.translator.locale
         label = next((lbl for lbl, code in self._language_value_map.items() if code == current_language), None)
@@ -193,6 +229,12 @@ class SettingsPage(customtkinter.CTkFrame):
         else:
             self.follow_system_font_switch.deselect()
 
+    def _set_initial_support_developer(self):
+        if ProgramSettings.is_support_developer_enabled():
+            self.support_developer_switch.select()
+        else:
+            self.support_developer_switch.deselect()
+
     def _handle_theme_change(self, selection: str):
         mode = self._theme_value_map.get(selection, "auto")
         ProgramSettings.set_theme_mode(mode)
@@ -213,3 +255,6 @@ class SettingsPage(customtkinter.CTkFrame):
             self.on_follow_system_font_change(follow_system_font)
         else:
             ProgramSettings.set_follow_system_font_enabled(follow_system_font)
+
+    def _handle_support_developer_toggle(self):
+        ProgramSettings.set_support_developer_enabled(bool(self.support_developer_switch.get()))

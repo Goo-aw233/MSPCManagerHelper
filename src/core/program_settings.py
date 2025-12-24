@@ -6,7 +6,6 @@ import customtkinter
 import darkdetect
 
 from core.program_logger import ProgramLogger
-from core.set_font_family import SetFontFamily
 
 
 class ProgramSettings:
@@ -141,6 +140,7 @@ class ProgramSettings:
     @classmethod
     def set_support_developer_enabled(cls, enabled: bool) -> None:
         cls._is_support_developer_enabled = bool(enabled)
+        ProgramSettings.logger.info(f"Support Developer Set to: {enabled}")
 
     @classmethod
     def toggle_support_developer(cls) -> None:

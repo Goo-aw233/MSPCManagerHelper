@@ -66,6 +66,8 @@
     "program_language_desc": "选择程序界面的显示语言",
     "program_appearance": "程序外观",
     "program_appearance_desc": "选择程序的显示外观",
+    "support_developer": "支持开发者",
+    "support_developer_desc": "程序将在打开部分 Microsoft 页面时添加“微软学生大使”的跟踪符以帮助开发者统计数据",
 
   "__toolbox_page__": "工具箱部分",
 
