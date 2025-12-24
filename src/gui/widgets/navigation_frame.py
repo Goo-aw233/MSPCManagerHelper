@@ -70,6 +70,7 @@ class NavigationFrame(customtkinter.CTkFrame):
                 anchor="w",
                 width=196,
                 height=38,
+                font=(self.font_family, 14),
                 fg_color="transparent",
                 hover_color=self.colors["nav_hover"],
                 text_color=self.colors["text_primary"],
