@@ -59,6 +59,8 @@
     "dark_theme": "深色主題",
     "light_theme": "淺色主題",
     "match_system_theme": "匹配系統主題",
+    "program_language": "介面語言",
+    "program_language_desc": "選擇程式介面的顯示語言",
     "program_theme": "程式主題",
     "program_theme_desc": "選擇程式的顯示外觀",
 

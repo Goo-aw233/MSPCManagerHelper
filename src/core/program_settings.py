@@ -14,6 +14,8 @@ class ProgramSettings:
 
     _THEME_MODE: str = "auto"
     _EFFECTIVE_THEME_MODE: str = "auto"
+    _SUPPORTED_LANGUAGES = ("en-us", "zh-cn", "zh-tw")
+    _LANGUAGE: str | None = None
     _MS_STUDENT_AMBASSADOR_CID_DEFAULT: str = "/?wt.mc_id=studentamb_474966"
     _is_support_developer_enabled: bool = True
     _is_compatibility_mode_enabled: bool = False
@@ -103,6 +105,33 @@ class ProgramSettings:
             cls.logger.warning(f"Failed to Resolve Effective Appearance Mode from '{ctk_mode}': {e}")
             return "light"
     # ======================= End of Theme Settings =======================
+
+    # ======================= Language Settings =======================
+    @classmethod
+    def get_supported_languages(cls) -> tuple[str, ...]:
+        return cls._SUPPORTED_LANGUAGES
+
+    @classmethod
+    def get_language(cls) -> str | None:
+        return cls._LANGUAGE
+
+    @classmethod
+    def set_language(cls, language: str | None) -> None:
+        if not language:
+            cls._LANGUAGE = None
+            return
+
+        normalized = str(language).lower()
+        if normalized == cls._LANGUAGE:
+            return
+
+        if normalized in cls._SUPPORTED_LANGUAGES:
+            cls._LANGUAGE = normalized
+            cls.logger.info(f"Applied Language: {normalized}")
+            return
+
+        cls.logger.warning(f"Invalid language '{language}' provided. Keeping existing language setting.")
+    # ======================= End of Language Settings =======================
 
     # ======================= Support Developer Mode Settings =======================
     @classmethod

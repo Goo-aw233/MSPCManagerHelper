@@ -41,8 +41,8 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
         self.logger.info(f"CPython JIT Available: {sys._jit.is_available()}, Enabled: {sys._jit.is_enabled()}")
         self.logger.info("========================= Initializing Base GUI =========================")
         ProgramSettings.set_theme_mode(ProgramSettings.get_theme_mode())
-        self._configure_window()
         self._set_language()
+        self._configure_window()
         if AdvancedStartup.is_bypasscheck():
             self.logger.info("System Requirements Check Bypassed")
         else:
@@ -60,14 +60,9 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
         if AdvancedStartup.is_debugmode():
             program_title_str += " - DebugMode"
         self.title(program_title_str)
-    
-        # Set Font Family
-        language = getattr(self, "language", "").lower()
-        # Determine whether to follow system font through ProgramSettings.
-        follow_system_font = ProgramSettings.is_follow_system_font_enabled()
-        self.font_family = SetFontFamily.apply_font_setting(follow_system_font=follow_system_font, language=language)
-        self.logger.info(f"Font Setting: follow_system_font={follow_system_font}")
-    
+
+        self._update_font_family()
+
         # Set Window Size
         self._adjust_window_size(default_width=1100, default_height=720)
 
@@ -77,7 +72,14 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
             self.iconbitmap(program_icon_path)
             self.logger.info(f"Window Icon: {program_icon_path}")
 
-    def _initialize_layout(self):
+    def _update_font_family(self):
+        # Determine whether to follow system font through ProgramSettings.
+        language = getattr(self, "language", "").lower()
+        follow_system_font = ProgramSettings.is_follow_system_font_enabled()
+        self.font_family = SetFontFamily.apply_font_setting(follow_system_font=follow_system_font, language=language)
+        self.logger.info(f"Font Setting: follow_system_font={follow_system_font}")
+
+    def _initialize_layout(self, initial_page: str = "home"):
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
@@ -96,7 +98,8 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
 
         self.pages = {}
         self._build_pages()
-        self._switch_page("home")
+        target_page = initial_page if initial_page in self.pages else "home"
+        self._switch_page(target_page)
 
     def _set_language(self):
         language_map = {
@@ -110,13 +113,22 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
              "zh-Hant-",
              "zh-Hant-HK", "zh-Hant-MO", "zh-Hant-TW", "zh-HK", "zh-MO", "zh_TW"): "zh-tw"
         }
-        locale_str = locale.getdefaultlocale()[0]
-        language = "en-us"  # Default Language
-        for prefixes, trans_locale in language_map.items():
-            if any(locale_str.startswith(prefix) for prefix in prefixes):
-                language = trans_locale
-                break
+        locale_info = locale.getdefaultlocale()
+        locale_str = locale_info[0] if locale_info and locale_info[0] else ""
+
+        configured_language = ProgramSettings.get_language()
+        language = configured_language if configured_language in ProgramSettings.get_supported_languages() else None
+
+        if not language:
+            for prefixes, trans_locale in language_map.items():
+                if any(locale_str.startswith(prefix) for prefix in prefixes):
+                    language = trans_locale
+                    break
+
+        if language not in ProgramSettings.get_supported_languages():
+            language = "en-us"
         self.language = language
+        ProgramSettings.set_language(language)
         self.translator = Translator(self.language)
         # Synchronize the Language to CheckSystemRequirements Class
         CheckSystemRequirements.translator = self.translator
@@ -188,6 +200,7 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
                     translator=self.translator,
                     font_family=self.font_family,
                     on_theme_change=self._on_theme_changed,
+                    on_language_change=self._on_language_changed,
                 )
             else:
                 frame = self._build_placeholder_page(
@@ -245,6 +258,9 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
         target = self.pages.get(page_key)
         if target:
             target.grid(row=0, column=0, sticky="nsew")
+        elif page_key != "home" and "home" in self.pages:
+            self.pages["home"].grid(row=0, column=0, sticky="nsew")
+            page_key = "home"
 
         if hasattr(self, "navigation_frame"):
             self.navigation_frame.set_active(page_key)
@@ -252,6 +268,42 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
     def _on_theme_changed(self, mode: str):
         if hasattr(self, "navigation_frame"):
             self.navigation_frame.refresh_palette()
+
+    def _on_language_changed(self, language: str):
+        self._refresh_language(language)
+
+    def _refresh_language(self, language: str):
+        if not language:
+            return
+
+        normalized = language.lower()
+        if normalized == getattr(self, "language", None):
+            return
+
+        if normalized not in ProgramSettings.get_supported_languages():
+            self.logger.warning(f"Unsupported language change requested: {language}")
+            return
+
+        self.logger.info("--------------- Switching Language ---------------")
+        self.language = normalized
+        ProgramSettings.set_language(normalized)
+        self.translator = Translator(self.language)
+        CheckSystemRequirements.translator = self.translator
+        self._update_font_family()
+
+        active_page = "home"
+        if hasattr(self, "navigation_frame") and getattr(self.navigation_frame, "active_key", None):
+            active_page = self.navigation_frame.active_key
+
+        if hasattr(self, "navigation_frame"):
+            self.navigation_frame.destroy()
+        if hasattr(self, "content_container"):
+            self.content_container.destroy()
+
+        self.pages = {}
+        self._initialize_layout(initial_page=active_page)
+        self.logger.info(f"Program Language Switched to: {self.language}")
+        self.logger.info("--------------- Language Switched ---------------")
 
     def _adjust_window_size(self, default_width, default_height, offset_ratio=0.05):
         screen_width = self.winfo_screenwidth()

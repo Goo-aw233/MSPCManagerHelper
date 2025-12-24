@@ -59,6 +59,8 @@
     "dark_theme": "Dark Theme",
     "light_theme": "Light Theme",
     "match_system_theme": "Match System Theme",
+    "program_language": "Program Language",
+    "program_language_desc": "Switch the Display Language for the Program",
     "program_theme": "Program Theme",
     "program_theme_desc": "Select the Appearance for the Program",
 
