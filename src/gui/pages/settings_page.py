@@ -151,14 +151,6 @@ class SettingsPage(customtkinter.CTkFrame):
         font_switch_frame = customtkinter.CTkFrame(card, fg_color="transparent")
         font_switch_frame.grid(row=3, column=0, sticky="ew", padx=14, pady=(6, 16))
 
-        self.follow_system_font_switch = customtkinter.CTkSwitch(
-            font_switch_frame,
-            text=self.translator.translate("follow_system_font"),
-            command=self._handle_follow_system_font_toggle,
-            font=(self.font_family, 12, "bold"),
-        )
-        self.follow_system_font_switch.grid(row=0, column=0, sticky="w")
-
         follow_system_desc = customtkinter.CTkLabel(
             font_switch_frame,
             text=f"{self.translator.translate('follow_system_font_desc')} {self.font_family}",
@@ -167,7 +159,15 @@ class SettingsPage(customtkinter.CTkFrame):
             wraplength=620,
             justify="left",
         )
-        follow_system_desc.grid(row=1, column=0, sticky="w", pady=(6, 0))
+        follow_system_desc.grid(row=0, column=0, sticky="w")
+
+        self.follow_system_font_switch = customtkinter.CTkSwitch(
+            font_switch_frame,
+            text=self.translator.translate("follow_system_font"),
+            command=self._handle_follow_system_font_toggle,
+            font=(self.font_family, 12, "bold"),
+        )
+        self.follow_system_font_switch.grid(row=1, column=0, sticky="w", pady=(8, 0))
 
         self._set_initial_follow_system_font()
 

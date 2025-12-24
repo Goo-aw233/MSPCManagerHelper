@@ -58,7 +58,7 @@
   "__settings_page__": "Settings Section",
     "dark_theme": "Dark Theme",
     "follow_system_font": "Follow System Font",
-      "follow_system_font_desc": "Use the Current Windows UI Font Across the Entire Program. Current font:",
+    "follow_system_font_desc": "Use the current Windows UI font across the entire program. Current Font: ",
     "light_theme": "Light Theme",
     "match_system_theme": "Match System Theme",
     "program_language": "Program Language",
