@@ -77,7 +77,6 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
         language = getattr(self, "language", "").lower()
         follow_system_font = ProgramSettings.is_follow_system_font_enabled()
         self.font_family = SetFontFamily.apply_font_setting(follow_system_font=follow_system_font, language=language)
-        self.logger.info(f"Font Setting: follow_system_font={follow_system_font}")
 
     def _initialize_layout(self, initial_page: str = "home"):
         self.grid_columnconfigure(1, weight=1)
@@ -201,6 +200,7 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
                     font_family=self.font_family,
                     on_theme_change=self._on_theme_changed,
                     on_language_change=self._on_language_changed,
+                    on_follow_system_font_change=self._on_follow_system_font_changed,
                 )
             else:
                 frame = self._build_placeholder_page(
@@ -272,6 +272,13 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
     def _on_language_changed(self, language: str):
         self._refresh_language(language)
 
+    def _on_follow_system_font_changed(self, follow_system_font: bool):
+        flag = bool(follow_system_font)
+        self.logger.info("--------------- Setting to Follow System Font ---------------")
+        ProgramSettings.set_follow_system_font_enabled(flag)
+        self._refresh_font_family()
+        self.logger.info("--------------- Set to Follow System Font ---------------")
+
     def _refresh_language(self, language: str):
         if not language:
             return
@@ -291,9 +298,24 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
         CheckSystemRequirements.translator = self.translator
         self._update_font_family()
 
-        active_page = "home"
+        active_page = None
         if hasattr(self, "navigation_frame") and getattr(self.navigation_frame, "active_key", None):
             active_page = self.navigation_frame.active_key
+        self._rebuild_layout(active_page)
+        self.logger.info(f"Program Language Switched to: {self.language}")
+        self.logger.info("--------------- Language Switched ---------------")
+
+    def _refresh_font_family(self):
+        self._update_font_family()
+        self._rebuild_layout()
+        self.logger.info(f"Font Refreshed: follow_system_font={ProgramSettings.is_follow_system_font_enabled()}")
+
+    def _rebuild_layout(self, active_page: str | None = None):
+        target_page = active_page
+        if not target_page and hasattr(self, "navigation_frame") and getattr(self.navigation_frame, "active_key", None):
+            target_page = self.navigation_frame.active_key
+        if not target_page:
+            target_page = "home"
 
         if hasattr(self, "navigation_frame"):
             self.navigation_frame.destroy()
@@ -301,9 +323,7 @@ class MSPCManagerHelperMainWindow(customtkinter.CTk):
             self.content_container.destroy()
 
         self.pages = {}
-        self._initialize_layout(initial_page=active_page)
-        self.logger.info(f"Program Language Switched to: {self.language}")
-        self.logger.info("--------------- Language Switched ---------------")
+        self._initialize_layout(initial_page=target_page)
 
     def _adjust_window_size(self, default_width, default_height, offset_ratio=0.05):
         screen_width = self.winfo_screenwidth()

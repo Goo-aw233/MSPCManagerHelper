@@ -174,7 +174,6 @@ class ProgramSettings:
     def set_follow_system_font_enabled(cls, enabled: bool) -> None:
         cls._is_follow_system_font_enabled = bool(enabled)
         ProgramSettings.logger.info(f"Follow System Font Set to: {enabled}")
-        SetFontFamily.apply_font_setting(follow_system_font=enabled)
 
     @classmethod
     def toggle_follow_system_font(cls) -> None:

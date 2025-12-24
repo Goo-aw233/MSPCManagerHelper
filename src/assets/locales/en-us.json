@@ -57,12 +57,14 @@
 
   "__settings_page__": "Settings Section",
     "dark_theme": "Dark Theme",
+    "follow_system_font": "Follow System Font",
+      "follow_system_font_desc": "Use the Current Windows UI Font Across the Entire Program. Current font:",
     "light_theme": "Light Theme",
     "match_system_theme": "Match System Theme",
     "program_language": "Program Language",
     "program_language_desc": "Switch the Display Language for the Program",
-    "program_theme": "Program Theme",
-    "program_theme_desc": "Select the Appearance for the Program",
+    "program_appearance": "Program Appearance",
+    "program_appearance_desc": "Select the Appearance for the Program",
 
   "__toolbox_page__": "Toolbox Section",
 

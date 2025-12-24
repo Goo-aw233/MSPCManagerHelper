@@ -57,12 +57,14 @@
 
   "__settings_page__": "設定部分",
     "dark_theme": "深色主題",
+    "follow_system_font": "跟隨系統字體",
+    "follow_system_font_desc": "使用目前的 Windows 介面字體套用到整個程式。當前字體：",
     "light_theme": "淺色主題",
     "match_system_theme": "匹配系統主題",
     "program_language": "介面語言",
     "program_language_desc": "選擇程式介面的顯示語言",
-    "program_theme": "程式主題",
-    "program_theme_desc": "選擇程式的顯示外觀",
+    "program_appearance": "程式外觀",
+    "program_appearance_desc": "選擇程式的顯示外觀",
 
   "__toolbox_page__": "工具箱部分",
 

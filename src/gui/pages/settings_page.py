@@ -4,12 +4,13 @@ from core.program_settings import ProgramSettings
 
 
 class SettingsPage(customtkinter.CTkFrame):
-    def __init__(self, master, translator, font_family: str, on_theme_change=None, on_language_change=None):
+    def __init__(self, master, translator, font_family: str, on_theme_change=None, on_language_change=None, on_follow_system_font_change=None):
         super().__init__(master, fg_color="transparent", corner_radius=0)
         self.translator = translator
         self.font_family = font_family
         self.on_theme_change = on_theme_change
         self.on_language_change = on_language_change
+        self.on_follow_system_font_change = on_follow_system_font_change
 
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -106,14 +107,14 @@ class SettingsPage(customtkinter.CTkFrame):
 
         section_title = customtkinter.CTkLabel(
             card,
-            text=self.translator.translate("program_theme"),
+            text=self.translator.translate("program_appearance"),
             font=(self.font_family, 18, "bold"),
         )
         section_title.grid(row=0, column=0, sticky="w", padx=18, pady=(16, 6))
 
         section_desc = customtkinter.CTkLabel(
             card,
-            text=self.translator.translate("program_theme_desc"),
+            text=self.translator.translate("program_appearance_desc"),
             font=(self.font_family, 12),
             text_color=("#404040", "#c7c7c7"),
             wraplength=620,
@@ -147,6 +148,29 @@ class SettingsPage(customtkinter.CTkFrame):
 
         self._set_initial_theme(option_labels)
 
+        font_switch_frame = customtkinter.CTkFrame(card, fg_color="transparent")
+        font_switch_frame.grid(row=3, column=0, sticky="ew", padx=14, pady=(6, 16))
+
+        self.follow_system_font_switch = customtkinter.CTkSwitch(
+            font_switch_frame,
+            text=self.translator.translate("follow_system_font"),
+            command=self._handle_follow_system_font_toggle,
+            font=(self.font_family, 12, "bold"),
+        )
+        self.follow_system_font_switch.grid(row=0, column=0, sticky="w")
+
+        follow_system_desc = customtkinter.CTkLabel(
+            font_switch_frame,
+            text=f"{self.translator.translate('follow_system_font_desc')} {self.font_family}",
+            font=(self.font_family, 11),
+            text_color=("#404040", "#c7c7c7"),
+            wraplength=620,
+            justify="left",
+        )
+        follow_system_desc.grid(row=1, column=0, sticky="w", pady=(6, 0))
+
+        self._set_initial_follow_system_font()
+
     def _set_initial_language(self, option_labels):
         current_language = ProgramSettings.get_language() or self.translator.locale
         label = next((lbl for lbl, code in self._language_value_map.items() if code == current_language), None)
@@ -163,6 +187,12 @@ class SettingsPage(customtkinter.CTkFrame):
         if label:
             self.theme_selector.set(label)
 
+    def _set_initial_follow_system_font(self):
+        if ProgramSettings.is_follow_system_font_enabled():
+            self.follow_system_font_switch.select()
+        else:
+            self.follow_system_font_switch.deselect()
+
     def _handle_theme_change(self, selection: str):
         mode = self._theme_value_map.get(selection, "auto")
         ProgramSettings.set_theme_mode(mode)
@@ -176,3 +206,10 @@ class SettingsPage(customtkinter.CTkFrame):
         elif language:
             # Fallback: Apply directly if no callback is wired.
             ProgramSettings.set_language(language)
+
+    def _handle_follow_system_font_toggle(self):
+        follow_system_font = bool(self.follow_system_font_switch.get())
+        if self.on_follow_system_font_change is not None:
+            self.on_follow_system_font_change(follow_system_font)
+        else:
+            ProgramSettings.set_follow_system_font_enabled(follow_system_font)
