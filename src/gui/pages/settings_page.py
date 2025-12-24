@@ -4,13 +4,14 @@ from core.program_settings import ProgramSettings
 
 
 class SettingsPage(customtkinter.CTkFrame):
-    def __init__(self, master, translator, font_family: str, on_theme_change=None, on_language_change=None, on_follow_system_font_change=None):
+    def __init__(self, master, translator, font_family: str, on_theme_change=None, on_language_change=None, on_follow_system_font_change=None, on_compatibility_mode_change=None):
         super().__init__(master, fg_color="transparent", corner_radius=0)
         self.translator = translator
         self.font_family = font_family
         self.on_theme_change = on_theme_change
         self.on_language_change = on_language_change
         self.on_follow_system_font_change = on_follow_system_font_change
+        self.on_compatibility_mode_change = on_compatibility_mode_change
 
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
@@ -57,6 +58,7 @@ class SettingsPage(customtkinter.CTkFrame):
         self._build_language_section(content, row=0)
         self._build_appearance_section(content, row=1)
         self._build_support_developer_section(content, row=2)
+        self._build_compatibility_section(content, row=3)
 
     def _build_language_section(self, parent, row: int):
         card = customtkinter.CTkFrame(parent, fg_color=("white", "#1f1f1f"), corner_radius=12)
@@ -207,6 +209,41 @@ class SettingsPage(customtkinter.CTkFrame):
 
         self._set_initial_support_developer()
 
+    def _build_compatibility_section(self, parent, row: int):
+        card = customtkinter.CTkFrame(parent, fg_color=("white", "#1f1f1f"), corner_radius=12)
+        card.grid(row=row, column=0, sticky="ew", pady=(14, 0))
+        card.grid_columnconfigure(0, weight=1)
+
+        section_title = customtkinter.CTkLabel(
+            card,
+            text=self.translator.translate("compatibility_mode"),
+            font=(self.font_family, 18, "bold"),
+        )
+        section_title.grid(row=0, column=0, sticky="w", padx=18, pady=(16, 6))
+
+        section_desc = customtkinter.CTkLabel(
+            card,
+            text=self.translator.translate("compatibility_mode_desc"),
+            font=(self.font_family, 12),
+            text_color=("#404040", "#c7c7c7"),
+            wraplength=620,
+            justify="left",
+        )
+        section_desc.grid(row=1, column=0, sticky="w", padx=18)
+
+        switch_frame = customtkinter.CTkFrame(card, fg_color="transparent")
+        switch_frame.grid(row=2, column=0, sticky="w", padx=14, pady=(14, 18))
+
+        self.compatibility_mode_switch = customtkinter.CTkSwitch(
+            switch_frame,
+            text=self.translator.translate("compatibility_mode"),
+            command=self._handle_compatibility_mode_toggle,
+            font=(self.font_family, 12, "bold"),
+        )
+        self.compatibility_mode_switch.grid(row=0, column=0, sticky="w")
+
+        self._set_initial_compatibility_mode()
+
     def _set_initial_language(self, option_labels):
         current_language = ProgramSettings.get_language() or self.translator.locale
         label = next((lbl for lbl, code in self._language_value_map.items() if code == current_language), None)
@@ -235,6 +272,12 @@ class SettingsPage(customtkinter.CTkFrame):
         else:
             self.support_developer_switch.deselect()
 
+    def _set_initial_compatibility_mode(self):
+        if ProgramSettings.is_compatibility_mode_enabled():
+            self.compatibility_mode_switch.select()
+        else:
+            self.compatibility_mode_switch.deselect()
+
     def _handle_theme_change(self, selection: str):
         mode = self._theme_value_map.get(selection, "auto")
         ProgramSettings.set_theme_mode(mode)
@@ -258,3 +301,10 @@ class SettingsPage(customtkinter.CTkFrame):
 
     def _handle_support_developer_toggle(self):
         ProgramSettings.set_support_developer_enabled(bool(self.support_developer_switch.get()))
+
+    def _handle_compatibility_mode_toggle(self):
+        compatibility_mode = bool(self.compatibility_mode_switch.get())
+        if self.on_compatibility_mode_change is not None:
+            self.on_compatibility_mode_change(compatibility_mode)
+        else:
+            ProgramSettings.set_compatibility_mode_enabled(compatibility_mode)

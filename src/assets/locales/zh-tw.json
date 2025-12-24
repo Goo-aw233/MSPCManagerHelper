@@ -56,6 +56,8 @@
   "__maintenance_module__": "維護功能模組部分",
 
   "__settings_page__": "設定部分",
+    "compatibility_mode": "相容模式",
+    "compatibility_mode_desc": "使用舊版命令列參數以提高與某些系統的相容性",
     "dark_theme": "深色主題",
     "follow_system_font": "跟隨系統字體",
     "follow_system_font_desc": "使用目前的 Windows 介面字體套用到整個程式。當前字體：",

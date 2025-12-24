@@ -1,6 +1,7 @@
 import os
 import subprocess
 import sys
+from typing import Sequence
 
 import customtkinter
 import darkdetect
@@ -159,10 +160,15 @@ class ProgramSettings:
     @classmethod
     def set_compatibility_mode_enabled(cls, enabled: bool) -> None:
         cls._is_compatibility_mode_enabled = bool(enabled)
+        ProgramSettings.logger.info(f"Compatibility Mode Set to: {enabled}")
 
     @classmethod
     def toggle_compatibility_mode(cls) -> None:
         cls.set_compatibility_mode_enabled(not cls._is_compatibility_mode_enabled)
+
+    @classmethod
+    def select_command(cls, default_command: Sequence[str] | str, compatibility_command: Sequence[str] | str):
+        return compatibility_command if cls.is_compatibility_mode_enabled() else default_command
     # ======================= End of Compatibility Mode Settings =======================
 
     # ======================= Follow System Font Settings =======================

@@ -57,6 +57,8 @@
   "__maintenance_module__": "维护功能模块部分",
 
   "__settings_page__": "设置部分",
+    "compatibility_mode": "兼容模式",
+    "compatibility_mode_desc": "使用旧版命令行参数以提高与某些系统的兼容性",
     "dark_theme": "深色主题",
     "follow_system_font": "跟随系统字体",
     "follow_system_font_desc": "使用当前 Windows 界面字体应用到整个程序。当前字体：",
