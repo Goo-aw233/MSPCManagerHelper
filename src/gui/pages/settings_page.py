@@ -12,12 +12,16 @@ class SettingsPage(customtkinter.CTkFrame):
         self.on_language_change = on_language_change
         self.on_follow_system_font_change = on_follow_system_font_change
         self.on_compatibility_mode_change = on_compatibility_mode_change
+        self._responsive_labels = []
 
         self.grid_rowconfigure(1, weight=1)
         self.grid_columnconfigure(0, weight=1)
 
+        self.bind("<Configure>", self._on_resize)
+
         self._build_header()
         self._build_content()
+        self.after(0, self._on_resize)
 
     def _build_header(self):
         header = customtkinter.CTkFrame(self, fg_color="transparent", corner_radius=0)
@@ -51,7 +55,7 @@ class SettingsPage(customtkinter.CTkFrame):
         hint_chip.grid(row=0, column=1, rowspan=2, sticky="e")
 
     def _build_content(self):
-        content = customtkinter.CTkFrame(self, fg_color="transparent", corner_radius=0)
+        content = customtkinter.CTkScrollableFrame(self, fg_color="transparent", corner_radius=0)
         content.grid(row=1, column=0, sticky="nsew", padx=24, pady=(0, 24))
         content.grid_columnconfigure(0, weight=1)
 
@@ -81,6 +85,7 @@ class SettingsPage(customtkinter.CTkFrame):
             justify="left",
         )
         section_desc.grid(row=1, column=0, sticky="w", padx=18)
+        self._add_responsive_label(section_desc)
 
         options_frame = customtkinter.CTkFrame(card, fg_color="transparent")
         options_frame.grid(row=2, column=0, sticky="w", padx=14, pady=(14, 16))
@@ -124,6 +129,7 @@ class SettingsPage(customtkinter.CTkFrame):
             justify="left",
         )
         section_desc.grid(row=1, column=0, sticky="w", padx=18)
+        self._add_responsive_label(section_desc)
 
         options_frame = customtkinter.CTkFrame(card, fg_color="transparent")
         options_frame.grid(row=2, column=0, sticky="w", padx=14, pady=(14, 16))
@@ -163,6 +169,7 @@ class SettingsPage(customtkinter.CTkFrame):
             justify="left",
         )
         follow_system_desc.grid(row=0, column=0, sticky="w")
+        self._add_responsive_label(follow_system_desc)
 
         self.follow_system_font_switch = customtkinter.CTkSwitch(
             font_switch_frame,
@@ -195,6 +202,7 @@ class SettingsPage(customtkinter.CTkFrame):
             justify="left",
         )
         section_desc.grid(row=1, column=0, sticky="w", padx=18)
+        self._add_responsive_label(section_desc)
 
         switch_frame = customtkinter.CTkFrame(card, fg_color="transparent")
         switch_frame.grid(row=2, column=0, sticky="w", padx=14, pady=(14, 18))
@@ -230,6 +238,7 @@ class SettingsPage(customtkinter.CTkFrame):
             justify="left",
         )
         section_desc.grid(row=1, column=0, sticky="w", padx=18)
+        self._add_responsive_label(section_desc)
 
         switch_frame = customtkinter.CTkFrame(card, fg_color="transparent")
         switch_frame.grid(row=2, column=0, sticky="w", padx=14, pady=(14, 18))
@@ -308,3 +317,16 @@ class SettingsPage(customtkinter.CTkFrame):
             self.on_compatibility_mode_change(compatibility_mode)
         else:
             ProgramSettings.set_compatibility_mode_enabled(compatibility_mode)
+
+    def _add_responsive_label(self, label, padding: int = 96, min_wrap: int = 320):
+        self._responsive_labels.append((label, padding, min_wrap))
+
+    def _on_resize(self, event=None):
+        width = event.width if event else self.winfo_width()
+        if width <= 1:
+            return
+        for label, padding, min_wrap in self._responsive_labels:
+            if not int(label.winfo_exists()):
+                continue
+            available = max(min_wrap, width - padding)
+            label.configure(wraplength=available)
