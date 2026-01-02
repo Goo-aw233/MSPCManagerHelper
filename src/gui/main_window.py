@@ -1,4 +1,6 @@
 import customtkinter
+
+from core.advanced_startup import AdvancedStartup
 from core.app_metadata import AppMetadata
 from core.app_resources import AppResources
 
@@ -9,7 +11,14 @@ class MainWindow(customtkinter.CTk):
         self._configure_window()
 
     def _configure_window(self):
-        self.title(f"{AppMetadata.APP_NAME} {AppMetadata.APP_VERSION}")
+        app_title = f"{AppMetadata.APP_NAME} {AppMetadata.APP_VERSION}"
+        if AdvancedStartup.is_administrator():
+            app_title += " [Administrator]"
+        if AdvancedStartup.is_devmode():
+            app_title += " [DevMode]"
+        elif AdvancedStartup.is_debugmode():
+            app_title += " [DebugMode]"
+        self.title(app_title)
 
         icon_path = AppResources.app_icon()
         if icon_path:
