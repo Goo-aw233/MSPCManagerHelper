@@ -25,7 +25,7 @@ VSVersionInfo(
         StringStruct('FileDescription', 'MSPCManagerHelper'),
         StringStruct('FileVersion', 'Beta v0.2.1.2 x64'),
         StringStruct('InternalName', 'MSPCManagerHelper_Beta_v0.2.1.2_x64'),
-        StringStruct(u'LegalCopyright', u'© 2025 GuCATs All rights reserved.'),
+        StringStruct(u'LegalCopyright', u'© 2026 GuCATs All rights reserved.'),
         StringStruct('OriginalFilename', 'MSPCManagerHelper_Beta_v0.2.1.2_x64.exe'),
         StringStruct('ProductName', 'MSPCManagerHelper'),
         StringStruct('ProductVersion', 'Beta v0.2.1.2 x64')
