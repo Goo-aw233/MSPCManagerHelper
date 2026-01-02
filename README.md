@@ -9,7 +9,7 @@
 
 ## 🖹 Choose Your Language
 
-Please select your language to continue
+Please Select Your Language to Continue
 
 請選取你的語言以繼續 | 请选择你的语言以继续
 
@@ -30,7 +30,7 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 
 1. Download Python 3.11 from [Python](https://www.python.org/downloads)
 
-2. Clone the code
+2. Clone the Code
 
     ```bash
     git clone https://github.com/Goo-aw233/MSPCManagerHelper.git
@@ -71,4 +71,4 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 5. Build the EXE
 
     Run `build.cmd` or `build_.venv.cmd` directly from the `scripts\build` directory to build it yourself.
-    Finally, the built `EXE file` will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_... _vx.x.x.x.x.exe`.
+    Finally, the built `EXE file` will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_..._<Arch>_v#.#.#.#.exe`.
