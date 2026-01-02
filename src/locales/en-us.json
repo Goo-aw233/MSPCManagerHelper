@@ -80,7 +80,7 @@
 
 
     "@installation_feature.py": "installation_feature.py",
-    "winget_not_installed": "WinGet is not installed yet, please use another solution.\nYou can download and install Windows Package Manager via Microsoft Learn (https://learn.microsoft.com/windows/msix/app-installer/install-update-app-installer/?wt.mc_id=studentamb_ 265231) or GitHub (https://github.com/microsoft/winget-cli/releases) and retry after downloading and installing Windows Package Manager.",
+    "winget_not_installed": "WinGet is not installed yet, please use another solution.\nYou can download and install Windows Package Manager via Microsoft Learn (https://learn.microsoft.com/windows/msix/app-installer/install-update-app-installer/?wt.mc_id=studentamb_474966) or GitHub (https://github.com/microsoft/winget-cli/releases) and retry after downloading and installing Windows Package Manager.",
     "winget_source_not_found": "The msstore source was not found.",
     "winget_not_internet_connection": "Unable to connect to the Internet. Please check the Internet connection and retry.",
     "winget_source_reset_needed": "Failed when opening source(s); try the 'winget.exe source reset --force' command if the problem persists.",
