@@ -5,9 +5,9 @@ name: Python Program - MSPCMangerHelper
 
 on:
   push:
-    branches: [ "dev"]
+    branches: [ "dev", "main" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "dev", "main" ]
 
 permissions:
   contents: read
