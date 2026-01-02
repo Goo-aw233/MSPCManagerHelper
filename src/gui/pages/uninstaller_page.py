@@ -1,0 +1,2 @@
+class UninstallerPage:
+    pass

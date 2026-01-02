@@ -1,0 +1,38 @@
+# UTF-8
+#
+# For more details about fixed file info 'ffi' see:
+# http://msdn.microsoft.com/en-us/library/ms646997.aspx
+#
+
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    filevers=(0, 3, 1, 0),
+    prodvers=(0, 3, 1, 0),
+    mask=0x3f,
+    flags=0x0,
+    OS=0x4,
+    fileType=0x1,
+    subtype=0x0,
+    date=(0, 0)
+  ),
+  kids=[
+    StringFileInfo(
+      [
+      StringTable(
+        '040904B0',
+        [
+        StringStruct(u'CompanyName', u'GuCATs'),
+        StringStruct('FileDescription', 'MSPCManagerHelper'),
+        StringStruct('FileVersion', 'Beta v0.3.1.0 ARM64'),
+        StringStruct('InternalName', 'MSPCManagerHelper_Beta_v0.3.1.0_ARM64'),
+        StringStruct(u'LegalCopyright', u'© 2026 GuCATs All rights reserved.'),
+        StringStruct('OriginalFilename', 'MSPCManagerHelper_Beta_v0.3.1.0_ARM64.exe'),
+        StringStruct('ProductName', 'MSPCManagerHelper'),
+        StringStruct('ProductVersion', 'Beta v0.3.1.0 ARM64')
+        ]
+      )
+      ]
+    ),
+    VarFileInfo([VarStruct('Translation', [1033, 1200])])
+  ]
+)

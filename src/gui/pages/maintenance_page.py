@@ -1,0 +1,2 @@
+class MaintenancePage:
+    pass

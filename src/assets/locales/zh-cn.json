@@ -1,0 +1,44 @@
+{
+  "__metadata__": "元数据部分",
+    "__i18n_name_list__": "语言名称列表",
+      "lang_en-us": "English (United States)",
+      "lang_zh-cn": "中文 (简体)",
+      "lang_zh-tw": "中文 (繁體)",
+
+    "__localization_translator_list__": "本地化翻译者列表 (GitHub 用户名: 显示昵称)",
+      "Goo-aw233": "GuCATs",
+      "Lingggao": "Ling Gao",
+    "__localization_translator_list_end__": "这是本地化翻译者列表的结束标记。请勿删除此行。",
+
+
+  "__modules__": "模块部分",
+    "__initialization__": "初始化部分",
+  
+    "__installer_modules__": "安装程序模块",
+
+    "__maintenance_module__": "维护模块",
+
+    "__toolbox_modules__": "工具箱模块",
+
+    "__uninstaller_modules__": "卸载程序模块",
+
+    "__utilities_module__": "实用程序模块",
+
+
+  "__pages__": "页面部分",
+    "__about_page__": "关于页面",
+
+    "__home_page__": "主页",
+
+    "__installer_page__": "安装程序页面",
+
+    "__maintenance_page__": "维护页面",
+
+    "__navigation__": "导航部分",
+
+    "__toolbox_page__": "工具箱页面",
+
+    "__uninstaller_page__": "卸载程序页面",
+
+    "__utilities_page__": "实用程序页面"
+}

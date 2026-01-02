@@ -1,0 +1,2 @@
+class CleanupAfterExit:
+    pass

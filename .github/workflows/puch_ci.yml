@@ -1,0 +1,45 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: Python App - MSPCManagerHelper
+
+on:
+  push:
+    branches: [ "dev", "main" ]
+  pull_request:
+    branches: [ "dev", "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-latest
+            architecture: x64
+          - os: windows-11-arm
+            architecture: ARM64
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v6
+    - name: Set Up Python 3.14
+      uses: actions/setup-python@v6
+      with:
+        python-version: "3.14"
+    - name: Create .venv & Install Dependencies
+      run: |
+        ./scripts/install_requirements_.venv.cmd
+    - name: Cleanup Before Build
+      run: |
+        ./scripts/build/cleanup-before-first-build.cmd
+    - name: Build EXE in .venv
+      run: |
+        ./scripts/build/build_.venv.cmd
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v6
+      with:
+        name: ${{ github.ref == 'refs/heads/main' && 'MSPCManagerHelper_Beta' || 'MSPCManagerHelper_Beta_Preview' }}_${{ matrix.os }}_${{ matrix.architecture }}
+        path: ./dist/

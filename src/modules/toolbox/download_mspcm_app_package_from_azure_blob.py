@@ -1,0 +1,2 @@
+class DownloadMicrosoftPCManagerAppPackageFromAzureBlob():
+    pass

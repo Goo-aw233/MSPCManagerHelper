@@ -1,0 +1,43 @@
+{
+  "__metadata__": "中繼資料",
+    "__i18n_name_list__": "語言名稱列表",
+      "lang_en-us": "English (United States)",
+      "lang_zh-cn": "中文 (简体)",
+      "lang_zh-tw": "中文 (繁體)",
+
+    "__localization_translator_list__": "本地化翻譯人員列表 (GitHub 用戶名: 顯示暱稱)",
+      "jay900604": "吳宥叡",
+    "__localization_translator_list_end__": "這是本地化翻譯人員列表的結束標記。請勿刪除此行。",
+
+
+  "__modules__": "模組部分",
+    "__initialization__": "初始化部分",
+
+    "__installer_modules__": "安裝程式模組",
+
+    "__maintenance_module__": "維護模組",
+
+    "__toolbox_modules__": "工具箱模組",
+
+    "__uninstaller_modules__": "解除安裝程式模組",
+
+    "__utilities_module__": "公用程式模組",
+
+
+  "__pages__": "頁面部分",
+    "__about_page__": "關於頁面",
+
+    "__home_page__": "首頁",
+
+    "__installer_page__": "安裝程式頁面",
+  
+    "__maintenance_page__": "維護頁面",
+
+    "__navigation__": "導航部分",
+
+    "__toolbox_page__": "工具箱頁面",
+
+    "__uninstaller_page__": "解除安裝程式頁面",
+
+    "__utilities_page__": "公用程式頁面"
+}

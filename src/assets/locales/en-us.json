@@ -1,0 +1,43 @@
+{
+  "__metadata__": "Metadata Section",
+    "__i18n_name_list__": "Language Name List",
+      "lang_en-us": "English (United States)",
+      "lang_zh-cn": "中文 (简体)",
+      "lang_zh-tw": "中文 (繁體)",
+
+    "__localization_translator_list__": "Localization Translator List (GitHub Profile Name: Display Nickname)",
+      "Goo-aw233": "GuCATs",
+    "__localization_translator_list_end__": "This is the end marker for the localization translator list. DO NOT DELETE THIS LINE.",
+
+
+  "__modules__": "Modules Section",
+    "__initialization__": "Initialization Section",
+
+    "__installer_modules__": "Installer Modules",
+
+    "__maintenance_module__": "Maintenance Modules",
+
+    "__toolbox_modules__": "Toolbox Modules",
+
+    "__uninstaller_modules__": "Uninstaller Modules",
+
+    "__utilities_module__": "Utilities Modules",
+
+
+  "__pages__": "Pages Section",
+    "__about_page__": "About Page",
+
+    "__home_page__": "Home Page",
+
+    "__installer_page__": "Installer Page",
+
+    "__maintenance_page__": "Maintenance Page",
+
+    "__navigation__": "Navigation Section",
+
+    "__toolbox_page__": "Toolbox Page",
+
+    "__uninstaller_page__": "Uninstaller Page",
+
+    "__utilities_page__": "Utilities Page"
+}

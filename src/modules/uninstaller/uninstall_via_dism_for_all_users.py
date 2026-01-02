@@ -1,0 +1,2 @@
+class UninstallViaDISMForAllUsers:
+    pass

@@ -1,0 +1,2 @@
+class GetMSPCMVersion:
+    pass
