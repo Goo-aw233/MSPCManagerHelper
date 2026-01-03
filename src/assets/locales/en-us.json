@@ -12,6 +12,17 @@
 
   "__modules__": "Modules Section",
     "__initialization__": "Initialization Section",
+      "administrator_protection_is_enabled": "Administrator Protection is enabled, some features will be disabled. Please turn off Administrator Protection and restart the PC before trying again.",
+      "administrator_required": "Run as Administrator Required",
+      "app_is_not_running_as_administrator": "MSPCManagerHelper is not running as administrator, some features will be disabled. Please run the program as administrator.",
+      "error": "Error",
+      "information": "Information",
+      "narrator_is_running": "A screen narrator (such as Narrator) is currently running, MSPCManagerHelper does not currently support screen narrators. Please seek assistance from others to continue.",
+      "operating_system_is_not_windows_nt_based": "The operating system is not Windows NT-based, the program will exit.",
+      "some_windows_utilities_are_unavailable": "Some Windows utilities are unavailable, some features will be disabled. For more details, please check the log file.\nLog File Location: {log_file_path}",
+      "warning": "Warning",
+      "windows_feature_experience_pack": "Windows Feature Experience Pack",
+      "windows_server_installation_type_is_core": "The current Windows Server installation type is Server Core, some features will be disabled. To enable all features, please reinstall Windows Server with Desktop Experience to continue.",
 
     "__installer_modules__": "Installer Modules",
 

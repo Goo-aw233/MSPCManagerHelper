@@ -12,6 +12,17 @@
 
   "__modules__": "模組部分",
     "__initialization__": "初始化部分",
+      "administrator_protection_is_enabled": "「系統管理員保護」已啟用，部分功能將被禁用。請關閉「系統管理員保護」並重新啟動電腦後重試。",
+      "administrator_required": "需要系統管理員權限",
+      "app_is_not_running_as_administrator": "MSPCManagerHelper 未以系統管理員身份執行，部分功能將被禁用。請以系統管理員身份重新執行該程式。",
+      "error": "錯誤",
+      "information": "資訊",
+      "narrator_is_running": "螢幕閱讀程式（如講述人）正在執行，MSPCManagerHelper 暫不支援螢幕閱讀程式。請尋求其他人員協助以繼續。",
+      "operating_system_is_not_windows_nt_based": "作業系統不是基於 Windows NT 的作業系統，程式將退出。",
+      "some_windows_utilities_are_unavailable": "某些 Windows 實用程式不可用，部分功能將被禁用。詳情請參閱記錄檔。\n記錄檔位置：{log_file_path}",
+      "warning": "警告",
+      "windows_feature_experience_pack": "Windows 功能體驗包",
+      "windows_server_installation_type_is_core": "目前 Windows Server 安裝類型為 Server Core，部分功能將被禁用。若要啟用所有功能，請重新安裝“具有桌面體驗的 Windows Server”以繼續。",
 
     "__installer_modules__": "安裝程式模組",
 

@@ -13,6 +13,17 @@
 
   "__modules__": "模块部分",
     "__initialization__": "初始化部分",
+      "administrator_protection_is_enabled": "“管理员保护”已启用，部分功能将被禁用。请关闭“管理员保护”并重启电脑后重试。",
+      "administrator_required": "需要管理员权限",
+      "app_is_not_running_as_administrator": "MSPCManagerHelper 未以管理员身份运行，部分功能将被禁用。请以管理员身份重新运行该程序。",
+      "error": "错误",
+      "information": "信息",
+      "narrator_is_running": "屏幕朗读器（如讲述人）正在运行，MSPCManagerHelper 暂未支持屏幕朗读器。请寻求其他人员协助以继续。",
+      "operating_system_is_not_windows_nt_based": "操作系统不是基于 Windows NT 的操作系统，程序将退出。",
+      "some_windows_utilities_are_unavailable": "部分 Windows 工具不可用，部分功能将被禁用，详情请参阅日志文件。\n日志文件位置：{log_file_path}",
+      "warning": "警告",
+      "windows_feature_experience_pack": "Windows 功能体验包",
+      "windows_server_installation_type_is_core": "当前 Windows Server 安装类型为服务器核心，部分功能将被禁用。若要启用所有功能，请重新安装“带桌面体验的 Windows Server”以继续。",
   
     "__installer_modules__": "安装程序模块",
 
