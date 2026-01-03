@@ -19,3 +19,8 @@ class AdvancedStartup:
     def is_debugmode():
         debugmode_args = ["/debugmode", "-debugmode", "--debugmode"]
         return any(arg.lower() in debugmode_args for arg in sys.argv)
+
+    @staticmethod
+    def get_runtime_arguments():
+        # Excluding the program itself.
+        return sys.argv[1:].copy()
