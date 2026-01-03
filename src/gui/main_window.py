@@ -1,3 +1,4 @@
+import locale
 import os
 import sys
 from pathlib import Path
@@ -9,7 +10,9 @@ from core.app_logger import AppLogger
 from core.app_metadata import AppMetadata
 from core.app_resources import AppResources
 from core.app_settings import AppSettings
+from core.app_translator import AppTranslator
 from core.set_font_family import SetFontFamily
+from core.system_checks import PrerequisiteChecks
 
 
 class MainWindow(customtkinter.CTk):
@@ -35,6 +38,7 @@ class MainWindow(customtkinter.CTk):
         self.logger.info(f"CPython JIT Available: {sys._jit.is_available()}, Enabled: {sys._jit.is_enabled()}")
 
         self.logger.info("========================= Initializing Base GUI =========================")
+        self._set_language()
         self._configure_window()
         self.logger.info("========================= Base GUI Initialized =========================")
 
@@ -61,6 +65,29 @@ class MainWindow(customtkinter.CTk):
         follow_system_font = AppSettings.is_follow_system_font_enabled()
         self.font_family = SetFontFamily.apply_font_setting(follow_system_font=follow_system_font, language=language)
         self.logger.info(f"Follow Font Setting: {follow_system_font}")
+
+    def _set_language(self):
+        language_map = {
+            # English
+            ("en_", "en-",): "en-us",
+            # Simplified Chinese
+            ("zh_CN", "zh_Hans", "zh_Hans_", "zh_Hans_CN", "zh_Hans_HK", "zh_Hans_MO", "zh_Hans_SG", "zh_SG", "zh-CN",
+             "zh-Hans", "zh-Hans-", "zh-Hans-CN", "zh-Hans-HK", "zh-Hans-MO", "zh-Hans-SG", "zh-SG",): "zh-cn",
+            # Traditional Chinese
+            ("zh_Hant", "zh_Hant_", "zh_Hant_HK", "zh_Hant_MO", "zh_Hant_TW", "zh_HK", "zh_MO", "zh_TW", "zh-Hant",
+             "zh-Hant-", "zh-Hant-HK", "zh-Hant-MO", "zh-Hant-TW", "zh-HK", "zh-MO", "zh_TW",): "zh-tw"
+        }
+        locale_str = locale.getdefaultlocale()[0]
+        language = "en-us"  # Default Language
+        for prefixes, trans_locale in language_map.items():
+            if any(locale_str.startswith(prefix) for prefix in prefixes):
+                language = trans_locale
+                break
+        self.language = language
+        self.app_translator = AppTranslator(self.language)
+        # Synchronize the language to PrerequisiteChecks class.
+        PrerequisiteChecks.app_translator = self.app_translator
+        self.logger.info(f"App Language: {self.language}")
 
     def _set_window_geometry(self):
         # Use a target size that feels native, but ensure it fits within 85% of the screen for smaller displays.
