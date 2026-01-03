@@ -8,6 +8,8 @@ from core.advanced_startup import AdvancedStartup
 from core.app_logger import AppLogger
 from core.app_metadata import AppMetadata
 from core.app_resources import AppResources
+from core.app_settings import AppSettings
+from core.set_font_family import SetFontFamily
 
 
 class MainWindow(customtkinter.CTk):
@@ -52,6 +54,13 @@ class MainWindow(customtkinter.CTk):
             self.logger.info(f"Window Icon: {icon_path}")
 
         self._set_window_geometry()
+
+        # Set font family.
+        language = getattr(self, "language", "").lower()
+        # Determine whether to follow system font through AppSettings.
+        follow_system_font = AppSettings.is_follow_system_font_enabled()
+        self.font_family = SetFontFamily.apply_font_setting(follow_system_font=follow_system_font, language=language)
+        self.logger.info(f"Follow Font Setting: {follow_system_font}")
 
     def _set_window_geometry(self):
         # Use a target size that feels native, but ensure it fits within 85% of the screen for smaller displays.
