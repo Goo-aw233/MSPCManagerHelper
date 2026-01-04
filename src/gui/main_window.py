@@ -1,4 +1,3 @@
-import locale
 import os
 import sys
 from pathlib import Path
@@ -74,23 +73,7 @@ class MainWindow(customtkinter.CTk):
         self.logger.info(f"Follow Font Setting: {follow_system_font}")
 
     def _set_language(self):
-        language_map = {
-            # English
-            ("en_", "en-",): "en-us",
-            # Simplified Chinese
-            ("zh_CN", "zh_Hans", "zh_Hans_", "zh_Hans_CN", "zh_Hans_HK", "zh_Hans_MO", "zh_Hans_SG", "zh_SG", "zh-CN",
-             "zh-Hans", "zh-Hans-", "zh-Hans-CN", "zh-Hans-HK", "zh-Hans-MO", "zh-Hans-SG", "zh-SG",): "zh-cn",
-            # Traditional Chinese
-            ("zh_Hant", "zh_Hant_", "zh_Hant_HK", "zh_Hant_MO", "zh_Hant_TW", "zh_HK", "zh_MO", "zh_TW", "zh-Hant",
-             "zh-Hant-", "zh-Hant-HK", "zh-Hant-MO", "zh-Hant-TW", "zh-HK", "zh-MO", "zh_TW",): "zh-tw"
-        }
-        locale_str = locale.getdefaultlocale()[0]
-        language = "en-us"  # Default Language
-        for prefixes, trans_locale in language_map.items():
-            if any(locale_str.startswith(prefix) for prefix in prefixes):
-                language = trans_locale
-                break
-        self.language = language
+        self.language = AppTranslator.detect_system_language()
         self.app_translator = AppTranslator(self.language)
         # Synchronize the language to PrerequisiteChecks class.
         PrerequisiteChecks.app_translator = self.app_translator
