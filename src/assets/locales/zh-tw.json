@@ -38,6 +38,21 @@
   "__pages__": "頁面部分",
     "__about_page__": "關於頁面",
 
+    "__help_window__": "協助視窗",
+      "help_window_title": "協助視窗",
+      "help_window_content_title": "歡迎使用 MSPCManagerHelper，這是程式協助視窗。",
+      "help_window_content_args_1": "以參數的形式執行程式：\n所有的參數均支援使用 / 或 - 或 -- 的形式來使用，如 /?，-? 和 --?。在以下演示中均使用 /? 來完成。",
+      "help_window_content_args_2": "1. 開啟協助視窗",
+      "help_window_content_args_3": "使用參數 /? 或 /h 或 /help 以打開協助視窗。",
+      "help_window_content_args_4": "2. 開發人員模式",
+      "help_window_content_args_5": "使用參數 /devmode 以開啟開發人員模式，開啟後程式會啟用部分高級功能以供開發人員使用。",
+      "help_window_content_args_6": "3. 偵錯模式",
+      "help_window_content_args_7": "使用參數 /debugmode 以開啟偵錯模式，開啟後程式會記錄更多的記錄檔資訊以供排查問題使用，同時將擁有與開發人員模式相同的功能。",
+      "help_window_content_args_8": "4. 繞過啟動檢查",
+      "help_window_content_args_9": "使用參數 /bypasschecks 以繞過啟動時的系統檢查，開啟後程式將禁用所有的啟動檢查項目。",
+      "help_window_content_get_help_1": "取得協助",
+      "help_window_content_get_help_2": "GitHub 倉庫地址：https://github.com/Goo-aw233/MSPCManagerHelper",
+
     "__home_page__": "首頁",
 
     "__installer_page__": "安裝程式頁面",

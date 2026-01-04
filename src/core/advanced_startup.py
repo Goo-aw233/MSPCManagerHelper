@@ -26,6 +26,11 @@ class AdvancedStartup:
         return any(arg.lower() in bypass_checks_args for arg in sys.argv)
 
     @staticmethod
+    def is_open_help_window():
+        open_help_window_args = ["/?", "-?", "--?", "/h", "-h", "--h", "/help", "-help", "--help"]
+        return any(arg.lower() in open_help_window_args for arg in sys.argv)
+
+    @staticmethod
     def get_runtime_arguments():
         # Excluding the program itself.
         return sys.argv[1:].copy()

@@ -168,4 +168,4 @@ class MainWindow(customtkinter.CTk):
 
         self.geometry(f"{width}x{height}+{x}+{y}")
         self.minsize(800, 600)
-        self.logger.info(f"Window Geometry Set: {width} x {height} (x + {x}, y + {y})")
+        self.logger.info(f"Window Geometry Set: {width} x {height} (x + {x}, y + {y}), Scaling Factor: {self._get_window_scaling()}")

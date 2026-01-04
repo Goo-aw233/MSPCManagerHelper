@@ -39,6 +39,21 @@
   "__pages__": "页面部分",
     "__about_page__": "关于页面",
 
+    "__help_window__": "帮助窗口",
+      "help_window_title": "帮助窗口",
+      "help_window_content_title": "欢迎使用 MSPCManagerHelper，这是程序帮助窗口。",
+      "help_window_content_args_1": "以参数的形式运行程序：\n所有的参数均支持使用 / 或 - 或 -- 的形式来使用，如 /?，-? 和 --?。在以下演示中均使用 /? 来完成。",
+      "help_window_content_args_2": "1. 开启帮助窗口",
+      "help_window_content_args_3": "使用参数 /? 或 /h 或 /help 以打开帮助窗口。",
+      "help_window_content_args_4": "2. 开发者模式",
+      "help_window_content_args_5": "使用参数 /devmode 以开启开发者模式，开启后程序会启用部分高级功能以供开发者使用。",
+      "help_window_content_args_6": "3. 调试模式",
+      "help_window_content_args_7": "使用参数 /debugmode 以开启调试模式，开启后程序会记录更多的日志信息以供排查问题使用，同时将拥有与开发者模式相同的功能。",
+      "help_window_content_args_8": "4. 绕过启动检查",
+      "help_window_content_args_9": "使用参数 /bypasschecks 以绕过启动时的系统检查，开启后程序将禁用所有的启动检查项目。",
+      "help_window_content_get_help_1": "获取帮助",
+      "help_window_content_get_help_2": "GitHub 仓库地址：https://github.com/Goo-aw233/MSPCManagerHelper\n欢迎加入 QQ 群获取更多帮助，联系方式：https://forms.office.com/r/7YhjaEEmKc",
+
     "__home_page__": "主页",
 
     "__installer_page__": "安装程序页面",
