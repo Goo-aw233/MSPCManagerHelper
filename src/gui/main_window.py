@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 from pathlib import Path
 from tkinter import messagebox
 
@@ -18,6 +19,7 @@ from core.system_checks import OptionalChecks, PrerequisiteChecks
 
 class MainWindow(customtkinter.CTk):
     def __init__(self):
+        start_global_init_time = time.perf_counter()
         super().__init__()
 
         self.logger = AppLogger.get_logger()
@@ -48,6 +50,10 @@ class MainWindow(customtkinter.CTk):
             self._internal_optional_system_checks()
         self._configure_ui()
         self.logger.info("========================= Base GUI Initialized =========================")
+
+        end_global_init_time = time.perf_counter()
+        elapsed_global_init_time = end_global_init_time - start_global_init_time
+        self.logger.debug(f"MainWindow Initialization Completed in: {elapsed_global_init_time:.5f} s")
 
     def _configure_window(self):
         app_title = f"{AppMetadata.APP_NAME} {AppMetadata.APP_VERSION}"
