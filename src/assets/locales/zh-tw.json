@@ -60,6 +60,14 @@
     "__maintenance_page__": "維護頁面",
 
     "__navigation__": "導航部分",
+      "about_page": "關於",
+      "home_page": "首頁",
+      "installer_page": "安裝",
+      "maintenance_page": "維護",
+      "settings_page": "設定",
+      "toolbox_page": "工具箱",
+      "uninstaller_page": "解除安裝",
+      "utilities_page": "公用程式",
 
     "__toolbox_page__": "工具箱頁面",
 

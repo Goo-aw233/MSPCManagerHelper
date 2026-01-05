@@ -60,6 +60,14 @@
     "__maintenance_page__": "Maintenance Page",
 
     "__navigation__": "Navigation Section",
+      "about_page": "About",
+      "home_page": "Home",
+      "installer_page": "Installer",
+      "maintenance_page": "Maintenance",
+      "settings_page": "Settings",
+      "toolbox_page": "Toolbox",
+      "uninstaller_page": "Uninstaller",
+      "utilities_page": "Utilities",
 
     "__toolbox_page__": "Toolbox Page",
 

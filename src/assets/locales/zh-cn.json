@@ -61,6 +61,14 @@
     "__maintenance_page__": "维护页面",
 
     "__navigation__": "导航部分",
+      "about_page": "关于",
+      "home_page": "主页",
+      "installer_page": "安装",
+      "maintenance_page": "维护",
+      "settings_page": "设置",
+      "toolbox_page": "工具箱",
+      "uninstaller_page": "卸载",
+      "utilities_page": "实用工具",
 
     "__toolbox_page__": "工具箱页面",
 

@@ -46,6 +46,7 @@ class MainWindow(customtkinter.CTk):
         else:
             self._internal_prerequisite_system_checks()
             self._internal_optional_system_checks()
+        self._configure_ui()
         self.logger.info("========================= Base GUI Initialized =========================")
 
     def _configure_window(self):
@@ -169,3 +170,108 @@ class MainWindow(customtkinter.CTk):
         self.geometry(f"{width}x{height}+{x}+{y}")
         self.minsize(800, 600)
         self.logger.info(f"Window Geometry Set: {width} x {height} (x + {x}, y + {y}), Scaling Factor: {self._get_window_scaling()}")
+
+    def _create_nav_button(self, icon, text_key, command, row):
+        button = customtkinter.CTkButton(
+            self.navigation_frame,
+            corner_radius=4,
+            height=40,
+            border_spacing=10,
+            text=f"{icon}    {self.app_translator.translate(text_key)}",
+            fg_color="transparent",
+            text_color=("gray10", "gray90"),
+            hover_color=("gray70", "gray30"),
+            anchor="w",
+            font=customtkinter.CTkFont(family=self.font_family),
+            command=command
+        )
+        button.grid(row=row, column=0, sticky="ew", pady=(0, 4))    # Actually displays 6 - 8 physical pixels.
+        return button
+
+    def _configure_ui(self):
+        # Configure Grid Layout (1x2)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure(0, weight=1)
+
+        # Create Navigation Frame.
+        self.navigation_frame = customtkinter.CTkFrame(self, corner_radius=0)
+        self.navigation_frame.grid(row=0, column=0, sticky="nsew")
+        self.navigation_frame.grid_rowconfigure(7, weight=1)
+
+        self.navigation_frame_label = customtkinter.CTkLabel(
+            self.navigation_frame,
+            text=f"{AppMetadata.APP_NAME}",
+            font=customtkinter.CTkFont(family=self.font_family, size=18, weight="bold")
+        )
+        self.navigation_frame_label.grid(row=0, column=0, padx=20, pady=20)
+
+        self.home_button = self._create_nav_button("🏠", "home_page", self.home_button_event, 1)
+        self.maintenance_button = self._create_nav_button("🧹", "maintenance_page", self.maintenance_button_event, 2)
+        self.installer_button = self._create_nav_button("📥", "installer_page", self.installer_button_event, 3)
+        self.uninstaller_button = self._create_nav_button("🗑", "uninstaller_page", self.uninstaller_button_event, 4)
+        self.utilities_button = self._create_nav_button("🛠", "utilities_page", self.utilities_button_event, 5)
+        self.toolbox_button = self._create_nav_button("🧰", "toolbox_page", self.toolbox_button_event, 6)
+        # Leave a row to place the following buttons at the bottom.
+        self.about_button = self._create_nav_button("  i", "about_page", self.about_button_event, 8)
+        self.settings_button = self._create_nav_button("⚙️", "settings_page", self.settings_button_event, 9)
+
+        # Create Main Frame.
+        self.main_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
+        self.main_frame.grid(row=0, column=1, sticky="nsew")
+
+        # Select Default Frame.
+        self.select_frame_by_page_name("home")
+
+    def select_frame_by_page_name(self, page_name):
+        # Set button color for selected button.
+        self.home_button.configure(fg_color=("gray75", "gray25") if page_name == "home" else "transparent")
+        self.installer_button.configure(fg_color=("gray75", "gray25") if page_name == "installer" else "transparent")
+        self.uninstaller_button.configure(fg_color=("gray75", "gray25") if page_name == "uninstaller" else "transparent")
+        self.utilities_button.configure(fg_color=("gray75", "gray25") if page_name == "utilities" else "transparent")
+        self.toolbox_button.configure(fg_color=("gray75", "gray25") if page_name == "toolbox" else "transparent")
+        self.maintenance_button.configure(fg_color=("gray75", "gray25") if page_name == "maintenance" else "transparent")
+        self.about_button.configure(fg_color=("gray75", "gray25") if page_name == "about" else "transparent")
+        self.settings_button.configure(fg_color=("gray75", "gray25") if page_name == "settings" else "transparent")
+
+        # Show Selected Frame
+        # TODO: Implement page switching when pages are implemented as CTkFrames.
+        if page_name == "home":
+            pass
+        elif page_name == "installer":
+            pass
+        elif page_name == "uninstaller":
+            pass
+        elif page_name == "utilities":
+            pass
+        elif page_name == "toolbox":
+            pass
+        elif page_name == "maintenance":
+            pass
+        elif page_name == "about":
+            pass
+        elif page_name == "settings":
+            pass
+
+    def home_button_event(self):
+        self.select_frame_by_page_name("home")
+
+    def installer_button_event(self):
+        self.select_frame_by_page_name("installer")
+
+    def uninstaller_button_event(self):
+        self.select_frame_by_page_name("uninstaller")
+
+    def utilities_button_event(self):
+        self.select_frame_by_page_name("utilities")
+
+    def toolbox_button_event(self):
+        self.select_frame_by_page_name("toolbox")
+
+    def maintenance_button_event(self):
+        self.select_frame_by_page_name("maintenance")
+
+    def about_button_event(self):
+        self.select_frame_by_page_name("about")
+
+    def settings_button_event(self):
+        self.select_frame_by_page_name("settings")
