@@ -52,7 +52,8 @@ class HelpWindow(customtkinter.CTk):
 
         self.help_content_textbox = customtkinter.CTkTextbox(
             self,
-            font=(self.font_family, 13)
+            font=(self.font_family, 13),
+            wrap="word"
         )
         self.help_content_textbox.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
@@ -72,6 +73,7 @@ class HelpWindow(customtkinter.CTk):
         )
         self.help_content_textbox.insert("0.0", help_content)
         self.help_content_textbox.configure(state="disabled")
+
     def _configure_window(self):
         app_title = f"{AppMetadata.APP_NAME} {AppMetadata.APP_VERSION} {self.app_translator.translate('help_window_title')}"
         if AdvancedStartup.is_administrator():
