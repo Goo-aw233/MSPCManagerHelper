@@ -70,6 +70,12 @@
       "utilities_page": "Utilities",
 
     "__settings_page__": "Settings Page",
+      "appearance": "Appearance",
+      "appearance_description": "Choose Your Preferred App Display Style",
+      "dark_mode": "Dark Mode",
+      "follow_system": "Follow System",
+      "light_mode": "Light Mode",
+      "personalization": "Personalization",
 
     "__toolbox_page__": "Toolbox Page",
 

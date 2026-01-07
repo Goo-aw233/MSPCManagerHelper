@@ -6,6 +6,17 @@ class AppSettings:
     logger = AppLogger.get_logger()
 
     _is_follow_system_font_enabled: bool = False
+    _appearance_mode: str = "System"
+
+    # ======================= Appearance Settings =======================
+    @classmethod
+    def get_appearance_mode(cls) -> str:
+        return cls._appearance_mode
+
+    @classmethod
+    def set_appearance_mode(cls, mode: str) -> None:
+        cls._appearance_mode = mode
+        AppSettings.logger.info(f"Appearance Mode Set to: {mode}")
 
     # ======================= Follow System Font Settings =======================
     @classmethod

@@ -71,7 +71,13 @@
       "utilities_page": "实用工具",
 
     "__settings_page__": "设置页面",
-  
+      "appearance": "外观",
+      "appearance_description": "选择您喜欢的应用显示风格",
+      "dark_mode": "深色模式",
+      "follow_system": "跟随系统",
+      "light_mode": "浅色模式",
+      "personalization": "个性化",
+
     "__toolbox_page__": "工具箱页面",
 
     "__uninstaller_page__": "卸载程序页面",

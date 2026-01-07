@@ -70,6 +70,12 @@
       "utilities_page": "公用程式",
 
     "__settings_page__": "設定頁面",
+      "appearance": "外觀",
+      "appearance_description": "選擇您喜歡的程式顯示風格",
+      "dark_mode": "深色模式",
+      "follow_system": "跟隨系統",
+      "light_mode": "淺色模式",
+      "personalization": "個人化",
 
     "__toolbox_page__": "工具箱頁面",
 
