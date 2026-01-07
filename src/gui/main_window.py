@@ -300,3 +300,59 @@ class MainWindow(customtkinter.CTk):
 
     def settings_button_event(self):
         self.select_frame_by_page_name("settings")
+
+    def refresh_ui(self):
+        start_refresh_ui_time = time.perf_counter()
+
+        # Font Family
+        language = getattr(self, "language", "").lower()
+        follow_system_font = AppSettings.is_follow_system_font_enabled()
+        self.font_family = SetFontFamily.apply_font_setting(follow_system_font=follow_system_font, language=language)
+
+        # Nav Label
+        self.navigation_frame_label.configure(font=customtkinter.CTkFont(family=self.font_family, size=18, weight="bold"))
+
+        # Nav Buttons
+        button_font = customtkinter.CTkFont(family=self.font_family)
+        for btn in [self.home_button, self.maintenance_button, self.installer_button,
+                    self.uninstaller_button, self.utilities_button, self.toolbox_button,
+                    self.about_button, self.settings_button]:
+            btn.configure(font=button_font)
+
+        # Recreate Pages
+        current_page_name = "home"
+        page_map = {
+            "home": self.home_page,
+            "installer": self.installer_page,
+            "uninstaller": self.uninstaller_page,
+            "utilities": self.utilities_page,
+            "toolbox": self.toolbox_page,
+            "maintenance": self.maintenance_page,
+            "about": self.about_page,
+            "settings": self.settings_page
+        }
+
+        for name, page in page_map.items():
+            if page.winfo_ismapped():
+                current_page_name = name
+                break
+
+        for page in page_map.values():
+            page.destroy()
+
+        # Create Page Instances
+        self.home_page = HomePage(self.main_frame, self.app_translator, self.font_family)
+        self.installer_page = InstallerPage(self.main_frame, self.app_translator, self.font_family)
+        self.uninstaller_page = UninstallerPage(self.main_frame, self.app_translator, self.font_family)
+        self.utilities_page = UtilitiesPage(self.main_frame, self.app_translator, self.font_family)
+        self.toolbox_page = ToolboxPage(self.main_frame, self.app_translator, self.font_family)
+        self.maintenance_page = MaintenancePage(self.main_frame, self.app_translator, self.font_family)
+        self.about_page = AboutPage(self.main_frame, self.app_translator, self.font_family)
+        self.settings_page = SettingsPage(self.main_frame, self.app_translator, self.font_family)
+
+        # Show Selected Frame
+        self.select_frame_by_page_name(current_page_name)
+
+        end_refresh_ui_time = time.perf_counter()
+        elapsed_refresh_ui_time = end_refresh_ui_time - start_refresh_ui_time
+        self.logger.debug(f"MainWindow Refresh UI Completed in: {elapsed_refresh_ui_time:.5f} s")

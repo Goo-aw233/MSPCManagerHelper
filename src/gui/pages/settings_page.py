@@ -47,13 +47,39 @@ class SettingsPage(customtkinter.CTkFrame):
             command=self._change_appearance_mode
         )
         self.appearance_mode_optionemenu.set(self.theme_map_rev.get(AppSettings.get_appearance_mode(), self.app_translator.translate("follow_system")))
+        
+        # Separator
+        self._create_separator(self.personalization_group)
+
+        # Follow System Font
+        self.follow_system_font_switch = self._create_setting_card(
+            self.personalization_group,
+            self.app_translator.translate("follow_system_font_settings"),
+            self.app_translator.translate("follow_system_font_settings_description"),
+            customtkinter.CTkSwitch,
+            text=self.font_family,
+            command=self._change_follow_system_font
+        )
+
+        if AppSettings.is_follow_system_font_enabled():
+            self.follow_system_font_switch.select()
+        else:
+            self.follow_system_font_switch.deselect()
         # --- End of Personalization Section ---
 
     def _change_appearance_mode(self, new_appearance_mode: str):
-        current_appearance_mode = self.theme_map.get(new_appearance_mode)
-        if current_appearance_mode:
-            customtkinter.set_appearance_mode(current_appearance_mode)
-            AppSettings.set_appearance_mode(current_appearance_mode)
+        mode = self.theme_map.get(new_appearance_mode)
+        if mode:
+            customtkinter.set_appearance_mode(mode)
+            AppSettings.set_appearance_mode(mode)
+
+    def _change_follow_system_font(self):
+        is_enabled = self.follow_system_font_switch.get()
+        AppSettings.set_follow_system_font_enabled(is_enabled)
+
+        # Trigger Refresh in MainWindow
+        if self.master and self.master.master and hasattr(self.master.master, "refresh_ui"):
+            self.master.master.refresh_ui()
 
     def _create_section_label(self, text):
         label = customtkinter.CTkLabel(

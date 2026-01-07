@@ -1,5 +1,4 @@
 from core.app_logger import AppLogger
-from core.set_font_family import SetFontFamily
 
 
 class AppSettings:
@@ -26,8 +25,7 @@ class AppSettings:
     @classmethod
     def set_follow_system_font_enabled(cls, enabled: bool) -> None:
         cls._is_follow_system_font_enabled = bool(enabled)
-        AppSettings.logger.info(f"Follow System Font Set to: {enabled}")
-        SetFontFamily.apply_font_setting(follow_system_font=enabled)
+        AppSettings.logger.info(f"Follow System Font Set to: {cls._is_follow_system_font_enabled}")
 
     @classmethod
     def toggle_follow_system_font(cls) -> None:

@@ -74,6 +74,8 @@
       "appearance_description": "Choose Your Preferred App Display Style",
       "dark_mode": "Dark Mode",
       "follow_system": "Follow System",
+      "follow_system_font_settings": "Follow System Font Settings",
+      "follow_system_font_settings_description": "Use the System's Current Font Settings Instead of Following the App's Font Settings",
       "light_mode": "Light Mode",
       "personalization": "Personalization",
 
