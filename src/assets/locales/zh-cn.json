@@ -70,6 +70,8 @@
       "uninstaller_page": "卸载",
       "utilities_page": "实用工具",
 
+    "__settings_page__": "设置页面",
+  
     "__toolbox_page__": "工具箱页面",
 
     "__uninstaller_page__": "卸载程序页面",

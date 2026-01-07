@@ -15,7 +15,7 @@ from core.app_settings import AppSettings
 from core.app_translator import AppTranslator
 from core.set_font_family import SetFontFamily
 from core.system_checks import OptionalChecks, PrerequisiteChecks
-
+from gui.pages import *
 
 class MainWindow(customtkinter.CTk):
     def __init__(self):
@@ -199,7 +199,7 @@ class MainWindow(customtkinter.CTk):
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        # Create Navigation Frame.
+        # Create Navigation Frame
         self.navigation_frame = customtkinter.CTkFrame(self, corner_radius=0)
         self.navigation_frame.grid(row=0, column=0, sticky="nsew")
         self.navigation_frame.grid_rowconfigure(7, weight=1)
@@ -221,11 +221,21 @@ class MainWindow(customtkinter.CTk):
         self.about_button = self._create_nav_button("  i", "about_page", self.about_button_event, 8)
         self.settings_button = self._create_nav_button("⚙️", "settings_page", self.settings_button_event, 9)
 
-        # Create Main Frame.
+        # Create Main Frame
         self.main_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.main_frame.grid(row=0, column=1, sticky="nsew")
 
-        # Select Default Frame.
+        # Create Page Instances
+        self.home_page = HomePage(self.main_frame, self.app_translator, self.font_family)
+        self.installer_page = InstallerPage(self.main_frame, self.app_translator, self.font_family)
+        self.uninstaller_page = UninstallerPage(self.main_frame, self.app_translator, self.font_family)
+        self.utilities_page = UtilitiesPage(self.main_frame, self.app_translator, self.font_family)
+        self.toolbox_page = ToolboxPage(self.main_frame, self.app_translator, self.font_family)
+        self.maintenance_page = MaintenancePage(self.main_frame, self.app_translator, self.font_family)
+        self.about_page = AboutPage(self.main_frame, self.app_translator, self.font_family)
+        self.settings_page = SettingsPage(self.main_frame, self.app_translator, self.font_family)
+
+        # Select Default Frame
         self.select_frame_by_page_name("home")
 
     def select_frame_by_page_name(self, page_name):
@@ -239,24 +249,33 @@ class MainWindow(customtkinter.CTk):
         self.about_button.configure(fg_color=("gray75", "gray25") if page_name == "about" else "transparent")
         self.settings_button.configure(fg_color=("gray75", "gray25") if page_name == "settings" else "transparent")
 
+        # Hide All Pages
+        self.home_page.pack_forget()
+        self.installer_page.pack_forget()
+        self.uninstaller_page.pack_forget()
+        self.utilities_page.pack_forget()
+        self.toolbox_page.pack_forget()
+        self.maintenance_page.pack_forget()
+        self.about_page.pack_forget()
+        self.settings_page.pack_forget()
+
         # Show Selected Frame
-        # TODO: Implement page switching when pages are implemented as CTkFrames.
         if page_name == "home":
-            pass
+            self.home_page.pack(fill="both", expand=True, padx=10, pady=10)
         elif page_name == "installer":
-            pass
+            self.installer_page.pack(fill="both", expand=True, padx=10, pady=10)
         elif page_name == "uninstaller":
-            pass
+            self.uninstaller_page.pack(fill="both", expand=True, padx=10, pady=10)
         elif page_name == "utilities":
-            pass
+            self.utilities_page.pack(fill="both", expand=True, padx=10, pady=10)
         elif page_name == "toolbox":
-            pass
+            self.toolbox_page.pack(fill="both", expand=True, padx=10, pady=10)
         elif page_name == "maintenance":
-            pass
+            self.maintenance_page.pack(fill="both", expand=True, padx=10, pady=10)
         elif page_name == "about":
-            pass
+            self.about_page.pack(fill="both", expand=True, padx=10, pady=10)
         elif page_name == "settings":
-            pass
+            self.settings_page.pack(fill="both", expand=True, padx=10, pady=10)
 
     def home_button_event(self):
         self.select_frame_by_page_name("home")

@@ -69,6 +69,8 @@
       "uninstaller_page": "解除安裝",
       "utilities_page": "公用程式",
 
+    "__settings_page__": "設定頁面",
+
     "__toolbox_page__": "工具箱頁面",
 
     "__uninstaller_page__": "解除安裝程式頁面",

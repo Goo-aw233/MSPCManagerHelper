@@ -1,7 +1,7 @@
 import customtkinter
 
 
-class MaintenancePage(customtkinter.CTkFrame):
+class SettingsPage(customtkinter.CTkFrame):
     def __init__(self, parent, app_translator, font_family):
         super().__init__(parent, fg_color="transparent")
         self.app_translator = app_translator
@@ -10,7 +10,7 @@ class MaintenancePage(customtkinter.CTkFrame):
         # Page Title Label
         page_title_label = customtkinter.CTkLabel(
             self,
-            text=self.app_translator.translate("maintenance_page"),
+            text=self.app_translator.translate("settings_page"),
             font=customtkinter.CTkFont(family=self.font_family, size=24, weight="bold")
         )
         page_title_label.pack(padx=20, pady=20, anchor="w")
