@@ -1,3 +1,5 @@
+from tkinter import messagebox
+
 import customtkinter
 
 from core.app_logger import AppLogger
@@ -142,10 +144,52 @@ class AboutPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("privacy_settings_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("privacy_settings_button"),
-            command=lambda: OnPrivacySettingsButtonClick.open_privacy_settings(logger=self.logger, log_file_path=self.log_file_path, app_translator=self.app_translator)
+            command=lambda: OnPrivacySettingsButtonClick.open_privacy_settings(logger=self.logger,
+                                                                               log_file_path=self.log_file_path,
+                                                                               app_translator=self.app_translator)
         )
         # --- End of Privacy Settings Section ---
 
+        # --- Get Help Section ---
+        self._create_section_label(self.app_translator.translate("get_help"))
+
+        self.get_help_group = self._create_group_frame()
+
+        # --- Get Help ---
+        self.official_website_button = self._create_settings_card(
+            self.get_help_group,
+            title=self.app_translator.translate("get_help"),
+            description=self.app_translator.translate("get_help_description"),
+            widget_constructor=customtkinter.CTkButton,
+            text=self.app_translator.translate("get_help_button"),
+            command=lambda: (
+                messagebox.showinfo(
+                    title=self.app_translator.translate("information"),
+                    message=self.app_translator.translate("redirect_to_official_website_to_get_help")
+                ),
+                OnOfficialWebsiteButtonClick.open_official_website(
+                    logger=self.logger,
+                    log_file_path=self.log_file_path,
+                    app_translator=self.app_translator
+                )
+            )
+        )
+
+        # Separator
+        self._create_separator(self.get_help_group)
+
+        # --- Official Website ---
+        self.official_website_button = self._create_settings_card(
+            self.get_help_group,
+            title=self.app_translator.translate("official_website"),
+            description=self.app_translator.translate("official_website_description"),
+            widget_constructor=customtkinter.CTkButton,
+            text=self.app_translator.translate("official_website_button"),
+            command=lambda: OnOfficialWebsiteButtonClick.open_official_website(logger=self.logger,
+                                                                               log_file_path=self.log_file_path,
+                                                                               app_translator=self.app_translator)
+        )
+        # --- End of Get Help Section ---
 
     def _create_section_label(self, text):
         label = customtkinter.CTkLabel(
@@ -166,6 +210,11 @@ class AboutPage(customtkinter.CTkFrame):
         )
         frame.pack(fill="x", padx=20, pady=0)
         return frame
+
+    @staticmethod
+    def _create_separator(parent):
+        separator = customtkinter.CTkFrame(parent, height=1, fg_color=("gray90", "#2b2b2b"))
+        separator.pack(fill="x", padx=10)
 
     def _create_settings_card(self, parent, title, description, widget_constructor=None, **widget_kwargs):
         container = customtkinter.CTkFrame(parent, fg_color="transparent")

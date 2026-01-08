@@ -39,6 +39,12 @@
 
   "__pages__": "Pages Section",
     "__about_page__": "About Page",
+      "get_help": "Get Help",
+      "get_help_button": "Get Help",
+      "get_help_description": "Open the Microsoft PC Manager Official Website for More Help",
+      "official_website": "Official Website",
+      "official_website_button": "Official Website",
+      "official_website_description": "Open the Microsoft PC Manager Official Website for More Information",
       "privacy_policy": "Privacy Policy",
       "privacy_policy_title": "MSPCManagerHelper Privacy Policy",
       "privacy_policy_content_modification_date": "Terms Modification Date: January 8, 2026",
@@ -47,6 +53,7 @@
       "privacy_settings": "Privacy Settings",
       "privacy_settings_button": "Privacy & Security",
       "privacy_settings_description": "Open the Privacy & Security Page in Windows Settings",
+      "redirect_to_official_website_to_get_help": "You will be redirected to the official website of Microsoft PC Manager. Please contact us from the 'More Contact Information' section at the bottom of the website for help.",
       "term_of_use": "Term of Use",
       "term_of_use_title": "MSPCManagerHelper Terms of Use",
       "term_of_use_content_preface": "Welcome to MSPCManagerHelper (hereinafter referred to as \"the Software\"). Please carefully read the following terms of use (hereinafter referred to as \"the Terms\") before using the Software. By downloading, installing, or using the Software, you agree to comply with these Terms. If you do not agree with these Terms, please do not use the Software. Terms are subject to change without notice.",
@@ -77,6 +84,7 @@
       "term_of_use_content_11_body_3": "Sysinternals: https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_474966",
 
     "__button_events__": "Button Events Section",
+      "failed_to_open_official_website": "Unable to open the Official Website. Please open the browser manually to visit https://pcmanager.microsoft.com.\nLog File Location: {log_file_path}",
       "failed_to_open_privacy_settings": "Unable to open the Privacy & Security page. Please open Windows Settings manually.\nLog File Location: {log_file_path}",
 
     "__help_window__": "Help Window",
