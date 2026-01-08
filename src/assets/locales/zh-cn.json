@@ -71,12 +71,15 @@
       "utilities_page": "实用工具",
 
     "__settings_page__": "设置页面",
+      "app_display_language": "应用程序显示语言",
+      "app_display_language_description": "选择应用程序的显示语言",
       "appearance": "外观",
       "appearance_description": "选择您喜欢的应用显示风格",
       "dark_mode": "深色模式",
       "follow_system": "跟随系统",
       "follow_system_font_settings": "跟随系统字体设置",
       "follow_system_font_settings_description": "使用系统当前的字体设置，而不是跟随应用的字体设置",
+      "language": "语言",
       "light_mode": "浅色模式",
       "personalization": "个性化",
 

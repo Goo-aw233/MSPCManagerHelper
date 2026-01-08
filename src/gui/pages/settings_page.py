@@ -1,11 +1,15 @@
 import customtkinter
 
+from core.app_logger import AppLogger
 from core.app_settings import AppSettings
+from core.app_translator import AppTranslator
+from core.system_checks import PrerequisiteChecks
 
 
 class SettingsPage(customtkinter.CTkFrame):
     def __init__(self, parent, app_translator, font_family):
         super().__init__(parent, fg_color="transparent")
+        self.logger = AppLogger.get_logger()
         self.app_translator = app_translator
         self.font_family = font_family
 
@@ -66,6 +70,42 @@ class SettingsPage(customtkinter.CTkFrame):
         else:
             self.follow_system_font_switch.deselect()
         # --- End of Personalization Section ---
+
+        # --- Language Section ---
+        self._create_section_label(self.app_translator.translate("language"))
+
+        self.language_map = {
+            self.app_translator.translate("lang_en-us"): "en-us",
+            self.app_translator.translate("lang_zh-cn"): "zh-cn",
+            self.app_translator.translate("lang_zh-tw"): "zh-tw"
+        }
+        self.language_map_rev = {v: k for k, v in self.language_map.items()}
+
+        self.language_group = self._create_group_frame()
+        self.language_optionmenu = self._create_setting_card(
+            self.language_group,
+            self.app_translator.translate("app_display_language"),
+            self.app_translator.translate("app_display_language_description"),
+            customtkinter.CTkOptionMenu,
+            values=list(self.language_map.keys()),
+            command=self._change_language
+        )
+
+        current_locale = getattr(self.master.master, "language", "en-us")
+        self.language_optionmenu.set(self.language_map_rev.get(current_locale, "English"))
+        # --- End of Language Section ---
+
+    def _change_language(self, new_language: str):
+        locale = self.language_map.get(new_language)
+        if locale and self.master and self.master.master:
+            self.logger.info(f"Language Switched to: {locale}")
+            main_window = self.master.master
+            main_window.language = locale
+            main_window.app_translator = AppTranslator(locale)
+            PrerequisiteChecks.app_translator = main_window.app_translator
+            
+            if hasattr(main_window, "refresh_ui"):
+                main_window.refresh_ui()
 
     def _change_appearance_mode(self, new_appearance_mode: str):
         mode = self.theme_map.get(new_appearance_mode)

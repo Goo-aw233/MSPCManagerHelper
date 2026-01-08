@@ -17,6 +17,7 @@ from core.set_font_family import SetFontFamily
 from core.system_checks import OptionalChecks, PrerequisiteChecks
 from gui.pages import *
 
+
 class MainWindow(customtkinter.CTk):
     def __init__(self):
         start_global_init_time = time.perf_counter()
@@ -314,10 +315,18 @@ class MainWindow(customtkinter.CTk):
 
         # Nav Buttons
         button_font = customtkinter.CTkFont(family=self.font_family)
-        for btn in [self.home_button, self.maintenance_button, self.installer_button,
-                    self.uninstaller_button, self.utilities_button, self.toolbox_button,
-                    self.about_button, self.settings_button]:
-            btn.configure(font=button_font)
+        nav_buttons = [
+            (self.home_button, "🏠", "home_page"),
+            (self.maintenance_button, "🧹", "maintenance_page"),
+            (self.installer_button, "📥", "installer_page"),
+            (self.uninstaller_button, "🗑", "uninstaller_page"),
+            (self.utilities_button, "🛠", "utilities_page"),
+            (self.toolbox_button, "🧰", "toolbox_page"),
+            (self.about_button, "  i", "about_page"),
+            (self.settings_button, "⚙️", "settings_page"),
+        ]
+        for btn, icon, key in nav_buttons:
+            btn.configure(font=button_font, text=f"{icon}    {self.app_translator.translate(key)}")
 
         # Recreate Pages
         current_page_name = "home"

@@ -70,12 +70,15 @@
       "utilities_page": "公用程式",
 
     "__settings_page__": "設定頁面",
+      "app_display_language": "應用程式顯示語言",
+      "app_display_language_description": "選擇應用程式的顯示語言",
       "appearance": "外觀",
       "appearance_description": "選擇您喜歡的程式顯示風格",
       "dark_mode": "深色模式",
       "follow_system": "跟隨系統",
       "follow_system_font_settings": "跟隨系統字型設定",
       "follow_system_font_settings_description": "使用系統目前的字型設定，而不是跟隨程式的字型設定",
+      "language": "語言",
       "light_mode": "淺色模式",
       "personalization": "個人化",
 
