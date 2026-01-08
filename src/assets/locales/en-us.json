@@ -44,6 +44,9 @@
       "privacy_policy_content_modification_date": "Terms Modification Date: January 8, 2026",
       "privacy_policy_content_1": "MSPCManagerHelper (hereinafter referred to as \"the Software\") does not collect or upload any data in any form, including but not limited to computer identifiers, geographic information, etc. All data collection while using the Software is performed by Microsoft® Windows® Operating System and software such as Microsoft PC Manager.",
       "privacy_policy_content_2": "When you visit certain links (e.g., https://learn.microsoft.com/?wt.mc_id=studentamb_474966), a Microsoft Student Ambassador tracking code will be used to help the developer count the number of visitors. All tracking services on these websites are performed by Microsoft.",
+      "privacy_settings": "Privacy Settings",
+      "privacy_settings_button": "Privacy & Security",
+      "privacy_settings_description": "Open the Privacy & Security Page in Windows Settings",
       "term_of_use": "Term of Use",
       "term_of_use_title": "MSPCManagerHelper Terms of Use",
       "term_of_use_content_preface": "Welcome to MSPCManagerHelper (hereinafter referred to as \"the Software\"). Please carefully read the following terms of use (hereinafter referred to as \"the Terms\") before using the Software. By downloading, installing, or using the Software, you agree to comply with these Terms. If you do not agree with these Terms, please do not use the Software. Terms are subject to change without notice.",
@@ -72,7 +75,10 @@
       "term_of_use_content_11_body_1": "For licenses and notices of third-party software, please refer to: https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/ThirdPartyNotices.txt.",
       "term_of_use_content_11_body_2": "NSudo: https://github.com/M2Team/NSudo",
       "term_of_use_content_11_body_3": "Sysinternals: https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_474966",
-  
+
+    "__button_events__": "Button Events Section",
+      "failed_to_open_privacy_settings": "Unable to open the Privacy & Security page. Please open Windows Settings manually.\nLog File Location: {log_file_path}",
+
     "__help_window__": "Help Window",
       "help_window_title": "Help Window",
       "help_window_content_title": "Welcome to MSPCManagerHelper, this is the app's help window.",

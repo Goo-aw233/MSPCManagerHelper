@@ -45,6 +45,9 @@
       "privacy_policy_content_modification_date": "条款修改日期：2026 年 1 月 8 日",
       "privacy_policy_content_1": "MSPCManagerHelper（以下简称“本软件”）不会以任何形式收集并上传任何数据，包括但不限于计算机标识符、地理信息等。在您使用本软件时，所有的数据采集均由 Microsoft® Windows® Operating System 及微软电脑管家等软件完成。",
       "privacy_policy_content_2": "在您访问部分链接时（如 https://learn.microsoft.com/?wt.mc_id=studentamb_474966），会使用 Microsoft 学生大使的跟踪符，以协助开发者统计访客数量。在您访问相关网址时，所有的跟踪服务将由 Microsoft 完成。",
+      "privacy_settings": "隐私设置",
+      "privacy_settings_button": "隐私和安全性",
+      "privacy_settings_description": "打开 Windows 设置中的“隐私和安全性”页面",
       "term_of_use": "使用条款",
       "term_of_use_title": "MSPCManagerHelper 使用条款",
       "term_of_use_content_preface": "欢迎使用 MSPCManagerHelper（以下简称“本软件”）。在使用本软件之前，请仔细阅读以下使用条款（以下简称“条款”）。通过下载、安装或使用本软件，即表示您同意遵守这些条款。如果您不同意这些条款，请勿使用本软件。若条款有更新，恕不另行通知。",
@@ -74,6 +77,8 @@
       "term_of_use_content_11_body_2": "NSudo: https://github.com/M2Team/NSudo",
       "term_of_use_content_11_body_3": "Sysinternals: https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_474966",
 
+    "__button_events__": "按钮事件部分",
+      "failed_to_open_privacy_settings": "无法打开“隐私和安全性”页面。请手动打开 Windows 设置。\n日志文件位置：{log_file_path}",
 
     "__help_window__": "帮助窗口",
       "help_window_title": "帮助窗口",

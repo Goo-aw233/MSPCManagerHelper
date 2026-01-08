@@ -1,9 +1,14 @@
 import customtkinter
 
+from core.app_logger import AppLogger
+from gui.pages.events import *
+
 
 class AboutPage(customtkinter.CTkFrame):
     def __init__(self, parent, app_translator, font_family):
         super().__init__(parent, fg_color="transparent")
+        self.logger = AppLogger.get_logger()
+        self.log_file_path = AppLogger.get_log_file_path()
         self.app_translator = app_translator
         self.font_family = font_family
 
@@ -50,7 +55,7 @@ class AboutPage(customtkinter.CTkFrame):
             font=customtkinter.CTkFont(family=self.font_family, size=14),
             fg_color="transparent",
             wrap="word",
-            height=220
+            height=130
         )
         self.term_of_use_content_textbox.pack(fill="x", padx=16, pady=(0, 16))
 
@@ -112,7 +117,7 @@ class AboutPage(customtkinter.CTkFrame):
             font=customtkinter.CTkFont(family=self.font_family, size=14),
             fg_color="transparent",
             wrap="word",
-            height=120
+            height=130
         )
         self.privacy_policy_content_textbox.pack(fill="x", padx=16, pady=(0, 16))
 
@@ -125,6 +130,22 @@ class AboutPage(customtkinter.CTkFrame):
         self.privacy_policy_content_textbox.configure(state="disabled")
         # --- End of Privacy Policy Section ---
 
+        # --- Privacy Settings Section ---
+        self._create_section_label(self.app_translator.translate("privacy_settings"))
+
+        self.privacy_settings_group = self._create_group_frame()
+
+        # --- Privacy Settings ---
+        self.privacy_settings_button = self._create_settings_card(
+            self.privacy_settings_group,
+            title=self.app_translator.translate("privacy_settings"),
+            description=self.app_translator.translate("privacy_settings_description"),
+            widget_constructor=customtkinter.CTkButton,
+            text=self.app_translator.translate("privacy_settings_button"),
+            command=lambda: OnPrivacySettingsButtonClick.open_privacy_settings(logger=self.logger, log_file_path=self.log_file_path, app_translator=self.app_translator)
+        )
+        # --- End of Privacy Settings Section ---
+
 
     def _create_section_label(self, text):
         label = customtkinter.CTkLabel(
@@ -134,3 +155,51 @@ class AboutPage(customtkinter.CTkFrame):
             anchor="w"
         )
         label.pack(fill="x", padx=25, pady=(20, 10))
+
+    def _create_group_frame(self):
+        frame = customtkinter.CTkFrame(
+            self.scroll_frame,
+            fg_color=("gray95", "#202020"),
+            corner_radius=4,
+            border_width=1,
+            border_color=("gray90", "#2b2b2b")
+        )
+        frame.pack(fill="x", padx=20, pady=0)
+        return frame
+
+    def _create_settings_card(self, parent, title, description, widget_constructor=None, **widget_kwargs):
+        container = customtkinter.CTkFrame(parent, fg_color="transparent")
+        container.pack(fill="x", padx=10, pady=8)
+
+        # Text Column
+        text_frame = customtkinter.CTkFrame(container, fg_color="transparent")
+        text_frame.pack(side="left", fill="both", expand=True, padx=5)
+
+        title_label = customtkinter.CTkLabel(
+            text_frame,
+            text=title,
+            font=customtkinter.CTkFont(family=self.font_family, size=14),
+            anchor="w"
+        )
+        title_label.pack(fill="x")
+
+        if description:
+            desc_label = customtkinter.CTkLabel(
+                text_frame,
+                text=description,
+                font=customtkinter.CTkFont(family=self.font_family, size=12),
+                text_color=("gray50", "gray70"),
+                anchor="w"
+            )
+            desc_label.pack(fill="x")
+
+        # Widget Column
+        if widget_constructor:
+            # Inject font family if not present and if the widget supports it (most CTk widgets do).
+            if "font" not in widget_kwargs:
+                widget_kwargs["font"] = customtkinter.CTkFont(family=self.font_family)
+
+            widget = widget_constructor(container, **widget_kwargs)
+            widget.pack(side="right", padx=5)
+            return widget
+        return None

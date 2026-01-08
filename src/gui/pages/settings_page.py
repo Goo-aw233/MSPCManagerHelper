@@ -43,7 +43,7 @@ class SettingsPage(customtkinter.CTkFrame):
 
         self.personalization_group = self._create_group_frame()
 
-        self.appearance_mode_optionemenu = self._create_setting_card(
+        self.appearance_mode_optionemenu = self._create_settings_card(
             self.personalization_group,
             self.app_translator.translate("appearance"),
             self.app_translator.translate("appearance_description"),
@@ -58,7 +58,7 @@ class SettingsPage(customtkinter.CTkFrame):
         self._create_separator(self.personalization_group)
 
         # Follow System Font
-        self.follow_system_font_switch = self._create_setting_card(
+        self.follow_system_font_switch = self._create_settings_card(
             self.personalization_group,
             self.app_translator.translate("follow_system_font_settings"),
             self.app_translator.translate("follow_system_font_settings_description"),
@@ -85,7 +85,7 @@ class SettingsPage(customtkinter.CTkFrame):
 
         self.language_group = self._create_group_frame()
 
-        self.language_optionmenu = self._create_setting_card(
+        self.language_optionmenu = self._create_settings_card(
             self.language_group,
             self.app_translator.translate("app_display_language"),
             self.app_translator.translate("app_display_language_description"),
@@ -104,7 +104,7 @@ class SettingsPage(customtkinter.CTkFrame):
         self.preferences_group = self._create_group_frame()
 
         # Support Developer
-        self.support_developer_switch = self._create_setting_card(
+        self.support_developer_switch = self._create_settings_card(
             self.preferences_group,
             self.app_translator.translate("support_developer"),
             self.app_translator.translate("support_developer_description"),
@@ -124,7 +124,7 @@ class SettingsPage(customtkinter.CTkFrame):
         self._create_separator(self.preferences_group)
 
         # --- Compatibility Mode ---
-        self.compatibility_mode_switch = self._create_setting_card(
+        self.compatibility_mode_switch = self._create_settings_card(
             self.preferences_group,
             self.app_translator.translate("compatibility_mode"),
             self.app_translator.translate("compatibility_mode_description"),
@@ -208,7 +208,7 @@ class SettingsPage(customtkinter.CTkFrame):
         separator = customtkinter.CTkFrame(parent, height=1, fg_color=("gray90", "#2b2b2b"))
         separator.pack(fill="x", padx=10)
 
-    def _create_setting_card(self, parent, title, description, widget_constructor=None, **widget_kwargs):
+    def _create_settings_card(self, parent, title, description, widget_constructor=None, **widget_kwargs):
         container = customtkinter.CTkFrame(parent, fg_color="transparent")
         container.pack(fill="x", padx=10, pady=8)
 
