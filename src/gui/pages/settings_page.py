@@ -42,6 +42,7 @@ class SettingsPage(customtkinter.CTkFrame):
         self.theme_map_rev = {v: k for k, v in self.theme_map.items()}
 
         self.personalization_group = self._create_group_frame()
+
         self.appearance_mode_optionemenu = self._create_setting_card(
             self.personalization_group,
             self.app_translator.translate("appearance"),
@@ -50,7 +51,8 @@ class SettingsPage(customtkinter.CTkFrame):
             values=list(self.theme_map.keys()),
             command=self._change_appearance_mode
         )
-        self.appearance_mode_optionemenu.set(self.theme_map_rev.get(AppSettings.get_appearance_mode(), self.app_translator.translate("follow_system")))
+        self.appearance_mode_optionemenu.set(
+            self.theme_map_rev.get(AppSettings.get_appearance_mode(), self.app_translator.translate("follow_system")))
         
         # Separator
         self._create_separator(self.personalization_group)
@@ -82,6 +84,7 @@ class SettingsPage(customtkinter.CTkFrame):
         self.language_map_rev = {v: k for k, v in self.language_map.items()}
 
         self.language_group = self._create_group_frame()
+
         self.language_optionmenu = self._create_setting_card(
             self.language_group,
             self.app_translator.translate("app_display_language"),
@@ -94,6 +97,28 @@ class SettingsPage(customtkinter.CTkFrame):
         current_locale = getattr(self.master.master, "language", "en-us")
         self.language_optionmenu.set(self.language_map_rev.get(current_locale, "English"))
         # --- End of Language Section ---
+
+        # --- Preferences ---
+        self._create_section_label(self.app_translator.translate("preferences"))
+
+        self.preferences_group = self._create_group_frame()
+
+        # Support Developer
+        self.support_developer_switch = self._create_setting_card(
+            self.preferences_group,
+            self.app_translator.translate("support_developer"),
+            self.app_translator.translate("support_developer_description"),
+            customtkinter.CTkSwitch,
+                text=self.app_translator.translate("button_on") if AppSettings.is_support_developer_enabled() else self.app_translator.translate("button_off"),
+            command=self._change_support_developer
+        )
+
+        if AppSettings.is_support_developer_enabled():
+            self.support_developer_switch.select()
+        else:
+            self.support_developer_switch.deselect()
+        # --- End of Preferences ---
+
 
     def _change_language(self, new_language: str):
         locale = self.language_map.get(new_language)
@@ -120,6 +145,13 @@ class SettingsPage(customtkinter.CTkFrame):
         # Trigger Refresh in MainWindow
         if self.master and self.master.master and hasattr(self.master.master, "refresh_ui"):
             self.master.master.refresh_ui()
+
+    def _change_support_developer(self):
+        is_enabled = self.support_developer_switch.get()
+        AppSettings.set_support_developer_enabled(is_enabled)
+        self.support_developer_switch.configure(
+            text=self.app_translator.translate("button_on") if is_enabled else self.app_translator.translate("button_off")
+        )
 
     def _create_section_label(self, text):
         label = customtkinter.CTkLabel(

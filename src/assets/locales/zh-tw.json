@@ -15,6 +15,8 @@
       "administrator_protection_is_enabled": "「系統管理員保護」已啟用，部分功能將被禁用。請關閉「系統管理員保護」並重新啟動電腦後重試。",
       "administrator_required": "需要系統管理員權限",
       "app_is_not_running_as_administrator": "MSPCManagerHelper 未以系統管理員身份執行，部分功能將被禁用。請以系統管理員身份重新執行該程式。",
+      "button_on": "開",
+      "button_off": "關",
       "error": "錯誤",
       "information": "資訊",
       "narrator_is_running": "螢幕閱讀程式（如講述人）正在執行，MSPCManagerHelper 暫不支援螢幕閱讀程式。請尋求其他人員協助以繼續。",
@@ -81,6 +83,9 @@
       "language": "語言",
       "light_mode": "淺色模式",
       "personalization": "個人化",
+      "preferences": "偏好設定",
+      "support_developer": "支援開發人員",
+      "support_developer_description": "訪問 Microsoft 連結時添加貢獻者 ID 以支援開發人員",
 
     "__toolbox_page__": "工具箱頁面",
 

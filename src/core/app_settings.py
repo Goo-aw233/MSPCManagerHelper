@@ -5,6 +5,7 @@ class AppSettings:
     logger = AppLogger.get_logger()
 
     _is_follow_system_font_enabled: bool = False
+    _is_support_developer_enabled: bool = True
     _appearance_mode: str = "System"
 
     # ======================= Appearance Settings =======================
@@ -31,3 +32,18 @@ class AppSettings:
     def toggle_follow_system_font(cls) -> None:
         cls.set_follow_system_font_enabled(not cls._is_follow_system_font_enabled)
     # ======================= End of Follow System Font Settings =======================
+
+    # ======================= Support Developer Settings =======================
+    @classmethod
+    def is_support_developer_enabled(cls) -> bool:
+        return cls._is_support_developer_enabled
+
+    @classmethod
+    def set_support_developer_enabled(cls, enabled: bool) -> None:
+        cls._is_support_developer_enabled = bool(enabled)
+        AppSettings.logger.info(f"Support Developer Set to: {cls._is_support_developer_enabled}")
+
+    @classmethod
+    def get_support_developer_tracking_id(cls) -> str:
+        return "/?wt.mc_id=studentamb_474966" if cls._is_support_developer_enabled else ""
+    # ======================= End of Support Developer Settings =======================
