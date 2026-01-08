@@ -109,7 +109,9 @@ class SettingsPage(customtkinter.CTkFrame):
             self.app_translator.translate("support_developer"),
             self.app_translator.translate("support_developer_description"),
             customtkinter.CTkSwitch,
-                text=self.app_translator.translate("button_on") if AppSettings.is_support_developer_enabled() else self.app_translator.translate("button_off"),
+            text=self.app_translator.translate(
+                "button_on") if AppSettings.is_support_developer_enabled() else self.app_translator.translate(
+                "button_off"),
             command=self._change_support_developer
         )
 
@@ -117,6 +119,25 @@ class SettingsPage(customtkinter.CTkFrame):
             self.support_developer_switch.select()
         else:
             self.support_developer_switch.deselect()
+
+        # Separator
+        self._create_separator(self.preferences_group)
+
+        # --- Compatibility Mode ---
+        self.compatibility_mode_switch = self._create_setting_card(
+            self.preferences_group,
+            self.app_translator.translate("compatibility_mode"),
+            self.app_translator.translate("compatibility_mode_description"),
+            customtkinter.CTkSwitch,
+            text=self.app_translator.translate(
+                "button_on") if AppSettings.is_compatibility_mode_enabled() else self.app_translator.translate(
+                "button_off"),
+            command=self._change_compatibility_mode
+        )
+        if AppSettings.is_compatibility_mode_enabled():
+            self.compatibility_mode_switch.select()
+        else:
+            self.compatibility_mode_switch.deselect()
         # --- End of Preferences ---
 
 
@@ -150,7 +171,16 @@ class SettingsPage(customtkinter.CTkFrame):
         is_enabled = self.support_developer_switch.get()
         AppSettings.set_support_developer_enabled(is_enabled)
         self.support_developer_switch.configure(
-            text=self.app_translator.translate("button_on") if is_enabled else self.app_translator.translate("button_off")
+            text=self.app_translator.translate("button_on") if is_enabled else self.app_translator.translate(
+                "button_off")
+        )
+
+    def _change_compatibility_mode(self):
+        is_enabled = self.compatibility_mode_switch.get()
+        AppSettings.set_compatibility_mode_enabled(is_enabled)
+        self.compatibility_mode_switch.configure(
+            text=self.app_translator.translate("button_on") if is_enabled else self.app_translator.translate(
+                "button_off")
         )
 
     def _create_section_label(self, text):

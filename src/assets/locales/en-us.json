@@ -76,6 +76,8 @@
       "app_display_language_description": "Select the Display Language for the App",
       "appearance": "Appearance",
       "appearance_description": "Choose Your Preferred App Display Style",
+      "compatibility_mode": "Compatibility Mode",
+      "compatibility_mode_description": "Use Legacy Windows Commands to Improve Compatibility, but May Reduce Performance of Some Features",
       "dark_mode": "Dark Mode",
       "follow_system": "Follow System",
       "follow_system_font_settings": "Follow System Font Settings",

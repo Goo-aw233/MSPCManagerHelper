@@ -6,6 +6,7 @@ class AppSettings:
 
     _is_follow_system_font_enabled: bool = False
     _is_support_developer_enabled: bool = True
+    _is_compatibility_mode_enabled: bool = False
     _appearance_mode: str = "System"
 
     # ======================= Appearance Settings =======================
@@ -47,3 +48,18 @@ class AppSettings:
     def get_support_developer_tracking_id(cls) -> str:
         return "/?wt.mc_id=studentamb_474966" if cls._is_support_developer_enabled else ""
     # ======================= End of Support Developer Settings =======================
+
+    # ======================= Compatibility Mode Settings =======================
+    @classmethod
+    def is_compatibility_mode_enabled(cls) -> bool:
+        return cls._is_compatibility_mode_enabled
+    
+    @classmethod
+    def set_compatibility_mode_enabled(cls, enabled: bool) -> None:
+        cls._is_compatibility_mode_enabled = bool(enabled)
+        AppSettings.logger.info(f"Compatibility Mode Set to: {cls._is_compatibility_mode_enabled}")
+    
+    @classmethod
+    def toggle_compatibility_mode(cls) -> None:
+        cls.set_compatibility_mode_enabled(not cls._is_compatibility_mode_enabled)
+    # ======================= End of Compatibility Mode Settings =======================

@@ -77,6 +77,8 @@
       "app_display_language_description": "选择应用程序的显示语言",
       "appearance": "外观",
       "appearance_description": "选择您喜欢的应用显示风格",
+      "compatibility_mode": "兼容模式",
+      "compatibility_mode_description": "使用旧版 Windows 命令以提高兼容性，但可能会降低某些功能的性能",
       "dark_mode": "深色模式",
       "follow_system": "跟随系统",
       "follow_system_font_settings": "跟随系统字体设置",
