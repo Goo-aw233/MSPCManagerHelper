@@ -39,6 +39,11 @@
 
   "__pages__": "頁面部分",
     "__about_page__": "關於頁面",
+      "privacy_policy": "隱私權聲明",
+      "privacy_policy_title": "MSPCManagerHelper 隱私權聲明",
+      "privacy_policy_content_modification_date": "條款更新日期：2026 年 1 月 8 日",
+      "privacy_policy_content_1": "MSPCManagerHelper （以下簡稱“本軟體”）不會以任何形式採集並上傳任何資料，包括但不限於計算機識別符、地理資訊等。在您使用本軟體時，所有的資料採集均由 Microsoft® Windows® Operating System 及微軟電腦管家等軟體完成。",
+      "privacy_policy_content_2": "在您訪問部分連結時（如 https://learn.microsoft.com/?wt.mc_id=studentamb_474966），會使用 Microsoft 學生大使的追蹤碼，以協助開發者統計訪客數量。所有這些網站上的追蹤服務均由 Microsoft 完成。",
       "term_of_use": "使用規定",
       "term_of_use_title": "MSPCManagerHelper 使用規定",
       "term_of_use_content_preface": "歡迎使用 MSPCManagerHelper（以下簡稱“本軟體”）。在使用本軟體之前，請仔細閱讀以下使用規定（以下簡稱「條款」）。通過下載、安裝或使用本軟體，即表示您同意遵守這些條款。如果您不同意這些條款，請勿使用本軟體。若條款有更新，恕不另行通知。",

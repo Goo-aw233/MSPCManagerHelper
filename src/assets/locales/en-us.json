@@ -39,6 +39,11 @@
 
   "__pages__": "Pages Section",
     "__about_page__": "About Page",
+      "privacy_policy": "Privacy Policy",
+      "privacy_policy_title": "MSPCManagerHelper Privacy Policy",
+      "privacy_policy_content_modification_date": "Terms Modification Date: January 8, 2026",
+      "privacy_policy_content_1": "MSPCManagerHelper (hereinafter referred to as \"the Software\") does not collect or upload any data in any form, including but not limited to computer identifiers, geographic information, etc. All data collection while using the Software is performed by Microsoft® Windows® Operating System and software such as Microsoft PC Manager.",
+      "privacy_policy_content_2": "When you visit certain links (e.g., https://learn.microsoft.com/?wt.mc_id=studentamb_474966), a Microsoft Student Ambassador tracking code will be used to help the developer count the number of visitors. All tracking services on these websites are performed by Microsoft.",
       "term_of_use": "Term of Use",
       "term_of_use_title": "MSPCManagerHelper Terms of Use",
       "term_of_use_content_preface": "Welcome to MSPCManagerHelper (hereinafter referred to as \"the Software\"). Please carefully read the following terms of use (hereinafter referred to as \"the Terms\") before using the Software. By downloading, installing, or using the Software, you agree to comply with these Terms. If you do not agree with these Terms, please do not use the Software. Terms are subject to change without notice.",

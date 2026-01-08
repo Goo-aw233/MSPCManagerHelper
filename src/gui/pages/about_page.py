@@ -86,6 +86,45 @@ class AboutPage(customtkinter.CTkFrame):
         self.term_of_use_content_textbox.configure(state="disabled")
         # --- End of Term of Use Section ---
 
+        # --- Privacy Policy Section ---
+        self._create_section_label(self.app_translator.translate("privacy_policy"))
+
+        # Privacy Policy Card
+        self.privacy_policy_card = customtkinter.CTkFrame(
+            self.scroll_frame,
+            corner_radius=4,
+            border_width=1,
+            border_color=("gray80", "gray30")
+        )
+        self.privacy_policy_card.pack(fill="x", padx=20, pady=10)
+
+        # Card Header
+        self.privacy_policy_title_label = customtkinter.CTkLabel(
+            self.privacy_policy_card,
+            text=self.app_translator.translate("privacy_policy_title"),
+            font=customtkinter.CTkFont(family=self.font_family, size=16, weight="bold")
+        )
+        self.privacy_policy_title_label.pack(anchor="w", padx=16, pady=(16, 8))
+
+        # Card Content
+        self.privacy_policy_content_textbox = customtkinter.CTkTextbox(
+            self.privacy_policy_card,
+            font=customtkinter.CTkFont(family=self.font_family, size=14),
+            fg_color="transparent",
+            wrap="word",
+            height=120
+        )
+        self.privacy_policy_content_textbox.pack(fill="x", padx=16, pady=(0, 16))
+
+        privacy_policy_content = (
+            f"{self.app_translator.translate('privacy_policy_content_modification_date')}\n\n"
+            f"{self.app_translator.translate('privacy_policy_content_1')}\n\n"
+            f"{self.app_translator.translate('privacy_policy_content_2')}"
+        )
+        self.privacy_policy_content_textbox.insert("0.0", privacy_policy_content)
+        self.privacy_policy_content_textbox.configure(state="disabled")
+        # --- End of Privacy Policy Section ---
+
 
     def _create_section_label(self, text):
         label = customtkinter.CTkLabel(
