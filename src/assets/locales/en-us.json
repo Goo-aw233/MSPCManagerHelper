@@ -111,6 +111,9 @@
       "help_window_content_get_help_2": "GitHub Repository URL: https://github.com/Goo-aw233/MSPCManagerHelper",
 
     "__home_page__": "Home Page",
+      "welcome_message": "Welcome to MSPCManagerHelper! This tool is designed to help you manage Microsoft PC Manager. Please select a feature from the navigation menu to continue. Before using MSPCManagerHelper, please read the 'Terms of Use' and 'Privacy Policy' thoroughly. By continuing to use, you agree to these terms.",
+      "welcome_title": "Welcome",
+      "welcome_to": "Welcome to",
 
     "__installer_page__": "Installer Page",
 

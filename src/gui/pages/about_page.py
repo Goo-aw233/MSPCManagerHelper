@@ -353,7 +353,8 @@ class AboutPage(customtkinter.CTkFrame):
         separator = customtkinter.CTkFrame(parent, height=1, fg_color=("gray90", "#2b2b2b"))
         separator.pack(fill="x", padx=10)
 
-    def _create_settings_card(self, parent, title, description, widget_constructor=None, description_command=None, **widget_kwargs):
+    def _create_settings_card(self, parent, title, description, widget_constructor=None, description_command=None,
+                              **widget_kwargs):
         container = customtkinter.CTkFrame(parent, fg_color="transparent")
         container.pack(fill="x", padx=10, pady=8)
 

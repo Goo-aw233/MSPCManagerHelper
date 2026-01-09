@@ -111,6 +111,9 @@
       "help_window_content_get_help_2": "GitHub 倉庫地址：https://github.com/Goo-aw233/MSPCManagerHelper",
 
     "__home_page__": "首頁",
+      "welcome_message": "歡迎使用 MSPCManagerHelper！此工具旨在幫助您管理 Microsoft 電腦管家。請從導航選單中選擇一個功能以繼續。在您使用 MSPCManagerHelper 前，請充分閱讀《使用規定》與《隱私權聲明》。若繼續使用，即代表您已經同意這些條款。",
+      "welcome_title": "歡迎",
+      "welcome_to": "歡迎使用",
 
     "__installer_page__": "安裝程式頁面",
   

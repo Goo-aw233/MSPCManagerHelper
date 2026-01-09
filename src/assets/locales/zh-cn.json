@@ -112,6 +112,9 @@
       "help_window_content_get_help_2": "GitHub 仓库地址：https://github.com/Goo-aw233/MSPCManagerHelper\n欢迎加入 QQ 群获取更多帮助，联系方式：https://forms.office.com/r/7YhjaEEmKc",
 
     "__home_page__": "主页",
+      "welcome_message": "欢迎使用 MSPCManagerHelper！此工具旨在帮助您管理微软电脑管家。请从导航菜单中选择一个功能以继续。在您使用 MSPCManagerHelper 前，请充分阅读《使用条款》与《隐私政策》。若继续使用，即代表您已经同意这些条款。",
+      "welcome_title": "欢迎",
+      "welcome_to": "欢迎使用",
 
     "__installer_page__": "安装程序页面",
 
