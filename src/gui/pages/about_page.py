@@ -3,6 +3,7 @@ from tkinter import messagebox
 import customtkinter
 
 from core.app_logger import AppLogger
+from core.app_metadata import AppMetadata
 from gui.pages.events import *
 
 
@@ -31,6 +32,142 @@ class AboutPage(customtkinter.CTkFrame):
         self.scroll_frame.grid(row=1, column=0, sticky="nsew", padx=0, pady=0)
         self.scroll_frame.grid_columnconfigure(0, weight=1)
 
+        # --- App Information Section ---
+        self._create_section_label(self.app_translator.translate("app_information"))
+
+        self.app_info_group = self._create_group_frame()
+
+        # App Header
+        self.app_header_frame = customtkinter.CTkFrame(self.app_info_group, fg_color="transparent")
+        self.app_header_frame.pack(fill="x", padx=16, pady=(16, 12))
+
+        self.app_name_label = customtkinter.CTkLabel(
+            self.app_header_frame,
+            text=AppMetadata.APP_NAME,
+            font=customtkinter.CTkFont(family=self.font_family, size=14),
+            anchor="w"
+        )
+        self.app_name_label.pack(fill="x")
+
+        self.app_version_label = customtkinter.CTkLabel(
+            self.app_header_frame,
+            text=AppMetadata.APP_VERSION,
+            font=customtkinter.CTkFont(family=self.font_family, size=12),
+            text_color=("gray50", "gray70"),
+            anchor="w"
+        )
+        self.app_version_label.pack(fill="x")
+
+        self._create_separator(self.app_info_group)
+
+        # Contributors
+        contributors_container = customtkinter.CTkFrame(self.app_info_group, fg_color="transparent")
+        contributors_container.pack(fill="x", padx=10, pady=8)
+
+        # Text Column
+        contributors_text_frame = customtkinter.CTkFrame(contributors_container, fg_color="transparent")
+        contributors_text_frame.pack(side="left", fill="both", expand=True, padx=5)
+
+        customtkinter.CTkLabel(
+            contributors_text_frame,
+            text=self.app_translator.translate("contributors"),
+            font=customtkinter.CTkFont(family=self.font_family, size=14),
+            anchor="w"
+        ).pack(fill="x")
+        
+        contributors_list_frame = customtkinter.CTkFrame(contributors_text_frame, fg_color="transparent")
+        contributors_list_frame.pack(fill="x", anchor="w")
+
+        for name, contributor_url in AppMetadata.APP_CONTRIBUTORS.items():
+            link = customtkinter.CTkLabel(
+                contributors_list_frame,
+                text=name,
+                font=customtkinter.CTkFont(family=self.font_family, size=12),
+                text_color=("#1f6aa5", "#3a7ebf"),
+                cursor="hand2"
+            )
+            link.pack(side="left", padx=(0, 10))
+            link.bind("<Button-1>", lambda e, u=contributor_url: OnOpenURLButtonClick.open_contributors_url(
+                logger=self.logger,
+                log_file_path=self.log_file_path,
+                app_translator=self.app_translator,
+                contributor_url=u
+            ))
+
+        self._create_separator(self.app_info_group)
+
+        # Translators
+        translators_list = get_localization_translators(self.app_translator)
+        if translators_list:
+            translators_container = customtkinter.CTkFrame(self.app_info_group, fg_color="transparent")
+            translators_container.pack(fill="x", padx=10, pady=8)
+
+            # Text Column
+            translators_text_frame = customtkinter.CTkFrame(translators_container, fg_color="transparent")
+            translators_text_frame.pack(side="left", fill="both", expand=True, padx=5)
+
+            customtkinter.CTkLabel(
+                translators_text_frame,
+                text=self.app_translator.translate("translators"),
+                font=customtkinter.CTkFont(family=self.font_family, size=14),
+                anchor="w"
+            ).pack(fill="x")
+            
+            translators_list_frame = customtkinter.CTkFrame(translators_text_frame, fg_color="transparent")
+            translators_list_frame.pack(fill="x", anchor="w")
+
+            for username, display_name in translators_list:
+                github_profile_url = f"https://github.com/{username}"
+                link = customtkinter.CTkLabel(
+                    translators_list_frame,
+                    text=display_name,
+                    font=customtkinter.CTkFont(family=self.font_family, size=12),
+                    text_color=("#1f6aa5", "#3a7ebf"),
+                    cursor="hand2"
+                )
+                link.pack(side="left", padx=(0, 10))
+                link.bind("<Button-1>", lambda e, u=github_profile_url: OnOpenURLButtonClick.open_contributors_url(
+                    logger=self.logger,
+                    log_file_path=self.log_file_path,
+                    app_translator=self.app_translator,
+                    contributor_url=u
+                ))
+        else:
+             self._create_settings_card(
+                self.app_info_group,
+                title=self.app_translator.translate("translators"),
+                description=None
+            )
+
+        self._create_separator(self.app_info_group)
+
+        # License
+        self._create_settings_card(
+            self.app_info_group,
+            title=self.app_translator.translate("license"),
+            description=AppMetadata.APP_LICENSE_URL,
+            description_command=lambda: OnOpenURLButtonClick.open_license(
+                 logger=self.logger,
+                 log_file_path=self.log_file_path,
+                 app_translator=self.app_translator
+             )
+        )
+
+        self._create_separator(self.app_info_group)
+
+        # Repository
+        self._create_settings_card(
+             self.app_info_group,
+             title=self.app_translator.translate("repository_url"),
+             description=AppMetadata.APP_GITHUB_REPOSITORY_URL,
+             description_command=lambda: OnOpenURLButtonClick.open_github_repository(
+                 logger=self.logger,
+                 log_file_path=self.log_file_path,
+                 app_translator=self.app_translator
+             )
+        )
+        # --- End of App Information Section ---
+
         # --- Term of Use Section ---
         self._create_section_label(self.app_translator.translate("term_of_use"))
 
@@ -54,7 +191,7 @@ class AboutPage(customtkinter.CTkFrame):
         # Card Content
         self.term_of_use_content_textbox = customtkinter.CTkTextbox(
             self.term_of_use_card,
-            font=customtkinter.CTkFont(family=self.font_family, size=14),
+            font=customtkinter.CTkFont(family=self.font_family, size=12),
             fg_color="transparent",
             wrap="word",
             height=130
@@ -116,7 +253,7 @@ class AboutPage(customtkinter.CTkFrame):
         # Card Content
         self.privacy_policy_content_textbox = customtkinter.CTkTextbox(
             self.privacy_policy_card,
-            font=customtkinter.CTkFont(family=self.font_family, size=14),
+            font=customtkinter.CTkFont(family=self.font_family, size=12),
             fg_color="transparent",
             wrap="word",
             height=130
@@ -167,7 +304,7 @@ class AboutPage(customtkinter.CTkFrame):
                     title=self.app_translator.translate("information"),
                     message=self.app_translator.translate("redirect_to_official_website_to_get_help")
                 ),
-                OnOfficialWebsiteButtonClick.open_official_website(
+                OnOpenURLButtonClick.open_official_website(
                     logger=self.logger,
                     log_file_path=self.log_file_path,
                     app_translator=self.app_translator
@@ -185,7 +322,7 @@ class AboutPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("official_website_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("official_website_button"),
-            command=lambda: OnOfficialWebsiteButtonClick.open_official_website(logger=self.logger,
+            command=lambda: OnOpenURLButtonClick.open_official_website(logger=self.logger,
                                                                                log_file_path=self.log_file_path,
                                                                                app_translator=self.app_translator)
         )
@@ -216,7 +353,7 @@ class AboutPage(customtkinter.CTkFrame):
         separator = customtkinter.CTkFrame(parent, height=1, fg_color=("gray90", "#2b2b2b"))
         separator.pack(fill="x", padx=10)
 
-    def _create_settings_card(self, parent, title, description, widget_constructor=None, **widget_kwargs):
+    def _create_settings_card(self, parent, title, description, widget_constructor=None, description_command=None, **widget_kwargs):
         container = customtkinter.CTkFrame(parent, fg_color="transparent")
         container.pack(fill="x", padx=10, pady=8)
 
@@ -237,10 +374,14 @@ class AboutPage(customtkinter.CTkFrame):
                 text_frame,
                 text=description,
                 font=customtkinter.CTkFont(family=self.font_family, size=12),
-                text_color=("gray50", "gray70"),
-                anchor="w"
+                text_color=("#1f6aa5", "#3a7ebf") if description_command else ("gray50", "gray70"),
+                anchor="w",
+                cursor="hand2" if description_command else "arrow"
             )
             desc_label.pack(fill="x")
+
+            if description_command:
+                desc_label.bind("<Button-1>", lambda event: description_command())
 
         # Widget Column
         if widget_constructor:

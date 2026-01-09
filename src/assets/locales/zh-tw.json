@@ -39,9 +39,12 @@
 
   "__pages__": "頁面部分",
     "__about_page__": "關於頁面",
+      "app_information": "應用程式資訊",
+      "contributors": "貢獻人員",
       "get_help": "取得協助",
       "get_help_button": "取得協助",
       "get_help_description": "打開 Microsoft 電腦管家官方網站以取得更多協助",
+      "license": "授權",
       "official_website": "官方網站",
       "official_website_button": "官方網站",
       "official_website_description": "打開 Microsoft 電腦管家官方網站以取得更多資訊",
@@ -54,6 +57,7 @@
       "privacy_settings_button": "隱私權與安全性",
       "privacy_settings_description": "打開 Windows 設定中的「隱私權與安全性」頁面",
       "redirect_to_official_website_to_get_help": "您將被重新導向到 Microsoft 電腦管家官方網站。請從網站底部的「更多聯絡方式」部分與我們聯絡以取得協助。",
+      "repository_url": "倉庫地址",
       "term_of_use": "使用規定",
       "term_of_use_title": "MSPCManagerHelper 使用規定",
       "term_of_use_content_preface": "歡迎使用 MSPCManagerHelper（以下簡稱“本軟體”）。在使用本軟體之前，請仔細閱讀以下使用規定（以下簡稱「條款」）。通過下載、安裝或使用本軟體，即表示您同意遵守這些條款。如果您不同意這些條款，請勿使用本軟體。若條款有更新，恕不另行通知。",
@@ -82,8 +86,12 @@
       "term_of_use_content_11_body_1": "關於第三方軟體的許可證及其說明，請參閱：https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/ThirdPartyNotices.txt.",
       "term_of_use_content_11_body_2": "NSudo: https://github.com/M2Team/NSudo",
       "term_of_use_content_11_body_3": "Sysinternals: https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_474966",
+      "translators": "翻譯人員",
 
     "__button_events__": "按鈕事件部分",
+      "failed_to_open_contributor_url": "無法打開貢獻者連結。請手動打開瀏覽器訪問 {contributor_url}。\n記錄檔位置：{log_file_path}",
+      "failed_to_open_github_repository": "無法打開 GitHub 倉庫。請手動打開瀏覽器訪問 https://github.com/Goo-aw233/MSPCManagerHelper。\n記錄檔位置：{log_file_path}",
+      "failed_to_open_license": "無法打開授權。請手動打開瀏覽器訪問 https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE。\n記錄檔位置：{log_file_path}",
       "failed_to_open_official_website": "無法打開官方網站。請手動打開瀏覽器訪問 https://pcmanager.microsoft.com。\n記錄檔位置：{log_file_path}",
       "failed_to_open_privacy_settings": "無法打開「隱私權與安全性」頁面。請手動打開 Windows 設定。\n記錄檔位置：{log_file_path}",
 

@@ -40,9 +40,12 @@
 
   "__pages__": "页面部分",
     "__about_page__": "关于页面",
+      "app_information": "应用程序信息",
+      "contributors": "贡献者",
       "get_help": "获取帮助",
       "get_help_button": "获取帮助",
       "get_help_description": "打开微软电脑管家官网以获取更多帮助",
+      "license": "许可证",
       "official_website": "官方网站",
       "official_website_button": "官方网站",
       "official_website_description": "打开微软电脑管家官网以获取更多信息",
@@ -55,6 +58,7 @@
       "privacy_settings_button": "隐私和安全性",
       "privacy_settings_description": "打开 Windows 设置中的“隐私和安全性”页面",
       "redirect_to_official_website_to_get_help": "您将被重定向到微软电脑管家官方网站。请从网站底部的“更多联系方式”部分与我们联系以获取帮助。",
+      "repository_url": "仓库地址",
       "term_of_use": "使用条款",
       "term_of_use_title": "MSPCManagerHelper 使用条款",
       "term_of_use_content_preface": "欢迎使用 MSPCManagerHelper（以下简称“本软件”）。在使用本软件之前，请仔细阅读以下使用条款（以下简称“条款”）。通过下载、安装或使用本软件，即表示您同意遵守这些条款。如果您不同意这些条款，请勿使用本软件。若条款有更新，恕不另行通知。",
@@ -83,8 +87,12 @@
       "term_of_use_content_11_body_1": "关于第三方软件的许可证及其说明，请参阅：https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/ThirdPartyNotices.txt。",
       "term_of_use_content_11_body_2": "NSudo: https://github.com/M2Team/NSudo",
       "term_of_use_content_11_body_3": "Sysinternals: https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_474966",
+      "translators": "翻译者",
 
     "__button_events__": "按钮事件部分",
+      "failed_to_open_contributor_url": "无法打开贡献者链接。请手动打开浏览器访问 {contributor_url}。\n日志文件位置：{log_file_path}",
+      "failed_to_open_github_repository": "无法打开 GitHub 仓库。请手动打开浏览器访问 https://github.com/Goo-aw233/MSPCManagerHelper。\n日志文件位置：{log_file_path}",
+      "failed_to_open_license": "无法打开许可证。请手动打开浏览器访问 https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE。\n日志文件位置：{log_file_path}",
       "failed_to_open_official_website": "无法打开官方网站。请手动打开浏览器访问 https://pcmanager.microsoft.com。\n日志文件位置：{log_file_path}",
       "failed_to_open_privacy_settings": "无法打开“隐私和安全性”页面。请手动打开 Windows 设置。\n日志文件位置：{log_file_path}",
 

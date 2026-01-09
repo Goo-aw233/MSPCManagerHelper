@@ -3,7 +3,7 @@ class AppMetadata:
     # Properties
     APP_AUTHOR = "GuCATs"
     APP_GITHUB_REPOSITORY_URL = "https://github.com/Goo-aw233/MSPCManagerHelper"
-    APP_LICENSE = "MIT License"
+    APP_LICENSE_URL = "https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE"
     APP_NAME = "MSPCManagerHelper"
     APP_VERSION = "Beta v0.3.1.0"
 

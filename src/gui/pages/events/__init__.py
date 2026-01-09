@@ -2,10 +2,12 @@
 Page Button Events Package for MSPCManagerHelper GUI
 """
 
-from .on_official_website_button_click import OnOfficialWebsiteButtonClick
+from .get_localization_translators import get_localization_translators
 from .on_privacy_settings_button_click import OnPrivacySettingsButtonClick
+from .on_url_button_click import OnOpenURLButtonClick
 
 __all__ = [
-    "OnOfficialWebsiteButtonClick",
+    "get_localization_translators",
     "OnPrivacySettingsButtonClick",
+    "OnOpenURLButtonClick",
 ]
