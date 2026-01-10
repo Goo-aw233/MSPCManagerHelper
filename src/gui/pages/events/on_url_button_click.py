@@ -148,7 +148,7 @@ class OnOpenURLButtonClick:
                            shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_powershell():
-            logger.info(f"Opening Contributor URL: {contributor_url} via powershell.")
+            logger.info(f"Opening Contributor URL: {contributor_url} via Windows PowerShell.")
             subprocess.run(["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{contributor_url}'"],
                            check=True, shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
 

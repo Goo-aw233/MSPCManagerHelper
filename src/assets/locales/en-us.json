@@ -92,6 +92,8 @@
       "failed_to_open_contributor_url": "Unable to open the Contributor URL. Please open the browser manually to visit {contributor_url}.\nLog File Location: {log_file_path}",
       "failed_to_open_github_repository": "Unable to open the GitHub Repository. Please open the browser manually to visit https://github.com/Goo-aw233/MSPCManagerHelper.\nLog File Location: {log_file_path}",
       "failed_to_open_license": "Unable to open the License. Please open the browser manually to visit https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE.\nLog File Location: {log_file_path}",
+      "failed_to_open_mspcm": "Unable to open Microsoft PC Manager. Please start Microsoft PC Manager manually from the Start Menu.\nLog File Location: {log_file_path}",
+      "failed_to_open_mspcm_beta": "Unable to open Microsoft PC Manager Public Beta. Please start Microsoft PC Manager Public Beta manually from the Start Menu.\nLog File Location: {log_file_path}",
       "failed_to_open_official_website": "Unable to open the Official Website. Please open the browser manually to visit https://pcmanager.microsoft.com.\nLog File Location: {log_file_path}",
       "failed_to_open_privacy_settings": "Unable to open the Privacy & Security page. Please open Windows Settings manually.\nLog File Location: {log_file_path}",
 
@@ -111,6 +113,13 @@
       "help_window_content_get_help_2": "GitHub Repository URL: https://github.com/Goo-aw233/MSPCManagerHelper",
 
     "__home_page__": "Home Page",
+      "failed_to_get_mspcm_version_info": "Unable to Get Microsoft PC Manager Version Information at This Time, Which May Be Due to Microsoft PC Manager Not Being Installed or a System Issue",
+      "mspcm_version_info": "Microsoft PC Manager Version Information",
+      "mspcm_version_is": "Microsoft PC Manager Version",
+      "mspcm_beta_version_is": "Microsoft PC Manager Public Beta Version",
+      "refresh_button": "Refresh",
+      "start_mspcm_button": "Start Microsoft PC Manager",
+      "start_mspcm_beta_button": "Start Microsoft PC Manager Public Beta",
       "welcome_message": "Welcome to MSPCManagerHelper! This tool is designed to help you manage Microsoft PC Manager. Please select a feature from the navigation menu to continue. Before using MSPCManagerHelper, please read the 'Terms of Use' and 'Privacy Policy' thoroughly. By continuing to use, you agree to these terms.",
       "welcome_title": "Welcome",
       "welcome_to": "Welcome to",

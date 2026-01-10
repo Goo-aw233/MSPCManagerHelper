@@ -19,19 +19,14 @@ class OnPrivacySettingsButtonClick:
                            shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_powershell():
-            logger.info("Opening Privacy & Security page via powershell.")
+            logger.info("Opening Privacy & Security page via Windows PowerShell.")
             subprocess.run(["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{privacy_settings_uri}'"],
                            check=True, shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
-
-        def open_with_webbrowser():
-            logger.info("Opening Privacy & Security page via webbrowser.")
-            webbrowser.open(privacy_settings_uri)
 
         methods = [
             open_with_startfile,
             open_with_cmd,
-            open_with_powershell,
-            open_with_webbrowser
+            open_with_powershell
         ]
 
         for method in methods:
