@@ -37,37 +37,13 @@ class HomePage(customtkinter.CTkFrame):
 
         self.welcome_group = self._create_group_frame()
 
-        # Welcome Section Header
-        self.welcome_header_frame = customtkinter.CTkFrame(self.welcome_group, fg_color="transparent")
-        self.welcome_header_frame.pack(fill="x", padx=16, pady=(16, 12))
-
-        self.welcome_title_label = customtkinter.CTkLabel(
-            self.welcome_header_frame,
-            text=f"{self.app_translator.translate('welcome_to')} {AppMetadata.APP_NAME}",
-            font=customtkinter.CTkFont(family=self.font_family, size=14),
-            anchor="w"
+        self._create_settings_card(
+            self.welcome_group,
+            f"{self.app_translator.translate('welcome_to')} {AppMetadata.APP_NAME}",
+            self.app_translator.translate("welcome_message"),
+            enable_text_selection=False,
+            min_height=50
         )
-        self.welcome_title_label.pack(fill="x")
-
-        # Welcome Description Textbox
-        self.welcome_description_textbox = customtkinter.CTkTextbox(
-            self.welcome_header_frame,
-            font=customtkinter.CTkFont(family=self.font_family, size=12),
-            text_color="gray50",    # CTkTextbox does not support dual-mode text_color ("gray50", "gray70").
-            fg_color="transparent",
-            height=70,
-            wrap="word",
-            activate_scrollbars=False,  # Disable Scrollbars
-            border_width=0
-        )
-        self.welcome_description_textbox.pack(fill="x", pady=(4, 0))
-        self.welcome_description_textbox.insert("1.0", self.app_translator.translate("welcome_message"))
-        self.welcome_description_textbox.configure(state="disabled")
-        # Disable Text Selection
-        self.welcome_description_textbox.bind("<Button-1>", lambda e: "break")  # Disable Single Click
-        self.welcome_description_textbox.bind("<B1-Motion>", lambda e: "break")  # Disable Click & Drag
-        self.welcome_description_textbox.bind("<Double-Button-1>", lambda e: "break")  # Disable Double Click
-        self.welcome_description_textbox.bind("<Triple-Button-1>", lambda e: "break")  # Disable Triple Click
         # --- End of Welcome Section ---
 
         # --- Microsoft PC Manager Version Info Section ---
@@ -78,12 +54,15 @@ class HomePage(customtkinter.CTkFrame):
         )
 
         self.mspcm_version_group = self._create_group_frame()
+
         self._load_mspcm_version_info()
         # --- End of Microsoft PC Manager Version Info Section ---
 
         # --- Windows Specifications Section ---
         self._create_section_label(self.app_translator.translate("windows_specifications"))
+
         self.windows_specifications_group = self._create_group_frame()
+
         self._load_windows_specifications()
         # --- End of Windows Specifications Section ---
 
@@ -214,7 +193,7 @@ class HomePage(customtkinter.CTkFrame):
         separator.pack(fill="x", padx=10)
 
     def _create_settings_card(self, parent, title, description, widget_constructor=None,
-                              enable_text_selection=False, **widget_kwargs):
+                              enable_text_selection=False, min_height=50 , **widget_kwargs):
         container = customtkinter.CTkFrame(parent, fg_color="transparent")
         container.pack(fill="x", padx=10, pady=8)
 
@@ -233,7 +212,7 @@ class HomePage(customtkinter.CTkFrame):
         if description:
             # Auto-adjust height based on newlines (approx 22px per line + padding).
             line_count = description.count('\n') + 1
-            textbox_height = max(45, line_count * 22 + 10)
+            textbox_height = max(min_height, line_count * 22 + 10)
 
             desc_textbox = customtkinter.CTkTextbox(
                 text_frame,
