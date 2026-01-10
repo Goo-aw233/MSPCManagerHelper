@@ -71,7 +71,7 @@ class HomePage(customtkinter.CTkFrame):
         for widget in self.mspcm_version_group.winfo_children():
             widget.destroy()
         
-        # Reload version info
+        # Reload Version Info
         self._load_mspcm_version_info()
 
     def _load_mspcm_version_info(self):
@@ -233,6 +233,9 @@ class HomePage(customtkinter.CTkFrame):
                 desc_textbox.bind("<B1-Motion>", lambda e: "break")  # Disable Click & Drag
                 desc_textbox.bind("<Double-Button-1>", lambda e: "break")  # Disable Double Click
                 desc_textbox.bind("<Triple-Button-1>", lambda e: "break")  # Disable Triple Click
+                # Keep Arrow Instead of Cursor
+                desc_textbox.bind("<Enter>", lambda e: desc_textbox.configure(cursor="arrow"))
+                desc_textbox.bind("<Leave>", lambda e: desc_textbox.configure(cursor="arrow"))
 
         # Widget Column
         if widget_constructor:
