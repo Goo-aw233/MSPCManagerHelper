@@ -116,6 +116,11 @@
 
     "__home_page__": "主页",
       "about_button": "关于 Windows",
+      "cleanup_after_exit": "退出后清理",
+      "cleanup_after_exit_description": "在退出应用程序后清理可能存在的残留",
+      "exit_app_button": "退出",
+      "exit_app_description": "退出并关闭应用程序",
+      "exit_section_title": "退出应用程序",
       "failed_to_get_mspcm_version_info": "此时无法获取微软电脑管家版本信息，可能是由于微软电脑管家未安装或系统出现问题所致",
       "failed_to_load_windows_installation_info": "此时无法获取 Windows 安装信息，请从 Windows 设置 > “系统” > “关于”中获得更多信息。",
       "mspcm_version_info": "微软电脑管家版本信息",

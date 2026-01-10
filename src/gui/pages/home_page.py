@@ -1,7 +1,10 @@
+import sys
+
 import customtkinter
 
 from core.app_logger import AppLogger
 from core.app_metadata import AppMetadata
+from core.app_settings import AppSettings
 from core.get_mspcm_version import GetMSPCMVersion
 from core.system_checks import PrerequisiteChecks
 from gui.pages.events import OnAboutWindowsButtonClick, StartMSPCM, StartMSPCMBeta
@@ -37,7 +40,7 @@ class HomePage(customtkinter.CTkFrame):
 
         self.welcome_group = self._create_group_frame()
 
-        self._create_settings_card(
+        self._create_info_textbox_card(
             self.welcome_group,
             f"{self.app_translator.translate('welcome_to')} {AppMetadata.APP_NAME}",
             self.app_translator.translate("welcome_message"),
@@ -66,6 +69,49 @@ class HomePage(customtkinter.CTkFrame):
         self._load_windows_specifications()
         # --- End of Windows Specifications Section ---
 
+        # --- Exit Section ---
+        self._create_section_label(self.app_translator.translate("exit_section_title"))
+
+        self.exit_group = self._create_group_frame()
+
+        # Cleanup After Exit
+        self.cleanup_after_exit_checkbox = self._create_settings_card(
+            self.exit_group,
+            self.app_translator.translate("cleanup_after_exit"),
+            self.app_translator.translate("cleanup_after_exit_description"),
+            customtkinter.CTkCheckBox,
+            text=self.app_translator.translate(
+                "button_on") if AppSettings.is_cleanup_after_exit_enabled() else self.app_translator.translate(
+                "button_off"),
+            command=self._on_cleanup_after_exit_toggled
+        )
+        if AppSettings.is_cleanup_after_exit_enabled():
+            self.cleanup_after_exit_checkbox.select()
+        else:
+            self.cleanup_after_exit_checkbox.deselect()
+
+        # Separator
+        self._create_separator(self.exit_group)
+
+        # Exit
+        self._create_settings_card(
+            self.exit_group,
+            self.app_translator.translate("exit_section_title"),
+            self.app_translator.translate("exit_app_description"),
+            customtkinter.CTkButton,
+            text=self.app_translator.translate("exit_app_button"),
+            command=self._exit_app
+        )
+
+        # --- End of Exit Section ---
+
+    def _on_cleanup_after_exit_toggled(self):
+        AppSettings.toggle_cleanup_after_exit()
+        is_enabled = AppSettings.is_cleanup_after_exit_enabled()
+        self.cleanup_after_exit_checkbox.configure(
+            text=self.app_translator.translate("button_on") if is_enabled else self.app_translator.translate(
+                "button_off"))
+
     def _refresh_mspcm_version_info(self):
         # Clear existing widgets in the group frame.
         for widget in self.mspcm_version_group.winfo_children():
@@ -79,19 +125,19 @@ class HomePage(customtkinter.CTkFrame):
         mspcm_version = GetMSPCMVersion.get_microsoft_pc_manager_version()
 
         if mspcm_version:
-            self.mspcm_version_card = self._create_settings_card(
+            self.mspcm_version_card = self._create_info_textbox_card(
                 self.mspcm_version_group,
                 self.app_translator.translate("mspcm_version_is"),
                 f"{self.app_translator.translate('mspcm_version_is')}: {mspcm_version}",
                 customtkinter.CTkButton,
                 text=self.app_translator.translate("start_mspcm_button"),
-                width=30,
+                
                 command=lambda: StartMSPCM.start_mspcm(logger=self.logger, log_file_path=self.log_file_path,
                                                        app_translator=self.app_translator)
             )
             self.logger.info(f"Loaded Microsoft PC Manager Version: {mspcm_version}")
         else:
-            self.mspcm_version_card = self._create_settings_card(
+            self.mspcm_version_card = self._create_info_textbox_card(
                 self.mspcm_version_group,
                 self.app_translator.translate("mspcm_version_is"),
                 self.app_translator.translate("failed_to_get_mspcm_version_info")
@@ -104,13 +150,13 @@ class HomePage(customtkinter.CTkFrame):
         if mspcm_beta_version:
             self._create_separator(self.mspcm_version_group)
 
-            self.mspcm_beta_version_card = self._create_settings_card(
+            self.mspcm_beta_version_card = self._create_info_textbox_card(
                 self.mspcm_version_group,
                 self.app_translator.translate("mspcm_beta_version_is"),
                 f"{self.app_translator.translate('mspcm_beta_version_is')}: {mspcm_beta_version}",
                 customtkinter.CTkButton,
                 text=self.app_translator.translate("start_mspcm_beta_button"),
-                width=30,
+                
                 command=lambda: StartMSPCMBeta.start_mspcm_beta(logger=self.logger, log_file_path=self.log_file_path,
                                                        app_translator=self.app_translator)
             )
@@ -120,31 +166,35 @@ class HomePage(customtkinter.CTkFrame):
         windows_info = PrerequisiteChecks.get_windows_installation_information()
 
         if windows_info:
-            self._create_settings_card(
+            self._create_info_textbox_card(
                 self.windows_specifications_group,
                 self.app_translator.translate("windows_installation_info"),
                 windows_info,
                 customtkinter.CTkButton,
                 enable_text_selection=True,
                 text=self.app_translator.translate("about_button"),
-                width=30,
+                
                 command=lambda: OnAboutWindowsButtonClick.open_about_windows(logger=self.logger,
                                                                              log_file_path=self.log_file_path,
                                                                              app_translator=self.app_translator)
             )
         else:
-            self._create_settings_card(
+            self._create_info_textbox_card(
                 self.windows_specifications_group,
                 self.app_translator.translate("windows_installation_info"),
                 self.app_translator.translate("failed_to_load_windows_installation_info"),
                 customtkinter.CTkButton,
                 enable_text_selection=True,
                 text=self.app_translator.translate("about_button"),
-                width=30,
+                
                 command=lambda: OnAboutWindowsButtonClick.open_about_windows(logger=self.logger,
                                                                              log_file_path=self.log_file_path,
                                                                              app_translator=self.app_translator)
             )
+
+    def _exit_app(self):
+        self.logger.info("The app is exiting via the exit button...")
+        sys.exit(0)
 
     def _create_section_label(self, text):
         label = customtkinter.CTkLabel(
@@ -171,7 +221,7 @@ class HomePage(customtkinter.CTkFrame):
             container,
             text=button_text,
             font=customtkinter.CTkFont(family=self.font_family, size=12),
-            width=30,
+            
             command=command
         )
         button.pack(side="right")
@@ -192,8 +242,8 @@ class HomePage(customtkinter.CTkFrame):
         separator = customtkinter.CTkFrame(parent, height=1, fg_color=("gray90", "#2b2b2b"))
         separator.pack(fill="x", padx=10)
 
-    def _create_settings_card(self, parent, title, description, widget_constructor=None,
-                              enable_text_selection=False, min_height=50 , **widget_kwargs):
+    def _create_info_textbox_card(self, parent, title, description, widget_constructor=None,
+                                  enable_text_selection=False, min_height=50, **widget_kwargs):
         container = customtkinter.CTkFrame(parent, fg_color="transparent")
         container.pack(fill="x", padx=10, pady=8)
 
@@ -236,6 +286,43 @@ class HomePage(customtkinter.CTkFrame):
                 # Keep Arrow Instead of Cursor
                 desc_textbox.bind("<Enter>", lambda e: desc_textbox.configure(cursor="arrow"))
                 desc_textbox.bind("<Leave>", lambda e: desc_textbox.configure(cursor="arrow"))
+
+        # Widget Column
+        if widget_constructor:
+            # Inject font family if not present and if the widget supports it (most CTk widgets do).
+            if "font" not in widget_kwargs:
+                widget_kwargs["font"] = customtkinter.CTkFont(family=self.font_family)
+
+            widget = widget_constructor(container, **widget_kwargs)
+            widget.pack(side="right", padx=5)
+            return widget
+        return None
+
+    def _create_settings_card(self, parent, title, description, widget_constructor=None, **widget_kwargs):
+        container = customtkinter.CTkFrame(parent, fg_color="transparent")
+        container.pack(fill="x", padx=10, pady=8)
+
+        # Text Column
+        text_frame = customtkinter.CTkFrame(container, fg_color="transparent")
+        text_frame.pack(side="left", fill="both", expand=True, padx=5)
+
+        title_label = customtkinter.CTkLabel(
+            text_frame,
+            text=title,
+            font=customtkinter.CTkFont(family=self.font_family, size=14),
+            anchor="w"
+        )
+        title_label.pack(fill="x")
+
+        if description:
+            desc_label = customtkinter.CTkLabel(
+                text_frame,
+                text=description,
+                font=customtkinter.CTkFont(family=self.font_family, size=12),
+                text_color=("gray50", "gray70"),
+                anchor="w"
+            )
+            desc_label.pack(fill="x")
 
         # Widget Column
         if widget_constructor:

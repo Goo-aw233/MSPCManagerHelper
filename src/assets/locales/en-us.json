@@ -115,6 +115,11 @@
 
     "__home_page__": "Home Page",
       "about_button": "About Windows",
+      "cleanup_after_exit": "Cleanup After Exit",
+      "cleanup_after_exit_description": "Clean Up Any Residuals After Exiting the App",
+      "exit_app_button": "Exit",
+      "exit_app_description": "Exit and Close the App",
+      "exit_section_title": "Exit App",
       "failed_to_get_mspcm_version_info": "Unable to Get Microsoft PC Manager Version Information at This Time, Which May Be Due to Microsoft PC Manager Not Being Installed or a System Issue",
       "failed_to_load_windows_installation_info": "Unable to Get Windows Installation Information at This Time, Please Get More Information in Windows Settings > System > About",
       "mspcm_version_info": "Microsoft PC Manager Version Information",

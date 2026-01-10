@@ -7,6 +7,7 @@ class AppSettings:
     _is_follow_system_font_enabled: bool = False
     _is_support_developer_enabled: bool = True
     _is_compatibility_mode_enabled: bool = False
+    _is_cleanup_after_exit_enabled: bool = False
     _appearance_mode: str = "System"
 
     # ======================= Appearance Settings =======================
@@ -18,6 +19,21 @@ class AppSettings:
     def set_appearance_mode(cls, mode: str) -> None:
         cls._appearance_mode = mode
         AppSettings.logger.info(f"Appearance Mode Set to: {mode}")
+
+    # ======================= Cleanup After Exit Settings =======================
+    @classmethod
+    def is_cleanup_after_exit_enabled(cls) -> bool:
+        return cls._is_cleanup_after_exit_enabled
+
+    @classmethod
+    def set_cleanup_after_exit_enabled(cls, enabled: bool) -> None:
+        cls._is_cleanup_after_exit_enabled = bool(enabled)
+        AppSettings.logger.info(f"Cleanup After Exit Set to: {cls._is_cleanup_after_exit_enabled}")
+
+    @classmethod
+    def toggle_cleanup_after_exit(cls) -> None:
+        cls.set_cleanup_after_exit_enabled(not cls._is_cleanup_after_exit_enabled)
+    # ======================= End of Cleanup After Exit Settings =======================
 
     # ======================= Follow System Font Settings =======================
     @classmethod
