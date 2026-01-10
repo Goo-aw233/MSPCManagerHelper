@@ -13,7 +13,7 @@ class StartMSPCM:
             os.startfile(registered_class)
 
         def open_with_cmd():
-            logger.info("Opening Microsoft PC Manager via cmd.")
+            logger.info("Opening Microsoft PC Manager via CMD.")
             subprocess.run(["cmd.exe", "/C", "start", "Microsoft PC Manager", f"{registered_class}"], check=True,
                            shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
 

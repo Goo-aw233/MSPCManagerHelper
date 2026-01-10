@@ -3,7 +3,8 @@ import customtkinter
 from core.app_logger import AppLogger
 from core.app_metadata import AppMetadata
 from core.get_mspcm_version import GetMSPCMVersion
-from gui.pages.events import StartMSPCM, StartMSPCMBeta
+from core.system_checks import PrerequisiteChecks
+from gui.pages.events import OnAboutWindowsButtonClick, StartMSPCM, StartMSPCMBeta
 
 
 class HomePage(customtkinter.CTkFrame):
@@ -78,6 +79,13 @@ class HomePage(customtkinter.CTkFrame):
 
         self.mspcm_version_group = self._create_group_frame()
         self._load_mspcm_version_info()
+        # --- End of Microsoft PC Manager Version Info Section ---
+
+        # --- Windows Specifications Section ---
+        self._create_section_label(self.app_translator.translate("windows_specifications"))
+        self.windows_specifications_group = self._create_group_frame()
+        self._load_windows_specifications()
+        # --- End of Windows Specifications Section ---
 
     def _refresh_mspcm_version_info(self):
         # Clear existing widgets in the group frame.
@@ -129,6 +137,36 @@ class HomePage(customtkinter.CTkFrame):
             )
             self.logger.info(f"Loaded Microsoft PC Manager Public Beta Version: {mspcm_beta_version}")
 
+    def _load_windows_specifications(self):
+        windows_info = PrerequisiteChecks.get_windows_installation_information()
+
+        if windows_info:
+            self._create_settings_card(
+                self.windows_specifications_group,
+                self.app_translator.translate("windows_installation_info"),
+                windows_info,
+                customtkinter.CTkButton,
+                enable_text_selection=True,
+                text=self.app_translator.translate("about_button"),
+                width=30,
+                command=lambda: OnAboutWindowsButtonClick.open_about_windows(logger=self.logger,
+                                                                             log_file_path=self.log_file_path,
+                                                                             app_translator=self.app_translator)
+            )
+        else:
+            self._create_settings_card(
+                self.windows_specifications_group,
+                self.app_translator.translate("windows_installation_info"),
+                self.app_translator.translate("failed_to_load_windows_installation_info"),
+                customtkinter.CTkButton,
+                enable_text_selection=True,
+                text=self.app_translator.translate("about_button"),
+                width=30,
+                command=lambda: OnAboutWindowsButtonClick.open_about_windows(logger=self.logger,
+                                                                             log_file_path=self.log_file_path,
+                                                                             app_translator=self.app_translator)
+            )
+
     def _create_section_label(self, text):
         label = customtkinter.CTkLabel(
             self.scroll_frame,
@@ -175,7 +213,8 @@ class HomePage(customtkinter.CTkFrame):
         separator = customtkinter.CTkFrame(parent, height=1, fg_color=("gray90", "#2b2b2b"))
         separator.pack(fill="x", padx=10)
 
-    def _create_settings_card(self, parent, title, description, widget_constructor=None, **widget_kwargs):
+    def _create_settings_card(self, parent, title, description, widget_constructor=None,
+                              enable_text_selection=False, **widget_kwargs):
         container = customtkinter.CTkFrame(parent, fg_color="transparent")
         container.pack(fill="x", padx=10, pady=8)
 
@@ -192,13 +231,17 @@ class HomePage(customtkinter.CTkFrame):
         title_label.pack(fill="x")
 
         if description:
+            # Auto-adjust height based on newlines (approx 22px per line + padding).
+            line_count = description.count('\n') + 1
+            textbox_height = max(45, line_count * 22 + 10)
+
             desc_textbox = customtkinter.CTkTextbox(
                 text_frame,
                 font=customtkinter.CTkFont(family=self.font_family, size=12),
                 text_color="gray50",    # CTkTextbox does not support dual-mode text_color ("gray50", "gray70").
                 fg_color="transparent",
                 wrap="word",
-                height=45,
+                height=textbox_height,
                 activate_scrollbars=False,
                 border_width=0
             )
@@ -206,10 +249,11 @@ class HomePage(customtkinter.CTkFrame):
             desc_textbox.insert("1.0", description)
             desc_textbox.configure(state="disabled")
             # Disable Text Selection
-            desc_textbox.bind("<Button-1>", lambda e: "break")  # Disable Single Click
-            desc_textbox.bind("<B1-Motion>", lambda e: "break")  # Disable Click & Drag
-            desc_textbox.bind("<Double-Button-1>", lambda e: "break")  # Disable Double Click
-            desc_textbox.bind("<Triple-Button-1>", lambda e: "break")  # Disable Triple Click
+            if not enable_text_selection:
+                desc_textbox.bind("<Button-1>", lambda e: "break")  # Disable Single Click
+                desc_textbox.bind("<B1-Motion>", lambda e: "break")  # Disable Click & Drag
+                desc_textbox.bind("<Double-Button-1>", lambda e: "break")  # Disable Double Click
+                desc_textbox.bind("<Triple-Button-1>", lambda e: "break")  # Disable Triple Click
 
         # Widget Column
         if widget_constructor:

@@ -1,6 +1,5 @@
 import os
 import subprocess
-import webbrowser
 from tkinter import messagebox
 
 
@@ -14,7 +13,7 @@ class OnPrivacySettingsButtonClick:
             os.startfile(privacy_settings_uri)
 
         def open_with_cmd():
-            logger.info("Opening Privacy & Security page via cmd.")
+            logger.info("Opening Privacy & Security page via CMD.")
             subprocess.run(["cmd.exe", "/C", "start", "Privacy Settings", f"{privacy_settings_uri}"], check=True,
                            shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
 

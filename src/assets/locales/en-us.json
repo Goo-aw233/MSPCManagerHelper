@@ -89,6 +89,7 @@
       "translators": "Translators",
 
     "__button_events__": "Button Events Section",
+      "failed_to_open_about_windows": "Unable to open the About Windows page. Please manually open the Windows Settings > System > About.\nLog File Location: {log_file_path}",
       "failed_to_open_contributor_url": "Unable to open the Contributor URL. Please open the browser manually to visit {contributor_url}.\nLog File Location: {log_file_path}",
       "failed_to_open_github_repository": "Unable to open the GitHub Repository. Please open the browser manually to visit https://github.com/Goo-aw233/MSPCManagerHelper.\nLog File Location: {log_file_path}",
       "failed_to_open_license": "Unable to open the License. Please open the browser manually to visit https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE.\nLog File Location: {log_file_path}",
@@ -113,7 +114,9 @@
       "help_window_content_get_help_2": "GitHub Repository URL: https://github.com/Goo-aw233/MSPCManagerHelper",
 
     "__home_page__": "Home Page",
+      "about_button": "About Windows",
       "failed_to_get_mspcm_version_info": "Unable to Get Microsoft PC Manager Version Information at This Time, Which May Be Due to Microsoft PC Manager Not Being Installed or a System Issue",
+      "failed_to_load_windows_installation_info": "Unable to Get Windows Installation Information at This Time, Please Get More Information in Windows Settings > System > About",
       "mspcm_version_info": "Microsoft PC Manager Version Information",
       "mspcm_version_is": "Microsoft PC Manager Version",
       "mspcm_beta_version_is": "Microsoft PC Manager Public Beta Version",
@@ -123,6 +126,8 @@
       "welcome_message": "Welcome to MSPCManagerHelper! This tool is designed to help you manage Microsoft PC Manager. Please select a feature from the navigation menu to continue. Before using MSPCManagerHelper, please read the 'Terms of Use' and 'Privacy Policy' thoroughly. By continuing to use, you agree to these terms.",
       "welcome_title": "Welcome",
       "welcome_to": "Welcome to",
+      "windows_installation_info": "Windows Installation Information",
+      "windows_specifications": "Windows Specifications",
 
     "__installer_page__": "Installer Page",
 

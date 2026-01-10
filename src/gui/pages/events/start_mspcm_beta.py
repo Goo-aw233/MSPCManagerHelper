@@ -16,7 +16,7 @@ class StartMSPCMBeta:
             os.startfile(registered_class_beta)
 
         def open_with_cmd():
-            logger.info("Opening Microsoft PC Manager Public Beta via cmd with registered class.")
+            logger.info("Opening Microsoft PC Manager Public Beta via CMD with registered class.")
             subprocess.run(["cmd.exe", "/C", "start", "Microsoft PC Manager", f"{registered_class_beta}"], check=True,
                            shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
 
@@ -32,7 +32,7 @@ class StartMSPCMBeta:
             os.startfile(str(beta_exe_path))
 
         def exe_with_cmd():
-            logger.info(f"Opening Microsoft PC Manager Public Beta via cmd with exe path: {beta_exe_path}")
+            logger.info(f"Opening Microsoft PC Manager Public Beta via CMD with exe path: {beta_exe_path}")
             subprocess.run(["cmd.exe", "/C", "start", "", str(beta_exe_path)], check=True,
                            shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
 
