@@ -514,23 +514,44 @@ class MSPCManagerHelper(tk.Tk):
         default_font_style = (default_font_family, default_font_size)
 
         font_styles = {
-            "lang_en-us": ("Segoe UI", 10),
+            "lang_en-us": ("Segoe UI Variable Text", 10),   # 引入于 Build 21376
             "lang_zh-cn": ("Microsoft YaHei UI", 10),
             "lang_zh-tw": ("Microsoft JhengHei UI", 10),
             # 在这里添加更多语言及其对应的字体样式
         }
 
+        language_font_map = {
+            "en-us": "Segoe UI Variable Text",  # 引入于 Build 21376
+            "zh-cn": "Microsoft YaHei UI",
+            "zh-tw": "Microsoft JhengHei UI"
+        }
+
+        # 获取当前语言代码
         selected_language = self.language_combobox.get()
         language_key = None
 
         if selected_language == self.translator.translate("lang_en-us"):
             language_key = "lang_en-us"
+            language_code = "en-us"
         elif selected_language == self.translator.translate("lang_zh-cn"):
             language_key = "lang_zh-cn"
+            language_code = "zh-cn"
         elif selected_language == self.translator.translate("lang_zh-tw"):
             language_key = "lang_zh-tw"
+            language_code = "zh-tw"
+        else:
+            language_code = "en-us"
 
-        font_style = font_styles.get(language_key, default_font_style)  # 其他语言默认使用系统字体
+        available_fonts = set(tkFont.families())
+        preferred_font = language_font_map.get(language_code, "Segoe UI Variable Text")
+        if preferred_font == "Segoe UI Variable Text" and "Segoe UI Variable Text" not in available_fonts:
+            preferred_font = "Segoe UI"
+
+        # 只对英文自动切换字体
+        if language_key == "lang_en-us":
+            font_style = (preferred_font, 10)
+        else:
+            font_style = font_styles.get(language_key, default_font_style)  # 其他语言默认使用系统字体
 
         self.version_label.config(font=font_style)
         self.system_requirement_label.config(font=font_style)
