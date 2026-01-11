@@ -28,7 +28,7 @@ class OtherFeature:
     def get_nsudolc_path(self):
         try:
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment") as key:
+                                r"SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment") as key:
                 processor_architecture = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
 
             if processor_architecture == "AMD64":
@@ -198,7 +198,7 @@ class OtherFeature:
             return f"{self.translator.translate('start_pc_manager_service_error')}: {str(e)}"
 
     def switch_pc_manager_region(self):
-        pc_manager_registry_path = r"SOFTWARE\WOW6432Node\MSPCManager Store"
+        pc_manager_registry_path = r"SOFTWARE\\WOW6432Node\\MSPCManager Store"
         pc_manager_region_value_name = "InstallRegionCode"
 
         # 询问版本号是否大于等于 3.14.0.0
@@ -314,7 +314,7 @@ class OtherFeature:
     def get_pc_manager_dependencies_version(self):
         try:
             # 检查 Windows 版本
-            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows NT\CurrentVersion") as key:
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion") as key:
                 current_build_number = winreg.QueryValueEx(key, "CurrentBuildNumber")[0]
                 if int(current_build_number) >= 26100:
                     # 检查文件是否存在
@@ -345,7 +345,7 @@ class OtherFeature:
 
         try:
             # 读取注册表中的版本号
-            msedge_webview2_reg_path = r"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
+            msedge_webview2_reg_path = r"SOFTWARE\\WOW6432Node\\Microsoft\\EdgeUpdate\\Clients\\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, msedge_webview2_reg_path) as key:
                 global_msedge_webview2_version = winreg.QueryValueEx(key, "pv")[0]
                 self.textbox(f"{self.translator.translate('global_msedge_webview2_version')}:\n{global_msedge_webview2_version}")

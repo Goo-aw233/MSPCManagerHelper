@@ -29,7 +29,7 @@ class MainFeature:
     def get_nsudolc_path(self):
         try:
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment") as key:
+                                r"SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment") as key:
                 processor_architecture = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
 
             if processor_architecture == "AMD64":
@@ -280,7 +280,7 @@ class MainFeature:
 
                 try:
                     with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                        r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment") as key:
+                                        r"SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment") as key:
                         processor_architecture = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
 
                     # 根据处理器架构设定 ProcDump 变量

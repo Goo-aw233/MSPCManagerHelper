@@ -378,7 +378,7 @@ class InstallationFeature:
 
                 # 读取 PROCESSOR_ARCHITECTURE 的值以确定包
                 processor_architecture = winreg.QueryValueEx(winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                   r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment"), "PROCESSOR_ARCHITECTURE"
+                                   r"SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment"), "PROCESSOR_ARCHITECTURE"
                 )[0]
 
                 if processor_architecture == "AMD64" and x64_file:
