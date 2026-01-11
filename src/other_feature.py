@@ -28,7 +28,7 @@ class OtherFeature:
     def get_nsudolc_path(self):
         try:
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment") as key:
+                                r"SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment") as key:
                 processor_architecture = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
 
             if processor_architecture == "AMD64":
@@ -59,7 +59,7 @@ class OtherFeature:
 
             # 执行 PowerShell 命令
             result = subprocess.run(
-                ["powershell.exe", "-Command", "Get-CimInstance -Namespace ROOT\SecurityCenter2 -ClassName AntiVirusProduct"],
+                ["powershell.exe", "-NoProfile", "-Command", "Get-CimInstance -Namespace ROOT\SecurityCenter2 -ClassName AntiVirusProduct"],
                 capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
             output = result.stdout.strip()
@@ -99,8 +99,8 @@ class OtherFeature:
     def developer_options(self):
         try:
             # 打开开发者选项页
-            subprocess.run(["start", "ms-settings:developers"],
-                           check=True, shell=True)
+            subprocess.run(["cmd.exe", "/C", "start", "Developer Settings", "ms-settings:developers"],
+                           check=True, shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
             return self.translator.translate("developer_options_opened")
         except subprocess.CalledProcessError as e:
             return f"{self.translator.translate('developer_options_error')}: {str(e)}"
@@ -198,7 +198,7 @@ class OtherFeature:
             return f"{self.translator.translate('start_pc_manager_service_error')}: {str(e)}"
 
     def switch_pc_manager_region(self):
-        pc_manager_registry_path = r"SOFTWARE\WOW6432Node\MSPCManager Store"
+        pc_manager_registry_path = r"SOFTWARE\\WOW6432Node\\MSPCManager Store"
         pc_manager_region_value_name = "InstallRegionCode"
 
         # 询问版本号是否大于等于 3.14.0.0
@@ -211,7 +211,7 @@ class OtherFeature:
             return self.translator.translate("user_canceled")
         elif user_response:
             try:
-                subprocess.run(["start", "ms-settings:regionformatting"], check=True, shell=True)
+                subprocess.run(["cmd.exe", "/C", "start", "Region Settings", "ms-settings:regionformatting"], check=True, shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
                 return self.translator.translate("how_to_switch_pc_manager_region")
             except subprocess.CalledProcessError as e:
                 return f"{self.translator.translate('error_opening_ms-settings')}: {str(e)}"
@@ -314,7 +314,7 @@ class OtherFeature:
     def get_pc_manager_dependencies_version(self):
         try:
             # 检查 Windows 版本
-            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows NT\CurrentVersion") as key:
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion") as key:
                 current_build_number = winreg.QueryValueEx(key, "CurrentBuildNumber")[0]
                 if int(current_build_number) >= 26100:
                     # 检查文件是否存在
@@ -327,7 +327,7 @@ class OtherFeature:
                             "$SystemMSEdgeWebView2PathVersionInfo.ProductVersion"
                         )
                         root_msedge_webview2_result = subprocess.run(
-                            ["powershell.exe", "-Command", root_msedge_webview2],
+                            ["powershell.exe", "-NoProfile", "-Command", root_msedge_webview2],
                             capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
                         )
                         system_msedge_webview2_version = root_msedge_webview2_result.stdout.strip()
@@ -345,7 +345,7 @@ class OtherFeature:
 
         try:
             # 读取注册表中的版本号
-            msedge_webview2_reg_path = r"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
+            msedge_webview2_reg_path = r"SOFTWARE\\WOW6432Node\\Microsoft\\EdgeUpdate\\Clients\\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, msedge_webview2_reg_path) as key:
                 global_msedge_webview2_version = winreg.QueryValueEx(key, "pv")[0]
                 self.textbox(f"{self.translator.translate('global_msedge_webview2_version')}:\n{global_msedge_webview2_version}")
@@ -358,7 +358,7 @@ class OtherFeature:
             # 读取所有 Windows App Runtime 的版本号
             get_windows_app_runtime_versions = "Get-AppxPackage -Name '*WindowsAppRuntime*' | Select-Object Name, Version, PackageFullName | Sort-Object Version | ConvertTo-Json"
             windows_app_runtime_versions_result = subprocess.run(
-                ["powershell.exe", "-Command", get_windows_app_runtime_versions],
+                ["powershell.exe", "-NoProfile", "-Command", get_windows_app_runtime_versions],
                 capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
             windows_app_runtime_versions_output = windows_app_runtime_versions_result.stdout.strip()

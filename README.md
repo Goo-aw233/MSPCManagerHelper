@@ -71,4 +71,4 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 5. Build the EXE
 
     Run `build.cmd` or `build_.venv.cmd` directly from the `scripts\build` directory to build it yourself.
-    Finally, the built `EXE file` will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_..._<Arch>_v#.#.#.#.exe`.
+    Finally, the built `EXE file` will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_..._v#.#.#.#_<Arch>.exe`.

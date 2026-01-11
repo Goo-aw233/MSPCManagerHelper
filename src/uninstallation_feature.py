@@ -26,7 +26,7 @@ class UninstallationFeature:
     def get_nsudolc_path(self):
         try:
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment") as key:
+                                r"SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment") as key:
                 processor_architecture = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")[0]
 
             if processor_architecture == "AMD64":
@@ -92,7 +92,7 @@ class UninstallationFeature:
 
             # 为所有用户卸载新版
             result1 = subprocess.run(
-                ["powershell.exe", "-Command",
+                ["powershell.exe", "-NoProfile", "-Command",
                  ("Get-AppxPackage -AllUsers | Where-Object {$_.Name -like 'Microsoft.MicrosoftPCManager'} | "
                   "Remove-AppxPackage -AllUsers")],
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
@@ -100,7 +100,7 @@ class UninstallationFeature:
 
             # 为所有用户卸载旧版
             result2 = subprocess.run(
-                ["powershell.exe", "-Command",
+                ["powershell.exe", "-NoProfile", "-Command",
                  ("Get-AppxPackage -AllUsers | Where-Object {$_.Name -like 'Microsoft.PCManager'} | "
                   "Remove-AppxPackage -AllUsers")],
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
@@ -108,7 +108,7 @@ class UninstallationFeature:
 
             # 为当前用户卸载新版
             result3 = subprocess.run(
-                ["powershell.exe", "-Command",
+                ["powershell.exe", "-NoProfile", "-Command",
                  ("Get-AppxPackage | Where-Object {$_.Name -like '*Microsoft.MicrosoftPCManager*'} | "
                   "ForEach-Object {Remove-AppxPackage -Package $_.PackageFullName}")],
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
@@ -116,7 +116,7 @@ class UninstallationFeature:
 
             # 为当前用户卸载旧版
             result4 = subprocess.run(
-                ["powershell.exe", "-Command",
+                ["powershell.exe", "-NoProfile", "-Command",
                  ("Get-AppxPackage | Where-Object {$_.Name -like '*Microsoft.PCManager*'} | "
                   "ForEach-Object {Remove-AppxPackage -Package $_.PackageFullName}")],
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
@@ -422,7 +422,7 @@ class UninstallationFeature:
         try:
             # 为所有用户卸载新版
             result1 = subprocess.run(
-                ["powershell.exe", "-Command",
+                ["powershell.exe", "-NoProfile", "-Command",
                  ("Get-AppxPackage -AllUsers | Where-Object {$_.Name -like 'Microsoft.MicrosoftPCManager'} | "
                   "Remove-AppxPackage -AllUsers")],
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
@@ -430,7 +430,7 @@ class UninstallationFeature:
 
             # 为所有用户卸载旧版
             result2 = subprocess.run(
-                ["powershell.exe", "-Command",
+                ["powershell.exe", "-NoProfile", "-Command",
                  ("Get-AppxPackage -AllUsers | Where-Object {$_.Name -like 'Microsoft.PCManager'} | "
                   "Remove-AppxPackage -AllUsers")],
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
@@ -438,7 +438,7 @@ class UninstallationFeature:
 
             # 为当前用户卸载新版
             result3 = subprocess.run(
-                ["powershell.exe", "-Command",
+                ["powershell.exe", "-NoProfile", "-Command",
                  ("Get-AppxPackage | Where-Object {$_.Name -like '*Microsoft.MicrosoftPCManager*'} | "
                   "ForEach-Object {Remove-AppxPackage -Package $_.PackageFullName}")],
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
@@ -446,7 +446,7 @@ class UninstallationFeature:
 
             # 为当前用户卸载旧版
             result4 = subprocess.run(
-                ["powershell.exe", "-Command",
+                ["powershell.exe", "-NoProfile", "-Command",
                  ("Get-AppxPackage | Where-Object {$_.Name -like '*Microsoft.PCManager*'} | "
                   "ForEach-Object {Remove-AppxPackage -Package $_.PackageFullName}")],
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
@@ -671,7 +671,7 @@ class UninstallationFeature:
         try:
             # 为当前用户卸载新版
             result1 = subprocess.run(
-                ["powershell.exe", "-Command",
+                ["powershell.exe", "-NoProfile", "-Command",
                  ("Get-AppxPackage | Where-Object {$_.Name -like '*Microsoft.MicrosoftPCManager*'} | "
                   "ForEach-Object {Remove-AppxPackage -Package $_.PackageFullName}")],
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
@@ -679,7 +679,7 @@ class UninstallationFeature:
 
             # 为当前用户卸载旧版
             result2 = subprocess.run(
-                ["powershell.exe", "-Command",
+                ["powershell.exe", "-NoProfile", "-Command",
                  ("Get-AppxPackage | Where-Object {$_.Name -like '*Microsoft.PCManager*'} | "
                   "ForEach-Object {Remove-AppxPackage -Package $_.PackageFullName}")],
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
@@ -857,7 +857,7 @@ class UninstallationFeature:
                 for folder in folders_to_delete:
                     if folder.exists():
                         try:
-                            subprocess.run(['rmdir', '/S', '/Q', str(folder)], shell=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                            subprocess.run(['cmd.exe', '/C', 'rmdir', '/S', '/Q', str(folder)], shell=False, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
                             if is_first:
                                 self.textbox('\n' + self.translator.translate('clearing_pc_manager_beta_configuration_files') + ':\n')   # 显示执行操作
                                 is_first = False
