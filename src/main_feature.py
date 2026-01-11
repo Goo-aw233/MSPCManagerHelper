@@ -256,7 +256,7 @@ class MainFeature:
             try:
                 self.textbox("\n" + self.translator.translate("retrieving_computer_info"))
                 computer_info_path = logs_destination / "ComputerInfo.txt"
-                subprocess.run(["powershell.exe", "-Command", f"Get-ComputerInfo | Out-File -FilePath '{computer_info_path}' -Encoding utf8"],
+                subprocess.run(["powershell.exe", "-NoProfile", "-Command", f"Get-ComputerInfo | Out-File -FilePath '{computer_info_path}' -Encoding utf8"],
                                capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW)
                 self.textbox(self.translator.translate("retrieve_computer_info_success"))
             except FileNotFoundError as e:

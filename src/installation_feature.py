@@ -216,7 +216,7 @@ class InstallationFeature:
 
         try:
             # 构建 Add-AppxPackage 命令
-            command = ['powershell.exe', '-Command',
+            command = ['powershell.exe', '-NoProfile', '-Command'
                        f'Add-AppxPackage -Path "{current_user_application_package_file_path}"']
             if current_user_dependency_package_paths:  # 使用依赖包，若不使用则跳过
                 dependency_paths = ",".join([f'"{additional_dependency_paths}"' for additional_dependency_paths in current_user_dependency_package_paths])
@@ -245,13 +245,12 @@ class InstallationFeature:
 
         if whether_to_reinstall_for_all_users:
             command = [
-                "powershell.exe",
-                "-Command",
+                "powershell.exe", "-NoProfile", "-Command",
                 "Get-AppxPackage -AllUsers *Microsoft.MicrosoftPCManager* | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register \"$($_.InstallLocation)\\AppxManifest.xml\"}"
             ]
         else:
             command = [
-                "powershell.exe",
+                "powershell.exe", "-NoProfile", "-Command",
                 "-Command",
                 "Get-AppxPackage *Microsoft.MicrosoftPCManager* | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register \"$($_.InstallLocation)\\AppxManifest.xml\"}"
             ]
@@ -301,7 +300,7 @@ class InstallationFeature:
 
         try:
             # 构建 Add-AppxPackage 命令
-            command = ['powershell.exe', '-Command',
+            command = ['powershell.exe', '-NoProfile', '-Command',
                        f'Add-AppxPackage -Path "{update_application_package_file_path}"']
             if update_dependency_package_paths:  # 使用依赖包，若不使用则跳过
                 dependency_paths = ",".join([f'"{additional_dependency_paths}"' for additional_dependency_paths in
@@ -457,13 +456,13 @@ class InstallationFeature:
 
                 for dependency_path in dependency_package_paths:
                     self.textbox(self.translator.translate("install_from_appxmanifest_installing_dependency_package") + '\n')
-                    subprocess.run(['powershell.exe', '-Command', f'Add-AppxPackage -Path "{dependency_path}"'],
+                    subprocess.run(['powershell.exe', '-NoProfile', '-Command', f'Add-AppxPackage -Path "{dependency_path}"'],
                                     capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
                     )
 
             # 注册 AppxManifest.xml
             self.textbox(self.translator.translate("install_from_appxmanifest_registering_app") + '\n')
-            subprocess.run(['powershell.exe', '-Command', f'Add-AppxPackage -Register "{pc_manager_program_files_path}\\AppxManifest.xml"'],
+            subprocess.run(['powershell.exe', '-NoProfile', '-Command', f'Add-AppxPackage -Register "{pc_manager_program_files_path}\\AppxManifest.xml"'],
                 capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
 
@@ -475,12 +474,12 @@ class InstallationFeature:
 
             if response_for_service:
                 # 检查服务 "PCManager Service Store" 是否存在
-                service_store_check = subprocess.run(['powershell.exe', '-Command', 'Get-Service -Name "PCManager Service Store"'],
+                service_store_check = subprocess.run(['powershell.exe', '-NoProfile', '-Command', 'Get-Service -Name "PCManager Service Store"'],
                     capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
                 )
 
                 # 检查服务 "PC Manager Service" 是否存在
-                service_store_old_check = subprocess.run(['powershell.exe', '-Command', 'Get-Service -Name "PC Manager Service"'],
+                service_store_old_check = subprocess.run(['powershell.exe', '-NoProfile', '-Command', 'Get-Service -Name "PC Manager Service"'],
                     capture_output=True, text=True, creationflags=subprocess.CREATE_NO_WINDOW
                 )
 

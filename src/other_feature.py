@@ -59,7 +59,7 @@ class OtherFeature:
 
             # 执行 PowerShell 命令
             result = subprocess.run(
-                ["powershell.exe", "-Command", "Get-CimInstance -Namespace ROOT\SecurityCenter2 -ClassName AntiVirusProduct"],
+                ["powershell.exe", "-NoProfile", "-Command", "Get-CimInstance -Namespace ROOT\SecurityCenter2 -ClassName AntiVirusProduct"],
                 capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
             output = result.stdout.strip()
@@ -327,7 +327,7 @@ class OtherFeature:
                             "$SystemMSEdgeWebView2PathVersionInfo.ProductVersion"
                         )
                         root_msedge_webview2_result = subprocess.run(
-                            ["powershell.exe", "-Command", root_msedge_webview2],
+                            ["powershell.exe", "-NoProfile", "-Command", root_msedge_webview2],
                             capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
                         )
                         system_msedge_webview2_version = root_msedge_webview2_result.stdout.strip()
@@ -358,7 +358,7 @@ class OtherFeature:
             # 读取所有 Windows App Runtime 的版本号
             get_windows_app_runtime_versions = "Get-AppxPackage -Name '*WindowsAppRuntime*' | Select-Object Name, Version, PackageFullName | Sort-Object Version | ConvertTo-Json"
             windows_app_runtime_versions_result = subprocess.run(
-                ["powershell.exe", "-Command", get_windows_app_runtime_versions],
+                ["powershell.exe", "-NoProfile", "-Command", get_windows_app_runtime_versions],
                 capture_output=True, text=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW
             )
             windows_app_runtime_versions_output = windows_app_runtime_versions_result.stdout.strip()
