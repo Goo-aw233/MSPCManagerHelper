@@ -71,4 +71,4 @@ Please Select Your Language to Continue
 5. 構建 EXE
 
     直接執行 `scripts\build` 目錄下的 `build.cmd` 或 `build_.venv.cmd` 即可自己構建。
-    最後，構建好的 `EXE 檔案` 將會存放在根目錄的 `dist` 目錄下，並命名為 `MSPCManagerHelper_..._<架構>_v#.#.#.#.exe`。
+    最後，構建好的 `EXE 檔案` 將會存放在根目錄的 `dist` 目錄下，並命名為 `MSPCManagerHelper_..._v#.#.#.#_<架構>.exe`。
