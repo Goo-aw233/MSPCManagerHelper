@@ -99,8 +99,8 @@ class OtherFeature:
     def developer_options(self):
         try:
             # 打开开发者选项页
-            subprocess.run(["start", "ms-settings:developers"],
-                           check=True, shell=True)
+            subprocess.run(["cmd.exe", "/C", "start", "Developer Settings", "ms-settings:developers"],
+                           check=True, shell=False)
             return self.translator.translate("developer_options_opened")
         except subprocess.CalledProcessError as e:
             return f"{self.translator.translate('developer_options_error')}: {str(e)}"
@@ -211,7 +211,7 @@ class OtherFeature:
             return self.translator.translate("user_canceled")
         elif user_response:
             try:
-                subprocess.run(["start", "ms-settings:regionformatting"], check=True, shell=True)
+                subprocess.run(["cmd.exe", "/C", "start", "Region Settings", "ms-settings:regionformatting"], check=True, shell=False)
                 return self.translator.translate("how_to_switch_pc_manager_region")
             except subprocess.CalledProcessError as e:
                 return f"{self.translator.translate('error_opening_ms-settings')}: {str(e)}"

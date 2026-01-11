@@ -857,7 +857,7 @@ class UninstallationFeature:
                 for folder in folders_to_delete:
                     if folder.exists():
                         try:
-                            subprocess.run(['rmdir', '/S', '/Q', str(folder)], shell=True, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                            subprocess.run(['cmd.exe', '/C', 'rmdir', '/S', '/Q', str(folder)], shell=False, check=True, creationflags=subprocess.CREATE_NO_WINDOW)
                             if is_first:
                                 self.textbox('\n' + self.translator.translate('clearing_pc_manager_beta_configuration_files') + ':\n')   # 显示执行操作
                                 is_first = False

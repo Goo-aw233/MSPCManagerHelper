@@ -91,8 +91,8 @@ class InstallationFeature:
                 try:
                     # 如果找到 store.exe，打开指定的 URI
                     subprocess.run(
-                        ["start", "ms-windows-store://pdp/?ProductId=9PM860492SZD"],
-                        check=True, shell=True)
+                        ["cmd.exe", "/C", "start", "Microsoft Store", "ms-windows-store://pdp/?ProductId=9PM860492SZD"],
+                        check=True, shell=False)
                     return self.translator.translate("download_from_msstore_app_opened")
                 except Exception as e:
                     return f"{self.translator.translate('download_from_msstore_app_error')}: {str(e)}"
@@ -106,8 +106,8 @@ class InstallationFeature:
                     try:
                         # 如果找到 microsoftstore.exe，打开指定的 URI
                         subprocess.run(
-                            ["start", "ms-windows-store://pdp/?ProductId=9PM860492SZD"],
-                            check=True, shell=True)
+                            ["cmd.exe", "/C", "start", "Microsoft Store", "ms-windows-store://pdp/?ProductId=9PM860492SZD"],
+                            check=True, shell=False)
                         return self.translator.translate("download_from_msstore_app_opened")
                     except Exception as e:
                         return f"{self.translator.translate('download_from_msstore_app_error')}: {str(e)}"
