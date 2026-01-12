@@ -8,7 +8,7 @@ from core.app_metadata import AppMetadata
 from core.app_settings import AppSettings
 from core.get_mspcm_version import GetMSPCMVersion
 from core.system_checks import PrerequisiteChecks
-from gui.pages.events import OnAboutWindowsButtonClick, OnRestartAsAdministrator, StartMSPCM, StartMSPCMBeta
+from gui.pages.events import OnAboutWindowsButtonClick, OnEnableLongPathsClick, OnRestartAsAdministrator, StartMSPCM, StartMSPCMBeta
 
 
 class HomePage(customtkinter.CTkFrame):
@@ -88,6 +88,21 @@ class HomePage(customtkinter.CTkFrame):
             state="disabled" if AdvancedStartup.is_administrator() else "normal"
         )
 
+        # Long Paths
+        if not PrerequisiteChecks.check_if_long_paths_enabled():
+            # Separator
+            self.long_paths_separator = self._create_separator(self.exit_group)
+
+            self.long_paths_button = self._create_settings_card(
+                self.exit_group,
+                self.app_translator.translate("long_paths"),
+                self.app_translator.translate("long_paths_description"),
+                customtkinter.CTkButton,
+                text=self.app_translator.translate("enable_long_paths_button"),
+                command=self._on_long_paths_click,
+                state="normal" if AdvancedStartup.is_administrator() else "disabled"
+            )
+
         # Separator
         self._create_separator(self.exit_group)
 
@@ -119,8 +134,19 @@ class HomePage(customtkinter.CTkFrame):
             text=self.app_translator.translate("exit_app_button"),
             command=self._exit_app
         )
+        # --- End of Advanced Section ---
 
-        # --- End of Exit Section ---
+    def _on_long_paths_click(self):
+        OnEnableLongPathsClick.enable_long_paths(logger=self.logger,
+                                                 log_file_path=self.log_file_path,
+                                                 app_translator=self.app_translator)
+
+        if PrerequisiteChecks.check_if_long_paths_enabled():
+            if hasattr(self, 'long_paths_separator') and self.long_paths_separator.winfo_exists():
+                self.long_paths_separator.destroy()
+            if hasattr(self, 'long_paths_button') and self.long_paths_button.winfo_exists():
+                # The button is inside the card container (CTkFrame). Destroy the container.
+                self.long_paths_button.master.destroy()
 
     def _on_cleanup_after_exit_toggled(self):
         AppSettings.toggle_cleanup_after_exit()
@@ -258,6 +284,7 @@ class HomePage(customtkinter.CTkFrame):
     def _create_separator(parent):
         separator = customtkinter.CTkFrame(parent, height=1, fg_color=("gray90", "#2b2b2b"))
         separator.pack(fill="x", padx=10)
+        return separator
 
     def _create_info_textbox_card(self, parent, title, description, widget_constructor=None,
                                   enable_text_selection=False, min_height=50, **widget_kwargs):
