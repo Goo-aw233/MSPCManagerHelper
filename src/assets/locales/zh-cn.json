@@ -120,7 +120,6 @@
 
     "__home_page__": "主页",
       "about_button": "关于 Windows",
-      "advanced_section_title": "高级",
       "cleanup_after_exit": "退出后清理",
       "cleanup_after_exit_description": "在退出应用程序后清理可能存在的残留",
       "enable_long_paths_button": "启用长路径",
@@ -129,6 +128,7 @@
       "exit_section_title": "退出应用程序",
       "failed_to_get_mspcm_version_info": "此时无法获取微软电脑管家版本信息，可能是由于微软电脑管家未安装或系统出现问题所致",
       "failed_to_load_windows_installation_info": "此时无法获取 Windows 安装信息，请从 Windows 设置 > “系统” > “关于”中获得更多信息。",
+      "home_page_advanced_section_title": "高级",
       "long_paths": "长路径",
       "long_paths_description": "启用对超过 260 个字符的文件路径的支持",
       "mspcm_version_info": "微软电脑管家版本信息",
@@ -174,8 +174,11 @@
       "light_mode": "浅色模式",
       "personalization": "个性化",
       "preferences": "偏好设置",
+      "settings_page_advanced_section_title": "高级",
       "support_developer": "支持开发者",
       "support_developer_description": "访问 Microsoft 链接时添加贡献者 ID 以支持开发者",
+      "take_ownership": "获取所有权",
+      "take_ownership_description": "获取管理员所有权限以执行命令",
 
     "__toolbox_page__": "工具箱页面",
 

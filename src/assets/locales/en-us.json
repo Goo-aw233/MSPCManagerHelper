@@ -119,7 +119,6 @@
 
     "__home_page__": "Home Page",
       "about_button": "About Windows",
-      "advanced_section_title": "Advanced",
       "cleanup_after_exit": "Cleanup After Exit",
       "cleanup_after_exit_description": "Clean Up Any Residuals After Exiting the App",
       "enable_long_paths_button": "Enable Long Paths",
@@ -128,6 +127,7 @@
       "exit_section_title": "Exit App",
       "failed_to_get_mspcm_version_info": "Unable to Get Microsoft PC Manager Version Information at This Time, Which May Be Due to Microsoft PC Manager Not Being Installed or a System Issue",
       "failed_to_load_windows_installation_info": "Unable to Get Windows Installation Information at This Time, Please Get More Information in Windows Settings > System > About",
+      "home_page_advanced_section_title": "Advanced",
       "long_paths": "Long Paths",
       "long_paths_description": "Enable Support for File Paths Exceeding 260 Characters",
       "mspcm_version_info": "Microsoft PC Manager Version Information",
@@ -173,8 +173,11 @@
       "light_mode": "Light Mode",
       "personalization": "Personalization",
       "preferences": "Preferences",
+      "settings_page_advanced_section_title": "Advanced",
       "support_developer": "Support Developer",
       "support_developer_description": "Add Contributor ID when Browsing Microsoft URLs to Support the Developer",
+      "take_ownership": "Take Ownership",
+      "take_ownership_description": "Take Full Administrator Privileges to Execute Commands",
 
     "__toolbox_page__": "Toolbox Page",
 

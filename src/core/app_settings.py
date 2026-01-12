@@ -7,6 +7,7 @@ class AppSettings:
     _is_follow_system_font_enabled: bool = False
     _is_support_developer_enabled: bool = True
     _is_compatibility_mode_enabled: bool = False
+    _is_take_ownership_enabled: bool = False
     _is_cleanup_after_exit_enabled: bool = False
     _appearance_mode: str = "System"
 
@@ -79,3 +80,18 @@ class AppSettings:
     def toggle_compatibility_mode(cls) -> None:
         cls.set_compatibility_mode_enabled(not cls._is_compatibility_mode_enabled)
     # ======================= End of Compatibility Mode Settings =======================
+
+    # ======================= Take Ownership Settings =======================
+    @classmethod
+    def is_take_ownership_enabled(cls) -> bool:
+        return cls._is_take_ownership_enabled
+    
+    @classmethod
+    def set_take_ownership_enabled(cls, enabled: bool) -> None:
+        cls._is_take_ownership_enabled = bool(enabled)
+        AppSettings.logger.info(f"Take Ownership Set to: {cls._is_take_ownership_enabled}")
+    
+    @classmethod
+    def toggle_take_ownership(cls) -> None:
+        cls.set_take_ownership_enabled(not cls._is_take_ownership_enabled)
+    # ======================= End of Take Ownership Settings =======================

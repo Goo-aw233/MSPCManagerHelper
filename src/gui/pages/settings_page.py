@@ -4,6 +4,7 @@ from core.app_logger import AppLogger
 from core.app_settings import AppSettings
 from core.app_translator import AppTranslator
 from core.system_checks import PrerequisiteChecks
+from core.advanced_startup import AdvancedStartup
 
 
 class SettingsPage(customtkinter.CTkFrame):
@@ -140,6 +141,29 @@ class SettingsPage(customtkinter.CTkFrame):
             self.compatibility_mode_switch.deselect()
         # --- End of Preferences ---
 
+        # --- Advanced ---
+        if AdvancedStartup.is_administrator() and (AdvancedStartup.is_debugmode() or AdvancedStartup.is_devmode()):
+            self._create_section_label(self.app_translator.translate("settings_page_advanced_section_title"))
+
+            self.advanced_group = self._create_group_frame()
+
+            # Take Ownership
+            self.take_ownership_card = self._create_settings_card(
+                self.advanced_group,
+                self.app_translator.translate("take_ownership"),
+                self.app_translator.translate("take_ownership_description"),
+                customtkinter.CTkSwitch,
+                text=self.app_translator.translate(
+                    "button_on") if AppSettings.is_take_ownership_enabled() else self.app_translator.translate(
+                    "button_off"),
+                command=self._change_take_ownership
+            )
+            if AppSettings.is_take_ownership_enabled():
+                self.take_ownership_card.select()
+            else:
+                self.take_ownership_card.deselect()
+        # --- End of Advanced ---
+
 
     def _change_language(self, new_language: str):
         locale = self.language_map.get(new_language)
@@ -179,6 +203,14 @@ class SettingsPage(customtkinter.CTkFrame):
         is_enabled = self.compatibility_mode_switch.get()
         AppSettings.set_compatibility_mode_enabled(is_enabled)
         self.compatibility_mode_switch.configure(
+            text=self.app_translator.translate("button_on") if is_enabled else self.app_translator.translate(
+                "button_off")
+        )
+    
+    def _change_take_ownership(self):
+        is_enabled = self.take_ownership_card.get()
+        AppSettings.set_take_ownership_enabled(is_enabled)
+        self.take_ownership_card.configure(
             text=self.app_translator.translate("button_on") if is_enabled else self.app_translator.translate(
                 "button_off")
         )

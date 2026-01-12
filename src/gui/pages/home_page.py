@@ -71,7 +71,7 @@ class HomePage(customtkinter.CTkFrame):
         # --- End of Windows Specifications Section ---
 
         # --- Advanced Section ---
-        self._create_section_label(self.app_translator.translate("advanced_section_title"))
+        self._create_section_label(self.app_translator.translate("home_page_advanced_section_title"))
 
         self.exit_group = self._create_group_frame()
 
