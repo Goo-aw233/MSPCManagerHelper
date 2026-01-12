@@ -34,3 +34,9 @@ class AdvancedStartup:
     def get_runtime_arguments():
         # Excluding the program itself.
         return sys.argv[1:].copy()
+
+    @staticmethod
+    def run_as_administrator(args):
+        result = ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, args, None, 0)
+        if result > 32:
+            sys.exit(0)

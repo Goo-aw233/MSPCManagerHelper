@@ -18,6 +18,8 @@
       "button_on": "On",
       "button_off": "Off",
       "error": "Error",
+      "error_code": "Error Code",
+      "error_message": "Error Message",
       "information": "Information",
       "narrator_is_running": "A screen narrator (such as Narrator) is currently running, MSPCManagerHelper does not currently support screen narrators. Please seek assistance from others to continue.",
       "operating_system_is_not_windows_nt_based": "The operating system is not Windows NT-based, the app will exit.",
@@ -97,6 +99,7 @@
       "failed_to_open_mspcm_beta": "Unable to open Microsoft PC Manager Public Beta. Please start Microsoft PC Manager Public Beta manually from the Start Menu.\nLog File Location: {log_file_path}",
       "failed_to_open_official_website": "Unable to open the Official Website. Please open the browser manually to visit https://pcmanager.microsoft.com.\nLog File Location: {log_file_path}",
       "failed_to_open_privacy_settings": "Unable to open the Privacy & Security page. Please open Windows Settings manually.\nLog File Location: {log_file_path}",
+      "failed_to_run_as_administrator": "Unable to restart the app as administrator. Please manually run the program as administrator.\nLog File Location: {log_file_path}",
 
     "__help_window__": "Help Window",
       "help_window_title": "Help Window",
@@ -115,6 +118,7 @@
 
     "__home_page__": "Home Page",
       "about_button": "About Windows",
+      "advanced_section_title": "Advanced",
       "cleanup_after_exit": "Cleanup After Exit",
       "cleanup_after_exit_description": "Clean Up Any Residuals After Exiting the App",
       "exit_app_button": "Exit",
@@ -126,6 +130,8 @@
       "mspcm_version_is": "Microsoft PC Manager Version",
       "mspcm_beta_version_is": "Microsoft PC Manager Public Beta Version",
       "refresh_button": "Refresh",
+      "run_as_administrator": "Run as Administrator",
+      "run_as_administrator_description": "Restart the App and Run as Administrator",
       "start_mspcm_button": "Start Microsoft PC Manager",
       "start_mspcm_beta_button": "Start Microsoft PC Manager Public Beta",
       "welcome_message": "Welcome to MSPCManagerHelper! This tool is designed to help you manage Microsoft PC Manager. Please select a feature from the navigation menu to continue. Before using MSPCManagerHelper, please read the 'Terms of Use' and 'Privacy Policy' thoroughly. By continuing to use, you agree to these terms.",

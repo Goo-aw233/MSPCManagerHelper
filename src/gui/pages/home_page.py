@@ -2,12 +2,13 @@ import sys
 
 import customtkinter
 
+from core.advanced_startup import AdvancedStartup
 from core.app_logger import AppLogger
 from core.app_metadata import AppMetadata
 from core.app_settings import AppSettings
 from core.get_mspcm_version import GetMSPCMVersion
 from core.system_checks import PrerequisiteChecks
-from gui.pages.events import OnAboutWindowsButtonClick, StartMSPCM, StartMSPCMBeta
+from gui.pages.events import OnAboutWindowsButtonClick, OnRestartAsAdministrator, StartMSPCM, StartMSPCMBeta
 
 
 class HomePage(customtkinter.CTkFrame):
@@ -69,10 +70,26 @@ class HomePage(customtkinter.CTkFrame):
         self._load_windows_specifications()
         # --- End of Windows Specifications Section ---
 
-        # --- Exit Section ---
-        self._create_section_label(self.app_translator.translate("exit_section_title"))
+        # --- Advanced Section ---
+        self._create_section_label(self.app_translator.translate("advanced_section_title"))
 
         self.exit_group = self._create_group_frame()
+
+        # Run as Administrator
+        self._create_settings_card(
+            self.exit_group,
+            self.app_translator.translate("run_as_administrator"),
+            self.app_translator.translate("run_as_administrator_description"),
+            customtkinter.CTkButton,
+            text=self.app_translator.translate("run_as_administrator"),
+            command=lambda: OnRestartAsAdministrator.on_restart_as_administrator(AdvancedStartup, logger=self.logger,
+                                                                                 app_translator=self.app_translator,
+                                                                                 log_file_path=self.log_file_path),
+            state="disabled" if AdvancedStartup.is_administrator() else "normal"
+        )
+
+        # Separator
+        self._create_separator(self.exit_group)
 
         # Cleanup After Exit
         self.cleanup_after_exit_checkbox = self._create_settings_card(
