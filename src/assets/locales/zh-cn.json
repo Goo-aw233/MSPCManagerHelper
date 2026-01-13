@@ -136,6 +136,7 @@
       "mspcm_beta_version_is": "微软电脑管家公测版版本",
       "refresh_button": "刷新",
       "run_as_administrator": "以管理员身份运行",
+      "run_as_administrator_button": "以管理员身份重新启动",
       "run_as_administrator_description": "重新启动应用程序并以管理员身份运行",
       "start_mspcm_button": "启动微软电脑管家",
       "start_mspcm_beta_button": "启动微软电脑管家公测版",

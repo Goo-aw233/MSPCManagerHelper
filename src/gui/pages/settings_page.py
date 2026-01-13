@@ -31,10 +31,10 @@ class SettingsPage(customtkinter.CTkFrame):
         self.scroll_frame.grid(row=1, column=0, sticky="nsew", padx=0, pady=0)
         self.scroll_frame.grid_columnconfigure(0, weight=1)
 
-        # --- Personalization Section ---
+        # === Personalization Section ===
         self._create_section_label(self.app_translator.translate("personalization"))
 
-        # Appearance
+        # --- Appearance ---
         self.theme_map = {
             self.app_translator.translate("follow_system"): "System",
             self.app_translator.translate("light_mode"): "Light",
@@ -55,10 +55,10 @@ class SettingsPage(customtkinter.CTkFrame):
         self.appearance_mode_optionemenu.set(
             self.theme_map_rev.get(AppSettings.get_appearance_mode(), self.app_translator.translate("follow_system")))
         
-        # Separator
+        # --- Separator ---
         self._create_separator(self.personalization_group)
 
-        # Follow System Font
+        # --- Follow System Font ---
         self.follow_system_font_switch = self._create_settings_card(
             self.personalization_group,
             self.app_translator.translate("follow_system_font_settings"),
@@ -72,9 +72,9 @@ class SettingsPage(customtkinter.CTkFrame):
             self.follow_system_font_switch.select()
         else:
             self.follow_system_font_switch.deselect()
-        # --- End of Personalization Section ---
+        # === End of Personalization Section ===
 
-        # --- Language Section ---
+        # === Language Section ===
         self._create_section_label(self.app_translator.translate("language"))
 
         self.language_map = {
@@ -97,14 +97,14 @@ class SettingsPage(customtkinter.CTkFrame):
 
         current_locale = getattr(self.master.master, "language", "en-us")
         self.language_optionmenu.set(self.language_map_rev.get(current_locale, "English"))
-        # --- End of Language Section ---
+        # === End of Language Section ===
 
-        # --- Preferences ---
+        # === Preferences ===
         self._create_section_label(self.app_translator.translate("preferences"))
 
         self.preferences_group = self._create_group_frame()
 
-        # Support Developer
+        # --- Support Developer ---
         self.support_developer_switch = self._create_settings_card(
             self.preferences_group,
             self.app_translator.translate("support_developer"),
@@ -121,7 +121,7 @@ class SettingsPage(customtkinter.CTkFrame):
         else:
             self.support_developer_switch.deselect()
 
-        # Separator
+        # --- Separator ---
         self._create_separator(self.preferences_group)
 
         # --- Compatibility Mode ---
@@ -139,15 +139,15 @@ class SettingsPage(customtkinter.CTkFrame):
             self.compatibility_mode_switch.select()
         else:
             self.compatibility_mode_switch.deselect()
-        # --- End of Preferences ---
+        # === End of Preferences ===
 
-        # --- Advanced ---
+        # === Advanced ===
         if AdvancedStartup.is_administrator() and (AdvancedStartup.is_debugmode() or AdvancedStartup.is_devmode()):
             self._create_section_label(self.app_translator.translate("settings_page_advanced_section_title"))
 
             self.advanced_group = self._create_group_frame()
 
-            # Take Ownership
+            # --- Take Ownership ---
             self.take_ownership_card = self._create_settings_card(
                 self.advanced_group,
                 self.app_translator.translate("take_ownership"),
@@ -162,20 +162,8 @@ class SettingsPage(customtkinter.CTkFrame):
                 self.take_ownership_card.select()
             else:
                 self.take_ownership_card.deselect()
-        # --- End of Advanced ---
+        # === End of Advanced ===
 
-
-    def _change_language(self, new_language: str):
-        locale = self.language_map.get(new_language)
-        if locale and self.master and self.master.master:
-            self.logger.info(f"Language Switched to: {locale}")
-            main_window = self.master.master
-            main_window.language = locale
-            main_window.app_translator = AppTranslator(locale)
-            PrerequisiteChecks.app_translator = main_window.app_translator
-            
-            if hasattr(main_window, "refresh_ui"):
-                main_window.refresh_ui()
 
     def _change_appearance_mode(self, new_appearance_mode: str):
         mode = self.theme_map.get(new_appearance_mode)
@@ -190,6 +178,18 @@ class SettingsPage(customtkinter.CTkFrame):
         # Trigger Refresh in MainWindow
         if self.master and self.master.master and hasattr(self.master.master, "refresh_ui"):
             self.master.master.refresh_ui()
+
+    def _change_language(self, new_language: str):
+        locale = self.language_map.get(new_language)
+        if locale and self.master and self.master.master:
+            self.logger.info(f"Language Switched to: {locale}")
+            main_window = self.master.master
+            main_window.language = locale
+            main_window.app_translator = AppTranslator(locale)
+            PrerequisiteChecks.app_translator = main_window.app_translator
+            
+            if hasattr(main_window, "refresh_ui"):
+                main_window.refresh_ui()
 
     def _change_support_developer(self):
         is_enabled = self.support_developer_switch.get()

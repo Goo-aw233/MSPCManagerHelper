@@ -134,6 +134,7 @@
       "mspcm_beta_version_is": "Microsoft 電腦管家 Beta 版本",
       "refresh_button": "重新整理",
       "run_as_administrator": "以系統管理員身份執行",
+      "run_as_administrator_button": "以系統管理員身份重新啟動",
       "run_as_administrator_description": "重新啟動應用程式並以系統管理員身份執行",
       "start_mspcm_button": "啟動 Microsoft 電腦管家",
       "start_mspcm_beta_button": "啟動 Microsoft 電腦管家 Beta",

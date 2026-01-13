@@ -36,7 +36,7 @@ class HomePage(customtkinter.CTkFrame):
         self.scroll_frame.grid(row=1, column=0, sticky="nsew", padx=0, pady=0)
         self.scroll_frame.grid_columnconfigure(0, weight=1)
 
-        # --- Welcome Section ---
+        # === Welcome Section ===
         self._create_section_label(self.app_translator.translate("welcome_title"))
 
         self.welcome_group = self._create_group_frame()
@@ -48,9 +48,9 @@ class HomePage(customtkinter.CTkFrame):
             enable_text_selection=False,
             min_height=50
         )
-        # --- End of Welcome Section ---
+        # === End of Welcome Section ===
 
-        # --- Microsoft PC Manager Version Info Section ---
+        # === Microsoft PC Manager Version Info Section ===
         self._create_section_label_with_button(
             self.app_translator.translate("mspcm_version_info"),
             f"↻    {self.app_translator.translate('refresh_button')}",
@@ -60,35 +60,35 @@ class HomePage(customtkinter.CTkFrame):
         self.mspcm_version_group = self._create_group_frame()
 
         self._load_mspcm_version_info()
-        # --- End of Microsoft PC Manager Version Info Section ---
+        # === End of Microsoft PC Manager Version Info Section ===
 
-        # --- Windows Specifications Section ---
+        # === Windows Specifications Section ===
         self._create_section_label(self.app_translator.translate("windows_specifications"))
 
         self.windows_specifications_group = self._create_group_frame()
 
         self._load_windows_specifications()
-        # --- End of Windows Specifications Section ---
+        # === End of Windows Specifications Section ===
 
-        # --- Advanced Section ---
+        # === Advanced Section ===
         self._create_section_label(self.app_translator.translate("home_page_advanced_section_title"))
 
         self.exit_group = self._create_group_frame()
 
-        # Run as Administrator
+        # --- Run as Administrator ---
         self._create_settings_card(
             self.exit_group,
             self.app_translator.translate("run_as_administrator"),
             self.app_translator.translate("run_as_administrator_description"),
             customtkinter.CTkButton,
-            text=self.app_translator.translate("run_as_administrator"),
+            text=self.app_translator.translate("run_as_administrator_button"),
             command=lambda: OnRestartAsAdministrator.on_restart_as_administrator(AdvancedStartup, logger=self.logger,
                                                                                  app_translator=self.app_translator,
                                                                                  log_file_path=self.log_file_path),
             state="disabled" if AdvancedStartup.is_administrator() else "normal"
         )
 
-        # Long Paths
+        # --- Long Paths ---
         if not PrerequisiteChecks.check_if_long_paths_enabled():
             # Separator
             self.long_paths_separator = self._create_separator(self.exit_group)
@@ -103,10 +103,10 @@ class HomePage(customtkinter.CTkFrame):
                 state="normal" if AdvancedStartup.is_administrator() else "disabled"
             )
 
-        # Separator
+        # --- Separator ---
         self._create_separator(self.exit_group)
 
-        # Cleanup After Exit
+        # --- Cleanup After Exit ---
         self.cleanup_after_exit_checkbox = self._create_settings_card(
             self.exit_group,
             self.app_translator.translate("cleanup_after_exit"),
@@ -122,10 +122,10 @@ class HomePage(customtkinter.CTkFrame):
         else:
             self.cleanup_after_exit_checkbox.deselect()
 
-        # Separator
+        # --- Separator ---
         self._create_separator(self.exit_group)
 
-        # Exit
+        # --- Exit ---
         self._create_settings_card(
             self.exit_group,
             self.app_translator.translate("exit_section_title"),
@@ -134,26 +134,8 @@ class HomePage(customtkinter.CTkFrame):
             text=self.app_translator.translate("exit_app_button"),
             command=self._exit_app
         )
-        # --- End of Advanced Section ---
+        # === End of Advanced Section ===
 
-    def _on_long_paths_click(self):
-        OnEnableLongPathsClick.enable_long_paths(logger=self.logger,
-                                                 log_file_path=self.log_file_path,
-                                                 app_translator=self.app_translator)
-
-        if PrerequisiteChecks.check_if_long_paths_enabled():
-            if hasattr(self, 'long_paths_separator') and self.long_paths_separator.winfo_exists():
-                self.long_paths_separator.destroy()
-            if hasattr(self, 'long_paths_button') and self.long_paths_button.winfo_exists():
-                # The button is inside the card container (CTkFrame). Destroy the container.
-                self.long_paths_button.master.destroy()
-
-    def _on_cleanup_after_exit_toggled(self):
-        AppSettings.toggle_cleanup_after_exit()
-        is_enabled = AppSettings.is_cleanup_after_exit_enabled()
-        self.cleanup_after_exit_checkbox.configure(
-            text=self.app_translator.translate("button_on") if is_enabled else self.app_translator.translate(
-                "button_off"))
 
     def _refresh_mspcm_version_info(self):
         # Clear existing widgets in the group frame.
@@ -234,6 +216,25 @@ class HomePage(customtkinter.CTkFrame):
                                                                              log_file_path=self.log_file_path,
                                                                              app_translator=self.app_translator)
             )
+
+    def _on_long_paths_click(self):
+        OnEnableLongPathsClick.enable_long_paths(logger=self.logger,
+                                                 log_file_path=self.log_file_path,
+                                                 app_translator=self.app_translator)
+
+        if PrerequisiteChecks.check_if_long_paths_enabled():
+            if hasattr(self, 'long_paths_separator') and self.long_paths_separator.winfo_exists():
+                self.long_paths_separator.destroy()
+            if hasattr(self, 'long_paths_button') and self.long_paths_button.winfo_exists():
+                # The button is inside the card container (CTkFrame). Destroy the container.
+                self.long_paths_button.master.destroy()
+
+    def _on_cleanup_after_exit_toggled(self):
+        AppSettings.toggle_cleanup_after_exit()
+        is_enabled = AppSettings.is_cleanup_after_exit_enabled()
+        self.cleanup_after_exit_checkbox.configure(
+            text=self.app_translator.translate("button_on") if is_enabled else self.app_translator.translate(
+                "button_off"))
 
     def _exit_app(self):
         self.logger.info("The app is exiting via the exit button...")

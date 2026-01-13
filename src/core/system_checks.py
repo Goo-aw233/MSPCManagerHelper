@@ -22,7 +22,7 @@ class PrerequisiteChecks:
         try:
             # Check the Windows current build number.
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                r"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion") as version_key:
+                                r"SOFTWARE\Microsoft\Windows NT\CurrentVersion") as version_key:
                 current_build_number = int(winreg.QueryValueEx(version_key, "CurrentBuildNumber")[0])
                 # Launched in 27718/27764, added in 26120.4520, removed after br_release.
                 if current_build_number < 26100:
@@ -30,7 +30,7 @@ class PrerequisiteChecks:
 
             # Check the Administrator Protection status.
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                r"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System") as policy_key:
+                                r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System") as policy_key:
                 admin_approval_mode = int(winreg.QueryValueEx(policy_key, "TypeOfAdminApprovalMode")[0])
                 # Administrator Protection is enabled.
                 if admin_approval_mode == 2:
@@ -45,7 +45,7 @@ class PrerequisiteChecks:
     def check_if_long_paths_enabled():
         try:
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                r"SYSTEM\\CurrentControlSet\\Control\\FileSystem") as key:
+                                r"SYSTEM\CurrentControlSet\Control\FileSystem") as key:
                 long_paths_enabled = int(winreg.QueryValueEx(key, "LongPathsEnabled")[0])
                 # Enabled
                 if long_paths_enabled == 1:
@@ -76,7 +76,7 @@ class PrerequisiteChecks:
         try:
             # Check if the Windows meets the Microsoft PC Manager minimum requirements.
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                r"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion") as key:
+                                r"SOFTWARE\Microsoft\Windows NT\CurrentVersion") as key:
                 current_build_number = winreg.QueryValueEx(key, "CurrentBuildNumber")[0]
                 # Meet the requirements.
                 if int(current_build_number) >= 19042:
@@ -92,7 +92,7 @@ class PrerequisiteChecks:
         try:
             # Check if the InstallationType is Server or Server Core.
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                r"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion") as installation_type_key:
+                                r"SOFTWARE\Microsoft\Windows NT\CurrentVersion") as installation_type_key:
                 installation_type = winreg.QueryValueEx(installation_type_key, "InstallationType")[0]
                 # An error will be reported if it is Server Core.
                 if "Server Core" in installation_type:
@@ -104,7 +104,7 @@ class PrerequisiteChecks:
             # Check if ClientExperienceEnabled exists. (Secondary confirmation if Installation Type is Desktop Experience.)
             try:
                 with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                    r"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Server") as client_experience_enabled_key:
+                                    r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Server") as client_experience_enabled_key:
                     winreg.QueryValueEx(client_experience_enabled_key, "ClientExperienceEnabled")
                     # Desktop Experience
                     return False
@@ -118,7 +118,7 @@ class PrerequisiteChecks:
     @staticmethod
     def get_windows_installation_information():
         try:
-            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion") as key:
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows NT\CurrentVersion") as key:
                 display_version = winreg.QueryValueEx(key, "DisplayVersion")[0]
                 edition_id = winreg.QueryValueEx(key, "EditionID")[0]
                 build_lab_ex = winreg.QueryValueEx(key, "BuildLabEx")[0]

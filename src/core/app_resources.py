@@ -43,7 +43,7 @@ class AppResources:
         # Method 2: winreg
         try:
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                r"SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment") as key:
+                                r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment") as key:
                 processor_architecture, _ = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")
         except (FileNotFoundError, OSError):
             return None

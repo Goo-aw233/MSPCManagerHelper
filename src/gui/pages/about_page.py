@@ -32,12 +32,12 @@ class AboutPage(customtkinter.CTkFrame):
         self.scroll_frame.grid(row=1, column=0, sticky="nsew", padx=0, pady=0)
         self.scroll_frame.grid_columnconfigure(0, weight=1)
 
-        # --- App Information Section ---
+        # === App Information Section ===
         self._create_section_label(self.app_translator.translate("app_information"))
 
         self.app_info_group = self._create_group_frame()
 
-        # App Header
+        # --- App Header ---
         self.app_header_frame = customtkinter.CTkFrame(self.app_info_group, fg_color="transparent")
         self.app_header_frame.pack(fill="x", padx=16, pady=(16, 12))
 
@@ -60,7 +60,7 @@ class AboutPage(customtkinter.CTkFrame):
 
         self._create_separator(self.app_info_group)
 
-        # Contributors
+        #  --- Contributors ---
         contributors_container = customtkinter.CTkFrame(self.app_info_group, fg_color="transparent")
         contributors_container.pack(fill="x", padx=10, pady=8)
 
@@ -96,7 +96,7 @@ class AboutPage(customtkinter.CTkFrame):
 
         self._create_separator(self.app_info_group)
 
-        # Translators
+        # --- Translators ---
         translators_list = get_localization_translators(self.app_translator)
         if translators_list:
             translators_container = customtkinter.CTkFrame(self.app_info_group, fg_color="transparent")
@@ -141,7 +141,7 @@ class AboutPage(customtkinter.CTkFrame):
 
         self._create_separator(self.app_info_group)
 
-        # License
+        # --- License ---
         self._create_settings_card(
             self.app_info_group,
             title=self.app_translator.translate("license"),
@@ -155,7 +155,7 @@ class AboutPage(customtkinter.CTkFrame):
 
         self._create_separator(self.app_info_group)
 
-        # Repository
+        # --- Repository ---
         self._create_settings_card(
              self.app_info_group,
              title=self.app_translator.translate("repository_url"),
@@ -166,9 +166,9 @@ class AboutPage(customtkinter.CTkFrame):
                  app_translator=self.app_translator
              )
         )
-        # --- End of App Information Section ---
+        # === End of App Information Section ===
 
-        # --- Term of Use Section ---
+        # === Term of Use Section ===
         self._create_section_label(self.app_translator.translate("term_of_use"))
 
         # Term of Use Card
@@ -228,9 +228,9 @@ class AboutPage(customtkinter.CTkFrame):
         )
         self.term_of_use_content_textbox.insert("0.0", term_of_use_content)
         self.term_of_use_content_textbox.configure(state="disabled")
-        # --- End of Term of Use Section ---
+        # === End of Term of Use Section ===
 
-        # --- Privacy Policy Section ---
+        # === Privacy Policy Section ===
         self._create_section_label(self.app_translator.translate("privacy_policy"))
 
         # Privacy Policy Card
@@ -267,9 +267,9 @@ class AboutPage(customtkinter.CTkFrame):
         )
         self.privacy_policy_content_textbox.insert("0.0", privacy_policy_content)
         self.privacy_policy_content_textbox.configure(state="disabled")
-        # --- End of Privacy Policy Section ---
+        # === End of Privacy Policy Section ===
 
-        # --- Privacy Settings Section ---
+        # === Privacy Settings Section ===
         self._create_section_label(self.app_translator.translate("privacy_settings"))
 
         self.privacy_settings_group = self._create_group_frame()
@@ -285,9 +285,9 @@ class AboutPage(customtkinter.CTkFrame):
                                                                                log_file_path=self.log_file_path,
                                                                                app_translator=self.app_translator)
         )
-        # --- End of Privacy Settings Section ---
+        # === End of Privacy Settings Section ===
 
-        # --- Get Help Section ---
+        # === Get Help Section ===
         self._create_section_label(self.app_translator.translate("get_help"))
 
         self.get_help_group = self._create_group_frame()
@@ -312,7 +312,7 @@ class AboutPage(customtkinter.CTkFrame):
             )
         )
 
-        # Separator
+        # --- Separator ---
         self._create_separator(self.get_help_group)
 
         # --- Official Website ---
@@ -323,10 +323,11 @@ class AboutPage(customtkinter.CTkFrame):
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("official_website_button"),
             command=lambda: OnOpenURLButtonClick.open_official_website(logger=self.logger,
-                                                                               log_file_path=self.log_file_path,
-                                                                               app_translator=self.app_translator)
+                                                                       log_file_path=self.log_file_path,
+                                                                       app_translator=self.app_translator)
         )
-        # --- End of Get Help Section ---
+        # === End of Get Help Section ===
+
 
     def _create_section_label(self, text):
         label = customtkinter.CTkLabel(

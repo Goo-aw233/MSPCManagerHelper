@@ -14,7 +14,7 @@ class GetMSPCMVersion:
         if microsoft_pc_manager_version is None:
             try:
                 with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                    r"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Appx\\AppxAllUserStore\\Applications") as key:
+                                    r"SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Applications") as key:
                     for i in range(winreg.QueryInfoKey(key)[0]):
                         subkey_name = winreg.EnumKey(key, i)
                         if "Microsoft.MicrosoftPCManager_" in subkey_name:
@@ -27,7 +27,7 @@ class GetMSPCMVersion:
             if microsoft_pc_manager_version is None:
                 try:
                     with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                        r"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Appx\\AppxAllUserStore\\Applications") as key:
+                                        r"SOFTWARE\Microsoft\Windows\CurrentVersion\Appx\AppxAllUserStore\Applications") as key:
                         for i in range(winreg.QueryInfoKey(key)[0]):
                             subkey_name = winreg.EnumKey(key, i)
                             if "Microsoft.PCManager_" in subkey_name:
@@ -40,7 +40,7 @@ class GetMSPCMVersion:
                 if microsoft_pc_manager_version is None:
                     try:
                         with winreg.OpenKey(winreg.HKEY_CURRENT_USER,
-                                            r"Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\CurrentVersion\\AppModel\\SystemAppData\\Microsoft.PCManager_8wekyb3d8bbwe\\Schemas") as key:
+                                            r"Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.PCManager_8wekyb3d8bbwe\Schemas") as key:
                             package_full_name = winreg.QueryValueEx(key, "PackageFullName")[0]
                             microsoft_pc_manager_version = package_full_name.split("_")[1]
                     except FileNotFoundError:
@@ -50,7 +50,7 @@ class GetMSPCMVersion:
                     if microsoft_pc_manager_version is None:
                         try:
                             with winreg.OpenKey(winreg.HKEY_CURRENT_USER,
-                                                r"Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\CurrentVersion\\AppModel\\SystemAppData\\Microsoft.MicrosoftPCManager_8wekyb3d8bbwe\\Schemas") as key:
+                                                r"Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\SystemAppData\Microsoft.MicrosoftPCManager_8wekyb3d8bbwe\Schemas") as key:
                                 package_full_name = winreg.QueryValueEx(key, "PackageFullName")[0]
                                 microsoft_pc_manager_version = package_full_name.split("_")[1]
                         except FileNotFoundError:
@@ -60,7 +60,7 @@ class GetMSPCMVersion:
                         if microsoft_pc_manager_version is None:
                             try:
                                 with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                                    r"SOFTWARE\\WOW6432Node\\MSPCManager Store") as key:
+                                                    r"SOFTWARE\WOW6432Node\MSPCManager Store") as key:
                                     microsoft_pc_manager_version = winreg.QueryValueEx(key, "ProductVersion")[0]
                             except FileNotFoundError:
                                 pass
@@ -115,7 +115,7 @@ class GetMSPCMVersion:
         # Microsoft PC Manager Beta Setup
         if microsoft_pc_manager_beta_version is None:
             try:
-                with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\\WOW6432Node\\MSPCManager") as key:
+                with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\MSPCManager") as key:
                     microsoft_pc_manager_beta_version = winreg.QueryValueEx(key, "ProductVersion")[0]
             except FileNotFoundError:
                 pass
@@ -124,7 +124,7 @@ class GetMSPCMVersion:
             if microsoft_pc_manager_beta_version is None:
                 try:
                     with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                        r"Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\MSPCManager") as key:
+                                        r"Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\MSPCManager") as key:
                         microsoft_pc_manager_beta_version = winreg.QueryValueEx(key, "ProductVersion")[0]
                 except FileNotFoundError:
                     pass
