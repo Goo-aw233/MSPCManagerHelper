@@ -18,12 +18,13 @@ class StartMSPCMBeta:
         def open_with_cmd():
             logger.info("Opening Microsoft PC Manager Public Beta via CMD with registered class.")
             subprocess.run(["cmd.exe", "/C", "start", "Microsoft PC Manager", f"{registered_class_beta}"], check=True,
-                           shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
+                           shell=False, text=True, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_powershell():
             logger.info("Opening Microsoft PC Manager Public Beta via Windows PowerShell with registered class.")
             subprocess.run(["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{registered_class_beta}'"],
-                           check=True, shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
+                           check=True, shell=False, text=True, capture_output=True,
+                           creationflags=subprocess.CREATE_NO_WINDOW)
         # --- End of Registered Class Methods ---
 
         # --- EXE Path Methods ---
@@ -34,12 +35,12 @@ class StartMSPCMBeta:
         def exe_with_cmd():
             logger.info(f"Opening Microsoft PC Manager Public Beta via CMD with exe path: {beta_exe_path}")
             subprocess.run(["cmd.exe", "/C", "start", "", str(beta_exe_path)], check=True,
-                           shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
+                           shell=False, text=True, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
 
         def exe_with_powershell():
             logger.info(f"Opening Microsoft PC Manager Public Beta via Windows PowerShell with exe path: {beta_exe_path}")
-            subprocess.run(["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{beta_exe_path}'"],
-                           check=True, shell=False, creationflags=subprocess.CREATE_NO_WINDOW)
+            subprocess.run(["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{beta_exe_path}'"], check=True,
+                           shell=False, text=True, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
         # --- End of EXE Path Methods ---
 
         methods_registered_class = [
@@ -55,27 +56,40 @@ class StartMSPCMBeta:
         ]
 
         # Prioritize trying registered class methods first.
+        last_error = None
         for method in methods_registered_class:
             try:
                 method()
-                logger.info(f"Successfully opened the Microsoft PC Manager Public Beta via {method.__name__} (registered class).")
+                logger.info(
+                    f"Successfully opened the Microsoft PC Manager Public Beta via {method.__name__} (registered class).")
                 return
             except Exception as e:
-                logger.warning(f"{method.__name__} failed to Open the Microsoft PC Manager Public Beta with Registered Class: {e}")
+                last_error = e
+                logger.warning(
+                    f"{method.__name__} failed to Open the Microsoft PC Manager Public Beta with Registered Class: {e}")
                 continue
 
         # If all registered class methods fail, try the exe path methods.
         for method in methods_exe_path:
             try:
                 method()
-                logger.info(f"Successfully opened the Microsoft PC Manager Public Beta via {method.__name__} (exe path).")
+                logger.info(
+                    f"Successfully opened the Microsoft PC Manager Public Beta via {method.__name__} (exe path).")
                 return
             except Exception as e:
-                logger.warning(f"{method.__name__} failed to Open the Microsoft PC Manager Public Beta with EXE Path: {e}")
+                last_error = e
+                logger.warning(
+                    f"{method.__name__} failed to Open the Microsoft PC Manager Public Beta with EXE Path: {e}")
                 continue
 
         logger.error("All methods failed to open the Microsoft PC Manager Public Beta.")
+        error_details = [f"Exception: {last_error}"]
+        if hasattr(last_error, "stdout") and last_error.stdout:
+            error_details.append(f"{'=' * 20} Stdout {'=' * 20}\n{last_error.stdout.strip()}")
+        if hasattr(last_error, "stderr") and last_error.stderr:
+            error_details.append(f"{'=' * 20} Stderr {'=' * 20}\n{last_error.stderr.strip()}")
+        logger.error("\n".join(error_details))
         messagebox.showerror(
             app_translator.translate("error"),
-            app_translator.translate(f"failed_to_open_mspcm_beta").format(log_file_path=log_file_path)
+            app_translator.translate("failed_to_open_mspcm_beta").format(log_file_path=log_file_path)
         )

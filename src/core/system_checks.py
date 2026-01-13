@@ -220,7 +220,7 @@ class OptionalChecks:
             if path:
                 found_utilities[utility] = path
             else:
-                OptionalChecks.logger.warning(f"Utility not found: {utility}")
+                OptionalChecks.logger.warning(f"Utility Not Found: {utility}")
                 all_checks_passed = False
 
         if not found_utilities:

@@ -21,28 +21,30 @@ class OnRestartAsAdministrator:
 
         try:
             result = AdvancedStartup.run_as_administrator(args_str)
-            if not result:
+            # ShellExecuteW returns > 32 on success. If result <= 32, it's an error code.
+            # 1223 = ERROR_CANCELLED (User canceled the UAC prompt).
+            if not result or result <= 32:
                 failed_code = ctypes.get_last_error()
                 failed_msg = ctypes.FormatError(failed_code).strip()
-                logger.error(
-                    f"Failed to request elevation (ShellExecute returned failure). "
-                    f"Error Code={failed_code}; Error Message={failed_msg}"
-                )
+
+                msg = f"Failed to request elevation (ShellExecute returned {result}). [WinError {failed_code}: {failed_msg}]"
+
+                logger.error(msg)
+                
                 messagebox.showerror(
                     app_translator.translate("error"),
-                    f"{app_translator.translate('failed_to_run_as_administrator').format(log_file_path=log_file_path)}\n"
-                    f"{app_translator.translate('error_code')}: {failed_code}\n"
-                    f"{app_translator.translate('error_message')}: {failed_msg}"
+                    app_translator.translate("failed_to_run_as_administrator").format(log_file_path=log_file_path)
                 )
             else:
                 logger.info("Elevation request succeeded (process elevated or ShellExecute triggered).")
         except Exception as e:
             logger.exception("Exception while attempting to restart as administrator.")
+            # Try to get more info from WinError if possible.
             failed_code = ctypes.get_last_error()
             failed_msg = ctypes.FormatError(failed_code).strip()
+            logger.error(f"Exception details: {e} [WinError {failed_code}: {failed_msg}]")
+
             messagebox.showerror(
                 app_translator.translate("error"),
-                f"{app_translator.translate('failed_to_run_as_administrator').format(log_file_path=log_file_path)}\n"
-                f"{app_translator.translate('error_code')}: {failed_code}\n"
-                f"{app_translator.translate('error_message')}: {failed_msg}"
+                app_translator.translate("failed_to_run_as_administrator").format(log_file_path=log_file_path)
             )
