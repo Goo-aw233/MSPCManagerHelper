@@ -45,6 +45,7 @@ class HomePage(customtkinter.CTkFrame):
             self.welcome_group,
             f"{self.app_translator.translate('welcome_to')} {AppMetadata.APP_NAME}",
             self.app_translator.translate("welcome_message"),
+            activate_scrollbars=True,
             enable_text_selection=False,
             min_height=50
         )
@@ -67,7 +68,11 @@ class HomePage(customtkinter.CTkFrame):
 
         self.windows_specifications_group = self._create_group_frame()
 
-        self._load_windows_specifications()
+        # --- Load Windows Installation Information ---
+        self._load_windows_installation_info()
+
+        # --- System Checks ---
+        self._load_system_checks()
         # === End of Windows Specifications Section ===
 
         # === Advanced Section ===
@@ -141,7 +146,7 @@ class HomePage(customtkinter.CTkFrame):
         # Clear existing widgets in the group frame.
         for widget in self.mspcm_version_group.winfo_children():
             widget.destroy()
-        
+
         # Reload Version Info
         self._load_mspcm_version_info()
 
@@ -156,7 +161,6 @@ class HomePage(customtkinter.CTkFrame):
                 f"{self.app_translator.translate('mspcm_version_is')}: {mspcm_version}",
                 customtkinter.CTkButton,
                 text=self.app_translator.translate("start_mspcm_button"),
-                
                 command=lambda: StartMSPCM.start_mspcm(logger=self.logger, log_file_path=self.log_file_path,
                                                        app_translator=self.app_translator)
             )
@@ -181,13 +185,12 @@ class HomePage(customtkinter.CTkFrame):
                 f"{self.app_translator.translate('mspcm_beta_version_is')}: {mspcm_beta_version}",
                 customtkinter.CTkButton,
                 text=self.app_translator.translate("start_mspcm_beta_button"),
-                
                 command=lambda: StartMSPCMBeta.start_mspcm_beta(logger=self.logger, log_file_path=self.log_file_path,
                                                        app_translator=self.app_translator)
             )
             self.logger.info(f"Loaded Microsoft PC Manager Public Beta Version: {mspcm_beta_version}")
 
-    def _load_windows_specifications(self):
+    def _load_windows_installation_info(self):
         windows_info = PrerequisiteChecks.get_windows_installation_information()
 
         if windows_info:
@@ -198,7 +201,6 @@ class HomePage(customtkinter.CTkFrame):
                 customtkinter.CTkButton,
                 enable_text_selection=True,
                 text=self.app_translator.translate("about_button"),
-                
                 command=lambda: OnAboutWindowsButtonClick.open_about_windows(logger=self.logger,
                                                                              log_file_path=self.log_file_path,
                                                                              app_translator=self.app_translator)
@@ -215,6 +217,30 @@ class HomePage(customtkinter.CTkFrame):
                 command=lambda: OnAboutWindowsButtonClick.open_about_windows(logger=self.logger,
                                                                              log_file_path=self.log_file_path,
                                                                              app_translator=self.app_translator)
+            )
+
+    def _load_system_checks(self):
+        attention_messages = []
+
+        if not PrerequisiteChecks.check_windows_minimum_requirements():
+            attention_messages.append(self.app_translator.translate("current_system_not_meets_system_requirements"))
+        else:
+            attention_messages.append(self.app_translator.translate("current_system_meets_system_requirements"))
+
+        if PrerequisiteChecks.check_admin_approval_mode():
+            attention_messages.append(self.app_translator.translate("administrator_protection_is_enabled"))
+
+        if PrerequisiteChecks.check_windows_server_levels():
+            attention_messages.append(self.app_translator.translate("windows_server_installation_type_is_core"))
+
+        if attention_messages:
+            self._create_separator(self.windows_specifications_group)
+            self._create_info_textbox_card(
+                self.windows_specifications_group,
+                self.app_translator.translate("attention"),
+                "\n\n".join(attention_messages),
+                activate_scrollbars=True,
+                enable_text_selection=False,
             )
 
     def _on_long_paths_click(self):
@@ -252,7 +278,7 @@ class HomePage(customtkinter.CTkFrame):
     def _create_section_label_with_button(self, text, button_text, command):
         container = customtkinter.CTkFrame(self.scroll_frame, fg_color="transparent")
         container.pack(fill="x", padx=25, pady=(20, 10))
-        
+
         label = customtkinter.CTkLabel(
             container,
             text=text,
@@ -260,12 +286,11 @@ class HomePage(customtkinter.CTkFrame):
             anchor="w"
         )
         label.pack(side="left")
-        
+
         button = customtkinter.CTkButton(
             container,
             text=button_text,
             font=customtkinter.CTkFont(family=self.font_family, size=12),
-            
             command=command
         )
         button.pack(side="right")
@@ -288,7 +313,7 @@ class HomePage(customtkinter.CTkFrame):
         return separator
 
     def _create_info_textbox_card(self, parent, title, description, widget_constructor=None,
-                                  enable_text_selection=False, min_height=50, **widget_kwargs):
+                                  enable_text_selection=False, activate_scrollbars=False, min_height=50, **widget_kwargs):
         container = customtkinter.CTkFrame(parent, fg_color="transparent")
         container.pack(fill="x", padx=10, pady=8)
 
@@ -316,7 +341,7 @@ class HomePage(customtkinter.CTkFrame):
                 fg_color="transparent",
                 wrap="word",
                 height=textbox_height,
-                activate_scrollbars=False,
+                activate_scrollbars=activate_scrollbars,
                 border_width=0
             )
             desc_textbox.pack(fill="x", pady=(0, 5))

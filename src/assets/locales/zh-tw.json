@@ -119,7 +119,11 @@
 
     "__home_page__": "首頁",
       "about_button": "關於 Windows",
+      "attention": "注意",
       "cleanup_after_exit": "退出後清理",
+      "cleanup_after_exit_description": "在退出應用程式後清理可能存在的殘留",
+      "current_system_meets_system_requirements": "當前系統符合 Microsoft 電腦管家最低系統要求",
+      "current_system_not_meets_system_requirements": "當前系統不符合 Microsoft 電腦管家最低系統要求：Windows 10 版本 20H2（內部版本 19042），具有桌面體驗的 Windows Server 2022 或更高版本",
       "enable_long_paths_button": "啟用長路徑",
       "exit_app_button": "退出",
       "exit_app_description": "退出並關閉應用程式",
