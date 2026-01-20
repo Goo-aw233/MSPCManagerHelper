@@ -24,6 +24,16 @@ class MainWindow(customtkinter.CTk):
         super().__init__()
 
         self.logger = AppLogger.get_logger()
+        self.font_family = None
+        self.home_page = None
+        self.maintenance_page = None
+        self.installer_page = None
+        self.uninstaller_page = None
+        self.utilities_page = None
+        self.toolbox_page = None
+        self.settings_page = None
+        self.about_page = None
+
         app_launch_message = f"{AppMetadata.APP_NAME} {AppMetadata.APP_VERSION}"
         if AdvancedStartup.is_devmode():
             app_launch_message += " (in DevMode)"
@@ -57,6 +67,8 @@ class MainWindow(customtkinter.CTk):
         self.logger.debug(f"MainWindow Initialization Completed in: {elapsed_global_init_time:.5f} s")
 
     def _configure_window(self):
+        start_time = time.perf_counter()
+
         app_title = f"{AppMetadata.APP_NAME} {AppMetadata.APP_VERSION}"
         if AdvancedStartup.is_administrator():
             app_title += " [Administrator]"
@@ -80,14 +92,24 @@ class MainWindow(customtkinter.CTk):
         self.font_family = SetFontFamily.apply_font_setting(follow_system_font=follow_system_font, language=language)
         self.logger.info(f"Follow Font Setting: {follow_system_font}")
 
+        elapsed = time.perf_counter() - start_time
+        self.logger.debug(f"Window Configuration Completed in: {elapsed:.5f} s")
+
     def _set_language(self):
+        start_time = time.perf_counter()
+
         self.language = AppTranslator.detect_system_language()
         self.app_translator = AppTranslator(self.language)
         # Synchronize the language to PrerequisiteChecks class.
         PrerequisiteChecks.app_translator = self.app_translator
         self.logger.info(f"App Language: {self.language}")
 
+        elapsed = time.perf_counter() - start_time
+        self.logger.debug(f"Language Setting Completed in: {elapsed:.5f} s")
+
     def _internal_prerequisite_system_checks(self):
+        start_time = time.perf_counter()
+
         found_prerequisite_issue = False
 
         if not PrerequisiteChecks.check_if_windows_nt():
@@ -133,8 +155,13 @@ class MainWindow(customtkinter.CTk):
 
         if not found_prerequisite_issue:
             self.logger.info("No prerequisite system requirement issues were found.")
+        
+        elapsed = time.perf_counter() - start_time
+        self.logger.debug(f"Prerequisite System Checks Completed in: {elapsed:.5f} s")
 
     def _internal_optional_system_checks(self):
+        start_time = time.perf_counter()
+
         found_optional_issue = False
 
         if OptionalChecks.check_narrator_status():
@@ -159,6 +186,9 @@ class MainWindow(customtkinter.CTk):
 
         if not found_optional_issue:
             self.logger.info("No optional system requirement issues were found.")
+
+        elapsed = time.perf_counter() - start_time
+        self.logger.debug(f"Optional System Checks Completed in: {elapsed:.5f} s")
 
     def _set_window_geometry(self):
         # Use a target size that feels native, but ensure it fits within 85% of the screen for smaller displays.
@@ -196,22 +226,33 @@ class MainWindow(customtkinter.CTk):
         return button
 
     def _configure_ui(self):
+        start_time = time.perf_counter()
+
         # Configure Grid Layout (1x2)
+        t1 = time.perf_counter()
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
+        self.logger.debug(f"Grid Layout Configuration Completed in: {time.perf_counter() - t1:.5f} s")
 
         # Create Navigation Frame
+        t2 = time.perf_counter()
         self.navigation_frame = customtkinter.CTkFrame(self, corner_radius=0)
         self.navigation_frame.grid(row=0, column=0, sticky="nsew")
         self.navigation_frame.grid_rowconfigure(7, weight=1)
+        self.logger.debug(f"Navigation Frame Creation Completed in: {time.perf_counter() - t2:.5f} s")
 
+        # Create Navigation Frame Label
+        t3 = time.perf_counter()
         self.navigation_frame_label = customtkinter.CTkLabel(
             self.navigation_frame,
             text=f"{AppMetadata.APP_NAME}",
             font=customtkinter.CTkFont(family=self.font_family, size=18, weight="bold")
         )
         self.navigation_frame_label.grid(row=0, column=0, padx=20, pady=20)
+        self.logger.debug(f"Navigation Frame Label Creation Completed in: {time.perf_counter() - t3:.5f} s")
 
+        # Create Navigation Buttons
+        t4 = time.perf_counter()
         self.home_button = self._create_nav_button("🏠", "home_page", self.home_button_event, 1)
         self.maintenance_button = self._create_nav_button("🧹", "maintenance_page", self.maintenance_button_event, 2)
         self.installer_button = self._create_nav_button("📥", "installer_page", self.installer_button_event, 3)
@@ -219,50 +260,87 @@ class MainWindow(customtkinter.CTk):
         self.utilities_button = self._create_nav_button("🛠", "utilities_page", self.utilities_button_event, 5)
         self.toolbox_button = self._create_nav_button("🧰", "toolbox_page", self.toolbox_button_event, 6)
         # Leave a row to place the following buttons at the bottom.
-        self.about_button = self._create_nav_button("  i", "about_page", self.about_button_event, 8)
-        self.settings_button = self._create_nav_button("⚙️", "settings_page", self.settings_button_event, 9)
+        self.settings_button = self._create_nav_button("⚙️", "settings_page", self.settings_button_event, 8)
+        self.about_button = self._create_nav_button("  i", "about_page", self.about_button_event, 9)
+        self.logger.debug(f"Navigation Buttons Creation Completed in: {time.perf_counter() - t4:.5f} s")
 
         # Create Main Frame
+        t5 = time.perf_counter()
         self.main_frame = customtkinter.CTkFrame(self, corner_radius=0, fg_color="transparent")
         self.main_frame.grid(row=0, column=1, sticky="nsew")
+        self.logger.debug(f"Main Frame Creation Completed in: {time.perf_counter() - t5:.5f} s")
 
         # Create Page Instances
+        t6 = time.perf_counter()
+
+        t_home = time.perf_counter()
         self.home_page = HomePage(self.main_frame, self.app_translator, self.font_family)
-        self.installer_page = InstallerPage(self.main_frame, self.app_translator, self.font_family)
-        self.uninstaller_page = UninstallerPage(self.main_frame, self.app_translator, self.font_family)
-        self.utilities_page = UtilitiesPage(self.main_frame, self.app_translator, self.font_family)
-        self.toolbox_page = ToolboxPage(self.main_frame, self.app_translator, self.font_family)
+        self.logger.debug(f"Home Page Creation Completed in: {time.perf_counter() - t_home:.5f} s")
+
+        t_maintenance = time.perf_counter()
         self.maintenance_page = MaintenancePage(self.main_frame, self.app_translator, self.font_family)
-        self.about_page = AboutPage(self.main_frame, self.app_translator, self.font_family)
+        self.logger.debug(f"Maintenance Page Creation Completed in: {time.perf_counter() - t_maintenance:.5f} s")
+
+        t_installer = time.perf_counter()
+        self.installer_page = InstallerPage(self.main_frame, self.app_translator, self.font_family)
+        self.logger.debug(f"Installer Page Creation Completed in: {time.perf_counter() - t_installer:.5f} s")
+
+        t_uninstaller = time.perf_counter()
+        self.uninstaller_page = UninstallerPage(self.main_frame, self.app_translator, self.font_family)
+        self.logger.debug(f"Uninstaller Page Creation Completed in: {time.perf_counter() - t_uninstaller:.5f} s")
+
+        t_utilities = time.perf_counter()
+        self.utilities_page = UtilitiesPage(self.main_frame, self.app_translator, self.font_family)
+        self.logger.debug(f"Utilities Page Creation Completed in: {time.perf_counter() - t_utilities:.5f} s")
+
+        t_toolbox = time.perf_counter()
+        self.toolbox_page = ToolboxPage(self.main_frame, self.app_translator, self.font_family)
+        self.logger.debug(f"Toolbox Page Creation Completed in: {time.perf_counter() - t_toolbox:.5f} s")
+
+        t_settings = time.perf_counter()
         self.settings_page = SettingsPage(self.main_frame, self.app_translator, self.font_family)
+        self.logger.debug(f"Settings Page Creation Completed in: {time.perf_counter() - t_settings:.5f} s")
+
+        t_about = time.perf_counter()
+        self.about_page = AboutPage(self.main_frame, self.app_translator, self.font_family)
+        self.logger.debug(f"About Page Creation Completed in: {time.perf_counter() - t_about:.5f} s")
+
+        self.logger.debug(f"Page Instances Creation Completed in: {time.perf_counter() - t6:.5f} s")
 
         # Select Default Frame
+        t7 = time.perf_counter()
         self.select_frame_by_page_name("home")
+        self.logger.debug(f"Default Frame Selection Completed in: {time.perf_counter() - t7:.5f} s")
+
+        elapsed = time.perf_counter() - start_time
+        self.logger.debug(f"UI Configuration Completed in: {elapsed:.5f} s")
 
     def select_frame_by_page_name(self, page_name):
         # Set button color for selected button.
         self.home_button.configure(fg_color=("gray75", "gray25") if page_name == "home" else "transparent")
+        self.maintenance_button.configure(fg_color=("gray75", "gray25") if page_name == "maintenance" else "transparent")
         self.installer_button.configure(fg_color=("gray75", "gray25") if page_name == "installer" else "transparent")
         self.uninstaller_button.configure(fg_color=("gray75", "gray25") if page_name == "uninstaller" else "transparent")
         self.utilities_button.configure(fg_color=("gray75", "gray25") if page_name == "utilities" else "transparent")
         self.toolbox_button.configure(fg_color=("gray75", "gray25") if page_name == "toolbox" else "transparent")
-        self.maintenance_button.configure(fg_color=("gray75", "gray25") if page_name == "maintenance" else "transparent")
-        self.about_button.configure(fg_color=("gray75", "gray25") if page_name == "about" else "transparent")
         self.settings_button.configure(fg_color=("gray75", "gray25") if page_name == "settings" else "transparent")
+        self.about_button.configure(fg_color=("gray75", "gray25") if page_name == "about" else "transparent")
 
         # Hide All Pages
         self.home_page.pack_forget()
+        self.maintenance_page.pack_forget()
         self.installer_page.pack_forget()
         self.uninstaller_page.pack_forget()
         self.utilities_page.pack_forget()
         self.toolbox_page.pack_forget()
-        self.maintenance_page.pack_forget()
-        self.about_page.pack_forget()
         self.settings_page.pack_forget()
+        self.about_page.pack_forget()
 
         # Show Selected Frame
         if page_name == "home":
             self.home_page.pack(fill="both", expand=True, padx=10, pady=10)
+        elif page_name == "maintenance":
+            self.maintenance_page.pack(fill="both", expand=True, padx=10, pady=10)
         elif page_name == "installer":
             self.installer_page.pack(fill="both", expand=True, padx=10, pady=10)
         elif page_name == "uninstaller":
@@ -271,15 +349,16 @@ class MainWindow(customtkinter.CTk):
             self.utilities_page.pack(fill="both", expand=True, padx=10, pady=10)
         elif page_name == "toolbox":
             self.toolbox_page.pack(fill="both", expand=True, padx=10, pady=10)
-        elif page_name == "maintenance":
-            self.maintenance_page.pack(fill="both", expand=True, padx=10, pady=10)
-        elif page_name == "about":
-            self.about_page.pack(fill="both", expand=True, padx=10, pady=10)
         elif page_name == "settings":
             self.settings_page.pack(fill="both", expand=True, padx=10, pady=10)
+        elif page_name == "about":
+            self.about_page.pack(fill="both", expand=True, padx=10, pady=10)
 
     def home_button_event(self):
         self.select_frame_by_page_name("home")
+
+    def maintenance_button_event(self):
+        self.select_frame_by_page_name("maintenance")
 
     def installer_button_event(self):
         self.select_frame_by_page_name("installer")
@@ -293,14 +372,11 @@ class MainWindow(customtkinter.CTk):
     def toolbox_button_event(self):
         self.select_frame_by_page_name("toolbox")
 
-    def maintenance_button_event(self):
-        self.select_frame_by_page_name("maintenance")
+    def settings_button_event(self):
+        self.select_frame_by_page_name("settings")
 
     def about_button_event(self):
         self.select_frame_by_page_name("about")
-
-    def settings_button_event(self):
-        self.select_frame_by_page_name("settings")
 
     def refresh_ui(self):
         start_refresh_ui_time = time.perf_counter()
@@ -322,8 +398,8 @@ class MainWindow(customtkinter.CTk):
             (self.uninstaller_button, "🗑", "uninstaller_page"),
             (self.utilities_button, "🛠", "utilities_page"),
             (self.toolbox_button, "🧰", "toolbox_page"),
-            (self.about_button, "  i", "about_page"),
             (self.settings_button, "⚙️", "settings_page"),
+            (self.about_button, "  i", "about_page"),
         ]
         for btn, icon, key in nav_buttons:
             btn.configure(font=button_font, text=f"{icon}    {self.app_translator.translate(key)}")
@@ -332,13 +408,13 @@ class MainWindow(customtkinter.CTk):
         current_page_name = "home"
         page_map = {
             "home": self.home_page,
+            "maintenance": self.maintenance_page,
             "installer": self.installer_page,
             "uninstaller": self.uninstaller_page,
             "utilities": self.utilities_page,
             "toolbox": self.toolbox_page,
-            "maintenance": self.maintenance_page,
+            "settings": self.settings_page,
             "about": self.about_page,
-            "settings": self.settings_page
         }
 
         for name, page in page_map.items():
@@ -351,13 +427,13 @@ class MainWindow(customtkinter.CTk):
 
         # Create Page Instances
         self.home_page = HomePage(self.main_frame, self.app_translator, self.font_family)
+        self.maintenance_page = MaintenancePage(self.main_frame, self.app_translator, self.font_family)
         self.installer_page = InstallerPage(self.main_frame, self.app_translator, self.font_family)
         self.uninstaller_page = UninstallerPage(self.main_frame, self.app_translator, self.font_family)
         self.utilities_page = UtilitiesPage(self.main_frame, self.app_translator, self.font_family)
         self.toolbox_page = ToolboxPage(self.main_frame, self.app_translator, self.font_family)
-        self.maintenance_page = MaintenancePage(self.main_frame, self.app_translator, self.font_family)
-        self.about_page = AboutPage(self.main_frame, self.app_translator, self.font_family)
         self.settings_page = SettingsPage(self.main_frame, self.app_translator, self.font_family)
+        self.about_page = AboutPage(self.main_frame, self.app_translator, self.font_family)
 
         # Show Selected Frame
         self.select_frame_by_page_name(current_page_name)
