@@ -68,42 +68,64 @@ class GetMSPCMVersion:
                                 # %ProgramFiles%\WindowsApps, Drive:\Program Files\WindowsApps or Drive:\WindowsApps
                                 if microsoft_pc_manager_version is None:
                                     try:
-                                        found = False
+                                        import concurrent.futures
+                                        from core.advanced_startup import AdvancedStartup
+                                        from core.app_logger import AppLogger
+
+                                        logger = AppLogger.get_logger()
+                                        timeout_sec = 10 if (AdvancedStartup.is_devmode() or AdvancedStartup.is_debugmode()) else 5
+
                                         patterns = [
                                             "Microsoft.MicrosoftPCManager_*_*__8wekyb3d8bbwe",
                                             "Microsoft.MicrosoftPCManager_*_neutral_~_8wekyb3d8bbwe"
                                         ]
 
+                                        def scan_job(path_to_check):
+                                            try:
+                                                if path_to_check.exists():
+                                                    for pattern in patterns:
+                                                        for app_dir in path_to_check.glob(pattern):
+                                                            try:
+                                                                return app_dir.name.split("_")[1]
+                                                            except IndexError:
+                                                                continue
+                                            except Exception:
+                                                pass
+                                            return None
+
+                                        search_paths = []
                                         # %ProgramFiles%\WindowsApps
-                                        default_windows_apps_path = Path(os.environ["ProgramFiles"]) / "WindowsApps"
-                                        search_paths = [default_windows_apps_path]
+                                        if os.environ.get("ProgramFiles"):
+                                            search_paths.append(Path(os.environ["ProgramFiles"]) / "WindowsApps")
 
-                                        # Drive:\Program Files\WindowsApps
+                                        # Drive:\Program Files\WindowsApps or Drive:\WindowsApps
                                         drives = [f"{chr(d)}:\\" for d in range(ord('A'), ord('Z') + 1)]
-                                        other_windows_apps_path = [Path(drive) / "Program Files" / "WindowsApps" for
-                                                                   drive in drives]
-                                        search_paths.extend(other_windows_apps_path)
+                                        for drive in drives:
+                                            search_paths.append(Path(drive) / "Program Files" / "WindowsApps")
+                                            search_paths.append(Path(drive) / "WindowsApps")
 
-                                        # Drive:\WindowsApps
-                                        root_windows_apps_path = [Path(drive) / "WindowsApps" for drive in drives]
-                                        search_paths.extend(root_windows_apps_path)
-
-                                        for base_path in search_paths:
-                                            if base_path.exists():
-                                                for pattern in patterns:
-                                                    for app_dir in base_path.glob(pattern):
-                                                        try:
-                                                            version = app_dir.name.split("_")[1]
-                                                            microsoft_pc_manager_version = version
-                                                            found = True
-                                                            break
-                                                        except IndexError:
-                                                            continue
-                                                    if found:
+                                        # The maximum number of threads is 8, and in extreme cases, the maximum number of threads is 2.
+                                        max_workers = min(8, os.cpu_count() or 2)
+                                        logger.debug(f"ThreadPoolExecutor max_workers: {max_workers}")
+                                        executor = concurrent.futures.ThreadPoolExecutor(max_workers=max_workers)
+                                        try:
+                                            future_to_path = {executor.submit(scan_job, p): p for p in search_paths}
+                                            
+                                            for future in concurrent.futures.as_completed(future_to_path.keys(), timeout=timeout_sec):
+                                                try:
+                                                    ver = future.result()
+                                                    if ver:
+                                                        microsoft_pc_manager_version = ver
                                                         break
-                                            if found:
-                                                break
-                                    except (FileNotFoundError, PermissionError):
+                                                except Exception:
+                                                    pass
+                                        except concurrent.futures.TimeoutError:
+                                            incomplete_paths = [str(path) for future, path in future_to_path.items() if not future.done()]
+                                            logger.warning(f"Scanning for Microsoft PC Manager version timed out (> {timeout_sec} s). Skipping Unreachable Paths: {', '.join(incomplete_paths)}")
+                                        finally:
+                                            executor.shutdown(wait=False)
+
+                                    except Exception:
                                         pass
 
         return microsoft_pc_manager_version
