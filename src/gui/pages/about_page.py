@@ -281,9 +281,11 @@ class AboutPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("privacy_settings_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("privacy_settings_button"),
-            command=lambda: OnPrivacySettingsButtonClick.open_privacy_settings(logger=self.logger,
-                                                                               log_file_path=self.log_file_path,
-                                                                               app_translator=self.app_translator)
+            command=lambda: OnPrivacySettingsButtonClick.open_privacy_settings(
+                logger=self.logger,
+                log_file_path=self.log_file_path,
+                app_translator=self.app_translator
+            )
         )
         # === End of Privacy Settings Section ===
 
@@ -322,9 +324,11 @@ class AboutPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("official_website_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("official_website_button"),
-            command=lambda: OnOpenURLButtonClick.open_official_website(logger=self.logger,
-                                                                       log_file_path=self.log_file_path,
-                                                                       app_translator=self.app_translator)
+            command=lambda: OnOpenURLButtonClick.open_official_website(
+                logger=self.logger,
+                log_file_path=self.log_file_path,
+                app_translator=self.app_translator
+            )
         )
         # === End of Get Help Section ===
 

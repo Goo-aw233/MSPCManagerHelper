@@ -41,9 +41,11 @@ class ToolboxPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("update_from_github_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("get_update_button"),
-            command=lambda: OnOpenURLButtonClick.open_github_releases_page(logger=self.logger,
-                                                                           log_file_path=self.log_file_path,
-                                                                           app_translator=self.app_translator)
+            command=lambda: OnOpenURLButtonClick.open_github_releases_page(
+                logger=self.logger,
+                log_file_path=self.log_file_path,
+                app_translator=self.app_translator
+            )
         )
 
         # --- Separator ---
@@ -56,8 +58,11 @@ class ToolboxPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("update_from_onedrive_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("get_update_button"),
-            command=lambda: OnOpenURLButtonClick.open_1drv_page(logger=self.logger, log_file_path=self.log_file_path,
-                                                                app_translator=self.app_translator)
+            command=lambda: OnOpenURLButtonClick.open_1drv_page(
+                logger=self.logger,
+                log_file_path=self.log_file_path,
+                app_translator=self.app_translator
+            )
         )
         # === End of App Update Section ===
 
@@ -73,9 +78,11 @@ class ToolboxPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("download_from_azure_blob_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("download_button"),
-            command=lambda: OnOpenURLButtonClick.open_mspcm_app_package_azure_blob_page(logger=self.logger,
-                                                                                        log_file_path=self.log_file_path,
-                                                                                        app_translator=self.app_translator)
+            command=lambda: OnOpenURLButtonClick.open_mspcm_app_package_azure_blob_page(
+                logger=self.logger,
+                log_file_path=self.log_file_path,
+                app_translator=self.app_translator
+            )
         )
 
         # --- Separator ---
@@ -88,9 +95,11 @@ class ToolboxPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("download_from_onedrive_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("download_button"),
-            command=lambda: OnOpenURLButtonClick.open_mspcm_app_package_1drv_page(logger=self.logger,
-                                                                                  log_file_path=self.log_file_path,
-                                                                                  app_translator=self.app_translator)
+            command=lambda: OnOpenURLButtonClick.open_mspcm_app_package_1drv_page(
+                logger=self.logger,
+                log_file_path=self.log_file_path,
+                app_translator=self.app_translator
+            )
         )
         # === End of Microsoft PC Manager App Package Download Section ===
 
@@ -106,9 +115,11 @@ class ToolboxPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("download_edge_webview2_runtime_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("download_button"),
-            command=lambda: OnOpenURLButtonClick.open_wv2_rt_download_page(logger=self.logger,
-                                                                           log_file_path=self.log_file_path,
-                                                                           app_translator=self.app_translator)
+            command=lambda: OnOpenURLButtonClick.open_wv2_rt_download_page(
+                logger=self.logger,
+                log_file_path=self.log_file_path,
+                app_translator=self.app_translator
+            )
         )
 
         # Separator
@@ -121,9 +132,11 @@ class ToolboxPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("download_windows_app_runtime_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("download_button"),
-            command=lambda: OnOpenURLButtonClick.open_war_rt_download_page(logger=self.logger,
-                                                                          log_file_path=self.log_file_path,
-                                                                          app_translator=self.app_translator)
+            command=lambda: OnOpenURLButtonClick.open_war_rt_download_page(
+                logger=self.logger,
+                log_file_path=self.log_file_path,
+                app_translator=self.app_translator
+            )
         )
         # === End of Download Runtime Section ===
 

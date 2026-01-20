@@ -87,9 +87,11 @@ class HomePage(customtkinter.CTkFrame):
             self.app_translator.translate("run_as_administrator_description"),
             customtkinter.CTkButton,
             text=self.app_translator.translate("run_as_administrator_button"),
-            command=lambda: OnRestartAsAdministrator.on_restart_as_administrator(AdvancedStartup, logger=self.logger,
-                                                                                 app_translator=self.app_translator,
-                                                                                 log_file_path=self.log_file_path),
+            command=lambda: OnRestartAsAdministrator.on_restart_as_administrator(
+                AdvancedStartup, logger=self.logger,
+                app_translator=self.app_translator,
+                log_file_path=self.log_file_path
+            ),
             state="disabled" if AdvancedStartup.is_administrator() else "normal"
         )
 
@@ -161,8 +163,11 @@ class HomePage(customtkinter.CTkFrame):
                 f"{self.app_translator.translate('mspcm_version_is')}: {mspcm_version}",
                 customtkinter.CTkButton,
                 text=self.app_translator.translate("start_mspcm_button"),
-                command=lambda: StartMSPCM.start_mspcm(logger=self.logger, log_file_path=self.log_file_path,
-                                                       app_translator=self.app_translator)
+                command=lambda: StartMSPCM.start_mspcm(
+                    logger=self.logger,
+                    log_file_path=self.log_file_path,
+                    app_translator=self.app_translator
+                )
             )
             self.logger.info(f"Loaded Microsoft PC Manager Version: {mspcm_version}")
         else:
@@ -185,8 +190,11 @@ class HomePage(customtkinter.CTkFrame):
                 f"{self.app_translator.translate('mspcm_beta_version_is')}: {mspcm_beta_version}",
                 customtkinter.CTkButton,
                 text=self.app_translator.translate("start_mspcm_beta_button"),
-                command=lambda: StartMSPCMBeta.start_mspcm_beta(logger=self.logger, log_file_path=self.log_file_path,
-                                                       app_translator=self.app_translator)
+                command=lambda: StartMSPCMBeta.start_mspcm_beta(
+                    logger=self.logger,
+                    log_file_path=self.log_file_path,
+                    app_translator=self.app_translator
+                )
             )
             self.logger.info(f"Loaded Microsoft PC Manager Public Beta Version: {mspcm_beta_version}")
 
@@ -201,9 +209,11 @@ class HomePage(customtkinter.CTkFrame):
                 customtkinter.CTkButton,
                 enable_text_selection=True,
                 text=self.app_translator.translate("about_button"),
-                command=lambda: OnAboutWindowsButtonClick.open_about_windows(logger=self.logger,
-                                                                             log_file_path=self.log_file_path,
-                                                                             app_translator=self.app_translator)
+                command=lambda: OnAboutWindowsButtonClick.open_about_windows(
+                    logger=self.logger,
+                    log_file_path=self.log_file_path,
+                    app_translator=self.app_translator
+                )
             )
         else:
             self._create_info_textbox_card(
@@ -214,9 +224,11 @@ class HomePage(customtkinter.CTkFrame):
                 enable_text_selection=True,
                 text=self.app_translator.translate("about_button"),
                 
-                command=lambda: OnAboutWindowsButtonClick.open_about_windows(logger=self.logger,
-                                                                             log_file_path=self.log_file_path,
-                                                                             app_translator=self.app_translator)
+                command=lambda: OnAboutWindowsButtonClick.open_about_windows(
+                    logger=self.logger,
+                    log_file_path=self.log_file_path,
+                    app_translator=self.app_translator
+                )
             )
 
     def _load_system_checks(self):
@@ -244,9 +256,11 @@ class HomePage(customtkinter.CTkFrame):
             )
 
     def _on_long_paths_click(self):
-        OnEnableLongPathsClick.enable_long_paths(logger=self.logger,
-                                                 log_file_path=self.log_file_path,
-                                                 app_translator=self.app_translator)
+        OnEnableLongPathsClick.enable_long_paths(
+            logger=self.logger,
+            log_file_path=self.log_file_path,
+            app_translator=self.app_translator
+        )
 
         if PrerequisiteChecks.check_if_long_paths_enabled():
             if hasattr(self, 'long_paths_separator') and self.long_paths_separator.winfo_exists():
