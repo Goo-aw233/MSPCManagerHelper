@@ -46,6 +46,7 @@
       "events_tab": "Events",
       "events_textbox_description": "All Events Will Be Logged Here, You Can Use the Context Menu to Copy or Clear the Content",
       "features_tab": "Features",
+      "loading": "Loading...",
 
     "__about_page__": "About Page",
       "app_information": "App Information",

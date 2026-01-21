@@ -47,6 +47,7 @@
       "events_tab": "事件",
       "events_textbox_description": "所有的事件均会被记录在此处，上下文菜单可以复制或清除内容",
       "features_tab": "功能",
+      "loading": "正在加载...",
 
     "__about_page__": "关于页面",
       "app_information": "应用程序信息",

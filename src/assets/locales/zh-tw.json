@@ -46,6 +46,7 @@
       "events_tab": "事件",
       "events_textbox_description": "所有的事件均會被記錄在此處，右鍵選單可以複製或清除內容",
       "features_tab": "功能",
+      "loading": "正在載入...",
 
     "__about_page__": "關於頁面",
       "app_information": "應用程式資訊",

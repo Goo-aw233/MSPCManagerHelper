@@ -1,4 +1,5 @@
 import sys
+import threading
 
 import customtkinter
 
@@ -52,7 +53,7 @@ class HomePage(customtkinter.CTkFrame):
         # === End of Welcome Section ===
 
         # === Microsoft PC Manager Version Info Section ===
-        self._create_section_label_with_button(
+        self.refresh_version_button = self._create_section_label_with_button(
             self.app_translator.translate("mspcm_version_info"),
             f"↻    {self.app_translator.translate('refresh_button')}",
             self._refresh_mspcm_version_info
@@ -153,9 +154,40 @@ class HomePage(customtkinter.CTkFrame):
         self._load_mspcm_version_info()
 
     def _load_mspcm_version_info(self):
+        # Disable Refresh Button While Loading
+        if hasattr(self, 'refresh_version_button'):
+            self.refresh_version_button.configure(state="disabled")
+
+        # Show Loading Message
+        self._create_info_textbox_card(
+            self.mspcm_version_group,
+            self.app_translator.translate("mspcm_version_is"),
+            self.app_translator.translate("loading")
+        )
+
+        # Start A Thread to Fetch the Version Info
+        threading.Thread(target=self._fetch_mspcm_versions, daemon=True).start()
+
+    def _fetch_mspcm_versions(self):
         # Microsoft PC Manager Version Info
         mspcm_version = GetMSPCMVersion.get_microsoft_pc_manager_version()
 
+        # Microsoft PC Manager Beta Version Info
+        mspcm_beta_version = GetMSPCMVersion.get_microsoft_pc_manager_beta_version()
+
+        if self.winfo_exists():
+            self.after(0, lambda: self._update_mspcm_version_ui(mspcm_version, mspcm_beta_version))
+
+    def _update_mspcm_version_ui(self, mspcm_version, mspcm_beta_version):
+        # Enable Refresh Button After Loading
+        if hasattr(self, 'refresh_version_button'):
+            self.refresh_version_button.configure(state="normal")
+
+        # Clear Loading Message
+        for widget in self.mspcm_version_group.winfo_children():
+            widget.destroy()
+
+        # Microsoft PC Manager Version Info
         if mspcm_version:
             self.mspcm_version_card = self._create_info_textbox_card(
                 self.mspcm_version_group,
@@ -176,11 +208,9 @@ class HomePage(customtkinter.CTkFrame):
                 self.app_translator.translate("mspcm_version_is"),
                 self.app_translator.translate("failed_to_get_mspcm_version_info")
             )
-            self.logger.warning("Failed to load Microsoft PC Manager Version.")
+            self.logger.warning("Failed to load Microsoft PC Manager version.")
 
         # Microsoft PC Manager Beta Version Info
-        mspcm_beta_version = GetMSPCMVersion.get_microsoft_pc_manager_beta_version()
-
         if mspcm_beta_version:
             self._create_separator(self.mspcm_version_group)
 
@@ -308,6 +338,7 @@ class HomePage(customtkinter.CTkFrame):
             command=command
         )
         button.pack(side="right")
+        return button
 
     def _create_group_frame(self):
         frame = customtkinter.CTkFrame(
