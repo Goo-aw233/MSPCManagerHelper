@@ -11,12 +11,10 @@
 
 
   "__modules__": "Modules Section",
-    "__initialization__": "Initialization Section",
+    "__modules_initialization__": "Modules Initialization Section",
       "administrator_protection_is_enabled": "Administrator Protection is enabled, some features will be disabled. Please turn off Administrator Protection and restart the PC before trying again.",
       "administrator_required": "Run as Administrator Required",
       "app_is_not_running_as_administrator": "MSPCManagerHelper is not running as administrator, some features will be disabled. Please run the app as administrator.",
-      "button_on": "On",
-      "button_off": "Off",
       "error": "Error",
       "error_code": "Error Code",
       "error_message": "Error Message",
@@ -40,6 +38,15 @@
 
 
   "__pages__": "Pages Section",
+    "__pages_initialization__": "Pages Initialization Section",
+      "button_on": "On",
+      "button_off": "Off",
+      "clear_button": "Clear",
+      "copy_button": "Copy",
+      "events_tab": "Events",
+      "events_textbox_description": "All Events Will Be Logged Here, You Can Use the Context Menu to Copy or Clear the Content",
+      "features_tab": "Features",
+
     "__about_page__": "About Page",
       "app_information": "App Information",
       "contributors": "Contributors",

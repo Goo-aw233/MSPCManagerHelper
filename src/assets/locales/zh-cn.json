@@ -12,12 +12,10 @@
 
 
   "__modules__": "模块部分",
-    "__initialization__": "初始化部分",
+    "__modules_initialization__": "模块初始化部分",
       "administrator_protection_is_enabled": "“管理员保护”已启用，部分功能将被禁用。请关闭“管理员保护”并重启电脑后重试。",
       "administrator_required": "需要管理员权限",
       "app_is_not_running_as_administrator": "MSPCManagerHelper 未以管理员身份运行，部分功能将被禁用。请以管理员身份重新运行该程序。",
-      "button_on": "开",
-      "button_off": "关",
       "error": "错误",
       "error_code": "错误代码",
       "error_message": "错误信息",
@@ -41,6 +39,15 @@
 
 
   "__pages__": "页面部分",
+    "__pages_initialization__": "页面初始化部分",
+      "button_on": "开",
+      "button_off": "关",
+      "clear_button": "清除",
+      "copy_button": "复制",
+      "events_tab": "事件",
+      "events_textbox_description": "所有的事件均会被记录在此处，上下文菜单可以复制或清除内容",
+      "features_tab": "功能",
+
     "__about_page__": "关于页面",
       "app_information": "应用程序信息",
       "contributors": "贡献者",

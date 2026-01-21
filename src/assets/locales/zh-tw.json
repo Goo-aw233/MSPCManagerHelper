@@ -11,12 +11,10 @@
 
 
   "__modules__": "模組部分",
-    "__initialization__": "初始化部分",
+    "__modules_initialization__": "模組初始化部分",
       "administrator_protection_is_enabled": "「系統管理員保護」已啟用，部分功能將被禁用。請關閉「系統管理員保護」並重新啟動電腦後重試。",
       "administrator_required": "需要系統管理員權限",
       "app_is_not_running_as_administrator": "MSPCManagerHelper 未以系統管理員身份執行，部分功能將被禁用。請以系統管理員身份重新執行該程式。",
-      "button_on": "開",
-      "button_off": "關",
       "error": "錯誤",
       "error_code": "錯誤代碼",
       "error_message": "錯誤訊息",
@@ -40,6 +38,15 @@
 
 
   "__pages__": "頁面部分",
+    "__pages_initialization__": "頁面初始化部分",
+      "button_on": "開",
+      "button_off": "關",
+      "clear_button": "清除",
+      "copy_button": "複製",
+      "events_tab": "事件",
+      "events_textbox_description": "所有的事件均會被記錄在此處，右鍵選單可以複製或清除內容",
+      "features_tab": "功能",
+
     "__about_page__": "關於頁面",
       "app_information": "應用程式資訊",
       "contributors": "貢獻人員",

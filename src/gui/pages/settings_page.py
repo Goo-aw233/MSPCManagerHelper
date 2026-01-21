@@ -1,10 +1,10 @@
 import customtkinter
 
+from core.advanced_startup import AdvancedStartup
 from core.app_logger import AppLogger
 from core.app_settings import AppSettings
 from core.app_translator import AppTranslator
 from core.system_checks import PrerequisiteChecks
-from core.advanced_startup import AdvancedStartup
 
 
 class SettingsPage(customtkinter.CTkFrame):
