@@ -237,7 +237,7 @@ class SettingsPage(customtkinter.CTkFrame):
 
     @staticmethod
     def _create_separator(parent):
-        separator = customtkinter.CTkFrame(parent, height=1, fg_color=("gray90", "#2b2b2b"))
+        separator = customtkinter.CTkFrame(parent, height=2, fg_color=("gray90", "#2b2b2b"))
         separator.pack(fill="x", padx=10)
 
     def _create_settings_card(self, parent, title, description, widget_constructor=None, **widget_kwargs):
