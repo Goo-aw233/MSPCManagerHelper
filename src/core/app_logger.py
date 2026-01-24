@@ -14,9 +14,9 @@ class AppLogger:
     Logging Levels:
     DEBUG    Detailed information, typically of interest only when diagnosing problems.
     INFO     Confirmation that things are working as expected.
-    WARNING  An indication that something unexpected happened, or indicative of some problem
+    WARNING  An indication that something unexpected happened, or indicative of some problem.
     ERROR    Due to a more serious problem, the software has not been able to perform some function.
-    CRITICAL A serious error, indicating that the program itself may be unable to continue
+    CRITICAL A serious error, indicating that the program itself may be unable to continue.
     """
     _logger = None
     _log_file = None
