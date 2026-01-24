@@ -46,8 +46,15 @@
       "copy_button": "复制",
       "events_tab": "事件",
       "events_textbox_description": "所有的事件均会被记录在此处，上下文菜单可以复制或清除内容",
+      "execute_button": "执行",
+      "executing_operation_with_name": "正在执行操作：{operation_name}",
       "features_tab": "功能",
       "loading": "正在加载...",
+      "operation_completed": "{operation_name} 已完成。",
+      "please_wait_for_completion": "请等待操作完成。若操作长时间无响应，请从任务管理器结束该应用程序。",
+      "select_all": "全选",
+      "select_files": "选择文件",
+      "user_has_canceled_the_operation": "用户已取消操作。",
 
     "__about_page__": "关于页面",
       "app_information": "应用程序信息",
@@ -219,5 +226,13 @@
 
     "__uninstaller_page__": "卸载程序页面",
 
-    "__utilities_page__": "实用程序页面"
+    "__utilities_page__": "实用程序页面",
+      "blake2b_tooltip": "Blake2b（64 字节）",
+      "blake2s_tooltip": "Blake2s（32 字节）",
+      "compute_files_hashes_description": "计算多个文件的哈希值以验证文件完整性",
+      "compute_files_hashes_title": "计算文件哈希值",
+      "file_management": "文件管理",
+      "path_to_compute_hashes_file": "文件",
+      "shake_128_tooltip": "Shake128（输出 32 字节）",
+      "shake_256_tooltip": "Shake256（输出 32 字节）"
 }

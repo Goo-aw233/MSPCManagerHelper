@@ -45,8 +45,15 @@
       "copy_button": "複製",
       "events_tab": "事件",
       "events_textbox_description": "所有的事件均會被記錄在此處，右鍵選單可以複製或清除內容",
+      "execute_button": "執行",
+      "executing_operation_with_name": "正在執行操作：{operation_name}",
       "features_tab": "功能",
       "loading": "正在載入...",
+      "operation_completed": "{operation_name} 已完成。",
+      "please_wait_for_completion": "請等待操作完成。若操作長時間無回應，請從工作管理員結束該應用程式。",
+      "select_all": "全選",
+      "select_files": "選擇檔案",
+      "user_has_canceled_the_operation": "使用者已取消操作。",
 
     "__about_page__": "關於頁面",
       "app_information": "應用程式資訊",
@@ -218,5 +225,13 @@
 
     "__uninstaller_page__": "解除安裝程式頁面",
 
-    "__utilities_page__": "公用程式頁面"
+    "__utilities_page__": "公用程式頁面",
+      "blake2b_tooltip": "Blake2b（64 位元組）",
+      "blake2s_tooltip": "Blake2s（32 位元組）",
+      "compute_files_hashes_description": "計算多個檔案的雜湊函式以驗證檔案完整性",
+      "compute_files_hashes_title": "計算檔案雜湊函式",
+      "file_management": "檔案管理",
+      "path_to_compute_hashes_file": "檔案",
+      "shake_128_tooltip": "Shake128（輸出 32 位元組）",
+      "shake_256_tooltip": "Shake256（輸出 32 位元組）"
 }

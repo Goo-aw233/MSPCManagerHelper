@@ -45,8 +45,15 @@
       "copy_button": "Copy",
       "events_tab": "Events",
       "events_textbox_description": "All Events Will Be Logged Here, You Can Use the Context Menu to Copy or Clear the Content",
+      "execute_button": "Execute",
+      "executing_operation_with_name": "Executing Operation: {operation_name}",
       "features_tab": "Features",
       "loading": "Loading...",
+      "operation_completed": "{operation_name} has been completed.",
+      "please_wait_for_completion": "Please wait for the operation to complete. If the operation is unresponsive for a long time, please end the application from Task Manager.",
+      "select_all": "Select All",
+      "select_files": "Select Files",
+      "user_has_canceled_the_operation": "The user has canceled the operation.",
 
     "__about_page__": "About Page",
       "app_information": "App Information",
@@ -218,5 +225,13 @@
 
     "__uninstaller_page__": "Uninstaller Page",
 
-    "__utilities_page__": "Utilities Page"
+    "__utilities_page__": "Utilities Page",
+      "blake2b_tooltip": "Blake2b (64 Bytes)",
+      "blake2s_tooltip": "Blake2s (32 Bytes)",
+      "compute_files_hashes_description": "Compute Hashes for Multiple Files to Verify File Integrity",
+      "compute_files_hashes_title": "Compute Files Hashes",
+      "file_management": "File Management",
+      "path_to_compute_hashes_file": "File",
+      "shake_128_tooltip": "Shake128 (32 Bytes Output)",
+      "shake_256_tooltip": "Shake256 (32 Bytes Output)"
 }

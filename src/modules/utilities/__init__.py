@@ -2,7 +2,7 @@
 Utilities Modules Package for MSPCManagerHelper
 """
 
-from .compute_files_hash import ComputeFilesHash
+from .compute_files_hashes import ComputeFilesHashes
 from .get_dependencies_version import GetDependenciesVersion
 from .open_developer_settings import OpenDeveloperSettings
 from .open_mspcm_qna import OpenQnA
@@ -14,7 +14,7 @@ from .view_installed_security_products import AntiSpywareProducts, AntiVirusProd
 __all__ = [
     "AntiSpywareProducts",
     "AntiVirusProducts",
-    "ComputeFilesHash",
+    "ComputeFilesHashes",
     "FirewallProducts",
     "GetDependenciesVersion",
     "OpenDeveloperSettings",
