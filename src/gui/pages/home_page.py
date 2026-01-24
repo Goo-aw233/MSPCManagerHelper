@@ -175,10 +175,18 @@ class HomePage(customtkinter.CTkFrame):
         # Microsoft PC Manager Beta Version Info
         mspcm_beta_version = GetMSPCMVersion.get_microsoft_pc_manager_beta_version()
 
-        if self.winfo_exists():
+        try:
             self.after(0, lambda: self._update_mspcm_version_ui(mspcm_version, mspcm_beta_version))
+        except Exception:
+            pass
 
     def _update_mspcm_version_ui(self, mspcm_version, mspcm_beta_version):
+        try:
+            if not self.winfo_exists():
+                return
+        except Exception:
+            return
+
         # Enable Refresh Button After Loading
         if hasattr(self, 'refresh_version_button'):
             self.refresh_version_button.configure(state="normal")
