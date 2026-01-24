@@ -28,7 +28,7 @@ class OnEnableLongPathsClick:
             logger.info("Enabling long paths via reg.exe.")
             check_cmd = [
                 "reg.exe", "query",
-                f"HKEY_LOCAL_MACHINE\{reg_path}",
+                fr"HKEY_LOCAL_MACHINE\{reg_path}",
                 "/v", value_name
             ]
             result = subprocess.run(check_cmd, check=True, shell=False, text=True, capture_output=True,
@@ -39,7 +39,7 @@ class OnEnableLongPathsClick:
                 logger.info(f"{value_name} does not exist, will create.")
             set_cmd = [
                 "reg.exe", "add",
-                f"HKEY_LOCAL_MACHINE\{reg_path}",
+                fr"HKEY_LOCAL_MACHINE\{reg_path}",
                 "/v", value_name,
                 "/t", "REG_DWORD",
                 "/d", "1",
