@@ -9,7 +9,8 @@ from core.app_metadata import AppMetadata
 from core.app_settings import AppSettings
 from core.get_mspcm_version import GetMSPCMVersion
 from core.system_checks import PrerequisiteChecks
-from gui.pages.events import OnAboutWindowsButtonClick, OnEnableLongPathsClick, OnRestartAsAdministrator, StartMSPCM, StartMSPCMBeta
+from gui.pages.events import OnAboutWindowsButtonClick, OnEnableLongPathsClick, OnRestartAsAdministrator, StartMSPCM, \
+    StartMSPCMBeta
 
 
 class HomePage(customtkinter.CTkFrame):

@@ -145,6 +145,43 @@ class UtilitiesPage(customtkinter.CTkFrame):
                            font=(self.font_family, 12))
         # === End of File Management ===
 
+        # === Open To ===
+        self._create_section_label(self.app_translator.translate("open_to_section"))
+
+        open_to_frame = self._create_group_frame()
+
+        # --- Open Developer Settings ---
+        self.open_developer_settings_card = self._create_settings_card(
+            open_to_frame,
+            title=self.app_translator.translate("open_developer_settings_title"),
+            description=self.app_translator.translate("open_developer_settings_description"),
+            widget_constructor=customtkinter.CTkButton,
+            text=self.app_translator.translate("execute_button"),
+            command=lambda: OpenDeveloperSettings.open_developer_settings(
+                logger=self.logger,
+                log_file_path=self.log_file_path,
+                app_translator=self.app_translator
+            )
+        )
+
+        # --- Separator ---
+        self._create_separator(open_to_frame)
+
+        # --- Open Microsoft PC Manager Documentation ---
+        self.open_mspcm_doc_card = self._create_settings_card(
+            open_to_frame,
+            title=self.app_translator.translate("open_mspcm_doc_title"),
+            description=self.app_translator.translate("open_mspcm_doc_description"),
+            widget_constructor=customtkinter.CTkButton,
+            text=self.app_translator.translate("execute_button"),
+            command=lambda: OpenMSPCMDoc.open_mspcm_doc(
+                logger=self.logger,
+                log_file_path=self.log_file_path,
+                app_translator=self.app_translator
+            )
+        )
+        # === End of Open To ===
+
 
     # ~~~ Features Functions ~~~
     # ~ Compute Files Hashes ~
