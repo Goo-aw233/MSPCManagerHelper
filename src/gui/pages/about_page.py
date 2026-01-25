@@ -94,6 +94,7 @@ class AboutPage(customtkinter.CTkFrame):
                 contributor_url=u
             ))
 
+        # --- Separator ---
         self._create_separator(self.app_info_group)
 
         # --- Translators ---
@@ -139,6 +140,7 @@ class AboutPage(customtkinter.CTkFrame):
                 description=None
             )
 
+        # --- Separator ---
         self._create_separator(self.app_info_group)
 
         # --- License ---
@@ -153,6 +155,7 @@ class AboutPage(customtkinter.CTkFrame):
              )
         )
 
+        # --- Separator ---
         self._create_separator(self.app_info_group)
 
         # --- Repository ---
@@ -161,6 +164,21 @@ class AboutPage(customtkinter.CTkFrame):
              title=self.app_translator.translate("repository_url"),
              description=AppMetadata.APP_GITHUB_REPOSITORY_URL,
              description_command=lambda: OnOpenURLButtonClick.open_github_repository(
+                 logger=self.logger,
+                 log_file_path=self.log_file_path,
+                 app_translator=self.app_translator
+             )
+        )
+
+        # --- Separator ---
+        self._create_separator(self.app_info_group)
+
+        # --- View Log File ---
+        self._create_settings_card(
+            self.app_info_group,
+            title=self.app_translator.translate("view_log_file"),
+            description=self.log_file_path,
+            description_command=lambda: OnViewLogFileClick.open_log_file(
                  logger=self.logger,
                  log_file_path=self.log_file_path,
                  app_translator=self.app_translator

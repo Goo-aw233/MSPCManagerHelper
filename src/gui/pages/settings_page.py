@@ -139,6 +139,25 @@ class SettingsPage(customtkinter.CTkFrame):
             self.compatibility_mode_switch.select()
         else:
             self.compatibility_mode_switch.deselect()
+
+        # --- Separator ---
+        self._create_separator(self.preferences_group)
+
+        # --- Use Internal Viewer ---
+        self.use_internal_viewer_switch = self._create_settings_card(
+            self.preferences_group,
+            self.app_translator.translate("use_internal_viewer"),
+            self.app_translator.translate("use_internal_viewer_description"),
+            customtkinter.CTkSwitch,
+            text=self.app_translator.translate(
+                "button_on") if AppSettings.is_use_internal_viewer_enabled() else self.app_translator.translate(
+                "button_off"),
+            command=self._change_use_internal_viewer
+        )
+        if AppSettings.is_use_internal_viewer_enabled():
+            self.use_internal_viewer_switch.select()
+        else:
+            self.use_internal_viewer_switch.deselect()
         # === End of Preferences ===
 
         # === Advanced ===
@@ -206,7 +225,15 @@ class SettingsPage(customtkinter.CTkFrame):
             text=self.app_translator.translate("button_on") if is_enabled else self.app_translator.translate(
                 "button_off")
         )
-    
+
+    def _change_use_internal_viewer(self):
+        is_enabled = self.use_internal_viewer_switch.get()
+        AppSettings.set_use_internal_viewer_enabled(is_enabled)
+        self.use_internal_viewer_switch.configure(
+            text=self.app_translator.translate("button_on") if is_enabled else self.app_translator.translate(
+                "button_off")
+        )
+
     def _change_take_ownership(self):
         is_enabled = self.take_ownership_card.get()
         AppSettings.set_take_ownership_enabled(is_enabled)

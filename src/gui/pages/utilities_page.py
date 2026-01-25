@@ -60,7 +60,8 @@ class UtilitiesPage(customtkinter.CTkFrame):
         self.events_textbox = customtkinter.CTkTextbox(
             self.tabview.tab(self.events_tab_name),
             font=customtkinter.CTkFont(family=self.font_family, size=14),
-            state="disabled"
+            state="disabled",
+            wrap="none"
         )
         # Configure tab stops: "5c" means a tab stop at 5cm.
         self.events_textbox._textbox.configure(tabs=("5c",))

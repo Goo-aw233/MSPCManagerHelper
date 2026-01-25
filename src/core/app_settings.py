@@ -9,6 +9,7 @@ class AppSettings:
     _is_follow_system_font_enabled: bool = False
     _is_support_developer_enabled: bool = True
     _is_compatibility_mode_enabled: bool = False
+    _is_use_internal_viewer_enabled: bool = False
     _is_take_ownership_enabled: bool = False
 
     # ======================= Cleanup After Exit Settings =======================
@@ -81,6 +82,21 @@ class AppSettings:
     def toggle_compatibility_mode(cls) -> None:
         cls.set_compatibility_mode_enabled(not cls._is_compatibility_mode_enabled)
     # ======================= End of Compatibility Mode Settings =======================
+
+    # ======================= Use Internal Viewer Settings =======================
+    @classmethod
+    def is_use_internal_viewer_enabled(cls) -> bool:
+        return cls._is_use_internal_viewer_enabled
+
+    @classmethod
+    def set_use_internal_viewer_enabled(cls, enabled: bool) -> None:
+        cls._is_use_internal_viewer_enabled = bool(enabled)
+        AppSettings.logger.info(f"Use Internal Viewer Set to: {cls._is_use_internal_viewer_enabled}")
+
+    @classmethod
+    def toggle_use_internal_viewer_enabled(cls) -> None:
+        cls.set_use_internal_viewer_enabled(not cls._is_use_internal_viewer_enabled)
+    # ======================= End of Use Internal Viewer Settings =======================
 
     # ======================= Take Ownership Settings =======================
     @classmethod

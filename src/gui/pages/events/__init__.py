@@ -8,6 +8,7 @@ from .on_enable_long_paths_click import OnEnableLongPathsClick
 from .on_privacy_settings_button_click import OnPrivacySettingsButtonClick
 from .on_restart_as_administrator import OnRestartAsAdministrator
 from .on_url_button_click import OnOpenURLButtonClick
+from .on_view_log_file_click import OnViewLogFileClick
 from .start_mspcm import StartMSPCM
 from .start_mspcm_beta import StartMSPCMBeta
 
@@ -18,6 +19,7 @@ __all__ = [
     "OnPrivacySettingsButtonClick",
     "OnRestartAsAdministrator",
     "OnOpenURLButtonClick",
+    "OnViewLogFileClick",
     "StartMSPCM",
     "StartMSPCMBeta",
 ]
