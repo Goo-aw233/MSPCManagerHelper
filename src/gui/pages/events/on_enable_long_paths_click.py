@@ -31,12 +31,13 @@ class OnEnableLongPathsClick:
                 fr"HKEY_LOCAL_MACHINE\{reg_path}",
                 "/v", value_name
             ]
-            result = subprocess.run(check_cmd, check=True, shell=False, text=True, capture_output=True,
-                                    creationflags=subprocess.CREATE_NO_WINDOW)
-            if result.returncode == 0:
+            try:
+                subprocess.run(check_cmd, check=True, shell=False, text=True, capture_output=True,
+                               creationflags=subprocess.CREATE_NO_WINDOW)
                 logger.info(f"{value_name} exists, will set to 1.")
-            else:
+            except subprocess.CalledProcessError:
                 logger.info(f"{value_name} does not exist, will create.")
+
             set_cmd = [
                 "reg.exe", "add",
                 fr"HKEY_LOCAL_MACHINE\{reg_path}",
@@ -45,8 +46,13 @@ class OnEnableLongPathsClick:
                 "/d", "1",
                 "/f"
             ]
-            subprocess.run(set_cmd, check=True, shell=False, text=True, capture_output=True,
-                           creationflags=subprocess.CREATE_NO_WINDOW)
+            try:
+                subprocess.run(set_cmd, check=True, shell=False, text=True, capture_output=True,
+                            creationflags=subprocess.CREATE_NO_WINDOW)
+                logger.info(f"Successfully set {value_name} to 1 via reg.exe.")
+            except subprocess.CalledProcessError as e:
+                logger.error(f"Failed to Add or Set Registry Value via reg.exe: {e}")
+                raise
 
         methods = [
             enable_with_winreg,
