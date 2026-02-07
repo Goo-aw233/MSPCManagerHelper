@@ -11,6 +11,7 @@ from pathlib import Path
 
 import pefile
 
+from core.advanced_startup import AdvancedStartup
 from core.app_logger import AppLogger
 
 
@@ -209,8 +210,33 @@ class OptionalChecks:
             return False
 
     @staticmethod
-    def check_windows_utilities_availability():
-        utilities = ["cmd.exe", "Dism.exe", "powershell.exe", "reg.exe", "sc.exe", "sfc.exe", "where.exe"]
+    def check_windows_utilities_availability(target_utility=None):
+        # Bypass Checks If Specified
+        if hasattr(AdvancedStartup, "is_bypass_checks") and AdvancedStartup.is_bypass_checks():
+            OptionalChecks.logger.info("Bypass checks enabled, skipping utilities availability check.")
+            return True
+
+        # Define the list of utilities to check.
+        if target_utility:
+            if isinstance(target_utility, str):
+                # Supports separating with commas or spaces.
+                utilities = [u.strip() for u in re.split(r"[,\s]+", target_utility) if u.strip()]
+            elif isinstance(target_utility, (list, tuple)):
+                utilities = list(target_utility)
+            else:
+                utilities = [str(target_utility)]
+            """
+            USEAGE EXAMPLE:
+            if OptionalChecks.check_windows_utilities_availability(target_utility=["cmd.exe", "Dism.exe"]):
+                return True # cmd.exe & Dism.exe is Available
+            else:
+                return False # cmd.exe & Dism.exe is Not Available
+            """
+        else:
+            utilities = ["cmd.exe", "Dism.exe", "powershell.exe", "reg.exe", "sc.exe", "sfc.exe", "taskkill.exe", "where.exe"]
+            """
+            Default List of Utilities to Check All
+            """
         found_utilities = {}
         all_checks_passed = True
 
@@ -258,7 +284,7 @@ class OptionalChecks:
 
     @staticmethod
     def check_windows_utilities_version():
-        utilities = ["cmd.exe", "Dism.exe", "powershell.exe", "reg.exe", "sc.exe", "sfc.exe", "where.exe"]
+        utilities = ["cmd.exe", "Dism.exe", "powershell.exe", "reg.exe", "sc.exe", "sfc.exe", "taskkill.exe", "where.exe"]
         utilities_versions = {}
 
         for utility in utilities:
