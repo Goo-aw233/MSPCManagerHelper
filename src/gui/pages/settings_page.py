@@ -242,6 +242,10 @@ class SettingsPage(customtkinter.CTkFrame):
                 "button_off")
         )
 
+        # Trigger Refresh in MainWindow to update widgets in UtilitiesPage.
+        if self.master and self.master.master and hasattr(self.master.master, "refresh_ui"):
+            self.master.master.refresh_ui()
+
     def _create_section_label(self, text):
         label = customtkinter.CTkLabel(
             self.scroll_frame,
