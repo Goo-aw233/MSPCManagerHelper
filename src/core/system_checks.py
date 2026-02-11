@@ -89,12 +89,25 @@ class PrerequisiteChecks:
             return None
 
     @staticmethod
-    def check_windows_server_levels():
+    def check_windows_server_levels(check_type="is_windows_server_core"):
+        """
+        SUPPORTS PARAMETERS:
+        - `is_windows_server_core`: Checks if the Windows Server installation type is Core. (Default)
+        - `is_windows_server`: Checks if the Windows installation is any type of Windows Server (including both Server Core and Desktop Experience).
+
+        USEAGE EXAMPLE (Using `is_windows_server_core` Has the Same Effect as Not Providing the Parameter):
+        if PrerequisiteChecks.check_windows_server_levels(check_type="is_windows_server"):
+            return True # Windows Server
+        """
         try:
             # Check if the InstallationType is Server or Server Core.
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
                                 r"SOFTWARE\Microsoft\Windows NT\CurrentVersion") as installation_type_key:
                 installation_type = winreg.QueryValueEx(installation_type_key, "InstallationType")[0]
+                
+                if check_type == "is_windows_server":
+                    return "Server" in installation_type
+
                 # An error will be reported if it is Server Core.
                 if "Server Core" in installation_type:
                     return True
@@ -226,7 +239,7 @@ class OptionalChecks:
             else:
                 utilities = [str(target_utility)]
             """
-            USEAGE EXAMPLE:
+            USEAGE EXAMPLE (Use `target_utility=["Name1", "Name2"]` to Check Specific Utilities):
             if OptionalChecks.check_windows_utilities_availability(target_utility=["cmd.exe", "Dism.exe"]):
                 return True # cmd.exe & Dism.exe is Available
             else:

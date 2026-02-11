@@ -52,7 +52,7 @@ class OnViewLogFileClick:
 
         if AppSettings.is_use_internal_viewer_enabled():
             methods = [open_with_internal_viewer]
-        elif not AdvancedStartup.is_bypass_checks() and PrerequisiteChecks.check_windows_server_levels:
+        elif not AdvancedStartup.is_bypass_checks() and PrerequisiteChecks.check_windows_server_levels():
             methods = [
                 open_with_startfile,
                 open_with_cmd,
