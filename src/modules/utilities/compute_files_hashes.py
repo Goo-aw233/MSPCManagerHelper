@@ -3,21 +3,24 @@ import tkinter.filedialog
 
 
 class ComputeFilesHashes:
-    def __init__(self, logger, app_translator, log_file_path, log_callback, selected_algos):
+    def __init__(self, logger, app_translator, log_callback, selected_algos, uppercase_results=False):
         self.logger = logger
         self.app_translator = app_translator
-        self.log_file_path = log_file_path
         self.log_callback = log_callback
         self.selected_algos = selected_algos
+        self.uppercase_results = uppercase_results
 
     def _log(self, message):
         if self.log_callback:
             self.log_callback(message)
 
     def execute(self):
+        self.logger.debug(f"Selected Algorithms: {self.selected_algos}")
         files = self.select_files()
         if not files:
-            return self._log(self.app_translator.translate("user_has_canceled_the_operation"))
+         self._log(self.app_translator.translate("user_has_canceled_the_operation"))
+         self.logger.info(self.app_translator.translate("user_has_canceled_the_operation"))
+         return None
         return self.compute(files)
 
     def select_files(self):
@@ -40,6 +43,8 @@ class ComputeFilesHashes:
 
             for algo in self.selected_algos:
                 res = self._compute_hash(file_path, algo)
+                if self.uppercase_results:
+                    res = res.upper()
                 # Use tab character which aligns with the configured tab stops in the GUI.
                 output_lines.append(f"  [{algo.upper()}]\t {res}")
 

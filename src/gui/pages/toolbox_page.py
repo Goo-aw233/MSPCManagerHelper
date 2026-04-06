@@ -108,7 +108,7 @@ class ToolboxPage(customtkinter.CTkFrame):
 
         self.download_runtime_group = self._create_group_frame()
 
-        # --- Microsoft Edge WebView 2 Runtime ---
+        # --- Microsoft Edge WebView2 Runtime ---
         self.edge_webview2_runtime_card = self._create_settings_card(
             self.download_runtime_group,
             title=self.app_translator.translate("download_edge_webview2_runtime_title"),

@@ -6,20 +6,18 @@ from .compute_files_hashes import ComputeFilesHashes
 from .get_dependencies_version import GetDependenciesVersion
 from .open_developer_settings import OpenDeveloperSettings
 from .open_mspcm_doc import OpenMSPCMDoc
-from .repair_microsoftedgeupdate_not_working import RepairMicrosoftEdgeUpdateNotWorking
-from .restart_service import RestartService
+from .repair_edge_webview2_installation import RepairEdgeWebView2Installation
+from .restart_services import RestartServices
 from .switch_regions import SwitchRegions
-from .view_installed_security_products import AntiSpywareProducts, AntiVirusProducts, FirewallProducts
+from .view_installed_security_products import ViewInstalledSecurityProducts
 
 __all__ = [
-    "AntiSpywareProducts",
-    "AntiVirusProducts",
     "ComputeFilesHashes",
-    "FirewallProducts",
     "GetDependenciesVersion",
     "OpenDeveloperSettings",
     "OpenMSPCMDoc",
-    "RepairMicrosoftEdgeUpdateNotWorking",
-    "RestartService",
+    "RepairEdgeWebView2Installation",
+    "RestartServices",
     "SwitchRegions",
+    "ViewInstalledSecurityProducts",
 ]

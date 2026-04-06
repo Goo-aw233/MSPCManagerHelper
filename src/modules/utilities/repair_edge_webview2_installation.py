@@ -1,0 +1,587 @@
+import os
+import shutil
+import subprocess
+import winreg
+from pathlib import Path
+from tkinter import messagebox
+
+import psutil
+
+from core.app_resources import AppResources
+from core.app_settings import AppSettings
+
+
+class RepairEdgeWebView2Installation:
+    def __init__(self, logger, app_translator, log_callback, selected_edge_wv2_repair_options):
+        self.logger = logger
+        self.app_translator = app_translator
+        self.log_callback = log_callback
+        self.selected_edge_wv2_repair_options = selected_edge_wv2_repair_options
+        self.nsudo_path = AppResources.nsudo_path()
+
+    def _log(self, message):
+        if self.log_callback:
+            self.log_callback(message)
+
+    def execute(self):
+        self.logger.debug(f"Selected Microsoft Edge WebView2 Repair Options: {self.selected_edge_wv2_repair_options}")
+        use_ownership = AppSettings.is_take_ownership_enabled()
+        if use_ownership:
+            self.logger.debug(f"NSudo Path: {self.nsudo_path}")
+
+        for option, enabled in self.selected_edge_wv2_repair_options.items():
+            if not enabled:
+                continue
+
+            if option == "restore_ifeo_registry":
+                if use_ownership:
+                    self._restore_ifeo_reg_key_with_ownership()
+                else:
+                    self._restore_ifeo_reg_key()
+
+            elif option == "remove_webview2_dir":
+                if self.selected_edge_wv2_repair_options.get("end_related_processes"):
+                    if use_ownership:
+                        self._end_related_processes_with_ownership()
+                    else:
+                        self._end_related_processes()
+                if use_ownership:
+                    self._remove_wv2_dir_with_ownership()
+                else:
+                    self._remove_wv2_dir()
+
+            elif option == "remove_webview2_parent_dir":
+                if self.selected_edge_wv2_repair_options.get("end_related_processes"):
+                    if use_ownership:
+                        self._end_related_processes_with_ownership()
+                    else:
+                        self._end_related_processes()
+                if use_ownership:
+                    self._remove_wv2_parent_dir_with_ownership()
+                else:
+                    self._remove_wv2_parent_dir()
+
+    def _restore_ifeo_reg_key(self):
+        msedgeupdate_ifeo_key = (
+            r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options"
+            r"\MicrosoftEdgeUpdate.exe"
+        )
+
+        try:
+            winreg.DeleteKey(winreg.HKEY_LOCAL_MACHINE, msedgeupdate_ifeo_key)
+            self._log(self.app_translator.translate("ifeo_registry_key_removed_successfully"))
+            self.logger.info(self.app_translator.translate("ifeo_registry_key_removed_successfully"))
+        except FileNotFoundError:
+            pass
+        except PermissionError:
+            self._log(self.app_translator.translate("no_permission_to_remove_ifeo_registry_key"))
+            self.logger.warning(self.app_translator.translate("no_permission_to_remove_ifeo_registry_key"))
+            return
+        except Exception as e:
+            self._log(
+                self.app_translator.translate("an_error_occurred_while_removing_ifeo_registry_key").format(
+                    error=str(e)
+                )
+            )
+            self.logger.error(
+                self.app_translator.translate("an_error_occurred_while_removing_ifeo_registry_key").format(
+                    error=str(e)
+                )
+            )
+            return
+
+        try:
+            key = winreg.CreateKeyEx(
+                winreg.HKEY_LOCAL_MACHINE,
+                msedgeupdate_ifeo_key,
+                0,
+                winreg.KEY_WRITE
+            )
+            winreg.SetValueEx(key, "DisableExceptionChainValidation", 0, winreg.REG_DWORD, 1)
+            winreg.CloseKey(key)
+            self._log(self.app_translator.translate("ifeo_registry_key_created_successfully"))
+            self.logger.info(self.app_translator.translate("ifeo_registry_key_created_successfully"))
+        except PermissionError:
+            self._log(self.app_translator.translate("no_permission_to_create_ifeo_registry_key"))
+            self.logger.warning(self.app_translator.translate("no_permission_to_create_ifeo_registry_key"))
+        except Exception as e:
+            self._log(
+                self.app_translator.translate("an_error_occurred_while_creating_ifeo_registry_key").format(
+                    error=str(e)
+                )
+            )
+            self.logger.error(
+                self.app_translator.translate("an_error_occurred_while_creating_ifeo_registry_key").format(
+                    error=str(e)
+                )
+            )
+
+    def _restore_ifeo_reg_key_with_ownership(self):
+        msedgeupdate_ifeo_key = (
+            r"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion"
+            r"\Image File Execution Options\MicrosoftEdgeUpdate.exe"
+        )
+
+        try:
+            del_cmd = [
+                self.nsudo_path,
+                "-U:T",
+                "-P:E",
+                "-ShowWindowMode:Hide",
+                "-UseCurrentConsole",
+                "reg.exe",
+                "delete",
+                msedgeupdate_ifeo_key,
+                "/f"
+            ]
+            result = subprocess.run(
+                del_cmd,
+                check=False,
+                shell=False,
+                text=True,
+                capture_output=True,
+                creationflags=subprocess.CREATE_NO_WINDOW
+            )
+
+            # NSudo Error Dealing
+            if result.returncode != 0:
+                if result.stdout:
+                    self._log(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+                    self._log(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                    self.logger.error(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+                    self.logger.error(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                raise Exception(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+
+            # reg.exe Error Dealing
+            if result.stderr:
+                self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                self.logger.error(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                raise Exception(
+                    f"{self.app_translator.translate('an_error_occurred_while_removing_ifeo_registry_key')}:\n{result.stderr}"
+                )
+
+            # Success
+            self._log(self.app_translator.translate("ifeo_registry_key_removed_successfully"))
+            self.logger.info(self.app_translator.translate("ifeo_registry_key_removed_successfully"))
+        except Exception as e:
+            self._log(
+                self.app_translator.translate("an_error_occurred_while_removing_ifeo_registry_key").format(
+                    error=str(e)
+                )
+            )
+            self.logger.error(
+                self.app_translator.translate("an_error_occurred_while_removing_ifeo_registry_key").format(
+                    error=str(e)
+                )
+            )
+            return
+
+        try:
+            add_cmd = [
+                self.nsudo_path,
+                "-U:T",
+                "-P:E",
+                "-ShowWindowMode:Hide",
+                "-UseCurrentConsole",
+                "reg.exe",
+                "add",
+                msedgeupdate_ifeo_key,
+                "/v",
+                "DisableExceptionChainValidation",
+                "/t",
+                "REG_DWORD",
+                "/d",
+                "0",
+                "/f"
+            ]
+            result = subprocess.run(
+                add_cmd, 
+                shell=False,
+                text=True,
+                capture_output=True,
+                creationflags=subprocess.CREATE_NO_WINDOW
+            )
+
+            # NSudo Error Dealing
+            if result.returncode != 0:
+                if result.stdout:
+                    self._log(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+                    self._log(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                    self.logger.error(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+                    self.logger.error(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                raise Exception(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+
+            # reg.exe Error Dealing
+            if result.stderr:
+                self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                self.logger.error(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                raise Exception(
+                    f"{self.app_translator.translate('an_error_occurred_while_creating_ifeo_registry_key')}:\n{result.stderr}"
+                )
+
+            # Success
+            self._log(self.app_translator.translate("ifeo_registry_key_created_successfully"))
+            self.logger.info(self.app_translator.translate("ifeo_registry_key_created_successfully"))
+        except Exception as e:
+            self._log(
+                self.app_translator.translate("an_error_occurred_while_creating_ifeo_registry_key").format(
+                    error=str(e)
+                )
+            )
+            self.logger.error(
+                self.app_translator.translate("an_error_occurred_while_creating_ifeo_registry_key").format(
+                    error=str(e)
+                )
+            )
+
+    def _remove_wv2_dir(self):
+        wv2_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft" / "EdgeWebView"
+
+        if not wv2_dir_path.exists():
+            self._log(self.app_translator.translate("webview2_dir_not_exist"))
+            self.logger.info(self.app_translator.translate("webview2_dir_not_exist"))
+            return
+        if any(wv2_dir_path.iterdir()):
+            self.logger.warning("Microsoft Edge WebView2 directory is not empty.")
+            result = messagebox.askyesno(
+                self.app_translator.translate("confirm_remove_webview2_dir_title"),
+                self.app_translator.translate("webview2_dir_not_empty_confirm_remove")
+            )
+            if not result:
+                self._log(self.app_translator.translate("user_has_canceled_the_operation"))
+                self.logger.info(self.app_translator.translate("user_has_canceled_the_operation"))
+                return
+
+        while True:
+            try:
+                shutil.rmtree(wv2_dir_path)
+                self._log(self.app_translator.translate("webview2_dir_removed_successfully"))
+                self.logger.info(self.app_translator.translate("webview2_dir_removed_successfully"))
+                break
+            except Exception as e:
+                self.logger.error(
+                    self.app_translator.translate("an_error_occurred_while_removing_webview2_dir").format(
+                        error=str(e)
+                    )
+                )
+                if not messagebox.askretrycancel(
+                    self.app_translator.translate("error"),
+                    self.app_translator.translate("an_error_occurred_while_removing_webview2_dir").format(
+                        error=str(e)
+                    )
+                ):
+                    self._log(
+                        self.app_translator.translate("an_error_occurred_while_removing_webview2_dir").format(
+                            error=str(e)
+                        )
+                    )
+                    break
+
+    def _remove_wv2_dir_with_ownership(self):
+        wv2_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft" / "EdgeWebView"
+
+        if not wv2_dir_path.exists():
+            self._log(self.app_translator.translate("webview2_dir_not_exist"))
+            self.logger.info(self.app_translator.translate("webview2_dir_not_exist"))
+            return
+        if any(wv2_dir_path.iterdir()):
+            self.logger.warning("Microsoft Edge WebView2 directory is not empty.")
+            result = messagebox.askyesno(
+                self.app_translator.translate("confirm_remove_webview2_dir_title"),
+                self.app_translator.translate("webview2_dir_not_empty_confirm_remove")
+            )
+            if not result:
+                self._log(self.app_translator.translate("user_has_canceled_the_operation"))
+                self.logger.info("User canceled the removal of Microsoft Edge WebView2 directory.")
+                return
+
+        while True:
+            try:
+                remove_cmd = [
+                    self.nsudo_path,
+                    "-U:T",
+                    "-P:E",
+                    "-ShowWindowMode:Hide",
+                    "-UseCurrentConsole",
+                    "cmd.exe",
+                    "/C",
+                    "RMDIR",
+                    "/S",
+                    "/Q",
+                    str(wv2_dir_path)
+                ]
+                result = subprocess.run(
+                    remove_cmd,
+                    shell=False,
+                    text=True,
+                    capture_output=True,
+                    creationflags=subprocess.CREATE_NO_WINDOW
+                )
+
+                # NSudo Error Dealing
+                if result.returncode != 0:
+                    if result.stdout:
+                        self._log(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+                        self._log(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                        self.logger.error(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+                        self.logger.error(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                    raise Exception(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+
+                # CMD Error Dealing
+                if wv2_dir_path.exists():
+                    if result.stderr:
+                        self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                        self.logger.error(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                    raise Exception(self.app_translator.translate("directory_still_exists"))
+
+                # Success
+                self._log(self.app_translator.translate("webview2_dir_removed_successfully"))
+                self.logger.info(self.app_translator.translate("webview2_dir_removed_successfully"))
+                break
+            except Exception as e:
+                self.logger.error(
+                    self.app_translator.translate("an_error_occurred_while_removing_webview2_dir").format(
+                        error=str(e)
+                    )
+                )
+                if not messagebox.askretrycancel(
+                    self.app_translator.translate("error"),
+                    self.app_translator.translate("an_error_occurred_while_removing_webview2_dir").format(
+                        error=str(e)
+                    )
+                ):
+                    self._log(
+                        self.app_translator.translate("an_error_occurred_while_removing_webview2_dir").format(
+                            error=str(e)
+                        )
+                    )
+                    break
+
+    def _remove_wv2_parent_dir(self):
+        wv2_parent_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft"
+
+        if not wv2_parent_dir_path.exists():
+            self._log(self.app_translator.translate("webview2_parent_dir_not_exist"))
+            self.logger.info(self.app_translator.translate("webview2_parent_dir_not_exist"))
+            return
+        if any(wv2_parent_dir_path.iterdir()):
+            self.logger.warning("Microsoft Edge WebView2 parent directory is not empty.")
+            result = messagebox.askyesno(
+                self.app_translator.translate("confirm_remove_webview2_parent_dir_title"),
+                self.app_translator.translate("webview2_parent_dir_not_empty_confirm_remove")
+            )
+            if not result:
+                self._log(self.app_translator.translate("user_has_canceled_the_operation"))
+                self.logger.info(self.app_translator.translate("user_has_canceled_the_operation"))
+                return
+        while True:
+            try:
+                shutil.rmtree(wv2_parent_dir_path)
+                self._log(self.app_translator.translate("webview2_parent_dir_removed_successfully"))
+                self.logger.info(self.app_translator.translate("webview2_parent_dir_removed_successfully"))
+                break
+            except Exception as e:
+                self.logger.error(
+                    self.app_translator.translate("an_error_occurred_while_removing_webview2_parent_dir").format(
+                        error=str(e)
+                    )
+                )
+                if not messagebox.askretrycancel(
+                    self.app_translator.translate("error"),
+                    self.app_translator.translate("an_error_occurred_while_removing_webview2_parent_dir").format(
+                        error=str(e)
+                    )
+                ):
+                    self._log(
+                        self.app_translator.translate("an_error_occurred_while_removing_webview2_parent_dir").format(
+                            error=str(e)
+                        )
+                    )
+                    break
+
+    def _remove_wv2_parent_dir_with_ownership(self):
+        wv2_parent_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft"
+
+        if not wv2_parent_dir_path.exists():
+            self._log(self.app_translator.translate("webview2_parent_dir_not_exist"))
+            self.logger.info(self.app_translator.translate("webview2_parent_dir_not_exist"))
+            return
+        if any(wv2_parent_dir_path.iterdir()):
+            self.logger.warning("Microsoft Edge WebView2 parent directory is not empty.")
+            result = messagebox.askyesno(
+                self.app_translator.translate("confirm_remove_webview2_parent_dir_title"),
+                self.app_translator.translate("webview2_parent_dir_not_empty_confirm_remove")
+            )
+            if not result:
+                self._log(self.app_translator.translate("user_has_canceled_the_operation"))
+                self.logger.info(self.app_translator.translate("user_has_canceled_the_operation"))
+                return
+
+        while True:
+            try:
+                remove_cmd = [
+                    self.nsudo_path,
+                    "-U:T",
+                    "-P:E",
+                    "-ShowWindowMode:Hide",
+                    "-UseCurrentConsole",
+                    "cmd.exe",
+                    "/C",
+                    "RMDIR",
+                    "/S",
+                    "/Q",
+                    str(wv2_parent_dir_path)
+                ]
+                result = subprocess.run(
+                    remove_cmd,
+                    shell=False,
+                    text=True,
+                    capture_output=True,
+                    creationflags=subprocess.CREATE_NO_WINDOW
+                )
+
+                # NSudo Error Dealing
+                if result.returncode != 0:
+                    if result.stdout:
+                        self._log(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+                        self._log(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                        self.logger.error(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+                        self.logger.error(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                    raise Exception(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+                
+                # CMD Error Dealing
+                if wv2_parent_dir_path.exists():
+                    if result.stderr:
+                        self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                        self.logger.error(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                    raise Exception(self.app_translator.translate("directory_still_exists"))
+
+                # Success
+                self._log(self.app_translator.translate("webview2_parent_dir_removed_successfully"))
+                self.logger.info(self.app_translator.translate("webview2_parent_dir_removed_successfully"))
+                break
+            except Exception as e:
+                self.logger.error(
+                    self.app_translator.translate("an_error_occurred_while_removing_webview2_parent_dir").format(
+                        error=str(e)
+                    )
+                )
+                if not messagebox.askretrycancel(
+                    self.app_translator.translate("error"),
+                    self.app_translator.translate("an_error_occurred_while_removing_webview2_parent_dir").format(
+                        error=str(e)
+                    )
+                ):
+                    self._log(
+                        self.app_translator.translate("an_error_occurred_while_removing_webview2_parent_dir").format(
+                            error=str(e)
+                        )
+                    )
+                    break
+
+    def _end_related_processes(self):
+        processes_list = [
+            "CopilotUpdate.exe",
+            "MicrosoftEdgeUpdate.exe",
+            "mscopilot.exe",
+            "msedge.exe",
+            "msedgewebview2.exe"
+        ]
+        found_processes = set()
+
+        for proc in psutil.process_iter(['name']):
+            try:
+                proc_name = proc.info['name']
+                if proc_name in processes_list:
+                    found_processes.add(proc_name)
+                    proc.kill()
+                    self._log(
+                        self.app_translator.translate("ended_process").format(
+                            proc_name=proc_name
+                        )
+                    )
+                    self.logger.info(
+                        self.app_translator.translate("ended_process").format(
+                            proc_name=proc_name
+                        )
+                    )
+            except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess) as e:
+                self._log(f"{self.app_translator.translate('an_error_occurred_while_ending_process')}: {proc.info.get('name', 'Unknown')} - {e}")
+                self.logger.error(f"{self.app_translator.translate('an_error_occurred_while_ending_process')}: {proc.info.get('name', 'Unknown')} - {e}")
+
+        for process_name in processes_list:
+            if process_name not in found_processes:
+                self._log(
+                    self.app_translator.translate("skipped_process_not_running").format(
+                        process_name=process_name
+                    )
+                )
+                self.logger.info(
+                    self.app_translator.translate("skipped_process_not_running").format(
+                        process_name=process_name
+                    )
+                )
+
+    def _end_related_processes_with_ownership(self):
+        processes_list = [
+            "CopilotUpdate.exe",
+            "MicrosoftEdgeUpdate.exe",
+            "mscopilot.exe",
+            "msedge.exe",
+            "msedgewebview2.exe"
+        ]
+
+        for process_name in processes_list:
+            cmd = [
+                self.nsudo_path,
+                "-U:T",
+                "-P:E",
+                "-ShowWindowMode:Hide",
+                "-UseCurrentConsole",
+                "taskkill.exe",
+                "/F",
+                "/IM",
+                process_name
+            ]
+            try:
+                result = subprocess.run(
+                    cmd,
+                    shell=False,
+                    text=True,
+                    capture_output=True, 
+                    creationflags=subprocess.CREATE_NO_WINDOW
+                )
+
+                # NSudo Error Dealing
+                if result.returncode != 0:
+                    self._log(
+                        f"{self.app_translator.translate('an_error_occurred_while_ending_process')}: {process_name}"
+                    )
+                    self.logger.error(
+                        f"{self.app_translator.translate('an_error_occurred_while_ending_process')}: {process_name}"
+                    )
+                    if result.stdout:
+                        self._log(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+                        self._log(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                        self.logger.error(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+                        self.logger.error(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                    continue
+
+                # taskkill.exe Error Dealing
+                if result.stderr:
+                    self._log(f"{self.app_translator.translate('an_error_occurred_while_ending_process')}: {process_name}")
+                    self.logger.error(f"{self.app_translator.translate('an_error_occurred_while_ending_process')}: {process_name}")
+                    self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                    self.logger.error(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                    continue
+
+                # Success
+                self._log(f"{self.app_translator.translate('ended_process')}: {process_name}")
+                self.logger.info(f"{self.app_translator.translate('ended_process')}: {process_name}")
+            except Exception as e:
+                self._log(
+                    f"{self.app_translator.translate('an_error_occurred_while_ending_process')}: {process_name} - {e}"
+                )
+                self.logger.error(
+                    f"{self.app_translator.translate('an_error_occurred_while_ending_process')}: {process_name} - {e}"
+                )
