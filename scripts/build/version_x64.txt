@@ -23,12 +23,12 @@ VSVersionInfo(
         [
         StringStruct(u'CompanyName', u'GuCATs'),
         StringStruct('FileDescription', 'MSPCManagerHelper'),
-        StringStruct('FileVersion', 'Beta v0.2.1.3 x64'),
-        StringStruct('InternalName', 'MSPCManagerHelper_Beta_v0.2.1.3_x64'),
+        StringStruct('FileVersion', 'Beta v0.2.1.4 x64'),
+        StringStruct('InternalName', 'MSPCManagerHelper_Beta_v0.2.1.4_x64'),
         StringStruct(u'LegalCopyright', u'© 2024 - 2026 GuCATs All rights reserved.'),
-        StringStruct('OriginalFilename', 'MSPCManagerHelper_Beta_v0.2.1.3_x64.exe'),
+        StringStruct('OriginalFilename', 'MSPCManagerHelper_Beta_v0.2.1.4_x64.exe'),
         StringStruct('ProductName', 'MSPCManagerHelper'),
-        StringStruct('ProductVersion', 'Beta v0.2.1.3 x64')
+        StringStruct('ProductVersion', 'Beta v0.2.1.4 x64')
         ]
       )
       ]
