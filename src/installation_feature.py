@@ -122,7 +122,7 @@ class InstallationFeature:
         # 打开文件选择对话框选择文件
         all_users_application_package_file_path = filedialog.askopenfilename(
             filetypes=[("MSIX/MSIXBundle", "*.msix;*.msixbundle"),
-                       ("Appx/AppxBundle", "*.appx;*.appxbundle"),
+                       ("Appx/AppXBundle", "*.appx;*.appxbundle"),
                        ("*", "*")])
 
         if not all_users_application_package_file_path:
@@ -191,7 +191,7 @@ class InstallationFeature:
         # 打开文件选择对话框选择文件
         current_user_application_package_file_path = filedialog.askopenfilename(
             filetypes=[("MSIX/MSIXBundle", "*.msix;*.msixbundle"),
-                       ("Appx/AppxBundle", "*.appx;*.appxbundle"),
+                       ("Appx/AppXBundle", "*.appx;*.appxbundle"),
                        ("*", "*")])
 
         if not current_user_application_package_file_path:
@@ -207,7 +207,7 @@ class InstallationFeature:
         if response_for_current_user_dependency:  # 选择依赖包
             current_user_dependency_package_paths = filedialog.askopenfilenames(
                 filetypes=[("MSIX/MSIXBundle", "*.msix;*.msixbundle"),
-                           ("Appx/AppxBundle", "*.appx;*.appxbundle"),
+                           ("Appx/AppXBundle", "*.appx;*.appxbundle"),
                            ("*", "*")])
             if not current_user_dependency_package_paths:
                 return self.translator.translate("no_files_selected")
@@ -216,7 +216,7 @@ class InstallationFeature:
 
         try:
             # 构建 Add-AppxPackage 命令
-            command = ['powershell.exe', '-NoProfile', '-Command'
+            command = ['powershell.exe', '-NoProfile', '-Command',
                        f'Add-AppxPackage -Path "{current_user_application_package_file_path}"']
             if current_user_dependency_package_paths:  # 使用依赖包，若不使用则跳过
                 dependency_paths = ",".join([f'"{additional_dependency_paths}"' for additional_dependency_paths in current_user_dependency_package_paths])
@@ -275,7 +275,7 @@ class InstallationFeature:
         # 打开文件选择对话框选择文件
         update_application_package_file_path = filedialog.askopenfilename(
             filetypes=[("MSIX/MSIXBundle", "*.msix;*.msixbundle"),
-                       ("Appx/AppxBundle", "*.appx;*.appxbundle"),
+                       ("Appx/AppXBundle", "*.appx;*.appxbundle"),
                        ("*", "*")])
 
         if not update_application_package_file_path:
@@ -291,7 +291,7 @@ class InstallationFeature:
         if response_for_update_dependency:  # 选择依赖包
             update_dependency_package_paths = filedialog.askopenfilenames(
                 filetypes=[("MSIX/MSIXBundle", "*.msix;*.msixbundle"),
-                           ("Appx/AppxBundle", "*.appx;*.appxbundle"),
+                           ("Appx/AppXBundle", "*.appx;*.appxbundle"),
                            ("*", "*")])
             if not update_dependency_package_paths:
                 return self.translator.translate("no_files_selected")
@@ -332,7 +332,7 @@ class InstallationFeature:
         # 打开文件选择对话框选择文件
         pc_manager_package_file_path_str = filedialog.askopenfilename(
             filetypes=[("MSIX/MSIXBundle", "*.msix;*.msixbundle"),
-                       ("Appx/AppxBundle", "*.appx;*.appxbundle"),
+                       ("Appx/AppXBundle", "*.appx;*.appxbundle"),
                        ("*", "*")])
 
         if not pc_manager_package_file_path_str:
@@ -442,7 +442,7 @@ class InstallationFeature:
             if response_for_dependency:  # 选择依赖包
                 dependency_package_paths = filedialog.askopenfilenames(filetypes=[
                     ("MSIX/MSIXBundle", "*.msix;*.msixbundle"),
-                    ("Appx/AppxBundle", "*.appx;*.appxbundle"),
+                    ("Appx/AppXBundle", "*.appx;*.appxbundle"),
                     ("*", "*")])
                 if not dependency_package_paths:    # 如果没有选择文件
                     # 清理 MSPCManagerHelper 临时目录下的文件
