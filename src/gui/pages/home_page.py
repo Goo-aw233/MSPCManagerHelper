@@ -1,3 +1,4 @@
+import queue
 import sys
 import threading
 
@@ -20,6 +21,10 @@ class HomePage(customtkinter.CTkFrame):
         self.log_file_path = AppLogger.get_log_file_path()
         self.app_translator = app_translator
         self.font_family = font_family
+
+        # Create a Thread-Safe Queue
+        self.result_queue = queue.Queue()
+        self.logger.debug("Initialized result_queue for thread-safe UI updates.")
 
         # Main Layout configuration (Grid)
         self.grid_columnconfigure(0, weight=1)
@@ -145,6 +150,13 @@ class HomePage(customtkinter.CTkFrame):
         )
         # === End of Advanced Section ===
 
+        # === After Initialization Tasks ===
+        # Start the Main Thread's Periodic Check Loop
+        # (Place at the end of __init__ to avoid loading before the GUI is ready.)
+        self.logger.debug("Starting the main thread's periodic check loop.")
+        self._check_queue_loop()
+        # === End of After Initialization Tasks ===
+
 
     def _refresh_mspcm_version_info(self):
         # Clear existing widgets in the group frame.
@@ -166,7 +178,8 @@ class HomePage(customtkinter.CTkFrame):
             self.app_translator.translate("loading")
         )
 
-        # Start A Thread to Fetch the Version Info
+        # Start a Thread to Fetch the Version Info
+        self.logger.debug("Starting background thread to fetch Microsoft PC Manager versions.")
         threading.Thread(target=self._fetch_mspcm_versions, daemon=True).start()
 
     def _fetch_mspcm_versions(self):
@@ -177,9 +190,26 @@ class HomePage(customtkinter.CTkFrame):
         mspcm_beta_version = GetMSPCMVersion.get_microsoft_pc_manager_beta_version()
 
         try:
-            self.after(0, lambda: self._update_mspcm_version_ui(mspcm_version, mspcm_beta_version))
-        except Exception:
+            self.logger.debug(f"Background Thread Fetched Versions - Stable: {mspcm_version}, Beta: {mspcm_beta_version}")
+            self.result_queue.put((mspcm_version, mspcm_beta_version))
+            self.logger.debug("Successfully placed version information into result_queue.")
+        except Exception as e:
+            self.logger.debug(f"Failed to Put Data Into result_queue: {e}")
             pass
+
+    def _check_queue_loop(self):
+        try:
+            # Try to get data from the queue (non-blocking).
+            while True:
+                # After obtaining the data, update the UI on the main thread.
+                mspcm_version, mspcm_beta_version = self.result_queue.get_nowait()
+                self.logger.debug("Retrieved version data from queue. Dispatching UI update.")
+                self._update_mspcm_version_ui(mspcm_version, mspcm_beta_version)
+        except queue.Empty:
+            pass
+        finally:
+            # Every 100 ms, call itself to keep the loop running.
+            self.after(100, self._check_queue_loop)
 
     def _update_mspcm_version_ui(self, mspcm_version, mspcm_beta_version):
         try:
