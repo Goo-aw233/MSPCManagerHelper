@@ -4,7 +4,9 @@ import customtkinter
 
 from core.app_logger import AppLogger
 from core.app_metadata import AppMetadata
-from gui.pages.events import *
+from core.get_localization_translators import get_localization_translators
+from handlers.private import ViewLogFile
+from handlers.shared import URILauncher, URLHandler
 
 
 class AboutPage(customtkinter.CTkFrame):
@@ -87,12 +89,15 @@ class AboutPage(customtkinter.CTkFrame):
                 cursor="hand2"
             )
             link.pack(side="left", padx=(0, 10))
-            link.bind("<Button-1>", lambda e, u=contributor_url: OnOpenURLButtonClick.open_contributors_url(
+            link.bind("<Button-1>", lambda e, u=contributor_url: URLHandler.launch_url(
+                url=u,
+                target_name=f"{name}'s Profile",
+                messagebox_error_message="failed_to_open_contributor_url",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
-                app_translator=self.app_translator,
-                contributor_url=u
-            ))
+                app_translator=self.app_translator
+                )
+            )
 
         # --- Separator ---
         self._create_separator(self.app_info_group)
@@ -113,7 +118,7 @@ class AboutPage(customtkinter.CTkFrame):
                 font=customtkinter.CTkFont(family=self.font_family, size=14),
                 anchor="w"
             ).pack(fill="x")
-            
+
             translators_list_frame = customtkinter.CTkFrame(translators_text_frame, fg_color="transparent")
             translators_list_frame.pack(fill="x", anchor="w")
 
@@ -127,12 +132,15 @@ class AboutPage(customtkinter.CTkFrame):
                     cursor="hand2"
                 )
                 link.pack(side="left", padx=(0, 10))
-                link.bind("<Button-1>", lambda e, u=github_profile_url: OnOpenURLButtonClick.open_contributors_url(
+                link.bind("<Button-1>", lambda e, u=github_profile_url: URLHandler.launch_url(
+                    url=u,
+                    target_name=f"{display_name}'s GitHub Profile",
+                    messagebox_error_message="failed_to_open_contributor_url",
                     logger=self.logger,
                     log_file_path=self.log_file_path,
-                    app_translator=self.app_translator,
-                    contributor_url=u
-                ))
+                    app_translator=self.app_translator
+                    )
+                )
         else:
              self._create_settings_card(
                 self.app_info_group,
@@ -148,11 +156,14 @@ class AboutPage(customtkinter.CTkFrame):
             self.app_info_group,
             title=self.app_translator.translate("license"),
             description=AppMetadata.APP_LICENSE_URL,
-            description_command=lambda: OnOpenURLButtonClick.open_license(
-                 logger=self.logger,
-                 log_file_path=self.log_file_path,
-                 app_translator=self.app_translator
-             )
+            description_command=lambda: URLHandler.launch_url(
+                url=AppMetadata.APP_LICENSE_URL,
+                target_name=f"License",
+                messagebox_error_message="failed_to_open_license",
+                logger=self.logger,
+                log_file_path=self.log_file_path,
+                app_translator=self.app_translator
+            )
         )
 
         # --- Separator ---
@@ -163,11 +174,14 @@ class AboutPage(customtkinter.CTkFrame):
              self.app_info_group,
              title=self.app_translator.translate("repository_url"),
              description=AppMetadata.APP_GITHUB_REPOSITORY_URL,
-             description_command=lambda: OnOpenURLButtonClick.open_github_repository(
-                 logger=self.logger,
-                 log_file_path=self.log_file_path,
-                 app_translator=self.app_translator
-             )
+             description_command=lambda: URLHandler.launch_url(
+                url=AppMetadata.APP_GITHUB_REPOSITORY_URL,
+                target_name=f"GitHub Repository",
+                messagebox_error_message="failed_to_open_github_repository",
+                logger=self.logger,
+                log_file_path=self.log_file_path,
+                app_translator=self.app_translator
+            )
         )
 
         # --- Separator ---
@@ -178,11 +192,11 @@ class AboutPage(customtkinter.CTkFrame):
             self.app_info_group,
             title=self.app_translator.translate("view_log_file"),
             description=self.log_file_path,
-            description_command=lambda: OnViewLogFileClick.open_log_file(
-                 logger=self.logger,
-                 log_file_path=self.log_file_path,
-                 app_translator=self.app_translator
-             )
+            description_command=lambda: ViewLogFile.open_log_file(
+                logger=self.logger,
+                log_file_path=self.log_file_path,
+                app_translator=self.app_translator
+            )
         )
         # === End of App Information Section ===
 
@@ -299,7 +313,10 @@ class AboutPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("privacy_settings_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("privacy_settings_button"),
-            command=lambda: OnPrivacySettingsButtonClick.open_privacy_settings(
+            command=lambda: URILauncher.launch_uri(
+                uri="ms-settings:privacy",
+                target_name="Privacy & Security Settings",
+                messagebox_error_message="failed_to_open_privacy_settings",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator
@@ -324,7 +341,10 @@ class AboutPage(customtkinter.CTkFrame):
                     title=self.app_translator.translate("information"),
                     message=self.app_translator.translate("redirect_to_official_website_to_get_help")
                 ),
-                OnOpenURLButtonClick.open_official_website(
+                URLHandler.launch_url(
+                    url="https://pcmanager.microsoft.com",
+                    target_name="Official Website",
+                    messagebox_error_message="failed_to_open_official_website",
                     logger=self.logger,
                     log_file_path=self.log_file_path,
                     app_translator=self.app_translator
@@ -342,7 +362,10 @@ class AboutPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("official_website_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("official_website_button"),
-            command=lambda: OnOpenURLButtonClick.open_official_website(
+            command=lambda: URLHandler.launch_url(
+                url="https://pcmanager.microsoft.com",
+                target_name="Official Website",
+                messagebox_error_message="failed_to_open_official_website",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator

@@ -9,6 +9,7 @@ from .app_resources import AppResources
 from .app_settings import AppSettings
 from .app_translator import AppTranslator
 from .cleanup_after_exit import CleanupAfterExit
+from .get_localization_translators import get_localization_translators
 from .get_mspcm_version import GetMSPCMVersion
 from .set_font_family import SetFontFamily
 from .system_checks import OptionalChecks, PrerequisiteChecks
@@ -21,6 +22,7 @@ __all__ = [
     "AppSettings",
     "AppTranslator",
     "CleanupAfterExit",
+    "get_localization_translators",
     "GetMSPCMVersion",
     "SetFontFamily",
     "OptionalChecks",

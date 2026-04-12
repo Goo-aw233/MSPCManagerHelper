@@ -8,7 +8,7 @@ from core.internal_viewer import InternalViewer
 from core.system_checks import PrerequisiteChecks
 
 
-class OnViewLogFileClick:
+class ViewLogFile:
     _internal_viewer_window = None
 
     @staticmethod
@@ -40,12 +40,12 @@ class OnViewLogFileClick:
         def open_with_internal_viewer():
             logger.info(f"Opening log file {log_file_path} with internal viewer.")
 
-            if OnViewLogFileClick._internal_viewer_window and OnViewLogFileClick._internal_viewer_window.winfo_exists():
-                OnViewLogFileClick._internal_viewer_window.lift()
-                OnViewLogFileClick._internal_viewer_window.focus_force()
+            if ViewLogFile._internal_viewer_window and ViewLogFile._internal_viewer_window.winfo_exists():
+                ViewLogFile._internal_viewer_window.lift()
+                ViewLogFile._internal_viewer_window.focus_force()
                 return
 
-            OnViewLogFileClick._internal_viewer_window = InternalViewer(
+            ViewLogFile._internal_viewer_window = InternalViewer(
                 file_path=log_file_path,
                 app_translator=app_translator
             )

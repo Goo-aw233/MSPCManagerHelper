@@ -4,10 +4,9 @@ from pathlib import Path
 from tkinter import messagebox
 
 
-class OnRestartAsAdministrator:
-
+class RestartAsAdministrator:
     @staticmethod
-    def on_restart_as_administrator(AdvancedStartup=None, logger=None, app_translator=None, log_file_path=None):
+    def restart_as_administrator(AdvancedStartup=None, logger=None, app_translator=None, log_file_path=None):
         boot_file_path = str(Path(sys.argv[0]).resolve())
 
         original_args = AdvancedStartup.get_runtime_arguments()
@@ -30,7 +29,7 @@ class OnRestartAsAdministrator:
                 msg = f"Failed to request elevation (ShellExecute returned {result}). [WinError {failed_code}: {failed_msg}]"
 
                 logger.error(msg)
-                
+
                 messagebox.showerror(
                     app_translator.translate("error"),
                     app_translator.translate("failed_to_run_as_administrator").format(log_file_path=log_file_path)

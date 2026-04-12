@@ -1,7 +1,9 @@
 import customtkinter
 
 from core.app_logger import AppLogger
-from gui.pages.events import *
+from core.app_metadata import AppMetadata
+from core.app_settings import AppSettings
+from handlers.shared import URLHandler
 
 
 class ToolboxPage(customtkinter.CTkFrame):
@@ -41,7 +43,10 @@ class ToolboxPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("update_from_github_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("get_update_button"),
-            command=lambda: OnOpenURLButtonClick.open_github_releases_page(
+            command=lambda: URLHandler.launch_url(
+                url=AppMetadata.APP_GITHUB_REPOSITORY_URL + "/releases",
+                target_name="GitHub Release Page",
+                messagebox_error_message="failed_to_open_github_releases_page",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator
@@ -58,7 +63,10 @@ class ToolboxPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("update_from_onedrive_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("get_update_button"),
-            command=lambda: OnOpenURLButtonClick.open_1drv_page(
+            command=lambda: URLHandler.launch_url(
+                url="https://gbcs6-my.sharepoint.com/:f:/g/personal/gucats_gbcs6_onmicrosoft_com/EtKwa-2la71HmG2RxkB5lngBvvRt9CFOYsyJG_HOwYIzNA",
+                target_name="OneDrive Page",
+                messagebox_error_message="failed_to_open_onedrive_page",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator
@@ -78,7 +86,10 @@ class ToolboxPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("download_from_azure_blob_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("download_button"),
-            command=lambda: OnOpenURLButtonClick.open_mspcm_app_package_azure_blob_page(
+            command=lambda: URLHandler.launch_url(
+                url="https://kaoz.uk/PCManagerOFL",
+                target_name="Microsoft PC Manager Application Package Azure Blob Releases Page",
+                messagebox_error_message="failed_to_open_mspcm_app_package_azure_blob_page",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator
@@ -95,7 +106,10 @@ class ToolboxPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("download_from_onedrive_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("download_button"),
-            command=lambda: OnOpenURLButtonClick.open_mspcm_app_package_1drv_page(
+            command=lambda: URLHandler.launch_url(
+                url="https://gbcs6-my.sharepoint.com/:f:/g/personal/gucats_gbcs6_onmicrosoft_com/EoscJOQ9taJFtx9LZLPiBM0BEmVm7wsLuJOuHnwmo9EQ5w",
+                target_name="Microsoft PC Manager Application Package OneDrive Releases Page",
+                messagebox_error_message="failed_to_open_mspcm_app_package_onedrive_page",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator
@@ -115,7 +129,10 @@ class ToolboxPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("download_edge_webview2_runtime_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("download_button"),
-            command=lambda: OnOpenURLButtonClick.open_wv2_rt_download_page(
+            command=lambda: URLHandler.launch_url(
+                url="https://developer.microsoft.com/microsoft-edge/webview2" + AppSettings.get_support_developer_tracking_id(),
+                target_name="Microsoft Edge WebView2 Runtime Download Page",
+                messagebox_error_message="failed_to_open_wv2_rt_download_page",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator
@@ -132,7 +149,10 @@ class ToolboxPage(customtkinter.CTkFrame):
             description=self.app_translator.translate("download_windows_app_runtime_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("download_button"),
-            command=lambda: OnOpenURLButtonClick.open_war_rt_download_page(
+            command=lambda: URLHandler.launch_url(
+                url="https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads-archive" + AppSettings.get_support_developer_tracking_id(),
+                target_name="Windows App Runtime Download Page",
+                messagebox_error_message="failed_to_open_war_rt_download_page",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator

@@ -3,7 +3,7 @@ import winreg
 from tkinter import messagebox
 
 
-class OnEnableLongPathsClick:
+class EnableLongPaths:
     @staticmethod
     def enable_long_paths(logger=None, log_file_path=None, app_translator=None):
         reg_path = r"SYSTEM\CurrentControlSet\Control\FileSystem"

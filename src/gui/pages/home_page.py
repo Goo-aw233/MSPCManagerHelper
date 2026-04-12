@@ -10,8 +10,8 @@ from core.app_metadata import AppMetadata
 from core.app_settings import AppSettings
 from core.get_mspcm_version import GetMSPCMVersion
 from core.system_checks import PrerequisiteChecks
-from gui.pages.events import OnAboutWindowsButtonClick, OnEnableLongPathsClick, OnRestartAsAdministrator, StartMSPCM, \
-    StartMSPCMBeta
+from handlers.private import RestartAsAdministrator, EnableLongPaths
+from handlers.shared import StartMSPCM, StartMSPCMBeta, URILauncher
 
 
 class HomePage(customtkinter.CTkFrame):
@@ -94,7 +94,7 @@ class HomePage(customtkinter.CTkFrame):
             self.app_translator.translate("run_as_administrator_description"),
             customtkinter.CTkButton,
             text=self.app_translator.translate("run_as_administrator_button"),
-            command=lambda: OnRestartAsAdministrator.on_restart_as_administrator(
+            command=lambda: RestartAsAdministrator.restart_as_administrator(
                 AdvancedStartup, logger=self.logger,
                 app_translator=self.app_translator,
                 log_file_path=self.log_file_path
@@ -190,7 +190,8 @@ class HomePage(customtkinter.CTkFrame):
         mspcm_beta_version = GetMSPCMVersion.get_microsoft_pc_manager_beta_version()
 
         try:
-            self.logger.debug(f"Background Thread Fetched Versions - Stable: {mspcm_version}, Beta: {mspcm_beta_version}")
+            self.logger.debug(
+                f"Background Thread Fetched Versions - Stable: {mspcm_version}, Beta: {mspcm_beta_version}")
             self.result_queue.put((mspcm_version, mspcm_beta_version))
             self.logger.debug("Successfully placed version information into result_queue.")
         except Exception as e:
@@ -278,7 +279,10 @@ class HomePage(customtkinter.CTkFrame):
                 customtkinter.CTkButton,
                 enable_text_selection=True,
                 text=self.app_translator.translate("about_button"),
-                command=lambda: OnAboutWindowsButtonClick.open_about_windows(
+                command=lambda: URILauncher.launch_uri(
+                    uri="ms-settings:about",
+                    target_name="About Windows",
+                    messagebox_error_message="failed_to_open_about_windows",
                     logger=self.logger,
                     log_file_path=self.log_file_path,
                     app_translator=self.app_translator
@@ -292,8 +296,10 @@ class HomePage(customtkinter.CTkFrame):
                 customtkinter.CTkButton,
                 enable_text_selection=True,
                 text=self.app_translator.translate("about_button"),
-                
-                command=lambda: OnAboutWindowsButtonClick.open_about_windows(
+                command=lambda: URILauncher.launch_uri(
+                    uri="ms-settings:about",
+                    target_name="About Windows",
+                    messagebox_error_message="failed_to_open_about_windows",
                     logger=self.logger,
                     log_file_path=self.log_file_path,
                     app_translator=self.app_translator
@@ -325,7 +331,7 @@ class HomePage(customtkinter.CTkFrame):
             )
 
     def _on_long_paths_click(self):
-        OnEnableLongPathsClick.enable_long_paths(
+        EnableLongPaths.enable_long_paths(
             logger=self.logger,
             log_file_path=self.log_file_path,
             app_translator=self.app_translator
@@ -397,7 +403,8 @@ class HomePage(customtkinter.CTkFrame):
         return separator
 
     def _create_info_textbox_card(self, parent, title, description, widget_constructor=None,
-                                  enable_text_selection=False, activate_scrollbars=False, min_height=50, **widget_kwargs):
+                                  enable_text_selection=False, activate_scrollbars=False, min_height=50,
+                                  **widget_kwargs):
         container = customtkinter.CTkFrame(parent, fg_color="transparent")
         container.pack(fill="x", padx=10, pady=8)
 
