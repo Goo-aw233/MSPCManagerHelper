@@ -316,6 +316,9 @@ class MainWindow(customtkinter.CTk):
         self.logger.debug(f"UI Configuration Completed in: {elapsed:.5f} s")
 
     def select_frame_by_page_name(self, page_name):
+        # Update current page name for refresh_ui reference.
+        self.current_page_name = page_name
+
         # Set button color for selected button.
         self.home_button.configure(fg_color=("gray75", "gray25") if page_name == "home" else "transparent")
         self.maintenance_button.configure(fg_color=("gray75", "gray25") if page_name == "maintenance" else "transparent")
@@ -379,6 +382,7 @@ class MainWindow(customtkinter.CTk):
         self.select_frame_by_page_name("about")
 
     def refresh_ui(self):
+        self.logger.info("========================= Refreshing UI =========================")
         start_refresh_ui_time = time.perf_counter()
 
         # Font Family
@@ -405,7 +409,8 @@ class MainWindow(customtkinter.CTk):
             btn.configure(font=button_font, text=f"{icon}    {self.app_translator.translate(key)}")
 
         # Recreate Pages
-        current_page_name = "home"
+        current_page_name = getattr(self, "current_page_name", "home")
+        
         page_map = {
             "home": self.home_page,
             "maintenance": self.maintenance_page,
@@ -417,13 +422,9 @@ class MainWindow(customtkinter.CTk):
             "about": self.about_page,
         }
 
-        for name, page in page_map.items():
-            if page.winfo_ismapped():
-                current_page_name = name
-                break
-
         for page in page_map.values():
-            page.destroy()
+            if hasattr(page, "winfo_exists") and page.winfo_exists():
+                page.destroy()
 
         # Create Page Instances
         self.home_page = HomePage(self.main_frame, self.app_translator, self.font_family)
@@ -441,3 +442,4 @@ class MainWindow(customtkinter.CTk):
         end_refresh_ui_time = time.perf_counter()
         elapsed_refresh_ui_time = end_refresh_ui_time - start_refresh_ui_time
         self.logger.debug(f"MainWindow Refresh UI Completed in: {elapsed_refresh_ui_time:.5f} s")
+        self.logger.info("========================= UI Refresh Completed =========================")

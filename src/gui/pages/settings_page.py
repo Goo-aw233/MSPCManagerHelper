@@ -209,11 +209,15 @@ class SettingsPage(customtkinter.CTkFrame):
             customtkinter.set_appearance_mode(mode)
             AppSettings.set_appearance_mode(mode)
 
+            # Trigger Refresh Task in MainWindow
+            if self.master and self.master.master and hasattr(self.master.master, "refresh_ui"):
+                self.master.master.refresh_ui()
+
     def _change_follow_system_font(self):
         is_enabled = self.follow_system_font_switch.get()
         AppSettings.set_follow_system_font_enabled(is_enabled)
 
-        # Trigger Refresh in MainWindow
+        # Trigger Refresh Task in MainWindow
         if self.master and self.master.master and hasattr(self.master.master, "refresh_ui"):
             self.master.master.refresh_ui()
 
@@ -225,7 +229,8 @@ class SettingsPage(customtkinter.CTkFrame):
             main_window.language = locale
             main_window.app_translator = AppTranslator(locale)
             PrerequisiteChecks.app_translator = main_window.app_translator
-            
+
+            # Trigger Refresh Task in MainWindow
             if hasattr(main_window, "refresh_ui"):
                 main_window.refresh_ui()
 
@@ -269,7 +274,7 @@ class SettingsPage(customtkinter.CTkFrame):
                 "button_off")
         )
 
-        # Trigger Refresh in MainWindow to update widgets in UtilitiesPage.
+        # Trigger Refresh Task in MainWindow
         if self.master and self.master.master and hasattr(self.master.master, "refresh_ui"):
             self.master.master.refresh_ui()
 
