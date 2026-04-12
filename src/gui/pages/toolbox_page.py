@@ -64,12 +64,21 @@ class ToolboxPage(customtkinter.CTkFrame):
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("get_update_button"),
             command=lambda: URLHandler.launch_url(
-                url="https://gbcs6-my.sharepoint.com/:f:/g/personal/gucats_gbcs6_onmicrosoft_com/EtKwa-2la71HmG2RxkB5lngBvvRt9CFOYsyJG_HOwYIzNA",
-                target_name="OneDrive Page",
-                messagebox_error_message="failed_to_open_onedrive_page",
+                url=(
+                    AppMetadata.APP_UPDATE_1DRV_DIR_URL
+                    if not AppSettings.is_original_links_enabled()
+                    else AppMetadata.APP_UPDATE_1DRV_URL
+                ),
+                target_name="OneDrive Release Page",
+                messagebox_error_message="failed_to_open_1drv_release_page",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
-                app_translator=self.app_translator
+                app_translator=self.app_translator,
+                onedrive_release_url=(
+                    AppMetadata.APP_UPDATE_1DRV_DIR_URL
+                    if not AppSettings.is_original_links_enabled()
+                    else AppMetadata.APP_UPDATE_1DRV_URL
+                )
             )
         )
         # === End of App Update Section ===
@@ -107,12 +116,21 @@ class ToolboxPage(customtkinter.CTkFrame):
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("download_button"),
             command=lambda: URLHandler.launch_url(
-                url="https://gbcs6-my.sharepoint.com/:f:/g/personal/gucats_gbcs6_onmicrosoft_com/EoscJOQ9taJFtx9LZLPiBM0BEmVm7wsLuJOuHnwmo9EQ5w",
+                url=(
+                    AppMetadata.MSPCM_APP_PACKAGE_1DRV_DIR_URL
+                    if not AppSettings.is_original_links_enabled()
+                    else AppMetadata.MSPCM_APP_PACKAGE_1DRV_URL
+                ),
                 target_name="Microsoft PC Manager Application Package OneDrive Releases Page",
                 messagebox_error_message="failed_to_open_mspcm_app_package_onedrive_page",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
-                app_translator=self.app_translator
+                app_translator=self.app_translator,
+                mspcm_app_package_onedrive_url=(
+                    AppMetadata.MSPCM_APP_PACKAGE_1DRV_DIR_URL
+                    if not AppSettings.is_original_links_enabled()
+                    else AppMetadata.MSPCM_APP_PACKAGE_1DRV_URL
+                )
             )
         )
         # === End of Microsoft PC Manager App Package Download Section ===

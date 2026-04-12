@@ -342,7 +342,7 @@ class AboutPage(customtkinter.CTkFrame):
                     message=self.app_translator.translate("redirect_to_official_website_to_get_help")
                 ),
                 URLHandler.launch_url(
-                    url="https://pcmanager.microsoft.com",
+                    url=AppMetadata.MICROSOFT_PC_MANAGER_URL,
                     target_name="Official Website",
                     messagebox_error_message="failed_to_open_official_website",
                     logger=self.logger,
@@ -363,7 +363,7 @@ class AboutPage(customtkinter.CTkFrame):
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("official_website_button"),
             command=lambda: URLHandler.launch_url(
-                url="https://pcmanager.microsoft.com",
+                url=AppMetadata.MICROSOFT_PC_MANAGER_URL,
                 target_name="Official Website",
                 messagebox_error_message="failed_to_open_official_website",
                 logger=self.logger,

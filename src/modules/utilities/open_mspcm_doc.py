@@ -3,6 +3,8 @@ import subprocess
 import webbrowser
 from tkinter import messagebox
 
+from core.app_metadata import AppMetadata
+from core.app_settings import AppSettings
 from core.app_translator import AppTranslator
 
 
@@ -12,8 +14,21 @@ class OpenMSPCMDoc:
         # Use detected system language if no translator is provided.
         locale = app_translator.locale if app_translator else AppTranslator.detect_system_language()
         logger.info(f"Detected System Locale: {locale}")
-        mspcm_doc_url = "https://docs.qq.com/doc/DR2FrVkJmT0NuZ0Zx" if locale == "zh-cn" else \
-            "https://mspcmanager.github.io/mspcm-docs"
+        mspcm_doc_url = (
+            # Original URLs
+            (
+                AppMetadata.MSPCM_CN_DOC_URL
+                if locale == "zh-cn"
+                else AppMetadata.MSPCM_DOC_URL
+            )
+            if AppSettings.is_original_links_enabled()
+            # Redirected URLs
+            else (
+                AppMetadata.MSPCM_CN_DOC_DIR_URL
+                if locale == "zh-cn"
+                else AppMetadata.MSPCM_DOC_DIR_URL
+            )
+        )
 
         def open_with_webbrowser():
             logger.info("Opening Microsoft PC Manager Help Documentation page via webbrowser.")

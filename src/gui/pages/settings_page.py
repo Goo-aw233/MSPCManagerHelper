@@ -124,6 +124,25 @@ class SettingsPage(customtkinter.CTkFrame):
         # --- Separator ---
         self._create_separator(self.preferences_group)
 
+        # --- Original Links ---
+        self.original_links_switch = self._create_settings_card(
+            self.preferences_group,
+            self.app_translator.translate("original_links"),
+            self.app_translator.translate("original_links_description"),
+            customtkinter.CTkSwitch,
+            text=self.app_translator.translate(
+                "button_on") if AppSettings.is_original_links_enabled() else self.app_translator.translate(
+                "button_off"),
+            command=self._change_original_links
+        )
+        if AppSettings.is_original_links_enabled():
+            self.original_links_switch.select()
+        else:
+            self.original_links_switch.deselect()
+
+        # --- Separator ---
+        self._create_separator(self.preferences_group)
+
         # --- Compatibility Mode ---
         self.compatibility_mode_switch = self._create_settings_card(
             self.preferences_group,
@@ -222,6 +241,14 @@ class SettingsPage(customtkinter.CTkFrame):
         is_enabled = self.compatibility_mode_switch.get()
         AppSettings.set_compatibility_mode_enabled(is_enabled)
         self.compatibility_mode_switch.configure(
+            text=self.app_translator.translate("button_on") if is_enabled else self.app_translator.translate(
+                "button_off")
+        )
+
+    def _change_original_links(self):
+        is_enabled = self.original_links_switch.get()
+        AppSettings.set_original_links_enabled(is_enabled)
+        self.original_links_switch.configure(
             text=self.app_translator.translate("button_on") if is_enabled else self.app_translator.translate(
                 "button_off")
         )

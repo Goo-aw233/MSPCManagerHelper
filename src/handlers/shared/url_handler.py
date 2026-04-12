@@ -18,7 +18,7 @@ class URLHandler:
     """
 
     @staticmethod
-    def launch_url(url, target_name, messagebox_error_message, logger=None, log_file_path=None, app_translator=None):
+    def launch_url(url, target_name, messagebox_error_message, logger=None, log_file_path=None, app_translator=None, **format_kwargs):
         def open_with_webbrowser():
             logger.info(f"Opening {target_name} ({url}) via webbrowser.")
             webbrowser.open(url)
@@ -66,5 +66,5 @@ class URLHandler:
 
         messagebox.showerror(
             app_translator.translate("error"),
-            app_translator.translate(messagebox_error_message).format(log_file_path=log_file_path)
+            app_translator.translate(messagebox_error_message).format(log_file_path=log_file_path, **format_kwargs)
         )
