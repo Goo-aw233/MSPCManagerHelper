@@ -104,7 +104,7 @@ class PrerequisiteChecks:
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
                                 r"SOFTWARE\Microsoft\Windows NT\CurrentVersion") as installation_type_key:
                 installation_type = winreg.QueryValueEx(installation_type_key, "InstallationType")[0]
-                
+
                 if check_type == "is_windows_server":
                     return "Server" in installation_type
 
@@ -176,6 +176,11 @@ class PrerequisiteChecks:
 class OptionalChecks:
     logger = AppLogger.get_logger()
 
+    DEFAULT_UTILITIES = [
+        "cmd.exe", "Dism.exe", "powershell.exe", "reg.exe",
+        "sc.exe", "sfc.exe", "taskkill.exe", "where.exe"
+    ]
+
     @staticmethod
     def check_narrator_status():
         try:
@@ -239,17 +244,16 @@ class OptionalChecks:
             else:
                 utilities = [str(target_utility)]
             """
-            USEAGE EXAMPLE (Use `target_utility=["Name1", "Name2"]` to Check Specific Utilities):
+            Use `target_utility=["Name1", "Name2", "..."]` to check specific utilities or exes (not limited to default list).
+            USEAGE EXAMPLE:
             if OptionalChecks.check_windows_utilities_availability(target_utility=["cmd.exe", "Dism.exe"]):
                 return True # cmd.exe & Dism.exe is Available
             else:
                 return False # cmd.exe & Dism.exe is Not Available
             """
         else:
-            utilities = ["cmd.exe", "Dism.exe", "powershell.exe", "reg.exe", "sc.exe", "sfc.exe", "taskkill.exe", "where.exe"]
-            """
-            Default List of Utilities to Check All
-            """
+            # Default List of Utilities
+            utilities = OptionalChecks.DEFAULT_UTILITIES
         found_utilities = {}
         all_checks_passed = True
 
@@ -267,26 +271,20 @@ class OptionalChecks:
             return False
 
         # Check Availability
-        # Others utilities are text-based, there are only a few byte-based utilities.
-        byte_based_utilities = ["sfc.exe"]
-
         # Ignored not found utilities.
         for utility, path in found_utilities.items():
             try:
-                is_byte_based = utility in byte_based_utilities
-                
-                if is_byte_based:
-                    result = subprocess.run([path, "/?"], capture_output=True, text=False, shell=False,
-                                            creationflags=subprocess.CREATE_NO_WINDOW)
-                    if result.stdout == b"" and result.stderr == b"":
-                        OptionalChecks.logger.warning(f"Utility {utility} is not available (empty output).")
-                        all_checks_passed = False
-                else:
-                    result = subprocess.run([path, "/?"], capture_output=True, text=True, shell=False,
-                                            creationflags=subprocess.CREATE_NO_WINDOW)
-                    if not result.stdout and not result.stderr:
-                        OptionalChecks.logger.warning(f"Utility {utility} is not available (empty output).")
-                        all_checks_passed = False
+                is_text = utility not in {"sfc.exe"}
+
+                result = subprocess.run([path, "/?"], text=is_text, shell=False, capture_output=True,
+                                        creationflags=subprocess.CREATE_NO_WINDOW, timeout=5.0)
+
+                if not result.stdout and not result.stderr:
+                    OptionalChecks.logger.warning(f"Utility {utility} is not available (empty output).")
+                    all_checks_passed = False
+            except subprocess.TimeoutExpired:
+                OptionalChecks.logger.warning(f"Utility {utility} check TIMED OUT (likely hung or corrupted).")
+                all_checks_passed = False
             except Exception as e:
                 OptionalChecks.logger.warning(f"Utility {utility} Check Failed: {e}")
                 all_checks_passed = False
@@ -297,22 +295,23 @@ class OptionalChecks:
 
     @staticmethod
     def check_windows_utilities_version():
-        utilities = ["cmd.exe", "Dism.exe", "powershell.exe", "reg.exe", "sc.exe", "sfc.exe", "taskkill.exe", "where.exe"]
         utilities_versions = {}
 
-        for utility in utilities:
+        for utility in OptionalChecks.DEFAULT_UTILITIES:
             path = shutil.which(utility)
             if path:
                 try:
                     pe = pefile.PE(path)
-                    if hasattr(pe, "VS_FIXEDFILEINFO"):
-                        ver_info = pe.VS_FIXEDFILEINFO[0]
-                        ms = ver_info.FileVersionMS
-                        ls = ver_info.FileVersionLS
-                        version = f"{ms >> 16}.{ms & 0xFFFF}.{ls >> 16}.{ls & 0xFFFF}"
-                        utilities_versions[utility] = version
-                    pe.close()
-                except (FileNotFoundError, ImportError, Exception) as e:
+                    try:
+                        if hasattr(pe, "VS_FIXEDFILEINFO"):
+                            ver_info = pe.VS_FIXEDFILEINFO[0]
+                            ms = ver_info.FileVersionMS
+                            ls = ver_info.FileVersionLS
+                            version = f"{ms >> 16}.{ms & 0xFFFF}.{ls >> 16}.{ls & 0xFFFF}"
+                            utilities_versions[utility] = version
+                    finally:
+                        pe.close()
+                except Exception as e:
                     OptionalChecks.logger.warning(f"Failed to Get Version for {utility}: {e}")
             else:
                 OptionalChecks.logger.warning(f"Utility Not Found for Version Check: {utility}")
