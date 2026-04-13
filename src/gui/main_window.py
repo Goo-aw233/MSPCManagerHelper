@@ -50,6 +50,7 @@ class MainWindow(customtkinter.CTk):
         else:
             self.logger.info("PyInstaller Extraction Path: Not Running from PyInstaller Bundle")
         self.logger.info(f"CPython JIT Available: {sys._jit.is_available()}, Enabled: {sys._jit.is_enabled()}")
+        self.logger.info(f"Python Version: {sys.version}")
 
         self.logger.info("========================= Initializing Base GUI =========================")
         self._set_language()
