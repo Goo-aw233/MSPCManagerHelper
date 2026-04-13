@@ -67,7 +67,7 @@ class UtilitiesPage(customtkinter.CTkFrame):
             state="disabled",
             wrap="none"
         )
-        # Configure tab stops: "5c" means a tab stop at 5cm.
+        # Configure Tab Stops: "5c" means a tab stop at 5 cm.
         self.events_textbox._textbox.configure(tabs=("5c",))
         self.events_textbox.pack(fill="both", expand=True, padx=10, pady=10)
 
@@ -825,8 +825,8 @@ class UtilitiesPage(customtkinter.CTkFrame):
         self.tabview.set(self.events_tab_name)
         operation_name = self.app_translator.translate(operation_name_key)
         message = (
-            f"{self.app_translator.translate('executing_operation_with_name').format(operation_name=operation_name)}\n"
-            f"{self.app_translator.translate('please_wait_for_completion')}\n"
+            self.app_translator.translate('executing_operation_with_name').format(operation_name=operation_name) + "\n" +
+            self.app_translator.translate('please_wait_for_completion') + "\n"
         )
         self.logger.info(f"Executing Operation: {operation_name}")
 
@@ -893,6 +893,7 @@ class UtilitiesPage(customtkinter.CTkFrame):
         self.events_textbox.see("end")
         self.events_textbox.configure(state="disabled")
 
+    # ~~~ GUI Framework Functions ~~~
     def _create_section_label(self, text):
         label = customtkinter.CTkLabel(
             self.scroll_frame,

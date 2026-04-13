@@ -1,3 +1,4 @@
+import threading
 import tkinter
 
 import customtkinter
@@ -55,17 +56,52 @@ class MaintenancePage(customtkinter.CTkFrame):
             font=customtkinter.CTkFont(family=self.font_family, size=14),
             state="disabled"
         )
+        # Configure Tab Stops: "5c" means a tab stop at 5 cm.
+        self.events_textbox._textbox.configure(tabs=("5c",))
         self.events_textbox.pack(fill="both", expand=True, padx=10, pady=10)
 
         # Right-Click Menu for Events Textbox
         self.right_click_menu = tkinter.Menu(self.events_textbox, tearoff=0)
-        self.right_click_menu.add_command(label=self.app_translator.translate("copy_button"), command=self._copy_events)
+        self.right_click_menu.add_command(label=self.app_translator.translate("copy_button"),
+                                          command=self._copy_events)
         self.right_click_menu.add_separator()
         self.right_click_menu.add_command(label=self.app_translator.translate("clear_button"),
                                           command=self._clear_events)
 
         self.events_textbox.bind("<Button-3>", self._show_right_click_menu)
 
+
+    # ~~~ GUI/Events Functions ~~~
+    def _run_operation(self, operation_func, operation_name_key, on_completion=None):
+        self.tabview.set(self.events_tab_name)
+        operation_name = self.app_translator.translate(operation_name_key)
+        message = (
+            self.app_translator.translate('executing_operation_with_name').format(operation_name=operation_name) + "\n" +
+            self.app_translator.translate('please_wait_for_completion') + "\n"
+        )
+        self.logger.info(f"Executing Operation: {operation_name}")
+
+        # Reset Events Textbox on Main Thread
+        self.events_textbox.configure(state="normal")
+        self.events_textbox.delete("1.0", "end")
+        self.events_textbox.insert("end", message + "\n")
+        self.events_textbox.see("end")
+        self.events_textbox.configure(state="disabled")
+
+        def _thread_target():
+            try:
+                operation_func()
+                self._log_to_events(
+                    self.app_translator.translate("operation_completed").format(operation_name=operation_name))
+                self.logger.info(f"Completed Operation: {operation_name}")
+            except Exception as e:
+                self.logger.error(f"Error Executing {operation_name}: {e}")
+                self._log_to_events(f"Error: {e}")
+            finally:
+                if on_completion:
+                    self.after(0, on_completion)
+
+        threading.Thread(target=_thread_target, daemon=True).start()
 
     def _show_right_click_menu(self, event):
         bg = self._apply_appearance_mode(["#e3e3e3", "#333333"])
@@ -99,6 +135,16 @@ class MaintenancePage(customtkinter.CTkFrame):
         self.events_textbox.delete("1.0", "end")
         self.events_textbox.configure(state="disabled")
 
+    def _log_to_events(self, message):
+        self.after(0, self._append_to_events_textbox, message)
+
+    def _append_to_events_textbox(self, message):
+        self.events_textbox.configure(state="normal")
+        self.events_textbox.insert("end", message + "\n")
+        self.events_textbox.see("end")
+        self.events_textbox.configure(state="disabled")
+
+    # ~~~ GUI Framework Functions ~~~
     def _create_section_label(self, text):
         label = customtkinter.CTkLabel(
             self.scroll_frame,
