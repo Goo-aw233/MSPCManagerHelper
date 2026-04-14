@@ -102,7 +102,7 @@ class InternalViewer(customtkinter.CTkToplevel):
 
         self.geometry(f"{width}x{height}+{x}+{y}")
         self.logger.info(
-            f"Window Geometry Set: {width} x {height} (x + {x}, y + {y}), Scaling Factor: {self._get_window_scaling()}")
+            f"Window Geometry Set to: {width} x {height} (x + {x}, y + {y}), Scaling Factor: {self._get_window_scaling()}")
 
     def _show_right_click_menu(self, event):
         bg = self._apply_appearance_mode(["#e3e3e3", "#333333"])

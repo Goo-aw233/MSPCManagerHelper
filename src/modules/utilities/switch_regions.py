@@ -97,7 +97,7 @@ class SwitchRegions:
         x = (dialog.winfo_screenwidth() - dialog.winfo_width()) // 2
         y = (dialog.winfo_screenheight() - dialog.winfo_height()) // 2
         dialog.geometry(f"+{x}+{y}")
-        self.logger.debug("Dialog Window Geometry Set To: " + f"+{x}+{y}")
+        self.logger.debug("Dialog Window Geometry Set to: " + f"+{x}+{y}")
 
         app_icon = AppResources.app_icon()
         if app_icon:
@@ -107,14 +107,14 @@ class SwitchRegions:
 
         if not user_input:
             self._log(self.app_translator.translate("invalid_region_code"))
-            self.logger.error(self.app_translator.translate("invalid_region_code"))
+            self.logger.error("Invalid Region Code: No Input Provided")
             return
 
         user_input = user_input.strip().upper()
 
         if user_input not in iso3166.countries_by_alpha2:
             self._log(self.app_translator.translate("invalid_region_code"))
-            self.logger.error(self.app_translator.translate("invalid_region_code"))
+            self.logger.error("Invalid Region Code: Region Code Not Found")
             return
 
         reg_path = r"SOFTWARE\WOW6432Node\MSPCManager Store"
@@ -126,22 +126,14 @@ class SwitchRegions:
                     region_code=user_input
                 )
             )
-            self.logger.info(
-                self.app_translator.translate("mspcm_region_registry_key_modified_successfully").format(
-                    region_code=user_input
-                )
-            )
+            self.logger.info(f"Successfully switched Microsoft PC Manager region setting, region code: {user_input}")
         except Exception as e:
             self._log(
                 self.app_translator.translate("an_error_occurred_while_modifying_mspcm_region_registry").format(
                     error=str(e)
                 )
             )
-            self.logger.error(
-                self.app_translator.translate("an_error_occurred_while_modifying_mspcm_region_registry").format(
-                    error=str(e)
-                )
-            )
+            self.logger.error(f"An Error Occurred While Modifying Microsoft PC Manager Region Registry: {e}")
 
     def _lower_than_v3_14_0_0_with_ownership(self):
         dialog = CTkInputDialog(
@@ -154,7 +146,7 @@ class SwitchRegions:
         x = (dialog.winfo_screenwidth() - dialog.winfo_width()) // 2
         y = (dialog.winfo_screenheight() - dialog.winfo_height()) // 2
         dialog.geometry(f"+{x}+{y}")
-        self.logger.debug("Dialog Window Geometry Set To: " + f"+{x}+{y}")
+        self.logger.debug("Dialog Window Geometry Set to: " + f"+{x}+{y}")
 
         app_icon = AppResources.app_icon()
         if app_icon:
@@ -164,14 +156,14 @@ class SwitchRegions:
 
         if not user_input:
             self._log(self.app_translator.translate("invalid_region_code"))
-            self.logger.error(self.app_translator.translate("invalid_region_code"))
+            self.logger.error("Invalid Region Code: No Input Provided")
             return
 
         user_input = user_input.strip().upper()
 
         if user_input not in iso3166.countries_by_alpha2:
             self._log(self.app_translator.translate("invalid_region_code"))
-            self.logger.error(self.app_translator.translate("invalid_region_code"))
+            self.logger.error("Invalid Region Code: Region Code Not Found")
             return
 
         reg_path = r"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\MSPCManager Store"
@@ -207,19 +199,15 @@ class SwitchRegions:
                 if result.stdout:
                     self._log(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
                     self._log(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
-                    self.logger.error(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
-                    self.logger.error(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
-                raise Exception(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+                    self.logger.error(f"NSudo Error Code: {result.returncode}")
+                    self.logger.error(f"===== Stdout: =====\n{result.stdout}")
+                raise Exception(f"NSudo Error Code: {result.returncode}")
 
             # reg.exe Error Dealing
             if result.stderr:
                 self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
-                self.logger.error(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
-                raise Exception(
-                    self.app_translator.translate("an_error_occurred_while_modifying_mspcm_region_registry").format(
-                        error=result.stderr.strip()
-                    )
-                )
+                self.logger.error(f"===== Stderr: =====\n{result.stderr}")
+                raise Exception(f"An Error Occurred While Modifying Microsoft PC Manager Region Registry: {result.stderr.strip()}")
 
             # Success
             self._log(
@@ -227,19 +215,11 @@ class SwitchRegions:
                     region_code=user_input
                 )
             )
-            self.logger.info(
-                self.app_translator.translate("mspcm_region_registry_key_modified_successfully").format(
-                    region_code=user_input
-                )
-            )
+            self.logger.info(f"Successfully Switched Microsoft PC Manager Region Setting, Region Code: {user_input}")
         except Exception as e:
             self._log(
                 self.app_translator.translate("an_error_occurred_while_modifying_mspcm_region_registry").format(
                     error=str(e)
                 )
             )
-            self.logger.error(
-                self.app_translator.translate("an_error_occurred_while_modifying_mspcm_region_registry").format(
-                    error=str(e)
-                )
-            )
+            self.logger.error(f"An Error Occurred While Modifying Microsoft PC Manager Region Registry: {e}")

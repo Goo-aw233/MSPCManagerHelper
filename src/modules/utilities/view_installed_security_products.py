@@ -87,7 +87,7 @@ class ViewInstalledSecurityProducts:
                     self._process_formatted_output(result.stdout)
             else:
                 self._log(self.app_translator.translate("an_error_occurred_while_querying_security_products").format(stderr=result.stderr))
-                self.logger.error(self.app_translator.translate("an_error_occurred_while_querying_security_products").format(stderr=result.stderr))
+                self.logger.error("An Error Occurred While Querying Security Products:\n" + result.stderr)
         except Exception as e:
             self._log(str(e))
             self.logger.error(f"Exception While Executing Security Products Query: {e}")
@@ -95,7 +95,7 @@ class ViewInstalledSecurityProducts:
     def _process_formatted_output(self, json_output):
         if not json_output or not json_output.strip():
             self._log(self.app_translator.translate("no_security_products_found") + "\n")
-            self.logger.info(self.app_translator.translate("no_security_products_found") + "\n")
+            self.logger.info("No installed security products registered to Windows Security were found.\n")
             return
 
         try:
@@ -105,7 +105,7 @@ class ViewInstalledSecurityProducts:
 
             if not data:
                 self._log(self.app_translator.translate("no_security_products_found") + "\n")
-                self.logger.info(self.app_translator.translate("no_security_products_found") + "\n")
+                self.logger.info("No installed security products registered to Windows Security were found.\n")
                 return
 
             output_lines = []
@@ -152,8 +152,8 @@ class ViewInstalledSecurityProducts:
             self._log(json_output) # Fallback to Raw Output
             self.logger.info(json_output)
         except Exception as e:
-            self.logger.error(f"Error Processing Security Products Output: {e}")
             self._log(str(e))
+            self.logger.error(f"Error Processing Security Products Output: {e}")
 
     def _antivirus_products(self):
         self._get_security_products("AntiVirusProduct", "security_product_category_antivirus")

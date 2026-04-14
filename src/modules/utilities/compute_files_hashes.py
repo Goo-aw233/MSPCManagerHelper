@@ -19,7 +19,7 @@ class ComputeFilesHashes:
         files = self.select_files()
         if not files:
          self._log(self.app_translator.translate("user_has_canceled_the_operation"))
-         self.logger.info(self.app_translator.translate("user_has_canceled_the_operation"))
+         self.logger.info("The operation was canceled by the user.")
          return None
         return self.compute(files)
 

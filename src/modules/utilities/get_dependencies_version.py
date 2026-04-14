@@ -45,11 +45,7 @@ class GetDependenciesVersion:
                                 version=version
                             ) + "\n"
                         )
-                        self.logger.info(
-                            self.app_translator.translate("system_webview2_version_is").format(
-                                version=version
-                            )
-                        )
+                        self.logger.info(f"System Microsoft Edge WebView2 Runtime Version: {version}")
                     pe.close()
                 except Exception as e:
                     self._log(
@@ -58,13 +54,10 @@ class GetDependenciesVersion:
                         )
                     )
                     self.logger.error(
-                        self.app_translator.translate("an_error_occurred_while_reading_system_webview2_version").format(
-                            error=str(e)
-                        ) + f"\n({exe_path})"
-                    )
+                        f"An Error Occurred While Reading the System Microsoft Edge WebView2 Runtime Version: {e}\n({exe_path})")
         else:
-            self._log(f"{self.app_translator.translate('system_webview2_version_is_not_installed')}\n")
-            self.logger.info(self.app_translator.translate("system_webview2_version_is_not_installed"))
+            self._log(self.app_translator.translate("system_webview2_version_is_not_installed") + "\n")
+            self.logger.info("System Microsoft Edge WebView2 Runtime is not installed.")
 
     def _global_webview2_version(self):
         global_webview2_reg_key = (
@@ -87,18 +80,16 @@ class GetDependenciesVersion:
                 self._log(msg + "\n")
                 self.logger.info(msg)
         except FileNotFoundError:
-            self._log(f"{self.app_translator.translate('global_webview2_version_is_not_installed')}\n")
-            self.logger.info(self.app_translator.translate("global_webview2_version_is_not_installed"))
+            self._log(self.app_translator.translate("global_webview2_version_is_not_installed") + "\n")
+            self.logger.info("Global Microsoft Edge WebView2 Runtime is not installed.")
         except Exception as e:
             self._log(
                 self.app_translator.translate("an_error_occurred_while_reading_global_webview2_version").format(
                     error=str(e)
                 )
             )
-            self.logger.error(self.app_translator.translate("an_error_occurred_while_reading_global_webview2_version").format(
-                error=str(e)
-                )
-            )
+            self.logger.error(
+                "An Error Occurred While Reading the Global Microsoft Edge WebView2 Runtime Version: " + str(e))
 
     def _windows_app_runtime_version(self):
         get_windows_app_runtime_versions = (
@@ -134,10 +125,7 @@ class GetDependenciesVersion:
                             formatted_output=formatted_output
                             ) + "\n"
                         )
-                    self.logger.info(self.app_translator.translate("windows_app_runtime_info_is").format(
-                            formatted_output=formatted_output
-                            )
-                        )
+                    self.logger.info("Windows App Runtime Info:\n" + formatted_output)
                 except Exception as e:
                     self._log(
                         self.app_translator.translate("raw_windows_app_runtime_info_is").format(
@@ -147,15 +135,11 @@ class GetDependenciesVersion:
                     self.logger.error(f"An Error Occurred While Parsing Windows App Runtime Version JSON Output: {e}")
             else:
                 self._log(self.app_translator.translate('windows_app_runtime_not_found'))
-                self.logger.info(self.app_translator.translate("windows_app_runtime_not_found"))
+                self.logger.info("Windows App Runtime not found.")
         except Exception as e:
             self._log(
                 self.app_translator.translate("an_error_occurred_while_reading_windows_app_runtime_version").format(
                     error=str(e)
                     )
                 )
-            self.logger.error(
-                self.app_translator.translate("an_error_occurred_while_reading_windows_app_runtime_version").format(
-                    error=str(e)
-                )
-            )
+            self.logger.error(f"An Error Occurred While Reading the Windows App Runtime Version: {e}")

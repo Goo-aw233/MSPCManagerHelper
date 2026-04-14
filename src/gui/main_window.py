@@ -207,7 +207,7 @@ class MainWindow(customtkinter.CTk):
 
         self.geometry(f"{width}x{height}+{x}+{y}")
         self.minsize(800, 600)
-        self.logger.info(f"Window Geometry Set: {width} x {height} (x + {x}, y + {y}), Scaling Factor: {self._get_window_scaling()}")
+        self.logger.info(f"Window Geometry Set to: {width} x {height} (x + {x}, y + {y}), Scaling Factor: {self._get_window_scaling()}")
 
     def _create_nav_button(self, icon, text_key, command, row):
         button = customtkinter.CTkButton(

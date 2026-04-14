@@ -103,7 +103,7 @@ class HelpWindow(customtkinter.CTk):
         y = (screen_height - height) // 2
 
         self.geometry(f"{width}x{height}+{x}+{y}")
-        self.logger.info(f"Window Geometry Set: {width} x {height} (x + {x}, y + {y}), Scaling Factor: {self._get_window_scaling()}")
+        self.logger.info(f"Window Geometry Set to: {width} x {height} (x + {x}, y + {y}), Scaling Factor: {self._get_window_scaling()}")
 
     def _remove_minimize_maximize_buttons(self):
         try:
