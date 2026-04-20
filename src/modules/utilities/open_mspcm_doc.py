@@ -19,14 +19,14 @@ class OpenMSPCMDoc:
         mspcm_doc_url = (
             # Original URLs
             (
-                AppMetadata.MSPCM_CN_DOC_URL
+                AppMetadata.MSPCM_ZHCN_DOC_URL
                 if locale == "zh-cn"
                 else AppMetadata.MSPCM_DOC_URL
             )
             if AppSettings.is_original_links_enabled()
             # Redirected URLs
             else (
-                AppMetadata.MSPCM_CN_DOC_DIR_URL
+                AppMetadata.MSPCM_ZHCN_DOC_DIR_URL
                 if locale == "zh-cn"
                 else AppMetadata.MSPCM_DOC_DIR_URL
             )

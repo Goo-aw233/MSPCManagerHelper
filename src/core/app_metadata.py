@@ -19,11 +19,11 @@ class AppMetadata:
     APP_UPDATE_1DRV_URL = "https://gbcs6-my.sharepoint.com/:f:/g/personal/gucats_gbcs6_onmicrosoft_com/EtKwa-2la71HmG2RxkB5lngBvvRt9CFOYsyJG_HOwYIzNA"
     MICROSOFT_PC_MANAGER_URL = "https://pcmanager.microsoft.com"
     MSPCM_APP_PACKAGE_1DRV_URL = "https://gbcs6-my.sharepoint.com/:f:/g/personal/gucats_gbcs6_onmicrosoft_com/EoscJOQ9taJFtx9LZLPiBM0BEmVm7wsLuJOuHnwmo9EQ5w"
-    MSPCM_CN_DOC_URL = "https://docs.qq.com/doc/DR2FrVkJmT0NuZ0Zx"
+    MSPCM_ZHCN_DOC_URL = "https://docs.qq.com/doc/DR2FrVkJmT0NuZ0Zx"
     MSPCM_DOC_URL = "https://mspcmanager.github.io/mspcm-docs"
 
     # Redirected URLs
-    APP_UPDATE_1DRV_DIR_URL = "https://blog.gucats.com/go/MSPCManagerHelper-1drv"
-    MSPCM_APP_PACKAGE_1DRV_DIR_URL = "https://blog.gucats.com/go/MicrosoftPCManager-AppPackage-1drv"
-    MSPCM_CN_DOC_DIR_URL = "https://blog.gucats.com/go/MicrosoftPCManager-Doc-CN"
-    MSPCM_DOC_DIR_URL = "https://blog.gucats.com/go/MicrosoftPCManager-Doc"
+    APP_UPDATE_1DRV_DIR_URL = "https://go.gucats.com/MSPCManagerHelperOD"
+    MSPCM_APP_PACKAGE_1DRV_DIR_URL = "https://go.gucats.com/MSPCMAppOD"
+    MSPCM_ZHCN_DOC_DIR_URL = "https://go.gucats.com/MSPCMDocZH-CN"
+    MSPCM_DOC_DIR_URL = "https://go.gucats.com/MSPCMDoc"
