@@ -1,2 +1,0 @@
-class DownloadAppFromGitHub:
-    pass

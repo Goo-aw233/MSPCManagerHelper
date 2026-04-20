@@ -2,12 +2,16 @@
 Modules Packages for MSPCManagerHelper
 """
 
-from . import (installer, maintenance, toolbox, uninstaller, utilities)
+from . import (
+    installer,
+    maintenance,
+    uninstaller,
+    utilities
+)
 
 __all__ = [
     "installer",
     "maintenance",
-    "toolbox",
     "uninstaller",
     "utilities",
 ]

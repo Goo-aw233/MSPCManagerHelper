@@ -5,7 +5,8 @@ from tkinter import messagebox
 
 class URILauncher:
     """
-    USEAGE EXAMPLE:
+    USAGE EXAMPLE:
+
     URILauncher.launch_uri(
         uri="example:uri",
         target_name="Example Name", # To provide context in logs and error messages.

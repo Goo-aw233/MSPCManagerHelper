@@ -7,6 +7,7 @@ from tkinter import messagebox
 class URLHandler:
     """
     USAGE EXAMPLE:
+
     URLHandler.launch_url(
         url="https://example.com",
         target_name="Example Name", # To provide context in logs and error messages.

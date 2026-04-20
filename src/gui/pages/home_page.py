@@ -4,44 +4,31 @@ import threading
 
 import customtkinter
 
-from core.advanced_startup import AdvancedStartup
-from core.app_logger import AppLogger
-from core.app_metadata import AppMetadata
-from core.app_settings import AppSettings
-from core.get_mspcm_version import GetMSPCMVersion
-from core.system_checks import PrerequisiteChecks
-from handlers.private import RestartAsAdministrator, EnableLongPaths
+from core import (
+    AdvancedStartup,
+    AppMetadata,
+    AppSettings,
+    GetMSPCMVersion,
+    PrerequisiteChecks
+)
+from gui.components import HomePageWidgets
+from handlers.private import EnableLongPaths, RestartAsAdministrator
 from handlers.shared import StartMSPCM, StartMSPCMBeta, URILauncher
+from .base_page_frame import BaseInfoPageFrame
 
 
-class HomePage(customtkinter.CTkFrame):
+class HomePage(BaseInfoPageFrame, HomePageWidgets):
     def __init__(self, parent, app_translator, font_family):
-        super().__init__(parent, fg_color="transparent")
-        self.logger = AppLogger.get_logger()
-        self.log_file_path = AppLogger.get_log_file_path()
-        self.app_translator = app_translator
-        self.font_family = font_family
+        super().__init__(
+            parent=parent,
+            app_translator=app_translator,
+            font_family=font_family,
+            page_title_key="home_page"
+        )
 
         # Create a Thread-Safe Queue
         self.result_queue = queue.Queue()
         self.logger.debug("Initialized result_queue for thread-safe UI updates.")
-
-        # Main Layout configuration (Grid)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=1)
-
-        # Page Title Label
-        self.page_title_label = customtkinter.CTkLabel(
-            self,
-            text=self.app_translator.translate("home_page"),
-            font=customtkinter.CTkFont(family=self.font_family, size=24, weight="bold")
-        )
-        self.page_title_label.grid(row=0, column=0, sticky="w", padx=20, pady=(20, 10))
-
-        # Scrollable Content
-        self.scroll_frame = customtkinter.CTkScrollableFrame(self, fg_color="transparent")
-        self.scroll_frame.grid(row=1, column=0, sticky="nsew", padx=0, pady=0)
-        self.scroll_frame.grid_columnconfigure(0, weight=1)
 
         # === Welcome Section ===
         self._create_section_label(self.app_translator.translate("welcome_title"))
@@ -354,144 +341,3 @@ class HomePage(customtkinter.CTkFrame):
     def _exit_app(self):
         self.logger.info("The app is exiting via the exit button...")
         sys.exit(0)
-
-    def _create_section_label(self, text):
-        label = customtkinter.CTkLabel(
-            self.scroll_frame,
-            text=text,
-            font=customtkinter.CTkFont(family=self.font_family, size=16, weight="bold"),
-            anchor="w"
-        )
-        label.pack(fill="x", padx=25, pady=(20, 10))
-
-    def _create_section_label_with_button(self, text, button_text, command):
-        container = customtkinter.CTkFrame(self.scroll_frame, fg_color="transparent")
-        container.pack(fill="x", padx=25, pady=(20, 10))
-
-        label = customtkinter.CTkLabel(
-            container,
-            text=text,
-            font=customtkinter.CTkFont(family=self.font_family, size=16, weight="bold"),
-            anchor="w"
-        )
-        label.pack(side="left")
-
-        button = customtkinter.CTkButton(
-            container,
-            text=button_text,
-            font=customtkinter.CTkFont(family=self.font_family, size=12),
-            command=command
-        )
-        button.pack(side="right")
-        return button
-
-    def _create_group_frame(self):
-        frame = customtkinter.CTkFrame(
-            self.scroll_frame,
-            fg_color=("gray95", "#202020"),
-            corner_radius=4,
-            border_width=1,
-            border_color=("gray90", "#2b2b2b")
-        )
-        frame.pack(fill="x", padx=20, pady=0)
-        return frame
-
-    @staticmethod
-    def _create_separator(parent):
-        separator = customtkinter.CTkFrame(parent, height=2, fg_color=("gray90", "#2b2b2b"))
-        separator.pack(fill="x", padx=10)
-        return separator
-
-    def _create_info_textbox_card(self, parent, title, description, widget_constructor=None,
-                                  enable_text_selection=False, activate_scrollbars=False, min_height=50,
-                                  **widget_kwargs):
-        container = customtkinter.CTkFrame(parent, fg_color="transparent")
-        container.pack(fill="x", padx=10, pady=8)
-
-        # Text Column
-        text_frame = customtkinter.CTkFrame(container, fg_color="transparent")
-        text_frame.pack(side="left", fill="both", expand=True, padx=5)
-
-        title_label = customtkinter.CTkLabel(
-            text_frame,
-            text=title,
-            font=customtkinter.CTkFont(family=self.font_family, size=14),
-            anchor="w"
-        )
-        title_label.pack(fill="x")
-
-        if description:
-            # Auto-adjust height based on newlines (approx 22px per line + padding).
-            line_count = description.count('\n') + 1
-            textbox_height = max(min_height, line_count * 22 + 10)
-
-            desc_textbox = customtkinter.CTkTextbox(
-                text_frame,
-                font=customtkinter.CTkFont(family=self.font_family, size=12),
-                text_color="gray50",    # CTkTextbox does not support dual-mode text_color ("gray50", "gray70").
-                fg_color="transparent",
-                wrap="word",
-                height=textbox_height,
-                activate_scrollbars=activate_scrollbars,
-                border_width=0
-            )
-            desc_textbox.pack(fill="x", pady=(0, 5))
-            desc_textbox.insert("1.0", description)
-            desc_textbox.configure(state="disabled")
-            # Disable Text Selection
-            if not enable_text_selection:
-                desc_textbox.bind("<Button-1>", lambda e: "break")  # Disable Single Click
-                desc_textbox.bind("<B1-Motion>", lambda e: "break")  # Disable Click & Drag
-                desc_textbox.bind("<Double-Button-1>", lambda e: "break")  # Disable Double Click
-                desc_textbox.bind("<Triple-Button-1>", lambda e: "break")  # Disable Triple Click
-                # Keep Arrow Instead of Cursor
-                desc_textbox.bind("<Enter>", lambda e: desc_textbox.configure(cursor="arrow"))
-                desc_textbox.bind("<Leave>", lambda e: desc_textbox.configure(cursor="arrow"))
-
-        # Widget Column
-        if widget_constructor:
-            # Inject font family if not present and if the widget supports it (most CTk widgets do).
-            if "font" not in widget_kwargs:
-                widget_kwargs["font"] = customtkinter.CTkFont(family=self.font_family)
-
-            widget = widget_constructor(container, **widget_kwargs)
-            widget.pack(side="right", padx=5)
-            return widget
-        return None
-
-    def _create_settings_card(self, parent, title, description, widget_constructor=None, **widget_kwargs):
-        container = customtkinter.CTkFrame(parent, fg_color="transparent")
-        container.pack(fill="x", padx=10, pady=8)
-
-        # Text Column
-        text_frame = customtkinter.CTkFrame(container, fg_color="transparent")
-        text_frame.pack(side="left", fill="both", expand=True, padx=5)
-
-        title_label = customtkinter.CTkLabel(
-            text_frame,
-            text=title,
-            font=customtkinter.CTkFont(family=self.font_family, size=14),
-            anchor="w"
-        )
-        title_label.pack(fill="x")
-
-        if description:
-            desc_label = customtkinter.CTkLabel(
-                text_frame,
-                text=description,
-                font=customtkinter.CTkFont(family=self.font_family, size=12),
-                text_color=("gray50", "gray70"),
-                anchor="w"
-            )
-            desc_label.pack(fill="x")
-
-        # Widget Column
-        if widget_constructor:
-            # Inject font family if not present and if the widget supports it (most CTk widgets do).
-            if "font" not in widget_kwargs:
-                widget_kwargs["font"] = customtkinter.CTkFont(family=self.font_family)
-
-            widget = widget_constructor(container, **widget_kwargs)
-            widget.pack(side="right", padx=5)
-            return widget
-        return None

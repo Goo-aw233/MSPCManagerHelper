@@ -92,10 +92,14 @@ class PrerequisiteChecks:
     def check_windows_server_levels(check_type="is_windows_server_core"):
         """
         SUPPORTS PARAMETERS:
-        - `is_windows_server_core`: Checks if the Windows Server installation type is Core. (Default)
-        - `is_windows_server`: Checks if the Windows installation is any type of Windows Server (including both Server Core and Desktop Experience).
 
-        USEAGE EXAMPLE (Using `is_windows_server_core` Has the Same Effect as Not Providing the Parameter):
+        1. `is_windows_server_core`: Checks if the Windows Server installation type is Core. (Default)
+        2. `is_windows_server`: Checks if the Windows installation is any type of Windows Server (including both Server Core and Desktop Experience).
+
+        --------------------------------------------------
+
+        USAGE EXAMPLE (Using `is_windows_server_core` Has the Same Effect as Not Providing the Parameter):
+
         if PrerequisiteChecks.check_windows_server_levels(check_type="is_windows_server"):
             return True # Windows Server
         """
@@ -245,7 +249,8 @@ class OptionalChecks:
                 utilities = [str(target_utility)]
             """
             Use `target_utility=["Name1", "Name2", "..."]` to check specific utilities or exes (not limited to default list).
-            USEAGE EXAMPLE:
+            USAGE EXAMPLE:
+
             if OptionalChecks.check_windows_utilities_availability(target_utility=["cmd.exe", "Dism.exe"]):
                 return True # cmd.exe & Dism.exe is Available
             else:

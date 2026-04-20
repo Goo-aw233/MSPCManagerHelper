@@ -1,8 +1,10 @@
 import json
 import subprocess
 
-from core.app_settings import AppSettings
-from core.system_checks import PrerequisiteChecks
+from core import (
+    AppSettings,
+    PrerequisiteChecks
+)
 
 
 class ViewInstalledSecurityProducts:

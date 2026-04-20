@@ -3,9 +3,11 @@ import subprocess
 import webbrowser
 from tkinter import messagebox
 
-from core.app_metadata import AppMetadata
-from core.app_settings import AppSettings
-from core.app_translator import AppTranslator
+from core import (
+    AppMetadata,
+    AppSettings,
+    AppTranslator
+)
 
 
 class OpenMSPCMDoc:

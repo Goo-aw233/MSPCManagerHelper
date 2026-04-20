@@ -3,6 +3,7 @@ Pages Package for MSPCManagerHelper GUI
 """
 
 from .about_page import AboutPage
+from .base_page_frame import BaseFuncPageFrame, BaseInfoPageFrame
 from .home_page import HomePage
 from .installer_page import InstallerPage
 from .maintenance_page import MaintenancePage
@@ -13,6 +14,8 @@ from .utilities_page import UtilitiesPage
 
 __all__ = [
     "AboutPage",
+    "BaseFuncPageFrame",
+    "BaseInfoPageFrame",
     "HomePage",
     "InstallerPage",
     "MaintenancePage",

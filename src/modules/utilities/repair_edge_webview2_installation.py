@@ -7,8 +7,10 @@ from tkinter import messagebox
 
 import psutil
 
-from core.app_resources import AppResources
-from core.app_settings import AppSettings
+from core import (
+    AppResources,
+    AppSettings
+)
 
 
 class RepairEdgeWebView2Installation:

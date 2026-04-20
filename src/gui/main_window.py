@@ -7,15 +7,27 @@ from tkinter import messagebox
 import customtkinter
 from windows_toasts import Toast, WindowsToaster
 
-from core.advanced_startup import AdvancedStartup
-from core.app_logger import AppLogger
-from core.app_metadata import AppMetadata
-from core.app_resources import AppResources
-from core.app_settings import AppSettings
-from core.app_translator import AppTranslator
-from core.set_font_family import SetFontFamily
-from core.system_checks import OptionalChecks, PrerequisiteChecks
-from gui.pages import *
+from core import (
+    AdvancedStartup,
+    AppLogger,
+    AppMetadata,
+    AppResources,
+    AppSettings,
+    AppTranslator,
+    OptionalChecks,
+    PrerequisiteChecks,
+    SetFontFamily
+)
+from gui.pages import (
+    AboutPage,
+    HomePage,
+    InstallerPage,
+    MaintenancePage,
+    SettingsPage,
+    ToolboxPage,
+    UninstallerPage,
+    UtilitiesPage
+)
 
 
 class MainWindow(customtkinter.CTk):

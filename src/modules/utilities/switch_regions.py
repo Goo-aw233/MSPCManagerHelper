@@ -6,8 +6,10 @@ import customtkinter
 import iso3166
 from customtkinter import CTkInputDialog
 
-from core.app_resources import AppResources
-from core.app_settings import AppSettings
+from core import (
+    AppResources,
+    AppSettings
+)
 
 
 class SwitchRegions:

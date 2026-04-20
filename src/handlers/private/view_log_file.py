@@ -2,10 +2,12 @@ import os
 import subprocess
 from tkinter import messagebox
 
-from core.advanced_startup import AdvancedStartup
-from core.app_settings import AppSettings
-from core.internal_viewer import InternalViewer
-from core.system_checks import PrerequisiteChecks
+from core import (
+    AdvancedStartup,
+    AppSettings,
+    InternalViewer,
+    PrerequisiteChecks
+)
 
 
 class ViewLogFile:
