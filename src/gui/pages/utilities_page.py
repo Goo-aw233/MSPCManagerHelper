@@ -541,6 +541,8 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         self.compute_files_hashes_card.configure(state="disabled")
         self.update_idletasks()
 
+        operation_name = self.app_translator.translate("compute_files_hashes_title")
+
         hasher = ComputeFilesHashes(
             logger=self.logger,
             app_translator=self.app_translator,
@@ -551,7 +553,18 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
 
         files = hasher.select_files()
         if not files:
+            # Keep cancel behavior consistent with normal operation flow.
+            self.tabview.set(self.events_tab_name)
+            self.events_textbox.clear_events()
+            self.events_textbox.log_to_events(
+                self.app_translator.translate("executing_operation_with_name").format(operation_name=operation_name)
+                + "\n"
+                + self.app_translator.translate("please_wait_for_completion")
+                + "\n"
+            )
             self.events_textbox.log_to_events(self.app_translator.translate("user_has_canceled_the_operation"))
+            self.logger.info(f"Executing Operation: {operation_name}")
+            self.logger.info("The operation was canceled by the user.")
             self._update_compute_button_state()
             return
 
@@ -560,7 +573,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             "compute_files_hashes_title",
             on_completion=self._update_compute_button_state
         )
-    # ~ End of Compute File Hashes ~
+    # ~ End of Compute Files Hashes ~
 
     # ~ Get Dependencies Versions ~
     def _on_dependencies_checkbox_change(self):
