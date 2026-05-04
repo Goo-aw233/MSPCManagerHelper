@@ -3,10 +3,10 @@ CTkToolTip==0.9
 customtkinter==5.2.2
 darkdetect==0.8.0
 iso3166==2.1.1
-packaging==26.1
+packaging==26.2
 pefile==2024.8.26
 psutil==7.2.2
-pyinstaller==6.19.0
+pyinstaller==6.20.0
 pyinstaller-hooks-contrib==2026.4
 pywin32==311
 pywin32-ctypes==0.2.3
