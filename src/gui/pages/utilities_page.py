@@ -253,38 +253,14 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         )
         self.webview2_repair_options_frame.pack(fill="x", padx=10, pady=5)
 
-        # Restore IFEO Registry
-        self.checkbox_restore_ifeo_registry = customtkinter.CTkCheckBox(
+        # Select All
+        self.checkbox_webview2_select_all = customtkinter.CTkCheckBox(
             self.webview2_repair_options_frame,
-            text=self.app_translator.translate("restore_ifeo_registry_checkbox"),
+            text=self.app_translator.translate("select_all"),
             font=customtkinter.CTkFont(family=self.font_family),
-            command=self._on_webview2_repair_checkbox_change
+            command=self._on_webview2_select_all_change
         )
-        self.checkbox_restore_ifeo_registry.grid(row=0, column=0, sticky="w", padx=10, pady=5)
-        CTkToolTip(self.checkbox_restore_ifeo_registry,
-                   message=self.app_translator.translate("restore_ifeo_registry_tooltip"), font=(self.font_family, 12))
-
-        # Remove WebView2 Directory
-        self.checkbox_remove_webview2_dir = customtkinter.CTkCheckBox(
-            self.webview2_repair_options_frame,
-            text=self.app_translator.translate("remove_webview2_dir_checkbox"),
-            font=customtkinter.CTkFont(family=self.font_family),
-            command=self._on_webview2_repair_checkbox_change
-        )
-        self.checkbox_remove_webview2_dir.grid(row=0, column=1, sticky="w", padx=10, pady=5)
-        CTkToolTip(self.checkbox_remove_webview2_dir, message=fr"%ProgramFiles(x86)%\Microsoft\EdgeWebView",
-                   font=(self.font_family, 12))
-
-        # Remove WebView2 Parent Directory
-        self.checkbox_remove_webview2_parent_dir = customtkinter.CTkCheckBox(
-            self.webview2_repair_options_frame,
-            text=self.app_translator.translate("remove_webview2_parent_dir_checkbox"),
-            font=customtkinter.CTkFont(family=self.font_family),
-            command=self._on_webview2_repair_checkbox_change
-        )
-        self.checkbox_remove_webview2_parent_dir.grid(row=0, column=2, sticky="w", padx=10, pady=5)
-        CTkToolTip(self.checkbox_remove_webview2_parent_dir, message=fr"%ProgramFiles(x86)%\Microsoft",
-                   font=(self.font_family, 12))
+        self.checkbox_webview2_select_all.grid(row=0, column=0, sticky="w", padx=10, pady=5)
 
         # End Related Processes
         self.checkbox_end_related_processes = customtkinter.CTkCheckBox(
@@ -293,27 +269,75 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             font=customtkinter.CTkFont(family=self.font_family, weight="bold"),
             command=self._on_webview2_repair_checkbox_change
         )
-        self.checkbox_end_related_processes.grid(row=1, column=0, sticky="w", padx=10, pady=5)
+        self.checkbox_end_related_processes.grid(row=0, column=1, sticky="w", padx=10, pady=5)
         CTkToolTip(self.checkbox_end_related_processes,
                    message=self.app_translator.translate("end_related_processes_tooltip"), font=(self.font_family, 12))
         self.checkbox_end_related_processes.configure(state="disabled")
 
+        # Restore IFEO Registry
+        self.checkbox_restore_ifeo_registry = customtkinter.CTkCheckBox(
+            self.webview2_repair_options_frame,
+            text=self.app_translator.translate("restore_ifeo_registry_checkbox"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            command=self._on_webview2_repair_checkbox_change
+        )
+        self.checkbox_restore_ifeo_registry.grid(row=1, column=0, sticky="w", padx=10, pady=5)
+        CTkToolTip(self.checkbox_restore_ifeo_registry,
+                   message=self.app_translator.translate("restore_ifeo_registry_tooltip"), font=(self.font_family, 12))
+
+        # Remove EdgeUpdate Registry
+        self.checkbox_remove_edgeupdate_registry = customtkinter.CTkCheckBox(
+            self.webview2_repair_options_frame,
+            text=self.app_translator.translate("remove_edgeupdate_registry_checkbox"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            command=self._on_webview2_repair_checkbox_change
+        )
+        self.checkbox_remove_edgeupdate_registry.grid(row=1, column=1, sticky="w", padx=10, pady=5)
+        CTkToolTip(self.checkbox_remove_edgeupdate_registry,
+                   message=r"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate",
+                   font=(self.font_family, 12))
+
+        # Remove WebView2 Directory
+        self.checkbox_remove_webview2_dir = customtkinter.CTkCheckBox(
+            self.webview2_repair_options_frame,
+            text=self.app_translator.translate("remove_webview2_dir_checkbox"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            command=self._on_webview2_repair_checkbox_change
+        )
+        self.checkbox_remove_webview2_dir.grid(row=1, column=2, sticky="w", padx=10, pady=5)
+        CTkToolTip(self.checkbox_remove_webview2_dir, message=fr"%ProgramFiles(x86)%\Microsoft\EdgeWebView",
+                   font=(self.font_family, 12))
+
+        # Remove Edge Components Directory
+        self.checkbox_remove_edge_components_dir = customtkinter.CTkCheckBox(
+            self.webview2_repair_options_frame,
+            text=self.app_translator.translate("remove_edge_components_dir_checkbox"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            command=self._on_webview2_repair_checkbox_change
+        )
+        self.checkbox_remove_edge_components_dir.grid(row=1, column=3, sticky="w", padx=10, pady=5)
+        CTkToolTip(self.checkbox_remove_edge_components_dir, message=fr"%ProgramFiles(x86)%\Microsoft",
+                   font=(self.font_family, 12))
+
         # Checkbox Configuration
         if not AdvancedStartup.is_administrator():
+            self.checkbox_webview2_select_all.configure(state="disabled")
             self.checkbox_restore_ifeo_registry.configure(state="disabled")
+            self.checkbox_remove_edgeupdate_registry.configure(state="disabled")
             self.checkbox_remove_webview2_dir.configure(state="disabled")
-            self.checkbox_remove_webview2_parent_dir.configure(state="disabled")
+            self.checkbox_remove_edge_components_dir.configure(state="disabled")
             self.checkbox_end_related_processes.configure(state="disabled")
 
         if AppSettings.is_take_ownership_enabled() and not OptionalChecks.check_windows_utilities_availability(target_utility="reg.exe"):
             self.checkbox_restore_ifeo_registry.configure(state="disabled")
-            self.logger.warning("reg.exe is not available. Disabling IFEO Registry Repair Checkbox.")
+            self.checkbox_remove_edgeupdate_registry.configure(state="disabled")
+            self.logger.warning("reg.exe is not available. Disabling registry repair checkboxes.")
 
         if AppSettings.is_take_ownership_enabled() and not OptionalChecks.check_windows_utilities_availability(target_utility=["cmd.exe", "powershell.exe"]):
             self.checkbox_remove_webview2_dir.configure(state="disabled")
             self.logger.warning("cmd.exe or powershell.exe is not available. Disabling WebView2 Directory Removal Checkbox.")
-            self.checkbox_remove_webview2_parent_dir.configure(state="disabled")
-            self.logger.warning("cmd.exe or powershell.exe is not available. Disabling WebView2 Parent Directory Removal Checkbox.")
+            self.checkbox_remove_edge_components_dir.configure(state="disabled")
+            self.logger.warning("cmd.exe or powershell.exe is not available. Disabling Edge Components Directory Removal Checkbox.")
 
         if AppSettings.is_take_ownership_enabled() and not OptionalChecks.check_windows_utilities_availability(target_utility=["taskkill.exe"]):
             self.checkbox_end_related_processes.configure(state="disabled")
@@ -613,9 +637,46 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
     # ~ End of Get Dependencies Versions ~
 
     # ~ Repair Microsoft Edge WebView2 Installation ~
+    def _update_webview2_select_all_state(self):
+        targets = [
+            self.checkbox_restore_ifeo_registry,
+            self.checkbox_remove_edgeupdate_registry,
+            self.checkbox_remove_webview2_dir,
+            self.checkbox_remove_edge_components_dir
+        ]
+        enabled_targets = [cb for cb in targets if cb.cget("state") != "disabled"]
+
+        if not enabled_targets:
+            self.checkbox_webview2_select_all.deselect()
+            return
+
+        if all(cb.get() == 1 for cb in enabled_targets):
+            self.checkbox_webview2_select_all.select()
+        else:
+            self.checkbox_webview2_select_all.deselect()
+
+    def _on_webview2_select_all_change(self):
+        state = self.checkbox_webview2_select_all.get() == 1
+        targets = [
+            self.checkbox_restore_ifeo_registry,
+            self.checkbox_remove_edgeupdate_registry,
+            self.checkbox_remove_webview2_dir,
+            self.checkbox_remove_edge_components_dir
+        ]
+
+        for cb in targets:
+            if cb.cget("state") == "disabled":
+                continue
+            if state:
+                cb.select()
+            else:
+                cb.deselect()
+
+        self._on_webview2_repair_checkbox_change()
+
     def _on_webview2_repair_checkbox_change(self):
-        # Uncheck the WebView2 folder when selecting to remove the parent folder.
-        if self.checkbox_remove_webview2_parent_dir.get() == 1:
+        # Uncheck the WebView2 directory when selecting to remove the Edge components directory.
+        if self.checkbox_remove_edge_components_dir.get() == 1:
             self.checkbox_remove_webview2_dir.deselect()
             self.checkbox_remove_webview2_dir.configure(state="disabled")
         else:
@@ -623,7 +684,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
 
         if (
             self.checkbox_remove_webview2_dir.get() == 1 or
-            self.checkbox_remove_webview2_parent_dir.get() == 1
+            self.checkbox_remove_edge_components_dir.get() == 1
         ):
             self.checkbox_end_related_processes.configure(state="normal")
         else:
@@ -632,22 +693,26 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
 
         if (
             self.checkbox_restore_ifeo_registry.get() == 1 or
+            self.checkbox_remove_edgeupdate_registry.get() == 1 or
             self.checkbox_remove_webview2_dir.get() == 1 or
-            self.checkbox_remove_webview2_parent_dir.get() == 1 or
+            self.checkbox_remove_edge_components_dir.get() == 1 or
             self.checkbox_end_related_processes.get() == 1
         ):
             self.repair_edge_webview_2_installation_card.configure(state="normal")
         else:
             self.repair_edge_webview_2_installation_card.configure(state="disabled")
 
+        self._update_webview2_select_all_state()
+
     def _run_repair_edge_webview2_installation(self):
         self.repair_edge_webview_2_installation_card.configure(state="disabled")
         self.update_idletasks()
 
-        selected_edge_wv2_repair_options = {
+        selected_edge_webview2_repair_options = {
             "restore_ifeo_registry": self.checkbox_restore_ifeo_registry.get() == 1,
+            "remove_edgeupdate_registry": self.checkbox_remove_edgeupdate_registry.get() == 1,
             "remove_webview2_dir": self.checkbox_remove_webview2_dir.get() == 1,
-            "remove_webview2_parent_dir": self.checkbox_remove_webview2_parent_dir.get() == 1,
+            "remove_edge_components_dir": self.checkbox_remove_edge_components_dir.get() == 1,
             "end_related_processes": self.checkbox_end_related_processes.get() == 1
         }
 
@@ -655,7 +720,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
-            selected_edge_wv2_repair_options=selected_edge_wv2_repair_options
+            selected_edge_webview2_repair_options=selected_edge_webview2_repair_options
         )
 
         self._run_operation(

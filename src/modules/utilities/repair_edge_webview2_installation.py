@@ -14,11 +14,11 @@ from core import (
 
 
 class RepairEdgeWebView2Installation:
-    def __init__(self, logger, app_translator, log_callback, selected_edge_wv2_repair_options):
+    def __init__(self, logger, app_translator, log_callback, selected_edge_webview2_repair_options):
         self.logger = logger
         self.app_translator = app_translator
         self.log_callback = log_callback
-        self.selected_edge_wv2_repair_options = selected_edge_wv2_repair_options
+        self.selected_edge_webview2_repair_options = selected_edge_webview2_repair_options
         self.nsudo_path = AppResources.nsudo_path()
 
     def _log(self, message):
@@ -26,12 +26,12 @@ class RepairEdgeWebView2Installation:
             self.log_callback(message)
 
     def execute(self):
-        self.logger.debug(f"Selected Microsoft Edge WebView2 Repair Options: {self.selected_edge_wv2_repair_options}")
+        self.logger.debug(f"Selected Microsoft Edge WebView2 Repair Options: {self.selected_edge_webview2_repair_options}")
         use_ownership = AppSettings.is_take_ownership_enabled()
         if use_ownership:
             self.logger.debug(f"NSudo Path: {self.nsudo_path}")
 
-        for option, enabled in self.selected_edge_wv2_repair_options.items():
+        for option, enabled in self.selected_edge_webview2_repair_options.items():
             if not enabled:
                 continue
 
@@ -41,27 +41,33 @@ class RepairEdgeWebView2Installation:
                 else:
                     self._restore_ifeo_reg_key()
 
-            elif option == "remove_webview2_dir":
-                if self.selected_edge_wv2_repair_options.get("end_related_processes"):
-                    if use_ownership:
-                        self._end_related_processes_with_ownership()
-                    else:
-                        self._end_related_processes()
+            elif option == "remove_edgeupdate_registry":
                 if use_ownership:
-                    self._remove_wv2_dir_with_ownership()
+                    self._remove_edgeupdate_reg_key_with_ownership()
                 else:
-                    self._remove_wv2_dir()
+                    self._remove_edgeupdate_reg_key()
 
-            elif option == "remove_webview2_parent_dir":
-                if self.selected_edge_wv2_repair_options.get("end_related_processes"):
+            elif option == "remove_webview2_dir":
+                if self.selected_edge_webview2_repair_options.get("end_related_processes"):
                     if use_ownership:
                         self._end_related_processes_with_ownership()
                     else:
                         self._end_related_processes()
                 if use_ownership:
-                    self._remove_wv2_parent_dir_with_ownership()
+                    self._remove_webview2_dir_with_ownership()
                 else:
-                    self._remove_wv2_parent_dir()
+                    self._remove_webview2_dir()
+
+            elif option == "remove_edge_components_dir":
+                if self.selected_edge_webview2_repair_options.get("end_related_processes"):
+                    if use_ownership:
+                        self._end_related_processes_with_ownership()
+                    else:
+                        self._end_related_processes()
+                if use_ownership:
+                    self._remove_edge_components_dir_with_ownership()
+                else:
+                    self._remove_edge_components_dir()
 
     def _restore_ifeo_reg_key(self):
         msedgeupdate_ifeo_key = (
@@ -183,7 +189,8 @@ class RepairEdgeWebView2Installation:
                 "/f"
             ]
             result = subprocess.run(
-                add_cmd, 
+                add_cmd,
+                check=False,
                 shell=False,
                 text=True,
                 capture_output=True,
@@ -216,14 +223,94 @@ class RepairEdgeWebView2Installation:
             )
             self.logger.error(f"An Error Occurred While Creating IFEO Registry Key: {e}")
 
-    def _remove_wv2_dir(self):
-        wv2_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft" / "EdgeWebView"
+    def _remove_edgeupdate_reg_key(self):
+        edgeupdate_reg_key = r"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate"
 
-        if not wv2_dir_path.exists():
+        def _delete_key_tree(root_key, sub_key):
+            with winreg.OpenKey(root_key, sub_key, 0, winreg.KEY_READ | winreg.KEY_WRITE) as key:
+                while True:
+                    try:
+                        child_name = winreg.EnumKey(key, 0)
+                        _delete_key_tree(root_key, f"{sub_key}\\{child_name}")
+                    except OSError:
+                        break
+            winreg.DeleteKey(root_key, sub_key)
+
+        try:
+            _delete_key_tree(winreg.HKEY_LOCAL_MACHINE, edgeupdate_reg_key)
+            self._log(self.app_translator.translate("edgeupdate_registry_key_removed_successfully"))
+            self.logger.info("EdgeUpdate registry key removed successfully.")
+        except FileNotFoundError:
+            pass
+        except PermissionError:
+            self._log(self.app_translator.translate("no_permission_to_remove_edgeupdate_registry_key"))
+            self.logger.warning("No permission to remove EdgeUpdate registry key. Please run as administrator.")
+        except Exception as e:
+            self._log(
+                self.app_translator.translate("an_error_occurred_while_removing_edgeupdate_registry_key").format(
+                    error=str(e)
+                )
+            )
+            self.logger.error(f"An Error Occurred While Removing EdgeUpdate Registry Key: {e}")
+
+    def _remove_edgeupdate_reg_key_with_ownership(self):
+        edgeupdate_reg_key = r"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate"
+
+        try:
+            del_cmd = [
+                self.nsudo_path,
+                "-U:T",
+                "-P:E",
+                "-ShowWindowMode:Hide",
+                "-UseCurrentConsole",
+                "reg.exe",
+                "delete",
+                edgeupdate_reg_key,
+                "/f"
+            ]
+            result = subprocess.run(
+                del_cmd,
+                check=False,
+                shell=False,
+                text=True,
+                capture_output=True,
+                creationflags=subprocess.CREATE_NO_WINDOW
+            )
+
+            # NSudo Error Dealing
+            if result.returncode != 0:
+                if result.stdout:
+                    self._log(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
+                    self._log(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                    self.logger.error(f"NSudo Error Code: {result.returncode}")
+                    self.logger.error(f"===== Stdout: =====\n{result.stdout}")
+                raise Exception(f"NSudo Error Code: {result.returncode}")
+
+            # reg.exe Error Dealing
+            if result.stderr:
+                self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                self.logger.error(f"===== Stderr: =====\n{result.stderr}")
+                raise Exception(f"An Error Occurred While Removing EdgeUpdate Registry Key:\n{result.stderr}")
+
+            # Success
+            self._log(self.app_translator.translate("edgeupdate_registry_key_removed_successfully"))
+            self.logger.info("EdgeUpdate registry key removed successfully.")
+        except Exception as e:
+            self._log(
+                self.app_translator.translate("an_error_occurred_while_removing_edgeupdate_registry_key").format(
+                    error=str(e)
+                )
+            )
+            self.logger.error(f"An Error Occurred While Removing EdgeUpdate Registry Key: {e}")
+
+    def _remove_webview2_dir(self):
+        webview2_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft" / "EdgeWebView"
+
+        if not webview2_dir_path.exists():
             self._log(self.app_translator.translate("webview2_dir_not_exist"))
             self.logger.info("Microsoft Edge WebView2 directory does not exist.")
             return
-        if any(wv2_dir_path.iterdir()):
+        if any(webview2_dir_path.iterdir()):
             self.logger.warning("Microsoft Edge WebView2 directory is not empty.")
             result = messagebox.askyesno(
                 self.app_translator.translate("confirm_remove_webview2_dir_title"),
@@ -236,7 +323,7 @@ class RepairEdgeWebView2Installation:
 
         while True:
             try:
-                shutil.rmtree(wv2_dir_path)
+                shutil.rmtree(webview2_dir_path)
                 self._log(self.app_translator.translate("webview2_dir_removed_successfully"))
                 self.logger.info("Microsoft Edge WebView2 directory removed successfully.")
                 break
@@ -255,14 +342,14 @@ class RepairEdgeWebView2Installation:
                     )
                     break
 
-    def _remove_wv2_dir_with_ownership(self):
-        wv2_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft" / "EdgeWebView"
+    def _remove_webview2_dir_with_ownership(self):
+        webview2_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft" / "EdgeWebView"
 
-        if not wv2_dir_path.exists():
+        if not webview2_dir_path.exists():
             self._log(self.app_translator.translate("webview2_dir_not_exist"))
             self.logger.info("Microsoft Edge WebView2 directory does not exist.")
             return
-        if any(wv2_dir_path.iterdir()):
+        if any(webview2_dir_path.iterdir()):
             self.logger.warning("Microsoft Edge WebView2 directory is not empty.")
             result = messagebox.askyesno(
                 self.app_translator.translate("confirm_remove_webview2_dir_title"),
@@ -286,7 +373,7 @@ class RepairEdgeWebView2Installation:
                     "RMDIR",
                     "/S",
                     "/Q",
-                    str(wv2_dir_path)
+                    str(webview2_dir_path)
                 ]
                 result = subprocess.run(
                     remove_cmd,
@@ -306,7 +393,7 @@ class RepairEdgeWebView2Installation:
                     raise Exception(f"NSudo Error Code: {result.returncode}")
 
                 # CMD Error Dealing
-                if wv2_dir_path.exists():
+                if webview2_dir_path.exists():
                     if result.stderr:
                         self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
                         self.logger.error(f"===== Stderr: =====\n{result.stderr}")
@@ -331,18 +418,18 @@ class RepairEdgeWebView2Installation:
                     )
                     break
 
-    def _remove_wv2_parent_dir(self):
-        wv2_parent_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft"
+    def _remove_edge_components_dir(self):
+        edge_components_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft"
 
-        if not wv2_parent_dir_path.exists():
-            self._log(self.app_translator.translate("webview2_parent_dir_not_exist"))
-            self.logger.info("Microsoft Edge WebView2 parent directory does not exist.")
+        if not edge_components_dir_path.exists():
+            self._log(self.app_translator.translate("edge_components_dir_not_exist"))
+            self.logger.info("Microsoft Edge components directory does not exist.")
             return
-        if any(wv2_parent_dir_path.iterdir()):
-            self.logger.warning("Microsoft Edge WebView2 parent directory is not empty.")
+        if any(edge_components_dir_path.iterdir()):
+            self.logger.warning("Microsoft Edge components directory is not empty.")
             result = messagebox.askyesno(
-                self.app_translator.translate("confirm_remove_webview2_parent_dir_title"),
-                self.app_translator.translate("webview2_parent_dir_not_empty_confirm_remove")
+                self.app_translator.translate("confirm_remove_edge_components_dir_title"),
+                self.app_translator.translate("edge_components_dir_not_empty_confirm_remove")
             )
             if not result:
                 self._log(self.app_translator.translate("user_has_canceled_the_operation"))
@@ -350,37 +437,37 @@ class RepairEdgeWebView2Installation:
                 return
         while True:
             try:
-                shutil.rmtree(wv2_parent_dir_path)
-                self._log(self.app_translator.translate("webview2_parent_dir_removed_successfully"))
-                self.logger.info("Microsoft Edge WebView2 parent directory removed successfully.")
+                shutil.rmtree(edge_components_dir_path)
+                self._log(self.app_translator.translate("edge_components_dir_removed_successfully"))
+                self.logger.info("Microsoft Edge components directory removed successfully.")
                 break
             except Exception as e:
-                self.logger.error(f"An Error Occurred While Removing Microsoft Edge WebView2 Parent Directory: {e}")
+                self.logger.error(f"An Error Occurred While Removing Microsoft Edge Components Directory: {e}")
                 if not messagebox.askretrycancel(
                     self.app_translator.translate("error"),
-                    self.app_translator.translate("an_error_occurred_while_removing_webview2_parent_dir").format(
+                    self.app_translator.translate("an_error_occurred_while_removing_edge_components_dir").format(
                         error=str(e)
                     )
                 ):
                     self._log(
-                        self.app_translator.translate("an_error_occurred_while_removing_webview2_parent_dir").format(
+                        self.app_translator.translate("an_error_occurred_while_removing_edge_components_dir").format(
                             error=str(e)
                         )
                     )
                     break
 
-    def _remove_wv2_parent_dir_with_ownership(self):
-        wv2_parent_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft"
+    def _remove_edge_components_dir_with_ownership(self):
+        edge_components_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft"
 
-        if not wv2_parent_dir_path.exists():
-            self._log(self.app_translator.translate("webview2_parent_dir_not_exist"))
-            self.logger.info("Microsoft Edge WebView2 parent directory does not exist.")
+        if not edge_components_dir_path.exists():
+            self._log(self.app_translator.translate("edge_components_dir_not_exist"))
+            self.logger.info("Microsoft Edge components directory does not exist.")
             return
-        if any(wv2_parent_dir_path.iterdir()):
-            self.logger.warning("Microsoft Edge WebView2 parent directory is not empty.")
+        if any(edge_components_dir_path.iterdir()):
+            self.logger.warning("Microsoft Edge components directory is not empty.")
             result = messagebox.askyesno(
-                self.app_translator.translate("confirm_remove_webview2_parent_dir_title"),
-                self.app_translator.translate("webview2_parent_dir_not_empty_confirm_remove")
+                self.app_translator.translate("confirm_remove_edge_components_dir_title"),
+                self.app_translator.translate("edge_components_dir_not_empty_confirm_remove")
             )
             if not result:
                 self._log(self.app_translator.translate("user_has_canceled_the_operation"))
@@ -400,7 +487,7 @@ class RepairEdgeWebView2Installation:
                     "RMDIR",
                     "/S",
                     "/Q",
-                    str(wv2_parent_dir_path)
+                    str(edge_components_dir_path)
                 ]
                 result = subprocess.run(
                     remove_cmd,
@@ -420,26 +507,26 @@ class RepairEdgeWebView2Installation:
                     raise Exception(f"NSudo Error Code: {result.returncode}")
                 
                 # CMD Error Dealing
-                if wv2_parent_dir_path.exists():
+                if edge_components_dir_path.exists():
                     if result.stderr:
                         self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
                         self.logger.error(f"===== Stderr: =====\n{result.stderr}")
                     raise Exception("Directory still exists.")
 
                 # Success
-                self._log(self.app_translator.translate("webview2_parent_dir_removed_successfully"))
-                self.logger.info("Microsoft Edge WebView2 parent directory removed successfully.")
+                self._log(self.app_translator.translate("edge_components_dir_removed_successfully"))
+                self.logger.info("Microsoft Edge components directory removed successfully.")
                 break
             except Exception as e:
-                self.logger.error(f"An Error Occurred While Removing Microsoft Edge WebView2 Parent Directory: {e}")
+                self.logger.error(f"An Error Occurred While Removing Microsoft Edge Components Directory: {e}")
                 if not messagebox.askretrycancel(
                     self.app_translator.translate("error"),
-                    self.app_translator.translate("an_error_occurred_while_removing_webview2_parent_dir").format(
+                    self.app_translator.translate("an_error_occurred_while_removing_edge_components_dir").format(
                         error=str(e)
                     )
                 ):
                     self._log(
-                        self.app_translator.translate("an_error_occurred_while_removing_webview2_parent_dir").format(
+                        self.app_translator.translate("an_error_occurred_while_removing_edge_components_dir").format(
                             error=str(e)
                         )
                     )

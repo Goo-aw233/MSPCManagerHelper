@@ -137,7 +137,7 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
             command=lambda: URLHandler.launch_url(
                 url="https://developer.microsoft.com/microsoft-edge/webview2" + AppSettings.get_support_developer_tracking_id(),
                 target_name="Microsoft Edge WebView2 Runtime Download Page",
-                messagebox_error_message="failed_to_open_wv2_rt_download_page",
+                messagebox_error_message="failed_to_open_webview2_download_page",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator
@@ -157,7 +157,7 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
             command=lambda: URLHandler.launch_url(
                 url="https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads-archive" + AppSettings.get_support_developer_tracking_id(),
                 target_name="Windows App Runtime Download Page",
-                messagebox_error_message="failed_to_open_war_rt_download_page",
+                messagebox_error_message="failed_to_open_windows_app_runtime_download_page",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator
