@@ -72,14 +72,58 @@ class GetDependenciesVersion:
                     channel, _ = winreg.QueryValueEx(key, "channel")
                 except FileNotFoundError:
                     channel = None
-                msg = self.app_translator.translate("global_webview2_version_is").format(version=pv) + "\n"
                 if channel:
-                    msg = self.app_translator.translate("global_webview2_version_is").format(
-                        version=f"{pv} ({channel})"
+                    self._log(
+                        self.app_translator.translate("global_webview2_version_is").format(
+                            version=f"{pv} ({channel})"
+                        )
+                        + "\n"
                     )
-                self._log(msg + "\n")
-                self.logger.info(msg)
+                    self.logger.info(f"Global Microsoft Edge WebView2 Runtime Version: {pv} ({channel})")
+                else:
+                    self._log(
+                        self.app_translator.translate("global_webview2_version_is").format(version=pv) + "\n"
+                    )
+                    self.logger.info(f"Global Microsoft Edge WebView2 Runtime Version: {pv}")
         except FileNotFoundError:
+            try:
+                webview2_base_dir = Path(os.environ["ProgramFiles(x86)"]) / "Microsoft" / "EdgeWebView" / "Application"
+            except KeyError:
+                webview2_base_dir = None
+
+            if webview2_base_dir and webview2_base_dir.exists():
+                exe_paths = list(webview2_base_dir.rglob("msedgewebview2.exe"))
+                if exe_paths:
+                    for exe_path in exe_paths:
+                        try:
+                            pe = pefile.PE(str(exe_path))
+                            if hasattr(pe, "VS_FIXEDFILEINFO"):
+                                ver_info = pe.VS_FIXEDFILEINFO[0]
+                                ms = ver_info.FileVersionMS
+                                ls = ver_info.FileVersionLS
+                                version = f"{ms >> 16}.{ms & 0xFFFF}.{ls >> 16}.{ls & 0xFFFF}"
+                                channel = None
+                                self._log(
+                                    self.app_translator.translate("global_webview2_version_is").format(
+                                        version=version
+                                    )
+                                    + f"\n{exe_path}\n"
+                                )
+                                self.logger.info(
+                                    "Global Microsoft Edge WebView2 Runtime Version: "
+                                    f"{version} (Path: {exe_path})"
+                                )
+                            pe.close()
+                        except Exception as e:
+                            self._log(
+                                self.app_translator.translate("an_error_occurred_while_reading_global_webview2_version").format(
+                                    error=str(e)
+                                )
+                            )
+                            self.logger.error(
+                                "An Error Occurred While Reading the Global Microsoft Edge WebView2 Runtime Version: " + str(e)
+                            )
+                    return
             self._log(self.app_translator.translate("global_webview2_version_is_not_installed") + "\n")
             self.logger.info("Global Microsoft Edge WebView2 Runtime is not installed.")
         except Exception as e:
