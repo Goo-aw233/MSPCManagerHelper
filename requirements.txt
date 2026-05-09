@@ -7,7 +7,7 @@ packaging==26.2
 pefile==2024.8.26
 psutil==7.2.2
 pyinstaller==6.20.0
-pyinstaller-hooks-contrib==2026.4
+pyinstaller-hooks-contrib==2026.5
 pywin32==311
 pywin32-ctypes==0.2.3
 setuptools==82.0.1
