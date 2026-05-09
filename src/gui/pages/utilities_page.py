@@ -42,7 +42,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         file_management_frame = self._create_group_frame()
 
         # --- Compute Files Hashes ---
-        self.compute_files_hashes_card = self._create_settings_card(
+        self.compute_files_hashes_card = self._create_actions_card(
             file_management_frame,
             title=self.app_translator.translate("compute_files_hashes_title"),
             description=self.app_translator.translate("compute_files_hashes_description"),
@@ -135,7 +135,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         open_to_frame = self._create_group_frame()
 
         # --- Open Developer Settings ---
-        self.open_developer_settings_card = self._create_settings_card(
+        self.open_developer_settings_card = self._create_actions_card(
             open_to_frame,
             title=self.app_translator.translate("open_developer_settings_title"),
             description=self.app_translator.translate("open_developer_settings_description"),
@@ -152,7 +152,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(open_to_frame)
 
         # --- Open Microsoft PC Manager Documentation ---
-        self.open_mspcm_doc_card = self._create_settings_card(
+        self.open_mspcm_doc_card = self._create_actions_card(
             open_to_frame,
             title=self.app_translator.translate("open_mspcm_doc_title"),
             description=self.app_translator.translate("open_mspcm_doc_description"),
@@ -172,7 +172,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # --- Get Dependencies Versions ---
         get_dependencies_versions_frame = self._create_group_frame()
         get_dependencies_versions_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
-        self.get_dependencies_versions_card = self._create_settings_card(
+        self.get_dependencies_versions_card = self._create_actions_card(
             get_dependencies_versions_frame,
             title=self.app_translator.translate("get_dependencies_versions_title"),
             description=self.app_translator.translate("get_dependencies_versions_description"),
@@ -233,7 +233,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # --- Repair Microsoft Edge WebView2 Installation ---
         repair_edge_webview_2_installation_frame = self._create_group_frame()
         repair_edge_webview_2_installation_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
-        self.repair_edge_webview_2_installation_card = self._create_settings_card(
+        self.repair_edge_webview_2_installation_card = self._create_actions_card(
             repair_edge_webview_2_installation_frame,
             title=self.app_translator.translate("repair_edge_webview_2_installation_title"),
             description=self.app_translator.translate("repair_edge_webview_2_installation_description"),
@@ -348,7 +348,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # --- Restart Services ---
         restart_services_frame = self._create_group_frame()
         restart_services_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
-        self.restart_services_card = self._create_settings_card(
+        self.restart_services_card = self._create_actions_card(
             restart_services_frame,
             title=self.app_translator.translate("restart_services_title"),
             description=self.app_translator.translate("restart_services_description"),
@@ -421,7 +421,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # --- Switch Regions ---
         switch_regions_frame = self._create_group_frame()
         switch_regions_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
-        self.switch_regions_card = self._create_settings_card(
+        self.switch_regions_card = self._create_actions_card(
             switch_regions_frame,
             title=self.app_translator.translate("switch_regions_title"),
             description=self.app_translator.translate("switch_regions_description"),
@@ -468,7 +468,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
 
         # --- View Installed Security Products ---
         view_installed_security_products_frame = self._create_group_frame()
-        self.view_installed_security_products_card = self._create_settings_card(
+        self.view_installed_security_products_card = self._create_actions_card(
             view_installed_security_products_frame,
             title=self.app_translator.translate("view_installed_security_products_title"),
             description=self.app_translator.translate("view_installed_security_products_description"),

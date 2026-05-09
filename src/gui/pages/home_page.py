@@ -40,8 +40,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
             f"{self.app_translator.translate('welcome_to')} {AppMetadata.APP_NAME}",
             self.app_translator.translate("welcome_message"),
             activate_scrollbars=True,
-            enable_text_selection=False,
-            min_height=50
+            enable_text_selection=False
         )
         # === End of Welcome Section ===
 
@@ -75,7 +74,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         self.exit_group = self._create_group_frame()
 
         # --- Run as Administrator ---
-        self._create_settings_card(
+        self._create_actions_card(
             self.exit_group,
             self.app_translator.translate("run_as_administrator"),
             self.app_translator.translate("run_as_administrator_description"),
@@ -94,7 +93,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
             # Separator
             self.long_paths_separator = self._create_separator(self.exit_group)
 
-            self.long_paths_button = self._create_settings_card(
+            self.long_paths_button = self._create_actions_card(
                 self.exit_group,
                 self.app_translator.translate("long_paths"),
                 self.app_translator.translate("long_paths_description"),
@@ -108,7 +107,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         self._create_separator(self.exit_group)
 
         # --- Cleanup After Exit ---
-        self.cleanup_after_exit_checkbox = self._create_settings_card(
+        self.cleanup_after_exit_checkbox = self._create_actions_card(
             self.exit_group,
             self.app_translator.translate("cleanup_after_exit"),
             self.app_translator.translate("cleanup_after_exit_description"),
@@ -127,7 +126,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         self._create_separator(self.exit_group)
 
         # --- Exit ---
-        self._create_settings_card(
+        self._create_actions_card(
             self.exit_group,
             self.app_translator.translate("exit_section_title"),
             self.app_translator.translate("exit_app_description"),
@@ -162,7 +161,9 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         self._create_info_textbox_card(
             self.mspcm_version_group,
             self.app_translator.translate("mspcm_version_is"),
-            self.app_translator.translate("loading")
+            self.app_translator.translate("loading"),
+            activate_scrollbars=True,
+            enable_text_selection=False
         )
 
         # Start a Thread to Fetch the Version Info
@@ -226,14 +227,18 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
                     logger=self.logger,
                     log_file_path=self.log_file_path,
                     app_translator=self.app_translator
-                )
+                ),
+                activate_scrollbars=True,
+                enable_text_selection=False
             )
             self.logger.info(f"Loaded Microsoft PC Manager Version: {mspcm_version}")
         else:
             self.mspcm_version_card = self._create_info_textbox_card(
                 self.mspcm_version_group,
                 self.app_translator.translate("mspcm_version_is"),
-                self.app_translator.translate("failed_to_get_mspcm_version_info")
+                self.app_translator.translate("failed_to_get_mspcm_version_info"),
+                activate_scrollbars=True,
+                enable_text_selection=False
             )
             self.logger.warning("Failed to load Microsoft PC Manager version.")
 
@@ -251,7 +256,9 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
                     logger=self.logger,
                     log_file_path=self.log_file_path,
                     app_translator=self.app_translator
-                )
+                ),
+                activate_scrollbars=True,
+                enable_text_selection=False
             )
             self.logger.info(f"Loaded Microsoft PC Manager Public Beta Version: {mspcm_beta_version}")
 
@@ -264,7 +271,6 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
                 self.app_translator.translate("windows_installation_info"),
                 windows_info,
                 customtkinter.CTkButton,
-                enable_text_selection=True,
                 text=self.app_translator.translate("about_button"),
                 command=lambda: URILauncher.launch_uri(
                     uri="ms-settings:about",
@@ -273,7 +279,10 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
                     logger=self.logger,
                     log_file_path=self.log_file_path,
                     app_translator=self.app_translator
-                )
+                ),
+                activate_scrollbars=True,
+                enable_text_selection=True
+
             )
         else:
             self._create_info_textbox_card(
@@ -281,7 +290,6 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
                 self.app_translator.translate("windows_installation_info"),
                 self.app_translator.translate("failed_to_load_windows_installation_info"),
                 customtkinter.CTkButton,
-                enable_text_selection=True,
                 text=self.app_translator.translate("about_button"),
                 command=lambda: URILauncher.launch_uri(
                     uri="ms-settings:about",
@@ -290,7 +298,9 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
                     logger=self.logger,
                     log_file_path=self.log_file_path,
                     app_translator=self.app_translator
-                )
+                ),
+                activate_scrollbars=True,
+                enable_text_selection=True
             )
 
     def _load_system_checks(self):

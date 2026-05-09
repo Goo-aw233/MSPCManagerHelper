@@ -8,7 +8,7 @@ from core import (
 )
 from gui.components import AboutPageWidgets
 from handlers.private import ViewLogFile
-from handlers.shared import URILauncher, URLHandler
+from handlers.shared import URLHandler
 from .base_page_frame import BaseInfoPageFrame
 
 
@@ -26,30 +26,16 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
 
         self.app_info_group = self._create_group_frame()
 
-        # --- App Header ---
-        self.app_header_frame = customtkinter.CTkFrame(self.app_info_group, fg_color="transparent")
-        self.app_header_frame.pack(fill="x", padx=16, pady=(16, 12))
-
-        self.app_name_label = customtkinter.CTkLabel(
-            self.app_header_frame,
-            text=AppMetadata.APP_NAME,
-            font=customtkinter.CTkFont(family=self.font_family, size=14),
-            anchor="w"
+        # --- App Base Info ---
+        self._create_info_card(
+            self.app_info_group,
+            title=AppMetadata.APP_NAME,
+            description=AppMetadata.APP_VERSION
         )
-        self.app_name_label.pack(fill="x")
-
-        self.app_version_label = customtkinter.CTkLabel(
-            self.app_header_frame,
-            text=AppMetadata.APP_VERSION,
-            font=customtkinter.CTkFont(family=self.font_family, size=12),
-            text_color=("gray50", "gray70"),
-            anchor="w"
-        )
-        self.app_version_label.pack(fill="x")
 
         self._create_separator(self.app_info_group)
 
-        #  --- Contributors ---
+        # --- Contributors ---
         contributors_container = customtkinter.CTkFrame(self.app_info_group, fg_color="transparent")
         contributors_container.pack(fill="x", padx=10, pady=8)
 
@@ -63,7 +49,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
             font=customtkinter.CTkFont(family=self.font_family, size=14),
             anchor="w"
         ).pack(fill="x")
-        
+
         contributors_list_frame = customtkinter.CTkFrame(contributors_text_frame, fg_color="transparent")
         contributors_list_frame.pack(fill="x", anchor="w")
 
@@ -129,7 +115,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
                     )
                 )
         else:
-             self._create_settings_card(
+             self._create_info_card(
                 self.app_info_group,
                 title=self.app_translator.translate("translators"),
                 description=None
@@ -139,7 +125,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         self._create_separator(self.app_info_group)
 
         # --- License ---
-        self._create_settings_card(
+        self._create_info_card(
             self.app_info_group,
             title=self.app_translator.translate("license"),
             description=AppMetadata.APP_LICENSE_URL,
@@ -157,7 +143,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         self._create_separator(self.app_info_group)
 
         # --- Repository ---
-        self._create_settings_card(
+        self._create_info_card(
              self.app_info_group,
              title=self.app_translator.translate("repository_url"),
              description=AppMetadata.APP_GITHUB_REPOSITORY_URL,
@@ -175,7 +161,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         self._create_separator(self.app_info_group)
 
         # --- View Log File ---
-        self._create_settings_card(
+        self._create_info_card(
             self.app_info_group,
             title=self.app_translator.translate("view_log_file"),
             description=self.log_file_path,
@@ -288,36 +274,13 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         self.privacy_policy_content_textbox.configure(state="disabled")
         # === End of Privacy Policy Section ===
 
-        # === Privacy Settings Section ===
-        self._create_section_label(self.app_translator.translate("privacy_settings"))
-
-        self.privacy_settings_group = self._create_group_frame()
-
-        # --- Privacy Settings ---
-        self.privacy_settings_button = self._create_settings_card(
-            self.privacy_settings_group,
-            title=self.app_translator.translate("privacy_settings"),
-            description=self.app_translator.translate("privacy_settings_description"),
-            widget_constructor=customtkinter.CTkButton,
-            text=self.app_translator.translate("privacy_settings_button"),
-            command=lambda: URILauncher.launch_uri(
-                uri="ms-settings:privacy",
-                target_name="Privacy & Security Settings",
-                messagebox_error_message="failed_to_open_privacy_settings",
-                logger=self.logger,
-                log_file_path=self.log_file_path,
-                app_translator=self.app_translator
-            )
-        )
-        # === End of Privacy Settings Section ===
-
         # === Get Help Section ===
         self._create_section_label(self.app_translator.translate("get_help"))
 
         self.get_help_group = self._create_group_frame()
 
         # --- Get Help ---
-        self.official_website_button = self._create_settings_card(
+        self.official_website_button = self._create_info_card(
             self.get_help_group,
             title=self.app_translator.translate("get_help"),
             description=self.app_translator.translate("get_help_description"),
@@ -343,7 +306,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         self._create_separator(self.get_help_group)
 
         # --- Official Website ---
-        self.official_website_button = self._create_settings_card(
+        self.official_website_button = self._create_info_card(
             self.get_help_group,
             title=self.app_translator.translate("official_website"),
             description=self.app_translator.translate("official_website_description"),

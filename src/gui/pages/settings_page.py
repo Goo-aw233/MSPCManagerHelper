@@ -7,6 +7,7 @@ from core import (
     PrerequisiteChecks
 )
 from gui.components import SettingsPageWidgets
+from handlers.shared import URILauncher
 from .base_page_frame import BaseInfoPageFrame
 
 
@@ -166,6 +167,29 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
         else:
             self.use_internal_viewer_switch.deselect()
         # === End of Preferences ===
+
+        # === Privacy & Security ===
+        self._create_section_label(self.app_translator.translate("privacy_settings"))
+
+        self.privacy_settings_group = self._create_group_frame()
+
+        # --- Privacy Settings ---
+        self.privacy_settings_button = self._create_settings_card(
+            self.privacy_settings_group,
+            self.app_translator.translate("privacy_settings"),
+            self.app_translator.translate("privacy_settings_description"),
+            customtkinter.CTkButton,
+            text=self.app_translator.translate("privacy_settings_button"),
+            command=lambda: URILauncher.launch_uri(
+                uri="ms-settings:privacy",
+                target_name="Privacy & Security Settings",
+                messagebox_error_message="failed_to_open_privacy_settings",
+                logger=self.logger,
+                log_file_path=self.log_file_path,
+                app_translator=self.app_translator
+            )
+        )
+        # === End of Privacy & Security ===
 
         # === Advanced ===
         if AdvancedStartup.is_administrator() and (AdvancedStartup.is_debugmode() or AdvancedStartup.is_devmode()):

@@ -28,7 +28,7 @@ class BaseWidgets:
         separator.pack(fill="x", padx=10)
         return separator
 
-    def _create_settings_card(self, parent, title, description, widget_constructor=None, **widget_kwargs):
+    def _create_actions_card(self, parent, title, description, widget_constructor=None, **widget_kwargs):
         container = customtkinter.CTkFrame(parent, fg_color="transparent")
         container.pack(fill="x", padx=10, pady=8)
 
@@ -67,7 +67,7 @@ class BaseWidgets:
 
 
 class AboutPageWidgets(BaseWidgets):
-    def _create_settings_card(self, parent, title, description, widget_constructor=None, description_command=None,
+    def _create_info_card(self, parent, title, description, widget_constructor=None, description_command=None,
                               **widget_kwargs):
         container = customtkinter.CTkFrame(parent, fg_color="transparent")
         container.pack(fill="x", padx=10, pady=8)
@@ -134,7 +134,7 @@ class HomePageWidgets(BaseWidgets):
 
     def _create_info_textbox_card(self, parent, title, description, widget_constructor=None,
                                   enable_text_selection=False, activate_scrollbars=False, min_height=50,
-                                  **widget_kwargs):
+                                  max_height=130, **widget_kwargs):
         container = customtkinter.CTkFrame(parent, fg_color="transparent")
         container.pack(fill="x", padx=10, pady=8)
 
@@ -152,8 +152,10 @@ class HomePageWidgets(BaseWidgets):
 
         if description:
             # Auto-adjust height based on newlines (approx 22px per line + padding).
-            line_count = description.count('\n') + 1
-            textbox_height = max(min_height, line_count * 22 + 10)
+            line_count = description.count("\n") + 1
+            content_height = line_count * 22 + 10
+            textbox_height = min(max(min_height, content_height), max_height)
+            show_scrollbars = activate_scrollbars and content_height > max_height
 
             desc_textbox = customtkinter.CTkTextbox(
                 text_frame,
@@ -162,7 +164,7 @@ class HomePageWidgets(BaseWidgets):
                 fg_color="transparent",
                 wrap="word",
                 height=textbox_height,
-                activate_scrollbars=activate_scrollbars,
+                activate_scrollbars=show_scrollbars,
                 border_width=0
             )
             desc_textbox.pack(fill="x", pady=(0, 5))
