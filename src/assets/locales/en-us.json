@@ -161,9 +161,9 @@
       "term_of_use_content_10_title": "10. Open Source License",
       "term_of_use_content_10_body": "The Software is licensed under the MIT open source license. You can view the details in the MIT License: https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE.",
       "term_of_use_content_11_title": "11. Third-Party Software",
-      "term_of_use_content_11_body_1": "For licenses and notices of third-party software, please refer to: https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/ThirdPartyNotices.txt.",
-      "term_of_use_content_11_body_2": "NSudo: https://github.com/M2Team/NSudo",
-      "term_of_use_content_11_body_3": "Sysinternals: https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_474966",
+      "term_of_use_content_11_body_1": "Licenses and Notices of Third-Party Software: https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/ThirdPartyNotices.txt.",
+      "term_of_use_content_11_body_2": "NSudo: https://github.com/M2Team/NSudo.",
+      "term_of_use_content_11_body_3": "Sysinternals: https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_474966.",
       "translators": "Translators",
       "view_log_file": "View Log File",
 
@@ -200,6 +200,8 @@
       "help_window_content_args_7": "Use the /debugmode argument to enable debug mode, which will log more information for troubleshooting and will have the same features as developer mode.",
       "help_window_content_args_8": "4. Bypass Startup Checks",
       "help_window_content_args_9": "Use the /bypasschecks argument to bypass system checks at startup, which will disable all startup check items.",
+      "help_window_content_args_10": "5. Specify Language",
+      "help_window_content_args_11": "Use the /locale=<Language Code> or /locale:<Language Code> argument to specify the application's display language, for example, /locale=zh-cn to specify using Simplified Chinese. If the specified language is not supported, the application will automatically fall back to the system language or English (United States).\nSupported Language Codes:\nzh-cn: Simplified Chinese\nzh-tw: Traditional Chinese\nen-us: English (United States)",
       "help_window_content_get_help_1": "Get Help",
       "help_window_content_get_help_2": "GitHub Repository URL: https://github.com/Goo-aw233/MSPCManagerHelper",
 

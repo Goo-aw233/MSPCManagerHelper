@@ -31,6 +31,7 @@ class HelpWindow(customtkinter.CTk):
             self.logger.info(f"PyInstaller Extraction Path: {sys._MEIPASS}")
         else:
             self.logger.info("PyInstaller Extraction Path: Not Running from PyInstaller Bundle")
+        self.logger.info(f"Python Version: {sys.version}")
 
         self.logger.info("========================= Initializing Help Window =========================")
         self._set_language()
@@ -69,7 +70,9 @@ class HelpWindow(customtkinter.CTk):
             f"{self.app_translator.translate('help_window_content_args_6')}\n"
             f"{self.app_translator.translate('help_window_content_args_7')}\n\n"
             f"{self.app_translator.translate('help_window_content_args_8')}\n"
-            f"{self.app_translator.translate('help_window_content_args_9')}\n\n\n"
+            f"{self.app_translator.translate('help_window_content_args_9')}\n\n"
+            f"{self.app_translator.translate('help_window_content_args_10')}\n"
+            f"{self.app_translator.translate('help_window_content_args_11')}\n\n\n"
             f"{self.app_translator.translate('help_window_content_get_help_1')}\n"
             f"{self.app_translator.translate('help_window_content_get_help_2')}"
         )
@@ -90,7 +93,13 @@ class HelpWindow(customtkinter.CTk):
         self.resizable(False, False)
 
     def _set_language(self):
-        self.language = AppTranslator.detect_system_language()
+        raw_locale = AdvancedStartup.get_specified_locale_argument()
+        specified_locale = AdvancedStartup.specify_locale()
+        if raw_locale and not specified_locale:
+            self.logger.warning(f"Unsupported locale specified: {raw_locale}. Falling back to auto detection.")
+        elif specified_locale:
+            self.logger.info(f"Specified Locale: {specified_locale}")
+        self.language = specified_locale or AppTranslator.detect_system_language()
         self.app_translator = AppTranslator(self.language)
         self.logger.info(f"App Language: {self.language}")
 

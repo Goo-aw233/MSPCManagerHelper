@@ -111,7 +111,13 @@ class MainWindow(customtkinter.CTk):
     def _set_language(self):
         start_time = time.perf_counter()
 
-        self.language = AppTranslator.detect_system_language()
+        raw_locale = AdvancedStartup.get_specified_locale_argument()
+        specified_locale = AdvancedStartup.specify_locale()
+        if raw_locale and not specified_locale:
+            self.logger.warning(f"Unsupported locale specified: {raw_locale}. Falling back to auto detection.")
+        elif specified_locale:
+            self.logger.info(f"Specified Locale: {specified_locale}")
+        self.language = specified_locale or AppTranslator.detect_system_language()
         self.app_translator = AppTranslator(self.language)
         # Synchronize the language to PrerequisiteChecks class.
         PrerequisiteChecks.app_translator = self.app_translator

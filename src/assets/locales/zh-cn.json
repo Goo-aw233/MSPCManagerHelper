@@ -162,9 +162,9 @@
       "term_of_use_content_10_title": "10. 开源协议",
       "term_of_use_content_10_body": "本软件使用 MIT 开源协议。您可以在 MIT 许可证中查看详细信息：https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE。",
       "term_of_use_content_11_title": "11. 第三方软件",
-      "term_of_use_content_11_body_1": "关于第三方软件的许可证及其说明，请参阅：https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/ThirdPartyNotices.txt。",
-      "term_of_use_content_11_body_2": "NSudo: https://github.com/M2Team/NSudo",
-      "term_of_use_content_11_body_3": "Sysinternals: https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_474966",
+      "term_of_use_content_11_body_1": "第三方软件的许可证及其说明：https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/ThirdPartyNotices.txt。",
+      "term_of_use_content_11_body_2": "NSudo: https://github.com/M2Team/NSudo。",
+      "term_of_use_content_11_body_3": "Sysinternals: https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_474966。",
       "translators": "翻译者",
       "view_log_file": "查看日志文件",
 
@@ -201,6 +201,8 @@
       "help_window_content_args_7": "使用参数 /debugmode 以开启调试模式，开启后应用程序会记录更多的日志信息以供排查问题使用，同时将拥有与开发者模式相同的功能。",
       "help_window_content_args_8": "4. 绕过启动检查",
       "help_window_content_args_9": "使用参数 /bypasschecks 以绕过启动时的系统检查，开启后应用程序将禁用所有的启动检查项目。",
+      "help_window_content_args_10": "5. 指定语言",
+      "help_window_content_args_11": "使用参数 /locale=<语言代码> 或 /locale:<语言代码> 来指定应用程序的显示语言，例如 /locale=zh-cn 来指定使用中文（简体）。如果指定的语言不受支持，应用程序将自动回退到系统语言或英语（美国）。\n支持的语言代码列表：\nzh-cn: 中文（简体）\nzh-tw: 中文（繁體）\nen-us: English (United States)",
       "help_window_content_get_help_1": "获取帮助",
       "help_window_content_get_help_2": "GitHub 仓库地址：https://github.com/Goo-aw233/MSPCManagerHelper\n欢迎加入 QQ 群获取更多帮助，联系方式：https://forms.office.com/r/7YhjaEEmKc",
 
