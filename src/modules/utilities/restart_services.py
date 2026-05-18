@@ -29,12 +29,12 @@ class RestartServices:
             try:
                 status = win32serviceutil.QueryServiceStatus(service_name)[1]
                 self._log(
-                    self.app_translator.translate("service_status").format(
+                    self.app_translator.translate("modules.utilities.service_status").format(
                         service_name=service_name,
                         status=(
-                            self.app_translator.translate("service_is_running")
+                            self.app_translator.translate("modules.utilities.running_service")
                             if status == win32service.SERVICE_RUNNING
-                            else self.app_translator.translate("service_has_stopped")
+                            else self.app_translator.translate("modules.utilities.stopped_service")
                         )
                     )
                 )
@@ -44,7 +44,7 @@ class RestartServices:
                 )
             except Exception as e:
                 self._log(
-                    self.app_translator.translate("service_not_found_or_inaccessible").format(
+                    self.app_translator.translate("modules.utilities.service_not_found_or_inaccessible").format(
                         service_name=service_name, error=str(e)
                     )
                 )
@@ -54,35 +54,35 @@ class RestartServices:
             # Stop Service
             if status == win32service.SERVICE_RUNNING:
                 self._log(
-                    self.app_translator.translate("stopping_service").format(
+                    self.app_translator.translate("modules.utilities.stopping_service").format(
                         service_name=service_name
                     )
                 )
                 self.logger.info(f"Stopping Service: {service_name}")
                 win32serviceutil.StopService(service_name)
                 win32serviceutil.WaitForServiceStatus(service_name, win32service.SERVICE_STOPPED, 10)
-                self._log(self.app_translator.translate("service_has_stopped"))
+                self._log(self.app_translator.translate("modules.utilities.stopped_service"))
                 self.logger.info("Service has stopped.")
 
             # Start Service
             self._log(
-                self.app_translator.translate("starting_service").format(
+                self.app_translator.translate("modules.utilities.starting_service").format(
                     service_name=service_name
                 )
             )
             self.logger.info(f"Starting Service: {service_name}")
             win32serviceutil.StartService(service_name)
             win32serviceutil.WaitForServiceStatus(service_name, win32service.SERVICE_RUNNING, 10)
-            self._log(self.app_translator.translate("service_has_started"))
+            self._log(self.app_translator.translate("modules.utilities.started_service").format(service_name=service_name))
             self.logger.info("Service has started.")
 
             # Check Final Status
             status = win32serviceutil.QueryServiceStatus(service_name)[1]
-            self._log(self.app_translator.translate("service_status").format(
+            self._log(self.app_translator.translate("modules.utilities.service_status").format(
                 service_name=service_name,
-                status=(self.app_translator.translate("service_is_running")
+                status=(self.app_translator.translate("modules.utilities.running_service")
                         if status == win32service.SERVICE_RUNNING
-                        else self.app_translator.translate("service_has_stopped")
+                        else self.app_translator.translate("modules.utilities.stopped_service")
                     )
                 )
             )
@@ -91,7 +91,7 @@ class RestartServices:
                 f"{'Service is running.' if status == win32service.SERVICE_RUNNING else 'Service has stopped.'}"
             )
         except Exception as e:
-            self._log(self.app_translator.translate("an_error_occurred_while_managing_service").format(
+            self._log(self.app_translator.translate("modules.utilities.manage_service_error").format(
                 service_name=service_name, error=str(e)
                 )
             )

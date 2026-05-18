@@ -60,10 +60,10 @@ class InternalViewer(customtkinter.CTkToplevel):
 
         # Right-Click Menu
         self.right_click_menu = tkinter.Menu(self, tearoff=0)
-        self.right_click_menu.add_command(label=self.app_translator.translate("copy_button"),
+        self.right_click_menu.add_command(label=self.app_translator.translate("pages.common.copy"),
                                           command=self._copy_content)
         self.right_click_menu.add_separator()
-        self.right_click_menu.add_command(label=self.app_translator.translate("refresh_button"),
+        self.right_click_menu.add_command(label=self.app_translator.translate("pages.common.refresh"),
                                           command=self._refresh_content)
 
         self.content_textbox.bind("<Button-3>", self._show_right_click_menu)

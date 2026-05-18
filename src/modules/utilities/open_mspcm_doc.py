@@ -78,6 +78,6 @@ class OpenMSPCMDoc:
         logger.error("\n".join(error_details))
 
         messagebox.showerror(
-            app_translator.translate("error"),
-            app_translator.translate("failed_to_open_mspcm_doc").format(log_file_path=log_file_path, mspcm_doc_url=mspcm_doc_url)
+            app_translator.translate("common.error"),
+            app_translator.translate("handlers.open_mspcm_doc_error").format(log_file_path=log_file_path, mspcm_doc_url=mspcm_doc_url)
         )

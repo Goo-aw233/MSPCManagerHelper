@@ -79,6 +79,6 @@ class EnableLongPaths:
         logger.error("\n".join(error_details))
 
         messagebox.showerror(
-            app_translator.translate("error"),
-            app_translator.translate("failed_to_enable_long_paths").format(log_file_path=log_file_path)
+            app_translator.translate("common.error"),
+            app_translator.translate("handlers.enable_long_paths_error").format(log_file_path=log_file_path)
         )

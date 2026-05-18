@@ -171,7 +171,7 @@ class PrerequisiteChecks:
                     pass
 
                 if windows_feature_experience_pack:
-                    return f"Microsoft Windows {display_version} {major_version}.{minor_version}.{build_number}.{ubr} {edition_id}\n{build_lab_ex}\n{PrerequisiteChecks.app_translator.translate('windows_feature_experience_pack')} {windows_feature_experience_pack}"
+                    return f"Microsoft Windows {display_version} {major_version}.{minor_version}.{build_number}.{ubr} {edition_id}\n{build_lab_ex}\n{PrerequisiteChecks.app_translator.translate('core.windows_feature_experience_pack')} {windows_feature_experience_pack}"
                 else:
                     return f"Microsoft Windows {display_version} {major_version}.{minor_version}.{build_number}.{ubr} {edition_id}\n{build_lab_ex}"
         except (FileNotFoundError, OSError):
@@ -219,7 +219,7 @@ class OptionalChecks:
 
             # Iterate through the processes.
             while True:
-                exe_file = pe32.szExeFile.decode('utf-8', errors='ignore')
+                exe_file = pe32.szExeFile.decode("utf-8", errors="ignore")
                 if "narrator" in exe_file.lower():
                     ctypes.windll.kernel32.CloseHandle(hProcessSnap)
                     return True

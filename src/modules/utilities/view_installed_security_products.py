@@ -88,7 +88,7 @@ class ViewInstalledSecurityProducts:
                 else:
                     self._process_formatted_output(result.stdout)
             else:
-                self._log(self.app_translator.translate("an_error_occurred_while_querying_security_products").format(stderr=result.stderr))
+                self._log(self.app_translator.translate("modules.utilities.query_security_products_error").format(stderr=result.stderr))
                 self.logger.error("An Error Occurred While Querying Security Products:\n" + result.stderr)
         except Exception as e:
             self._log(str(e))
@@ -96,7 +96,7 @@ class ViewInstalledSecurityProducts:
 
     def _process_formatted_output(self, json_output):
         if not json_output or not json_output.strip():
-            self._log(self.app_translator.translate("no_security_products_found") + "\n")
+            self._log(self.app_translator.translate("modules.utilities.no_security_products_found") + "\n")
             self.logger.info("No installed security products registered to Windows Security were found.\n")
             return
 
@@ -106,7 +106,7 @@ class ViewInstalledSecurityProducts:
                 data = [data]
 
             if not data:
-                self._log(self.app_translator.translate("no_security_products_found") + "\n")
+                self._log(self.app_translator.translate("modules.utilities.no_security_products_found") + "\n")
                 self.logger.info("No installed security products registered to Windows Security were found.\n")
                 return
 
@@ -114,16 +114,17 @@ class ViewInstalledSecurityProducts:
 
             ordered_keys = [
                 "displayName", "instanceGuid", "pathToSignedProductExe", 
-                "pathToSignedReportingExe", "productState", "PSComputerName"
+                "pathToSignedReportingExe", "productState", "PSComputerName", "timeStamp"
             ]
 
             key_map = {
-                "displayName": "security_product_displayName",
-                "instanceGuid": "security_product_instanceGuid",
-                "pathToSignedProductExe": "security_product_pathToSignedProductExe",
-                "pathToSignedReportingExe": "security_product_pathToSignedReportingExe",
-                "productState": "security_product_productState",
-                "PSComputerName": "security_product_PSComputerName",
+                "displayName": "modules.utilities.security_product_display_name",
+                "instanceGuid": "modules.utilities.security_product_instance_guid",
+                "pathToSignedProductExe": "modules.utilities.security_product_path_to_signed_product_exe",
+                "pathToSignedReportingExe": "modules.utilities.security_product_path_to_signed_reporting_exe",
+                "productState": "modules.utilities.security_product_product_state",
+                "PSComputerName": "modules.utilities.security_product_ps_computer_name",
+                "timeStamp": "modules.utilities.security_product_timestamp"
             }
 
             translated_labels = {}
@@ -158,10 +159,10 @@ class ViewInstalledSecurityProducts:
             self.logger.error(f"Error Processing Security Products Output: {e}")
 
     def _antivirus_products(self):
-        self._get_security_products("AntiVirusProduct", "security_product_category_antivirus")
+        self._get_security_products("AntiVirusProduct", "modules.utilities.security_product_category_antivirus")
 
     def _antispyware_products(self):
-        self._get_security_products("AntiSpywareProduct", "security_product_category_antispyware")
+        self._get_security_products("AntiSpywareProduct", "modules.utilities.security_product_category_antispyware")
 
     def _firewall_products(self):
-        self._get_security_products("FirewallProduct", "security_product_category_firewall")
+        self._get_security_products("FirewallProduct", "modules.utilities.security_product_category_firewall")

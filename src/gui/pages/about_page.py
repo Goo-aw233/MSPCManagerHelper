@@ -18,11 +18,11 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
             parent=parent,
             app_translator=app_translator,
             font_family=font_family,
-            page_title_key="about_page"
+            page_title_key="pages.navigation.about"
         )
 
         # === App Information Section ===
-        self._create_section_label(self.app_translator.translate("app_information"))
+        self._create_section_label(self.app_translator.translate("pages.about.app_info"))
 
         self.app_info_group = self._create_group_frame()
 
@@ -45,7 +45,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
 
         customtkinter.CTkLabel(
             contributors_text_frame,
-            text=self.app_translator.translate("contributors"),
+            text=self.app_translator.translate("pages.about.contributors"),
             font=customtkinter.CTkFont(family=self.font_family, size=14),
             anchor="w"
         ).pack(fill="x")
@@ -62,10 +62,11 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
                 cursor="hand2"
             )
             link.pack(side="left", padx=(0, 10))
-            link.bind("<Button-1>", lambda e, u=contributor_url: URLHandler.launch_url(
+            link.bind("<Button-1>", lambda e, u=contributor_url, n=name: URLHandler.launch_url(
                 url=u,
-                target_name=f"{name}'s Profile",
-                messagebox_error_message="failed_to_open_contributor_url",
+                contributor_url=u,
+                target_name=f"{n}'s Profile",
+                messagebox_error_message="handlers.open_contributor_url_error",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator
@@ -87,7 +88,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
 
             customtkinter.CTkLabel(
                 translators_text_frame,
-                text=self.app_translator.translate("translators"),
+                text=self.app_translator.translate("pages.about.translators"),
                 font=customtkinter.CTkFont(family=self.font_family, size=14),
                 anchor="w"
             ).pack(fill="x")
@@ -105,10 +106,11 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
                     cursor="hand2"
                 )
                 link.pack(side="left", padx=(0, 10))
-                link.bind("<Button-1>", lambda e, u=github_profile_url: URLHandler.launch_url(
+                link.bind("<Button-1>", lambda e, u=github_profile_url, n=display_name: URLHandler.launch_url(
                     url=u,
-                    target_name=f"{display_name}'s GitHub Profile",
-                    messagebox_error_message="failed_to_open_contributor_url",
+                    contributor_url=u,
+                    target_name=f"{n}'s GitHub Profile",
+                    messagebox_error_message="handlers.open_contributor_url_error",
                     logger=self.logger,
                     log_file_path=self.log_file_path,
                     app_translator=self.app_translator
@@ -117,7 +119,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         else:
              self._create_info_card(
                 self.app_info_group,
-                title=self.app_translator.translate("translators"),
+                title=self.app_translator.translate("pages.about.translators"),
                 description=None
             )
 
@@ -127,15 +129,16 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         # --- License ---
         self._create_info_card(
             self.app_info_group,
-            title=self.app_translator.translate("license"),
+            title=self.app_translator.translate("pages.about.license"),
             description=AppMetadata.APP_LICENSE_URL,
             description_command=lambda: URLHandler.launch_url(
                 url=AppMetadata.APP_LICENSE_URL,
                 target_name=f"License",
-                messagebox_error_message="failed_to_open_license",
+                messagebox_error_message="handlers.open_license_error",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
-                app_translator=self.app_translator
+                app_translator=self.app_translator,
+                license_url=AppMetadata.APP_LICENSE_URL
             )
         )
 
@@ -145,15 +148,16 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         # --- Repository ---
         self._create_info_card(
              self.app_info_group,
-             title=self.app_translator.translate("repository_url"),
+             title=self.app_translator.translate("pages.about.repository"),
              description=AppMetadata.APP_GITHUB_REPOSITORY_URL,
              description_command=lambda: URLHandler.launch_url(
                 url=AppMetadata.APP_GITHUB_REPOSITORY_URL,
                 target_name=f"GitHub Repository",
-                messagebox_error_message="failed_to_open_github_repository",
+                messagebox_error_message="handlers.open_github_repository_error",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
-                app_translator=self.app_translator
+                app_translator=self.app_translator,
+                github_repository_url=AppMetadata.APP_GITHUB_REPOSITORY_URL
             )
         )
 
@@ -163,7 +167,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         # --- View Log File ---
         self._create_info_card(
             self.app_info_group,
-            title=self.app_translator.translate("view_log_file"),
+            title=self.app_translator.translate("pages.about.view_log_file"),
             description=self.log_file_path,
             description_command=lambda: ViewLogFile.open_log_file(
                 logger=self.logger,
@@ -174,7 +178,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         # === End of App Information Section ===
 
         # === Term of Use Section ===
-        self._create_section_label(self.app_translator.translate("term_of_use"))
+        self._create_section_label(self.app_translator.translate("pages.about.term_of_use"))
 
         # Term of Use Card
         self.term_of_use_card = customtkinter.CTkFrame(
@@ -188,7 +192,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         # Card Header
         self.term_of_use_title_label = customtkinter.CTkLabel(
             self.term_of_use_card,
-            text=self.app_translator.translate("term_of_use_title"),
+            text=self.app_translator.translate("pages.about.term_of_use_content.title"),
             font=customtkinter.CTkFont(family=self.font_family, size=16, weight="bold")
         )
         self.term_of_use_title_label.pack(anchor="w", padx=16, pady=(16, 8))
@@ -204,39 +208,31 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         self.term_of_use_content_textbox.pack(fill="x", padx=16, pady=(0, 16))
 
         term_of_use_content = (
-            f"{self.app_translator.translate('term_of_use_content_preface')}\n\n"
-            f"{self.app_translator.translate('term_of_use_content_modification_date')}\n\n"
-            f"{self.app_translator.translate('term_of_use_content_1_title')}\n"
-            f"{self.app_translator.translate('term_of_use_content_1_body')}\n\n"
-            f"{self.app_translator.translate('term_of_use_content_2_title')}\n"
-            f"{self.app_translator.translate('term_of_use_content_2_body')}\n\n"
-            f"{self.app_translator.translate('term_of_use_content_3_title')}\n"
-            f"{self.app_translator.translate('term_of_use_content_3_body')}\n\n"
-            f"{self.app_translator.translate('term_of_use_content_4_title')}\n"
-            f"{self.app_translator.translate('term_of_use_content_4_body')}\n\n"
-            f"{self.app_translator.translate('term_of_use_content_5_title')}\n"
-            f"{self.app_translator.translate('term_of_use_content_5_body')}\n\n"
-            f"{self.app_translator.translate('term_of_use_content_6_title')}\n"
-            f"{self.app_translator.translate('term_of_use_content_6_body')}\n\n"
-            f"{self.app_translator.translate('term_of_use_content_7_title')}\n"
-            f"{self.app_translator.translate('term_of_use_content_7_body')}\n\n"
-            f"{self.app_translator.translate('term_of_use_content_8_title')}\n"
-            f"{self.app_translator.translate('term_of_use_content_8_body')}\n\n"
-            f"{self.app_translator.translate('term_of_use_content_9_title')}\n"
-            f"{self.app_translator.translate('term_of_use_content_9_body')}\n\n"
-            f"{self.app_translator.translate('term_of_use_content_10_title')}\n"
-            f"{self.app_translator.translate('term_of_use_content_10_body')}\n\n"
-            f"{self.app_translator.translate('term_of_use_content_11_title')}\n"
-            f"{self.app_translator.translate('term_of_use_content_11_body_1')}\n"
-            f"{self.app_translator.translate('term_of_use_content_11_body_2')}\n"
-            f"{self.app_translator.translate('term_of_use_content_11_body_3')}"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.preface')}\n\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.modification_date')}\n\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.1_title')}\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.1_body')}\n\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.2_title')}\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.2_body')}\n\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.3_title')}\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.3_body')}\n\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.4_title')}\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.4_body')}\n\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.5_title')}\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.5_body')}\n\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.6_title')}\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.6_body')}\n\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.7_title')}\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.7_body')}\n\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.8_title')}\n"
+            f"{self.app_translator.translate('pages.about.term_of_use_content.8_body')}"
         )
         self.term_of_use_content_textbox.insert("0.0", term_of_use_content)
         self.term_of_use_content_textbox.configure(state="disabled")
         # === End of Term of Use Section ===
 
         # === Privacy Policy Section ===
-        self._create_section_label(self.app_translator.translate("privacy_policy"))
+        self._create_section_label(self.app_translator.translate("pages.about.privacy_policy"))
 
         # Privacy Policy Card
         self.privacy_policy_card = customtkinter.CTkFrame(
@@ -250,7 +246,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         # Card Header
         self.privacy_policy_title_label = customtkinter.CTkLabel(
             self.privacy_policy_card,
-            text=self.app_translator.translate("privacy_policy_title"),
+            text=self.app_translator.translate("pages.about.privacy_policy_content.title"),
             font=customtkinter.CTkFont(family=self.font_family, size=16, weight="bold")
         )
         self.privacy_policy_title_label.pack(anchor="w", padx=16, pady=(16, 8))
@@ -266,35 +262,36 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         self.privacy_policy_content_textbox.pack(fill="x", padx=16, pady=(0, 16))
 
         privacy_policy_content = (
-            f"{self.app_translator.translate('privacy_policy_content_modification_date')}\n\n"
-            f"{self.app_translator.translate('privacy_policy_content_1')}\n\n"
-            f"{self.app_translator.translate('privacy_policy_content_2')}"
+            f"{self.app_translator.translate('pages.about.privacy_policy_content.modification_date')}\n\n"
+            f"{self.app_translator.translate('pages.about.privacy_policy_content.1')}\n\n"
+            f"{self.app_translator.translate('pages.about.privacy_policy_content.2')}"
         )
         self.privacy_policy_content_textbox.insert("0.0", privacy_policy_content)
         self.privacy_policy_content_textbox.configure(state="disabled")
         # === End of Privacy Policy Section ===
 
         # === Get Help Section ===
-        self._create_section_label(self.app_translator.translate("get_help"))
+        self._create_section_label(self.app_translator.translate("pages.about.get_help"))
 
         self.get_help_group = self._create_group_frame()
 
         # --- Get Help ---
         self.official_website_button = self._create_info_card(
             self.get_help_group,
-            title=self.app_translator.translate("get_help"),
-            description=self.app_translator.translate("get_help_description"),
+            title=self.app_translator.translate("pages.about.get_help"),
+            description=self.app_translator.translate("pages.about.get_help_description"),
             widget_constructor=customtkinter.CTkButton,
-            text=self.app_translator.translate("get_help_button"),
+            text=self.app_translator.translate("pages.about.get_help"),
             command=lambda: (
                 messagebox.showinfo(
-                    title=self.app_translator.translate("information"),
-                    message=self.app_translator.translate("redirect_to_official_website_to_get_help")
+                    title=self.app_translator.translate("common.info"),
+                    message=self.app_translator.translate("pages.about.get_help_message")
                 ),
                 URLHandler.launch_url(
                     url=AppMetadata.MICROSOFT_PC_MANAGER_URL,
+                    official_website_url=AppMetadata.MICROSOFT_PC_MANAGER_URL,
                     target_name="Official Website",
-                    messagebox_error_message="failed_to_open_official_website",
+                    messagebox_error_message="handlers.open_official_website_error",
                     logger=self.logger,
                     log_file_path=self.log_file_path,
                     app_translator=self.app_translator
@@ -308,14 +305,15 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         # --- Official Website ---
         self.official_website_button = self._create_info_card(
             self.get_help_group,
-            title=self.app_translator.translate("official_website"),
-            description=self.app_translator.translate("official_website_description"),
+            title=self.app_translator.translate("pages.about.official_website"),
+            description=self.app_translator.translate("pages.about.official_website_description"),
             widget_constructor=customtkinter.CTkButton,
-            text=self.app_translator.translate("official_website_button"),
+            text=self.app_translator.translate("pages.about.official_website"),
             command=lambda: URLHandler.launch_url(
                 url=AppMetadata.MICROSOFT_PC_MANAGER_URL,
+                official_website_url=AppMetadata.MICROSOFT_PC_MANAGER_URL,
                 target_name="Official Website",
-                messagebox_error_message="failed_to_open_official_website",
+                messagebox_error_message="handlers.open_official_website_error",
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator

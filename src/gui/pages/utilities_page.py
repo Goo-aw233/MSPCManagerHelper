@@ -32,22 +32,22 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             parent=parent,
             app_translator=app_translator,
             font_family=font_family,
-            page_title_key="utilities_page",
+            page_title_key="pages.navigation.utilities",
             events_textbox_wrap="none"
         )
 
         # === File Management ===
-        self._create_section_label(self.app_translator.translate("file_management"))
+        self._create_section_label(self.app_translator.translate("pages.utilities.file_management"))
 
         file_management_frame = self._create_group_frame()
 
         # --- Compute Files Hashes ---
         self.compute_files_hashes_card = self._create_actions_card(
             file_management_frame,
-            title=self.app_translator.translate("compute_files_hashes_title"),
-            description=self.app_translator.translate("compute_files_hashes_description"),
+            title=self.app_translator.translate("pages.utilities.compute_files_hashes"),
+            description=self.app_translator.translate("pages.utilities.compute_files_hashes_description"),
             widget_constructor=customtkinter.CTkButton,
-            text=self.app_translator.translate("execute_button"),
+            text=self.app_translator.translate("pages.common.execute"),
             command=self._run_compute_hashes
         )
         self.compute_files_hashes_card.configure(state="disabled")
@@ -65,7 +65,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
 
         self.select_all_checkbox = customtkinter.CTkCheckBox(
             self.hash_checkboxes_frame,
-            text=self.app_translator.translate("select_all"),
+            text=self.app_translator.translate("pages.common.select_all"),
             command=self._toggle_select_all,
             font=customtkinter.CTkFont(family=self.font_family, weight="bold")
         )
@@ -73,7 +73,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
 
         self.uppercase_all_results = customtkinter.CTkCheckBox(
             self.hash_checkboxes_frame,
-            text=self.app_translator.translate("uppercase_all_results"),
+            text=self.app_translator.translate("pages.utilities.uppercase_all_results"),
             command=None,
             font=customtkinter.CTkFont(family=self.font_family)
         )
@@ -96,10 +96,10 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             "blake2s": "Blake2s"
         }
         self.hash_algo_tooltips = {
-            "shake_128": "shake_128_tooltip",
-            "shake_256": "shake_256_tooltip",
-            "blake2b": "blake2b_tooltip",
-            "blake2s": "blake2s_tooltip"
+            "shake_128": "pages.utilities.shake_128_tooltip",
+            "shake_256": "pages.utilities.shake_256_tooltip",
+            "blake2b": "pages.utilities.blake2b_tooltip",
+            "blake2s": "pages.utilities.blake2s_tooltip"
         }
         self.hash_checkbox_widgets = {}
 
@@ -130,17 +130,17 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # === End of File Management ===
 
         # === Open To ===
-        self._create_section_label(self.app_translator.translate("open_to_section"))
+        self._create_section_label(self.app_translator.translate("pages.utilities.open_to"))
 
         open_to_frame = self._create_group_frame()
 
         # --- Open Developer Settings ---
         self.open_developer_settings_card = self._create_actions_card(
             open_to_frame,
-            title=self.app_translator.translate("open_developer_settings_title"),
-            description=self.app_translator.translate("open_developer_settings_description"),
+            title=self.app_translator.translate("pages.utilities.open_developer_settings"),
+            description=self.app_translator.translate("pages.utilities.open_developer_settings_description"),
             widget_constructor=customtkinter.CTkButton,
-            text=self.app_translator.translate("execute_button"),
+            text=self.app_translator.translate("pages.common.execute"),
             command=lambda: OpenDeveloperSettings.open_developer_settings(
                 logger=self.logger,
                 log_file_path=self.log_file_path,
@@ -154,10 +154,10 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # --- Open Microsoft PC Manager Documentation ---
         self.open_mspcm_doc_card = self._create_actions_card(
             open_to_frame,
-            title=self.app_translator.translate("open_mspcm_doc_title"),
-            description=self.app_translator.translate("open_mspcm_doc_description"),
+            title=self.app_translator.translate("pages.utilities.open_mspcm_doc"),
+            description=self.app_translator.translate("pages.utilities.open_mspcm_doc_description"),
             widget_constructor=customtkinter.CTkButton,
-            text=self.app_translator.translate("execute_button"),
+            text=self.app_translator.translate("pages.common.execute"),
             command=lambda: OpenMSPCMDoc.open_mspcm_doc(
                 logger=self.logger,
                 log_file_path=self.log_file_path,
@@ -167,17 +167,17 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # === End of Open To ===
 
         # === Maintenance Management ===
-        self._create_section_label(self.app_translator.translate("maintenance_management"))
+        self._create_section_label(self.app_translator.translate("pages.utilities.maintenance_management"))
 
         # --- Get Dependencies Versions ---
         get_dependencies_versions_frame = self._create_group_frame()
         get_dependencies_versions_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
         self.get_dependencies_versions_card = self._create_actions_card(
             get_dependencies_versions_frame,
-            title=self.app_translator.translate("get_dependencies_versions_title"),
-            description=self.app_translator.translate("get_dependencies_versions_description"),
+            title=self.app_translator.translate("pages.utilities.get_dependencies_versions"),
+            description=self.app_translator.translate("pages.utilities.get_dependencies_versions_description"),
             widget_constructor=customtkinter.CTkButton,
-            text=self.app_translator.translate("execute_button"),
+            text=self.app_translator.translate("pages.common.execute"),
             command=self._run_get_dependencies_versions
         )
 
@@ -195,7 +195,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # System WebView2
         self.checkbox_system_webview2 = customtkinter.CTkCheckBox(
             self.dependencies_types_frame,
-            text=self.app_translator.translate("system_webview2_checkbox"),
+            text=self.app_translator.translate("pages.utilities.system_webview2"),
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_dependencies_checkbox_change
         )
@@ -206,7 +206,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # Global WebView2
         self.checkbox_global_webview2 = customtkinter.CTkCheckBox(
             self.dependencies_types_frame,
-            text=self.app_translator.translate("global_webview2_checkbox"),
+            text=self.app_translator.translate("pages.utilities.global_webview2"),
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_dependencies_checkbox_change
         )
@@ -217,7 +217,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # Windows App Runtime
         self.checkbox_windows_app_runtime = customtkinter.CTkCheckBox(
             self.dependencies_types_frame,
-            text=self.app_translator.translate("windows_app_runtime_checkbox"),
+            text=self.app_translator.translate("pages.utilities.windows_app_runtime"),
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_dependencies_checkbox_change
         )
@@ -235,10 +235,10 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         repair_edge_webview_2_installation_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
         self.repair_edge_webview_2_installation_card = self._create_actions_card(
             repair_edge_webview_2_installation_frame,
-            title=self.app_translator.translate("repair_edge_webview_2_installation_title"),
-            description=self.app_translator.translate("repair_edge_webview_2_installation_description"),
+            title=self.app_translator.translate("pages.utilities.repair_edge_webview_2_installation"),
+            description=self.app_translator.translate("pages.utilities.repair_edge_webview_2_installation_description"),
             widget_constructor=customtkinter.CTkButton,
-            text=self.app_translator.translate("execute_button"),
+            text=self.app_translator.translate("pages.common.execute"),
             command=self._run_repair_edge_webview2_installation
         )
 
@@ -256,7 +256,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # Select All
         self.checkbox_webview2_select_all = customtkinter.CTkCheckBox(
             self.webview2_repair_options_frame,
-            text=self.app_translator.translate("select_all"),
+            text=self.app_translator.translate("pages.common.select_all"),
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_webview2_select_all_change
         )
@@ -265,30 +265,30 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # End Related Processes
         self.checkbox_end_related_processes = customtkinter.CTkCheckBox(
             self.webview2_repair_options_frame,
-            text=self.app_translator.translate("end_related_processes_checkbox"),
+            text=self.app_translator.translate("pages.utilities.end_related_processes"),
             font=customtkinter.CTkFont(family=self.font_family, weight="bold"),
             command=self._on_webview2_repair_checkbox_change
         )
         self.checkbox_end_related_processes.grid(row=0, column=1, sticky="w", padx=10, pady=5)
         CTkToolTip(self.checkbox_end_related_processes,
-                   message=self.app_translator.translate("end_related_processes_tooltip"), font=(self.font_family, 12))
+                   message=self.app_translator.translate("pages.utilities.end_related_processes_tooltip"), font=(self.font_family, 12))
         self.checkbox_end_related_processes.configure(state="disabled")
 
         # Restore IFEO Registry
         self.checkbox_restore_ifeo_registry = customtkinter.CTkCheckBox(
             self.webview2_repair_options_frame,
-            text=self.app_translator.translate("restore_ifeo_registry_checkbox"),
+            text=self.app_translator.translate("pages.utilities.restore_ifeo_registry"),
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_webview2_repair_checkbox_change
         )
         self.checkbox_restore_ifeo_registry.grid(row=1, column=0, sticky="w", padx=10, pady=5)
         CTkToolTip(self.checkbox_restore_ifeo_registry,
-                   message=self.app_translator.translate("restore_ifeo_registry_tooltip"), font=(self.font_family, 12))
+                   message=self.app_translator.translate("pages.utilities.restore_ifeo_registry_tooltip"), font=(self.font_family, 12))
 
         # Remove EdgeUpdate Registry
         self.checkbox_remove_edgeupdate_registry = customtkinter.CTkCheckBox(
             self.webview2_repair_options_frame,
-            text=self.app_translator.translate("remove_edgeupdate_registry_checkbox"),
+            text=self.app_translator.translate("pages.utilities.remove_edgeupdate_registry"),
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_webview2_repair_checkbox_change
         )
@@ -300,7 +300,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # Remove WebView2 Directory
         self.checkbox_remove_webview2_dir = customtkinter.CTkCheckBox(
             self.webview2_repair_options_frame,
-            text=self.app_translator.translate("remove_webview2_dir_checkbox"),
+            text=self.app_translator.translate("pages.utilities.remove_webview2_dir"),
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_webview2_repair_checkbox_change
         )
@@ -311,7 +311,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # Remove Edge Components Directory
         self.checkbox_remove_edge_components_dir = customtkinter.CTkCheckBox(
             self.webview2_repair_options_frame,
-            text=self.app_translator.translate("remove_edge_components_dir_checkbox"),
+            text=self.app_translator.translate("pages.utilities.remove_edge_components_dir"),
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_webview2_repair_checkbox_change
         )
@@ -350,10 +350,10 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         restart_services_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
         self.restart_services_card = self._create_actions_card(
             restart_services_frame,
-            title=self.app_translator.translate("restart_services_title"),
-            description=self.app_translator.translate("restart_services_description"),
+            title=self.app_translator.translate("pages.utilities.restart_services"),
+            description=self.app_translator.translate("pages.utilities.restart_services_description"),
             widget_constructor=customtkinter.CTkButton,
-            text=self.app_translator.translate("execute_button"),
+            text=self.app_translator.translate("pages.common.execute"),
             command=self._run_restart_services
         )
 
@@ -371,7 +371,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # PCManager Service Store
         self.checkbox_stable_version = customtkinter.CTkCheckBox(
             self.mspcm_services_checkboxes_frame,
-            text=self.app_translator.translate("stable_version_checkbox"),
+            text=self.app_translator.translate("pages.utilities.stable_version"),
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_mspcm_services_checkbox_change
         )
@@ -382,18 +382,18 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # PCManager Service
         self.checkbox_beta_version = customtkinter.CTkCheckBox(
             self.mspcm_services_checkboxes_frame,
-            text=self.app_translator.translate("beta_version_checkbox"),
+            text=self.app_translator.translate("pages.utilities.beta_version"),
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_mspcm_services_checkbox_change
         )
         self.checkbox_beta_version.grid(row=0, column=1, sticky="w", padx=10, pady=5)
-        CTkToolTip(self.checkbox_beta_version, message=self.app_translator.translate("beta_version_tooltip"),
+        CTkToolTip(self.checkbox_beta_version, message=self.app_translator.translate("pages.utilities.beta_version_tooltip"),
                    font=(self.font_family, 12))
 
         # PC Manager Service
         self.checkbox_store_beta_version = customtkinter.CTkCheckBox(
             self.mspcm_services_checkboxes_frame,
-            text=self.app_translator.translate("store_beta_version_checkbox"),
+            text=self.app_translator.translate("pages.utilities.store_beta_version"),
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_mspcm_services_checkbox_change
         )
@@ -423,10 +423,10 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         switch_regions_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
         self.switch_regions_card = self._create_actions_card(
             switch_regions_frame,
-            title=self.app_translator.translate("switch_regions_title"),
-            description=self.app_translator.translate("switch_regions_description"),
+            title=self.app_translator.translate("pages.utilities.switch_regions"),
+            description=self.app_translator.translate("pages.utilities.switch_regions_description"),
             widget_constructor=customtkinter.CTkButton,
-            text=self.app_translator.translate("execute_button"),
+            text=self.app_translator.translate("pages.common.execute"),
             command=self._run_switch_regions
         )
 
@@ -440,23 +440,23 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         )
         self.mspcm_version_radiobutton_frame.pack(fill="x", padx=10, pady=5)
 
-        self.mspcm_version_var = tkinter.StringVar(value="v3_14_0_0_and_higher")
+        self.mspcm_version_var = tkinter.StringVar(value="at_least_v3_14_0_0")
 
         # ≥ 3.14.0.0
-        self.radiobutton_v3_14_0_0_and_higher = customtkinter.CTkRadioButton(
+        self.radiobutton_at_least_v3_14_0_0 = customtkinter.CTkRadioButton(
             self.mspcm_version_radiobutton_frame,
-            text=self.app_translator.translate("v3_14_0_0_and_higher_radiobutton"),
+            text=self.app_translator.translate("pages.utilities.at_least_v3_14_0_0"),
             variable=self.mspcm_version_var,
-            value="v3_14_0_0_and_higher",
+            value="at_least_v3_14_0_0",
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_mspcm_version_radiobutton_change
         )
-        self.radiobutton_v3_14_0_0_and_higher.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+        self.radiobutton_at_least_v3_14_0_0.grid(row=0, column=0, sticky="w", padx=10, pady=5)
 
         # < 3.14.0.0
         self.radiobutton_lower_than_v3_14_0_0 = customtkinter.CTkRadioButton(
             self.mspcm_version_radiobutton_frame,
-            text=self.app_translator.translate("lower_than_v3_14_0_0_radiobutton"),
+            text=self.app_translator.translate("pages.utilities.lower_than_v3_14_0_0"),
             variable=self.mspcm_version_var,
             value="lower_than_v3_14_0_0",
             font=customtkinter.CTkFont(family=self.font_family),
@@ -470,10 +470,10 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         view_installed_security_products_frame = self._create_group_frame()
         self.view_installed_security_products_card = self._create_actions_card(
             view_installed_security_products_frame,
-            title=self.app_translator.translate("view_installed_security_products_title"),
-            description=self.app_translator.translate("view_installed_security_products_description"),
+            title=self.app_translator.translate("pages.utilities.view_installed_security_products"),
+            description=self.app_translator.translate("pages.utilities.view_installed_security_products_description"),
             widget_constructor=customtkinter.CTkButton,
-            text=self.app_translator.translate("execute_button"),
+            text=self.app_translator.translate("pages.common.execute"),
             command=self._run_view_installed_security_products
         )
 
@@ -491,7 +491,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # Antivirus
         self.checkbox_antivirus_product = customtkinter.CTkCheckBox(
             self.security_products_types_frame,
-            text=self.app_translator.translate("antivirus_product_checkbox"),
+            text=self.app_translator.translate("pages.utilities.antivirus_product"),
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_security_products_checkbox_change
         )
@@ -500,7 +500,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # Antispyware
         self.checkbox_antispyware_product = customtkinter.CTkCheckBox(
             self.security_products_types_frame,
-            text=self.app_translator.translate("antispyware_product_checkbox"),
+            text=self.app_translator.translate("pages.utilities.antispyware_product"),
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_security_products_checkbox_change
         )
@@ -509,7 +509,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # Firewall
         self.checkbox_firewall_product = customtkinter.CTkCheckBox(
             self.security_products_types_frame,
-            text=self.app_translator.translate("firewall_product_checkbox"),
+            text=self.app_translator.translate("pages.utilities.firewall_product"),
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_security_products_checkbox_change
         )
@@ -518,7 +518,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         # Output as Raw Data
         self.output_as_raw_data_checkbox = customtkinter.CTkCheckBox(
             self.security_products_types_frame,
-            text=self.app_translator.translate("output_as_raw_data_checkbox"),
+            text=self.app_translator.translate("pages.utilities.output_as_raw_data"),
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_output_raw_data_checkbox_change
         )
@@ -565,7 +565,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         self.compute_files_hashes_card.configure(state="disabled")
         self.update_idletasks()
 
-        operation_name = self.app_translator.translate("compute_files_hashes_title")
+        operation_name = self.app_translator.translate("pages.utilities.compute_files_hashes")
 
         hasher = ComputeFilesHashes(
             logger=self.logger,
@@ -581,12 +581,12 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             self.tabview.set(self.events_tab_name)
             self.events_textbox.clear_events()
             self.events_textbox.log_to_events(
-                self.app_translator.translate("executing_operation_with_name").format(operation_name=operation_name)
+                self.app_translator.translate("pages.common.executing_operation").format(operation_name=operation_name)
                 + "\n"
-                + self.app_translator.translate("please_wait_for_completion")
+                + self.app_translator.translate("pages.common.executing_operation_prompt")
                 + "\n"
             )
-            self.events_textbox.log_to_events(self.app_translator.translate("user_has_canceled_the_operation"))
+            self.events_textbox.log_to_events(self.app_translator.translate("pages.common.canceled_operation"))
             self.logger.info(f"Executing Operation: {operation_name}")
             self.logger.info("The operation was canceled by the user.")
             self._update_compute_button_state()
@@ -594,7 +594,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
 
         self._run_operation(
             lambda: hasher.compute(files),
-            "compute_files_hashes_title",
+            "pages.utilities.compute_files_hashes",
             on_completion=self._update_compute_button_state
         )
     # ~ End of Compute Files Hashes ~
@@ -631,7 +631,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
 
         self._run_operation(
             getter.execute,
-            "get_dependencies_versions_title",
+            "pages.utilities.get_dependencies_versions",
             on_completion=self._on_dependencies_checkbox_change
         )
     # ~ End of Get Dependencies Versions ~
@@ -725,7 +725,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
 
         self._run_operation(
             repairer.execute,
-            "repair_edge_webview_2_installation_title",
+            "pages.utilities.repair_edge_webview_2_installation",
             on_completion=self._on_webview2_repair_checkbox_change
         )
     # ~ End of Repair Microsoft Edge WebView2 Installation ~
@@ -760,7 +760,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
 
         self._run_operation(
             lambda: restarter.execute(),
-            "restart_services_title",
+            "pages.utilities.restart_services",
             on_completion=lambda: self.restart_services_card.configure(state="normal")
         )
     # ~ End of Restart Services ~
@@ -768,7 +768,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
     # ~ Switch Regions ~
     def _on_mspcm_version_radiobutton_change(self):
         value = self.mspcm_version_var.get()
-        if value == "v3_14_0_0_and_higher":
+        if value == "at_least_v3_14_0_0":
             self.switch_regions_card.configure(state="normal")
         elif value == "lower_than_v3_14_0_0":
             if AdvancedStartup.is_administrator():
@@ -792,7 +792,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
 
         self._run_operation(
             lambda: switcher.execute(),
-            "switch_regions_title",
+            "pages.utilities.switch_regions",
             on_completion=lambda: self.switch_regions_card.configure(state="normal")
         )
     # ~ End of Switch Regions ~
@@ -848,7 +848,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
 
         self._run_operation(
             lambda: viewer.execute(),
-            "view_installed_security_products_title",
+            "pages.utilities.view_installed_security_products",
             on_completion=lambda: self.view_installed_security_products_card.configure(state="normal")
         )
     # ~ End of View Installed Security Products ~

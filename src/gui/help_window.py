@@ -61,26 +61,26 @@ class HelpWindow(customtkinter.CTk):
         self.help_content_textbox.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
         help_content = (
-            f"{self.app_translator.translate('help_window_content_title')}\n\n\n"
-            f"{self.app_translator.translate('help_window_content_args_1')}\n\n"
-            f"{self.app_translator.translate('help_window_content_args_2')}\n"
-            f"{self.app_translator.translate('help_window_content_args_3')}\n\n"
-            f"{self.app_translator.translate('help_window_content_args_4')}\n"
-            f"{self.app_translator.translate('help_window_content_args_5')}\n\n"
-            f"{self.app_translator.translate('help_window_content_args_6')}\n"
-            f"{self.app_translator.translate('help_window_content_args_7')}\n\n"
-            f"{self.app_translator.translate('help_window_content_args_8')}\n"
-            f"{self.app_translator.translate('help_window_content_args_9')}\n\n"
-            f"{self.app_translator.translate('help_window_content_args_10')}\n"
-            f"{self.app_translator.translate('help_window_content_args_11')}\n\n\n"
-            f"{self.app_translator.translate('help_window_content_get_help_1')}\n"
-            f"{self.app_translator.translate('help_window_content_get_help_2')}"
+            f"{self.app_translator.translate('pages.help.preface')}\n\n\n"
+            f"{self.app_translator.translate('pages.help.params_preface')}\n\n"
+            f"{self.app_translator.translate('pages.help.params_1_title')}\n"
+            f"{self.app_translator.translate('pages.help.params_1_body')}\n\n"
+            f"{self.app_translator.translate('pages.help.params_2_title')}\n"
+            f"{self.app_translator.translate('pages.help.params_2_body')}\n\n"
+            f"{self.app_translator.translate('pages.help.params_3_title')}\n"
+            f"{self.app_translator.translate('pages.help.params_3_body')}\n\n"
+            f"{self.app_translator.translate('pages.help.params_4_title')}\n"
+            f"{self.app_translator.translate('pages.help.params_4_body')}\n\n"
+            f"{self.app_translator.translate('pages.help.params_5_title')}\n"
+            f"{self.app_translator.translate('pages.help.params_5_body')}\n\n\n"
+            f"{self.app_translator.translate('pages.help.get_help_preface')}\n"
+            f"{self.app_translator.translate('pages.help.get_help_1_body')}"
         )
         self.help_content_textbox.insert("0.0", help_content)
         self.help_content_textbox.configure(state="disabled")
 
     def _configure_window(self):
-        app_title = f"{AppMetadata.APP_NAME} {AppMetadata.APP_VERSION} {self.app_translator.translate('help_window_title')}"
+        app_title = f"{AppMetadata.APP_NAME} {AppMetadata.APP_VERSION} {self.app_translator.translate('pages.help.title')}"
         if AdvancedStartup.is_administrator():
             app_title += " [Administrator]"
         self.title(app_title)

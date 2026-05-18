@@ -50,6 +50,6 @@ class StartMSPCM:
         logger.error("\n".join(error_details))
 
         messagebox.showerror(
-            app_translator.translate("error"),
-            app_translator.translate("failed_to_open_mspcm").format(log_file_path=log_file_path)
+            app_translator.translate("common.error"),
+            app_translator.translate("handlers.open_mspcm_error").format(log_file_path=log_file_path)
         )

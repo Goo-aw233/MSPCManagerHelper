@@ -22,7 +22,7 @@ class BaseInfoPageFrame(customtkinter.CTkFrame):
         # Page Title Label
         self.page_title_label = customtkinter.CTkLabel(
             self,
-            text=self.app_translator.translate(page_title_key),
+            text=self.app_translator.translate(page_title_key), # Translation key for the page title.
             font=customtkinter.CTkFont(family=self.font_family, size=24, weight="bold")
         )
         self.page_title_label.grid(row=0, column=0, sticky="w", padx=20, pady=(20, 10))
@@ -41,7 +41,7 @@ class BaseInfoPageFrame(customtkinter.CTkFrame):
                 parent=parent,
                 app_translator=app_translator,
                 font_family=font_family,
-                page_title_key="sample_page"
+                page_title_key="sample_page"    # Translation key for the page title.
             )
 
             # Add page widgets into self.scroll_frame.
@@ -70,8 +70,8 @@ class BaseFuncPageFrame(BaseInfoPageFrame):
             font=customtkinter.CTkFont(family=self.font_family, size=14, weight="bold")
         )
 
-        self.features_tab_name = self.app_translator.translate("features_tab")
-        self.events_tab_name = self.app_translator.translate("events_tab")
+        self.features_tab_name = self.app_translator.translate("pages.common.features_tab")
+        self.events_tab_name = self.app_translator.translate("pages.common.events_tab")
 
         self.tabview.add(self.features_tab_name)
         self.tabview.add(self.events_tab_name)
@@ -106,7 +106,7 @@ class BaseFuncPageFrame(BaseInfoPageFrame):
                 parent=parent,
                 app_translator=app_translator,
                 font_family=font_family,
-                page_title_key="sample_page",
+                page_title_key="sample_page",   # Translation key for the page title.
                 events_textbox_wrap="none"
             )
 
@@ -114,7 +114,7 @@ class BaseFuncPageFrame(BaseInfoPageFrame):
             # Example:
             # customtkinter.CTkButton(
             #     self.scroll_frame,
-            #     text=self.app_translator.translate("execute_button"),
+            #     text=self.app_translator.translate("pages.common.execute"),
             #     command=self._run_sample_operation
             # ).pack(padx=20, pady=10)
 

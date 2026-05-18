@@ -31,8 +31,8 @@ class RestartAsAdministrator:
                 logger.error(msg)
 
                 messagebox.showerror(
-                    app_translator.translate("error"),
-                    app_translator.translate("failed_to_run_as_administrator").format(log_file_path=log_file_path)
+                    app_translator.translate("common.error"),
+                    app_translator.translate("handlers.run_as_administrator_error").format(log_file_path=log_file_path)
                 )
             else:
                 logger.info("Elevation request succeeded (process elevated or ShellExecute triggered).")
@@ -44,6 +44,6 @@ class RestartAsAdministrator:
             logger.error(f"Exception details: {e} [WinError {failed_code}: {failed_msg}]")
 
             messagebox.showerror(
-                app_translator.translate("error"),
-                app_translator.translate("failed_to_run_as_administrator").format(log_file_path=log_file_path)
+                app_translator.translate("common.error"),
+                app_translator.translate("handlers.run_as_administrator_error").format(log_file_path=log_file_path)
             )

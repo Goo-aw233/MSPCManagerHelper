@@ -10,6 +10,6 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             parent=parent,
             app_translator=app_translator,
             font_family=font_family,
-            page_title_key="uninstaller_page",
+            page_title_key="pages.navigation.uninstaller",
             events_textbox_wrap="none"
         )

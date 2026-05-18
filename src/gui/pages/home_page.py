@@ -23,7 +23,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
             parent=parent,
             app_translator=app_translator,
             font_family=font_family,
-            page_title_key="home_page"
+            page_title_key="pages.navigation.home"
         )
 
         # Create a Thread-Safe Queue
@@ -31,14 +31,14 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         self.logger.debug("Initialized result_queue for thread-safe UI updates.")
 
         # === Welcome Section ===
-        self._create_section_label(self.app_translator.translate("welcome_title"))
+        self._create_section_label(self.app_translator.translate("pages.home.welcome"))
 
         self.welcome_group = self._create_group_frame()
 
         self._create_info_textbox_card(
             self.welcome_group,
-            f"{self.app_translator.translate('welcome_to')} {AppMetadata.APP_NAME}",
-            self.app_translator.translate("welcome_message"),
+            self.app_translator.translate("pages.home.welcome_to").format(app_name=AppMetadata.APP_NAME),
+            self.app_translator.translate("pages.home.welcome_message"),
             activate_scrollbars=True,
             enable_text_selection=False
         )
@@ -46,8 +46,8 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
 
         # === Microsoft PC Manager Version Info Section ===
         self.refresh_version_button = self._create_section_label_with_button(
-            self.app_translator.translate("mspcm_version_info"),
-            f"↻    {self.app_translator.translate('refresh_button')}",
+            self.app_translator.translate("pages.home.mspcm_version_info"),
+            f"↻    {self.app_translator.translate('pages.common.refresh')}",
             self._refresh_mspcm_version_info
         )
 
@@ -57,7 +57,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         # === End of Microsoft PC Manager Version Info Section ===
 
         # === Windows Specifications Section ===
-        self._create_section_label(self.app_translator.translate("windows_specifications"))
+        self._create_section_label(self.app_translator.translate("pages.home.windows_specifications"))
 
         self.windows_specifications_group = self._create_group_frame()
 
@@ -69,17 +69,17 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         # === End of Windows Specifications Section ===
 
         # === Advanced Section ===
-        self._create_section_label(self.app_translator.translate("home_page_advanced_section_title"))
+        self._create_section_label(self.app_translator.translate("pages.home.advanced"))
 
         self.exit_group = self._create_group_frame()
 
         # --- Run as Administrator ---
         self._create_actions_card(
             self.exit_group,
-            self.app_translator.translate("run_as_administrator"),
-            self.app_translator.translate("run_as_administrator_description"),
+            self.app_translator.translate("pages.home.run_as_administrator"),
+            self.app_translator.translate("pages.home.restart_as_administrator_description"),
             customtkinter.CTkButton,
-            text=self.app_translator.translate("run_as_administrator_button"),
+            text=self.app_translator.translate("pages.home.restart_as_administrator"),
             command=lambda: RestartAsAdministrator.restart_as_administrator(
                 AdvancedStartup, logger=self.logger,
                 app_translator=self.app_translator,
@@ -95,10 +95,10 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
 
             self.long_paths_button = self._create_actions_card(
                 self.exit_group,
-                self.app_translator.translate("long_paths"),
-                self.app_translator.translate("long_paths_description"),
+                self.app_translator.translate("pages.home.long_paths"),
+                self.app_translator.translate("pages.home.long_paths_description"),
                 customtkinter.CTkButton,
-                text=self.app_translator.translate("enable_long_paths_button"),
+                text=self.app_translator.translate("pages.home.enable_long_paths"),
                 command=self._on_long_paths_click,
                 state="normal" if AdvancedStartup.is_administrator() else "disabled"
             )
@@ -109,12 +109,12 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         # --- Cleanup After Exit ---
         self.cleanup_after_exit_checkbox = self._create_actions_card(
             self.exit_group,
-            self.app_translator.translate("cleanup_after_exit"),
-            self.app_translator.translate("cleanup_after_exit_description"),
+            self.app_translator.translate("pages.home.cleanup_after_exit"),
+            self.app_translator.translate("pages.home.cleanup_after_exit_description"),
             customtkinter.CTkCheckBox,
             text=self.app_translator.translate(
-                "button_on") if AppSettings.is_cleanup_after_exit_enabled() else self.app_translator.translate(
-                "button_off"),
+                "pages.common.on") if AppSettings.is_cleanup_after_exit_enabled() else self.app_translator.translate(
+                "pages.common.off"),
             command=self._on_cleanup_after_exit_toggled
         )
         if AppSettings.is_cleanup_after_exit_enabled():
@@ -128,10 +128,10 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         # --- Exit ---
         self._create_actions_card(
             self.exit_group,
-            self.app_translator.translate("exit_section_title"),
-            self.app_translator.translate("exit_app_description"),
+            self.app_translator.translate("pages.home.exit_title"),
+            self.app_translator.translate("pages.home.exit_description"),
             customtkinter.CTkButton,
-            text=self.app_translator.translate("exit_app_button"),
+            text=self.app_translator.translate("pages.home.exit"),
             command=self._exit_app
         )
         # === End of Advanced Section ===
@@ -154,14 +154,14 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
 
     def _load_mspcm_version_info(self):
         # Disable Refresh Button While Loading
-        if hasattr(self, 'refresh_version_button'):
+        if hasattr(self, "refresh_version_button"):
             self.refresh_version_button.configure(state="disabled")
 
         # Show Loading Message
         self._create_info_textbox_card(
             self.mspcm_version_group,
-            self.app_translator.translate("mspcm_version_is"),
-            self.app_translator.translate("loading"),
+            self.app_translator.translate("pages.home.mspcm_version_is"),
+            self.app_translator.translate("pages.home.loading"),
             activate_scrollbars=True,
             enable_text_selection=False
         )
@@ -208,7 +208,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
             return
 
         # Enable Refresh Button After Loading
-        if hasattr(self, 'refresh_version_button'):
+        if hasattr(self, "refresh_version_button"):
             self.refresh_version_button.configure(state="normal")
 
         # Clear Loading Message
@@ -219,10 +219,10 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         if mspcm_version:
             self.mspcm_version_card = self._create_info_textbox_card(
                 self.mspcm_version_group,
-                self.app_translator.translate("mspcm_version_is"),
-                f"{self.app_translator.translate('mspcm_version_is')}: {mspcm_version}",
+                self.app_translator.translate("pages.home.mspcm_version_is"),
+                f"{self.app_translator.translate('pages.home.mspcm_version_is')}: {mspcm_version}",
                 customtkinter.CTkButton,
-                text=self.app_translator.translate("start_mspcm_button"),
+                text=self.app_translator.translate("pages.home.start_mspcm"),
                 command=lambda: StartMSPCM.start_mspcm(
                     logger=self.logger,
                     log_file_path=self.log_file_path,
@@ -235,8 +235,8 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         else:
             self.mspcm_version_card = self._create_info_textbox_card(
                 self.mspcm_version_group,
-                self.app_translator.translate("mspcm_version_is"),
-                self.app_translator.translate("failed_to_get_mspcm_version_info"),
+                self.app_translator.translate("pages.home.mspcm_version_is"),
+                self.app_translator.translate("pages.home.load_mspcm_version_info_failed"),
                 activate_scrollbars=True,
                 enable_text_selection=False
             )
@@ -248,10 +248,10 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
 
             self.mspcm_beta_version_card = self._create_info_textbox_card(
                 self.mspcm_version_group,
-                self.app_translator.translate("mspcm_beta_version_is"),
-                f"{self.app_translator.translate('mspcm_beta_version_is')}: {mspcm_beta_version}",
+                self.app_translator.translate("pages.home.mspcm_beta_version_is"),
+                f"{self.app_translator.translate('pages.home.mspcm_beta_version_is')}: {mspcm_beta_version}",
                 customtkinter.CTkButton,
-                text=self.app_translator.translate("start_mspcm_beta_button"),
+                text=self.app_translator.translate("pages.home.start_mspcm_beta"),
                 command=lambda: StartMSPCMBeta.start_mspcm_beta(
                     logger=self.logger,
                     log_file_path=self.log_file_path,
@@ -268,33 +268,32 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         if windows_info:
             self._create_info_textbox_card(
                 self.windows_specifications_group,
-                self.app_translator.translate("windows_installation_info"),
+                self.app_translator.translate("pages.home.windows_installation_info"),
                 windows_info,
                 customtkinter.CTkButton,
-                text=self.app_translator.translate("about_button"),
+                text=self.app_translator.translate("pages.home.about"),
                 command=lambda: URILauncher.launch_uri(
                     uri="ms-settings:about",
                     target_name="About Windows",
-                    messagebox_error_message="failed_to_open_about_windows",
+                    messagebox_error_message="handlers.open_about_windows_error",
                     logger=self.logger,
                     log_file_path=self.log_file_path,
                     app_translator=self.app_translator
                 ),
                 activate_scrollbars=True,
                 enable_text_selection=True
-
             )
         else:
             self._create_info_textbox_card(
                 self.windows_specifications_group,
-                self.app_translator.translate("windows_installation_info"),
-                self.app_translator.translate("failed_to_load_windows_installation_info"),
+                self.app_translator.translate("pages.home.windows_installation_info"),
+                self.app_translator.translate("pages.home.load_windows_installation_info_failed"),
                 customtkinter.CTkButton,
-                text=self.app_translator.translate("about_button"),
+                text=self.app_translator.translate("pages.home.about"),
                 command=lambda: URILauncher.launch_uri(
                     uri="ms-settings:about",
                     target_name="About Windows",
-                    messagebox_error_message="failed_to_open_about_windows",
+                    messagebox_error_message="handlers.open_about_windows_error",
                     logger=self.logger,
                     log_file_path=self.log_file_path,
                     app_translator=self.app_translator
@@ -307,21 +306,21 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         attention_messages = []
 
         if not PrerequisiteChecks.check_windows_minimum_requirements():
-            attention_messages.append(self.app_translator.translate("current_system_not_meets_system_requirements"))
+            attention_messages.append(self.app_translator.translate("pages.home.current_system_not_meets_system_requirements"))
         else:
-            attention_messages.append(self.app_translator.translate("current_system_meets_system_requirements"))
+            attention_messages.append(self.app_translator.translate("pages.home.current_system_meets_system_requirements"))
 
         if PrerequisiteChecks.check_admin_approval_mode():
-            attention_messages.append(self.app_translator.translate("administrator_protection_is_enabled"))
+            attention_messages.append(self.app_translator.translate("core.administrator_protection_enabled_message"))
 
         if PrerequisiteChecks.check_windows_server_levels():
-            attention_messages.append(self.app_translator.translate("windows_server_installation_type_is_core"))
+            attention_messages.append(self.app_translator.translate("core.windows_server_core_message"))
 
         if attention_messages:
             self._create_separator(self.windows_specifications_group)
             self._create_info_textbox_card(
                 self.windows_specifications_group,
-                self.app_translator.translate("attention"),
+                self.app_translator.translate("pages.home.attention"),
                 "\n\n".join(attention_messages),
                 activate_scrollbars=True,
                 enable_text_selection=False,
@@ -335,9 +334,9 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         )
 
         if PrerequisiteChecks.check_if_long_paths_enabled():
-            if hasattr(self, 'long_paths_separator') and self.long_paths_separator.winfo_exists():
+            if hasattr(self, "long_paths_separator") and self.long_paths_separator.winfo_exists():
                 self.long_paths_separator.destroy()
-            if hasattr(self, 'long_paths_button') and self.long_paths_button.winfo_exists():
+            if hasattr(self, "long_paths_button") and self.long_paths_button.winfo_exists():
                 # The button is inside the card container (CTkFrame). Destroy the container.
                 self.long_paths_button.master.destroy()
 
@@ -345,8 +344,8 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         AppSettings.toggle_cleanup_after_exit()
         is_enabled = AppSettings.is_cleanup_after_exit_enabled()
         self.cleanup_after_exit_checkbox.configure(
-            text=self.app_translator.translate("button_on") if is_enabled else self.app_translator.translate(
-                "button_off"))
+            text=self.app_translator.translate("pages.common.on") if is_enabled else self.app_translator.translate(
+                "pages.common.off"))
 
     def _exit_app(self):
         self.logger.info("The app is exiting via the exit button...")

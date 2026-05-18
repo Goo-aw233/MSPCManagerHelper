@@ -11,7 +11,7 @@ class EventsTextbox:
 
         self.description_label = customtkinter.CTkLabel(
             parent,
-            text=self.app_translator.translate("events_textbox_description"),
+            text=self.app_translator.translate("pages.common.events_textbox_description"),
             font=customtkinter.CTkFont(family=self.font_family, size=13),
             anchor="center"
         )
@@ -27,10 +27,10 @@ class EventsTextbox:
         self.textbox.pack(fill="both", expand=True, padx=10, pady=10)
 
         self.right_click_menu = tkinter.Menu(self.textbox, tearoff=0)
-        self.right_click_menu.add_command(label=self.app_translator.translate("copy_button"),
+        self.right_click_menu.add_command(label=self.app_translator.translate("pages.common.copy"),
                                           command=self.copy_events)
         self.right_click_menu.add_separator()
-        self.right_click_menu.add_command(label=self.app_translator.translate("clear_button"),
+        self.right_click_menu.add_command(label=self.app_translator.translate("pages.common.clear"),
                                           command=self.clear_events)
 
         self.textbox.bind("<Button-3>", self.show_right_click_menu)

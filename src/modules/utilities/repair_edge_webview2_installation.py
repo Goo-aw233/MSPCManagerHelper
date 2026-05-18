@@ -77,17 +77,17 @@ class RepairEdgeWebView2Installation:
 
         try:
             winreg.DeleteKey(winreg.HKEY_LOCAL_MACHINE, msedgeupdate_ifeo_key)
-            self._log(self.app_translator.translate("ifeo_registry_key_removed_successfully"))
-            self.logger.info("Old IFEO registry entries removed Successfully.")
+            self._log(self.app_translator.translate("modules.utilities.remove_ifeo_registry_key_successfully"))
+            self.logger.info("Old IFEO registry key removed Successfully.")
         except FileNotFoundError:
             pass
         except PermissionError:
-            self._log(self.app_translator.translate("no_permission_to_remove_ifeo_registry_key"))
-            self.logger.warning("No permission to remove IFEO registry entries. Please run as administrator.")
+            self._log(self.app_translator.translate("modules.utilities.remove_ifeo_registry_key_permission_error"))
+            self.logger.warning("Permission Denied While Removing IFEO Registry Key. Please run the application as administrator and try again.")
             return
         except Exception as e:
             self._log(
-                self.app_translator.translate("an_error_occurred_while_removing_ifeo_registry_key").format(
+                self.app_translator.translate("modules.utilities.remove_ifeo_registry_key_error").format(
                     error=str(e)
                 )
             )
@@ -103,14 +103,14 @@ class RepairEdgeWebView2Installation:
             )
             winreg.SetValueEx(key, "DisableExceptionChainValidation", 0, winreg.REG_DWORD, 1)
             winreg.CloseKey(key)
-            self._log(self.app_translator.translate("ifeo_registry_key_created_successfully"))
+            self._log(self.app_translator.translate("modules.utilities.create_ifeo_registry_key_successfully"))
             self.logger.info("IFEO registry key created Successfully.")
         except PermissionError:
-            self._log(self.app_translator.translate("no_permission_to_create_ifeo_registry_key"))
-            self.logger.warning("No permission to create IFEO registry entries. Please run as administrator.")
+            self._log(self.app_translator.translate("modules.utilities.create_ifeo_registry_key_permission_error"))
+            self.logger.warning("Permission Denied While Creating IFEO Registry Key. Please run the application as administrator and try again.")
         except Exception as e:
             self._log(
-                self.app_translator.translate("an_error_occurred_while_creating_ifeo_registry_key").format(
+                self.app_translator.translate("modules.utilities.create_ifeo_registry_key_error").format(
                     error=str(e)
                 )
             )
@@ -146,24 +146,24 @@ class RepairEdgeWebView2Installation:
             # NSudo Error Dealing
             if result.returncode != 0:
                 if result.stdout:
-                    self._log(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
-                    self._log(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                    self._log(f"NSudo {self.app_translator.translate('common.error_code')}: {result.returncode}")
+                    self._log(f"===== {self.app_translator.translate('common.stdout')}: =====\n{result.stdout}")
                     self.logger.error(f"NSudo Error Code: {result.returncode}")
                     self.logger.error(f"===== Stdout: =====\n{result.stdout}")
                 raise Exception(f"NSudo Error Code: {result.returncode}")
 
             # reg.exe Error Dealing
             if result.stderr:
-                self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                self._log(f"===== {self.app_translator.translate('common.stderr')}: =====\n{result.stderr}")
                 self.logger.error(f"===== Stderr: =====\n{result.stderr}")
                 raise Exception(f"An Error Occurred While Removing IFEO Registry Key:\n{result.stderr}")
 
             # Success
-            self._log(self.app_translator.translate("ifeo_registry_key_removed_successfully"))
-            self.logger.info("Old IFEO registry entries removed Successfully.")
+            self._log(self.app_translator.translate("modules.utilities.remove_ifeo_registry_key_successfully"))
+            self.logger.info("IFEO registry key removed Successfully.")
         except Exception as e:
             self._log(
-                self.app_translator.translate("an_error_occurred_while_removing_ifeo_registry_key").format(
+                self.app_translator.translate("modules.utilities.remove_ifeo_registry_key_error").format(
                     error=str(e)
                 )
             )
@@ -200,24 +200,24 @@ class RepairEdgeWebView2Installation:
             # NSudo Error Dealing
             if result.returncode != 0:
                 if result.stdout:
-                    self._log(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
-                    self._log(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                    self._log(f"NSudo {self.app_translator.translate('common.error_code')}: {result.returncode}")
+                    self._log(f"===== {self.app_translator.translate('common.stdout')}: =====\n{result.stdout}")
                     self.logger.error(f"NSudo Error Code: {result.returncode}")
                     self.logger.error(f"===== Stdout: =====\n{result.stdout}")
                 raise Exception(f"NSudo Error Code: {result.returncode}")
 
             # reg.exe Error Dealing
             if result.stderr:
-                self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                self._log(f"===== {self.app_translator.translate('common.stderr')}: =====\n{result.stderr}")
                 self.logger.error(f"===== Stderr: =====\n{result.stderr}")
                 raise Exception(f"An Error Occurred While Creating IFEO Registry Key:\n{result.stderr}")
 
             # Success
-            self._log(self.app_translator.translate("ifeo_registry_key_created_successfully"))
+            self._log(self.app_translator.translate("modules.utilities.create_ifeo_registry_key_successfully"))
             self.logger.info("IFEO registry key created Successfully.")
         except Exception as e:
             self._log(
-                self.app_translator.translate("an_error_occurred_while_creating_ifeo_registry_key").format(
+                self.app_translator.translate("modules.utilities.create_ifeo_registry_key_error").format(
                     error=str(e)
                 )
             )
@@ -238,20 +238,20 @@ class RepairEdgeWebView2Installation:
 
         try:
             _delete_key_tree(winreg.HKEY_LOCAL_MACHINE, edgeupdate_reg_key)
-            self._log(self.app_translator.translate("edgeupdate_registry_key_removed_successfully"))
+            self._log(self.app_translator.translate("modules.utilities.remove_edgeupdate_registry_key_successfully"))
             self.logger.info("EdgeUpdate registry key removed successfully.")
         except FileNotFoundError:
             pass
         except PermissionError:
-            self._log(self.app_translator.translate("no_permission_to_remove_edgeupdate_registry_key"))
-            self.logger.warning("No permission to remove EdgeUpdate registry key. Please run as administrator.")
+            self._log(self.app_translator.translate("modules.utilities.remove_edgeupdate_registry_key_permission_error"))
+            self.logger.warning("Permission Denied While Removing EdgeUpdate.exe Registry Key. Please run the application as administrator and try again.")
         except Exception as e:
             self._log(
-                self.app_translator.translate("an_error_occurred_while_removing_edgeupdate_registry_key").format(
+                self.app_translator.translate("modules.utilities.remove_edgeupdate_registry_key_error").format(
                     error=str(e)
                 )
             )
-            self.logger.error(f"An Error Occurred While Removing EdgeUpdate Registry Key: {e}")
+            self.logger.error(f"An Error Occurred While Removing EdgeUpdate.exe Registry Key: {e}")
 
     def _remove_edgeupdate_reg_key_with_ownership(self):
         edgeupdate_reg_key = r"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate"
@@ -280,63 +280,63 @@ class RepairEdgeWebView2Installation:
             # NSudo Error Dealing
             if result.returncode != 0:
                 if result.stdout:
-                    self._log(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
-                    self._log(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                    self._log(f"NSudo {self.app_translator.translate('common.error_code')}: {result.returncode}")
+                    self._log(f"===== {self.app_translator.translate('common.stdout')}: =====\n{result.stdout}")
                     self.logger.error(f"NSudo Error Code: {result.returncode}")
                     self.logger.error(f"===== Stdout: =====\n{result.stdout}")
                 raise Exception(f"NSudo Error Code: {result.returncode}")
 
             # reg.exe Error Dealing
             if result.stderr:
-                self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                self._log(f"===== {self.app_translator.translate('common.stderr')}: =====\n{result.stderr}")
                 self.logger.error(f"===== Stderr: =====\n{result.stderr}")
                 raise Exception(f"An Error Occurred While Removing EdgeUpdate Registry Key:\n{result.stderr}")
 
             # Success
-            self._log(self.app_translator.translate("edgeupdate_registry_key_removed_successfully"))
+            self._log(self.app_translator.translate("modules.utilities.remove_edgeupdate_registry_key_successfully"))
             self.logger.info("EdgeUpdate registry key removed successfully.")
         except Exception as e:
             self._log(
-                self.app_translator.translate("an_error_occurred_while_removing_edgeupdate_registry_key").format(
+                self.app_translator.translate("modules.utilities.remove_edgeupdate_registry_key_error").format(
                     error=str(e)
                 )
             )
-            self.logger.error(f"An Error Occurred While Removing EdgeUpdate Registry Key: {e}")
+            self.logger.error(f"An Error Occurred While Removing EdgeUpdate.exe Registry Key: {e}")
 
     def _remove_webview2_dir(self):
         webview2_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft" / "EdgeWebView"
 
         if not webview2_dir_path.exists():
-            self._log(self.app_translator.translate("webview2_dir_not_exist"))
+            self._log(self.app_translator.translate("modules.utilities.webview2_dir_not_exist"))
             self.logger.info("Microsoft Edge WebView2 directory does not exist.")
             return
         if any(webview2_dir_path.iterdir()):
             self.logger.warning("Microsoft Edge WebView2 directory is not empty.")
             result = messagebox.askyesno(
-                self.app_translator.translate("confirm_remove_webview2_dir_title"),
-                self.app_translator.translate("webview2_dir_not_empty_confirm_remove")
+                self.app_translator.translate("modules.utilities.confirm_remove_webview2_dir_title"),
+                self.app_translator.translate("modules.utilities.confirm_remove_webview2_dir_message")
             )
             if not result:
-                self._log(self.app_translator.translate("user_has_canceled_the_operation"))
+                self._log(self.app_translator.translate("pages.common.canceled_operation"))
                 self.logger.info("The operation was canceled by the user.")
                 return
 
         while True:
             try:
                 shutil.rmtree(webview2_dir_path)
-                self._log(self.app_translator.translate("webview2_dir_removed_successfully"))
+                self._log(self.app_translator.translate("modules.utilities.remove_webview2_dir_successfully"))
                 self.logger.info("Microsoft Edge WebView2 directory removed successfully.")
                 break
             except Exception as e:
                 self.logger.error(f"An Error Occurred While Removing Microsoft Edge WebView2 Directory: {e}")
                 if not messagebox.askretrycancel(
-                    self.app_translator.translate("error"),
-                    self.app_translator.translate("an_error_occurred_while_removing_webview2_dir").format(
+                    self.app_translator.translate("common.error"),
+                    self.app_translator.translate("modules.utilities.remove_webview2_dir_error").format(
                         error=str(e)
                     )
                 ):
                     self._log(
-                        self.app_translator.translate("an_error_occurred_while_removing_webview2_dir").format(
+                        self.app_translator.translate("modules.utilities.remove_webview2_dir_error").format(
                             error=str(e)
                         )
                     )
@@ -346,17 +346,17 @@ class RepairEdgeWebView2Installation:
         webview2_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft" / "EdgeWebView"
 
         if not webview2_dir_path.exists():
-            self._log(self.app_translator.translate("webview2_dir_not_exist"))
+            self._log(self.app_translator.translate("modules.utilities.webview2_dir_not_exist"))
             self.logger.info("Microsoft Edge WebView2 directory does not exist.")
             return
         if any(webview2_dir_path.iterdir()):
             self.logger.warning("Microsoft Edge WebView2 directory is not empty.")
             result = messagebox.askyesno(
-                self.app_translator.translate("confirm_remove_webview2_dir_title"),
-                self.app_translator.translate("webview2_dir_not_empty_confirm_remove")
+                self.app_translator.translate("modules.utilities.confirm_remove_webview2_dir_title"),
+                self.app_translator.translate("modules.utilities.confirm_remove_webview2_dir_message")
             )
             if not result:
-                self._log(self.app_translator.translate("user_has_canceled_the_operation"))
+                self._log(self.app_translator.translate("pages.common.canceled_operation"))
                 self.logger.info("User canceled the removal of Microsoft Edge WebView2 directory.")
                 return
 
@@ -386,8 +386,8 @@ class RepairEdgeWebView2Installation:
                 # NSudo Error Dealing
                 if result.returncode != 0:
                     if result.stdout:
-                        self._log(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
-                        self._log(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                        self._log(f"NSudo {self.app_translator.translate('common.error_code')}: {result.returncode}")
+                        self._log(f"===== {self.app_translator.translate('common.stdout')}: =====\n{result.stdout}")
                         self.logger.error(f"NSudo Error Code: {result.returncode}")
                         self.logger.error(f"===== Stdout: =====\n{result.stdout}")
                     raise Exception(f"NSudo Error Code: {result.returncode}")
@@ -395,24 +395,24 @@ class RepairEdgeWebView2Installation:
                 # CMD Error Dealing
                 if webview2_dir_path.exists():
                     if result.stderr:
-                        self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                        self._log(f"===== {self.app_translator.translate('common.stderr')}: =====\n{result.stderr}")
                         self.logger.error(f"===== Stderr: =====\n{result.stderr}")
                     raise Exception("Directory still exists.")
 
                 # Success
-                self._log(self.app_translator.translate("webview2_dir_removed_successfully"))
+                self._log(self.app_translator.translate("modules.utilities.remove_webview2_dir_successfully"))
                 self.logger.info("Microsoft Edge WebView2 directory removed successfully.")
                 break
             except Exception as e:
                 self.logger.error(f"An Error Occurred While Removing Microsoft Edge WebView2 Directory: {e}")
                 if not messagebox.askretrycancel(
-                    self.app_translator.translate("error"),
-                    self.app_translator.translate("an_error_occurred_while_removing_webview2_dir").format(
+                    self.app_translator.translate("common.error"),
+                    self.app_translator.translate("modules.utilities.remove_webview2_dir_error").format(
                         error=str(e)
                     )
                 ):
                     self._log(
-                        self.app_translator.translate("an_error_occurred_while_removing_webview2_dir").format(
+                        self.app_translator.translate("modules.utilities.remove_webview2_dir_error").format(
                             error=str(e)
                         )
                     )
@@ -422,35 +422,35 @@ class RepairEdgeWebView2Installation:
         edge_components_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft"
 
         if not edge_components_dir_path.exists():
-            self._log(self.app_translator.translate("edge_components_dir_not_exist"))
+            self._log(self.app_translator.translate("modules.utilities.edge_components_dir_not_exist"))
             self.logger.info("Microsoft Edge components directory does not exist.")
             return
         if any(edge_components_dir_path.iterdir()):
             self.logger.warning("Microsoft Edge components directory is not empty.")
             result = messagebox.askyesno(
-                self.app_translator.translate("confirm_remove_edge_components_dir_title"),
-                self.app_translator.translate("edge_components_dir_not_empty_confirm_remove")
+                self.app_translator.translate("modules.utilities.confirm_remove_edge_components_dir_title"),
+                self.app_translator.translate("modules.utilities.confirm_remove_edge_components_dir_message")
             )
             if not result:
-                self._log(self.app_translator.translate("user_has_canceled_the_operation"))
+                self._log(self.app_translator.translate("pages.common.canceled_operation"))
                 self.logger.info("The operation was canceled by the user.")
                 return
         while True:
             try:
                 shutil.rmtree(edge_components_dir_path)
-                self._log(self.app_translator.translate("edge_components_dir_removed_successfully"))
+                self._log(self.app_translator.translate("modules.utilities.remove_edge_components_dir_successfully"))
                 self.logger.info("Microsoft Edge components directory removed successfully.")
                 break
             except Exception as e:
                 self.logger.error(f"An Error Occurred While Removing Microsoft Edge Components Directory: {e}")
                 if not messagebox.askretrycancel(
-                    self.app_translator.translate("error"),
-                    self.app_translator.translate("an_error_occurred_while_removing_edge_components_dir").format(
+                    self.app_translator.translate("common.error"),
+                    self.app_translator.translate("modules.utilities.remove_edge_components_dir_error").format(
                         error=str(e)
                     )
                 ):
                     self._log(
-                        self.app_translator.translate("an_error_occurred_while_removing_edge_components_dir").format(
+                        self.app_translator.translate("modules.utilities.remove_edge_components_dir_error").format(
                             error=str(e)
                         )
                     )
@@ -460,17 +460,17 @@ class RepairEdgeWebView2Installation:
         edge_components_dir_path = Path(os.getenv("ProgramFiles(x86)")) / "Microsoft"
 
         if not edge_components_dir_path.exists():
-            self._log(self.app_translator.translate("edge_components_dir_not_exist"))
+            self._log(self.app_translator.translate("modules.utilities.edge_components_dir_not_exist"))
             self.logger.info("Microsoft Edge components directory does not exist.")
             return
         if any(edge_components_dir_path.iterdir()):
             self.logger.warning("Microsoft Edge components directory is not empty.")
             result = messagebox.askyesno(
-                self.app_translator.translate("confirm_remove_edge_components_dir_title"),
-                self.app_translator.translate("edge_components_dir_not_empty_confirm_remove")
+                self.app_translator.translate("modules.utilities.confirm_remove_edge_components_dir_title"),
+                self.app_translator.translate("modules.utilities.confirm_remove_edge_components_dir_message")
             )
             if not result:
-                self._log(self.app_translator.translate("user_has_canceled_the_operation"))
+                self._log(self.app_translator.translate("pages.common.canceled_operation"))
                 self.logger.info("The operation was canceled by the user.")
                 return
 
@@ -500,8 +500,8 @@ class RepairEdgeWebView2Installation:
                 # NSudo Error Dealing
                 if result.returncode != 0:
                     if result.stdout:
-                        self._log(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
-                        self._log(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                        self._log(f"NSudo {self.app_translator.translate('common.error_code')}: {result.returncode}")
+                        self._log(f"===== {self.app_translator.translate('common.stdout')}: =====\n{result.stdout}")
                         self.logger.error(f"NSudo Error Code: {result.returncode}")
                         self.logger.error(f"===== Stdout: =====\n{result.stdout}")
                     raise Exception(f"NSudo Error Code: {result.returncode}")
@@ -509,24 +509,24 @@ class RepairEdgeWebView2Installation:
                 # CMD Error Dealing
                 if edge_components_dir_path.exists():
                     if result.stderr:
-                        self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                        self._log(f"===== {self.app_translator.translate('common.stderr')}: =====\n{result.stderr}")
                         self.logger.error(f"===== Stderr: =====\n{result.stderr}")
                     raise Exception("Directory still exists.")
 
                 # Success
-                self._log(self.app_translator.translate("edge_components_dir_removed_successfully"))
+                self._log(self.app_translator.translate("modules.utilities.remove_edge_components_dir_successfully"))
                 self.logger.info("Microsoft Edge components directory removed successfully.")
                 break
             except Exception as e:
                 self.logger.error(f"An Error Occurred While Removing Microsoft Edge Components Directory: {e}")
                 if not messagebox.askretrycancel(
-                    self.app_translator.translate("error"),
-                    self.app_translator.translate("an_error_occurred_while_removing_edge_components_dir").format(
+                    self.app_translator.translate("common.error"),
+                    self.app_translator.translate("modules.utilities.remove_edge_components_dir_error").format(
                         error=str(e)
                     )
                 ):
                     self._log(
-                        self.app_translator.translate("an_error_occurred_while_removing_edge_components_dir").format(
+                        self.app_translator.translate("modules.utilities.remove_edge_components_dir_error").format(
                             error=str(e)
                         )
                     )
@@ -542,26 +542,26 @@ class RepairEdgeWebView2Installation:
         ]
         found_processes = set()
 
-        for proc in psutil.process_iter(['name']):
+        for proc in psutil.process_iter([ "name" ]):
             try:
-                proc_name = proc.info['name']
+                proc_name = proc.info["name"]
                 if proc_name in processes_list:
                     found_processes.add(proc_name)
                     proc.kill()
                     self._log(
-                        self.app_translator.translate("ended_process").format(
+                        self.app_translator.translate("modules.utilities.ended_process").format(
                             proc_name=proc_name
                         )
                     )
                     self.logger.info(f"Ended Process: {proc_name}")
             except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess) as e:
-                self._log(f"{self.app_translator.translate('an_error_occurred_while_ending_process')}: {proc.info.get('name', 'Unknown')} - {e}")
+                self._log(f"{self.app_translator.translate('modules.utilities.end_process_error')}: {proc.info.get('name', 'Unknown')} - {e}")
                 self.logger.error(f"An Error Occurred While Ending Process: {proc.info.get('name', 'Unknown')} - {e}")
 
         for process_name in processes_list:
             if process_name not in found_processes:
                 self._log(
-                    self.app_translator.translate("skipped_process_not_running").format(
+                    self.app_translator.translate("modules.utilities.skipped_not_running_process_message").format(
                         process_name=process_name
                     )
                 )
@@ -600,29 +600,29 @@ class RepairEdgeWebView2Installation:
                 # NSudo Error Dealing
                 if result.returncode != 0:
                     self._log(
-                        f"{self.app_translator.translate('an_error_occurred_while_ending_process')}: {process_name}"
+                        f"{self.app_translator.translate('modules.utilities.end_process_error')}: {process_name}"
                     )
                     self.logger.error(f"An Error Occurred While Ending Process: {process_name}")
                     if result.stdout:
-                        self._log(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
-                        self._log(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                        self._log(f"NSudo {self.app_translator.translate('common.error_code')}: {result.returncode}")
+                        self._log(f"===== {self.app_translator.translate('common.stdout')}: =====\n{result.stdout}")
                         self.logger.error(f"NSudo Error Code: {result.returncode}")
                         self.logger.error(f"===== Stdout: =====\n{result.stdout}")
                     continue
 
                 # taskkill.exe Error Dealing
                 if result.stderr:
-                    self._log(f"{self.app_translator.translate('an_error_occurred_while_ending_process')}: {process_name}")
+                    self._log(f"{self.app_translator.translate('modules.utilities.end_process_error')}: {process_name}")
                     self.logger.error(f"An Error Occurred While Ending Process: {process_name}")
-                    self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                    self._log(f"===== {self.app_translator.translate('common.stderr')}: =====\n{result.stderr}")
                     self.logger.error(f"===== Stderr: =====\n{result.stderr}")
                     continue
 
                 # Success
-                self._log(f"{self.app_translator.translate('ended_process')}: {process_name}")
+                self._log(f"{self.app_translator.translate('modules.utilities.ended_process')}: {process_name}")
                 self.logger.info(f"Ended Process: {process_name}")
             except Exception as e:
                 self._log(
-                    f"{self.app_translator.translate('an_error_occurred_while_ending_process')}: {process_name} - {e}"
+                    f"{self.app_translator.translate('modules.utilities.end_process_error')}: {process_name} - {e}"
                 )
                 self.logger.error(f"An Error Occurred While Ending Process: {process_name} - {e}")

@@ -25,7 +25,21 @@ class AppTranslator:
             return json.load(file)
 
     def translate(self, key):
-        return self.translations.get(key, key)
+        # Basic Validation
+        if not key:
+            return key
+        # Non-string keys are returned as-is.
+        if not isinstance(key, str):
+            return key
+
+        # Hierarchical Lookup
+        current = self.translations
+        for segment in key.split("."):
+            if not isinstance(current, dict) or segment not in current:
+                return key
+            current = current.get(segment)
+
+        return current if current is not None else key
 
     @staticmethod
     def detect_system_language():

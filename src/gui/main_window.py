@@ -135,8 +135,8 @@ class MainWindow(customtkinter.CTk):
             found_prerequisite_issue = True
             self.logger.error("Operating system is not Windows NT-based.")
             messagebox.showerror(
-                self.app_translator.translate("error"),
-                self.app_translator.translate("operating_system_is_not_windows_nt_based")
+                self.app_translator.translate("common.error"),
+                self.app_translator.translate("core.not_windows_nt_based_os_message")
             )
             sys.exit(1)
 
@@ -144,16 +144,16 @@ class MainWindow(customtkinter.CTk):
             found_prerequisite_issue = True
             self.logger.warning("Admin Approval Mode is enabled.")
             messagebox.showwarning(
-                self.app_translator.translate("warning"),
-                self.app_translator.translate("administrator_protection_is_enabled")
+                self.app_translator.translate("common.warning"),
+                self.app_translator.translate("core.administrator_protection_enabled_message")
             )
 
         if PrerequisiteChecks.check_windows_server_levels():
             found_prerequisite_issue = True
             self.logger.warning("Windows Server installation type is Core.")
             messagebox.showwarning(
-                self.app_translator.translate("warning"),
-                self.app_translator.translate("windows_server_installation_type_is_core")
+                self.app_translator.translate("common.warning"),
+                self.app_translator.translate("core.windows_server_core_message")
             )
 
         if not AdvancedStartup.is_administrator():
@@ -162,8 +162,8 @@ class MainWindow(customtkinter.CTk):
             toaster = WindowsToaster(AppMetadata.APP_NAME)
             run_as_administrator_toast = Toast()
             run_as_administrator_toast.text_fields = [
-                self.app_translator.translate("administrator_required"),
-                self.app_translator.translate("app_is_not_running_as_administrator")
+                self.app_translator.translate("core.administrator_required_title"),
+                self.app_translator.translate("core.administrator_required_message")
             ]
             run_as_administrator_toast.tag = "administrator_required_toast"
             toaster.show_toast(run_as_administrator_toast)
@@ -187,16 +187,16 @@ class MainWindow(customtkinter.CTk):
             found_optional_issue = True
             self.logger.warning("Narrator is currently running.")
             messagebox.showinfo(
-                self.app_translator.translate("information"),
-                self.app_translator.translate("narrator_is_running")
+                self.app_translator.translate("common.info"),
+                self.app_translator.translate("core.narrator_enabled_message")
             )
 
         if not OptionalChecks.check_windows_utilities_availability():
             found_optional_issue = True
             self.logger.warning("Some Windows utilities are unavailable.")
             messagebox.showwarning(
-                self.app_translator.translate("warning"),
-                self.app_translator.translate("some_windows_utilities_are_unavailable").format(
+                self.app_translator.translate("common.warning"),
+                self.app_translator.translate("core.some_windows_utilities_unavailable_message").format(
                     log_file_path=AppLogger.get_log_file_path()
                 )
             )
@@ -272,15 +272,15 @@ class MainWindow(customtkinter.CTk):
 
         # Create Navigation Buttons
         t4 = time.perf_counter()
-        self.home_button = self._create_nav_button("🏠", "home_page", self.home_button_event, 1)
-        self.maintenance_button = self._create_nav_button("🧹", "maintenance_page", self.maintenance_button_event, 2)
-        self.installer_button = self._create_nav_button("📥", "installer_page", self.installer_button_event, 3)
-        self.uninstaller_button = self._create_nav_button("🗑", "uninstaller_page", self.uninstaller_button_event, 4)
-        self.utilities_button = self._create_nav_button("🛠", "utilities_page", self.utilities_button_event, 5)
-        self.toolbox_button = self._create_nav_button("🧰", "toolbox_page", self.toolbox_button_event, 6)
+        self.home_button = self._create_nav_button("🏠", "pages.navigation.home", self.home_button_event, 1)
+        self.maintenance_button = self._create_nav_button("🧹", "pages.navigation.maintenance", self.maintenance_button_event, 2)
+        self.installer_button = self._create_nav_button("📥", "pages.navigation.installer", self.installer_button_event, 3)
+        self.uninstaller_button = self._create_nav_button("🗑", "pages.navigation.uninstaller", self.uninstaller_button_event, 4)
+        self.utilities_button = self._create_nav_button("🛠", "pages.navigation.utilities", self.utilities_button_event, 5)
+        self.toolbox_button = self._create_nav_button("🧰", "pages.navigation.toolbox", self.toolbox_button_event, 6)
         # Leave a row to place the following buttons at the bottom.
-        self.settings_button = self._create_nav_button("⚙️", "settings_page", self.settings_button_event, 8)
-        self.about_button = self._create_nav_button("  i", "about_page", self.about_button_event, 9)
+        self.settings_button = self._create_nav_button("⚙️", "pages.navigation.settings", self.settings_button_event, 8)
+        self.about_button = self._create_nav_button("  i", "pages.navigation.about", self.about_button_event, 9)
         self.logger.debug(f"Navigation Buttons Creation Completed in: {time.perf_counter() - t4:.5f} s")
 
         # Create Main Frame
@@ -415,14 +415,14 @@ class MainWindow(customtkinter.CTk):
         # Nav Buttons
         button_font = customtkinter.CTkFont(family=self.font_family)
         nav_buttons = [
-            (self.home_button, "🏠", "home_page"),
-            (self.maintenance_button, "🧹", "maintenance_page"),
-            (self.installer_button, "📥", "installer_page"),
-            (self.uninstaller_button, "🗑", "uninstaller_page"),
-            (self.utilities_button, "🛠", "utilities_page"),
-            (self.toolbox_button, "🧰", "toolbox_page"),
-            (self.settings_button, "⚙️", "settings_page"),
-            (self.about_button, "  i", "about_page"),
+            (self.home_button, "🏠", "pages.navigation.home"),
+            (self.maintenance_button, "🧹", "pages.navigation.maintenance"),
+            (self.installer_button, "📥", "pages.navigation.installer"),
+            (self.uninstaller_button, "🗑", "pages.navigation.uninstaller"),
+            (self.utilities_button, "🛠", "pages.navigation.utilities"),
+            (self.toolbox_button, "🧰", "pages.navigation.toolbox"),
+            (self.settings_button, "⚙️", "pages.navigation.settings"),
+            (self.about_button, "  i", "pages.navigation.about"),
         ]
         for btn, icon, key in nav_buttons:
             btn.configure(font=button_font, text=f"{icon}    {self.app_translator.translate(key)}")

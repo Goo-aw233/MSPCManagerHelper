@@ -66,6 +66,6 @@ class URLHandler:
         logger.error("\n".join(error_details))
 
         messagebox.showerror(
-            app_translator.translate("error"),
+            app_translator.translate("common.error"),
             app_translator.translate(messagebox_error_message).format(log_file_path=log_file_path, **format_kwargs)
         )

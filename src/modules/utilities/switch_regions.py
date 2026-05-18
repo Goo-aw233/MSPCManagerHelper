@@ -30,15 +30,15 @@ class SwitchRegions:
         use_ownership = AppSettings.is_take_ownership_enabled()
         if use_ownership:
             self.logger.debug(f"NSudo Path: {self.nsudo_path}")
-        if self.selected_mspcm_version == "v3_14_0_0_and_higher":
-            self._v3_14_0_0_and_higher()
+        if self.selected_mspcm_version == "at_least_v3_14_0_0":
+            self._at_least_v3_14_0_0()
         elif self.selected_mspcm_version == "lower_than_v3_14_0_0":
             if use_ownership:
                 self._lower_than_v3_14_0_0_with_ownership()
             else:
                 self._lower_than_v3_14_0_0()
 
-    def _v3_14_0_0_and_higher(self):
+    def _at_least_v3_14_0_0(self):
         region_settings_uri = "ms-settings:regionformatting"
 
         def open_with_startfile():
@@ -74,7 +74,7 @@ class SwitchRegions:
                 continue
 
         self._log(
-            self.app_translator.translate("an_error_occurred_while_opening_regional_formatting_settings").format(
+            self.app_translator.translate("modules.utilities.open_region_settings_error").format(
                 error=str(last_error)
                 )
             )
@@ -90,8 +90,8 @@ class SwitchRegions:
 
     def _lower_than_v3_14_0_0(self):
         dialog = CTkInputDialog(
-            title=self.app_translator.translate("switch_regions_title"),
-            text=self.app_translator.translate("please_enter_region_code"),
+            title=self.app_translator.translate("pages.utilities.switch_regions"),
+            text=self.app_translator.translate("modules.utilities.enter_region_code_message"),
             font=customtkinter.CTkFont(family=self.font_family, size=13)
         )
 
@@ -108,14 +108,14 @@ class SwitchRegions:
         user_input = dialog.get_input()
 
         if not user_input:
-            self._log(self.app_translator.translate("invalid_region_code"))
+            self._log(self.app_translator.translate("modules.utilities.invalid_region_code"))
             self.logger.error("Invalid Region Code: No Input Provided")
             return
 
         user_input = user_input.strip().upper()
 
         if user_input not in iso3166.countries_by_alpha2:
-            self._log(self.app_translator.translate("invalid_region_code"))
+            self._log(self.app_translator.translate("modules.utilities.invalid_region_code"))
             self.logger.error("Invalid Region Code: Region Code Not Found")
             return
 
@@ -124,14 +124,14 @@ class SwitchRegions:
             with winreg.CreateKey(winreg.HKEY_LOCAL_MACHINE, reg_path) as key:
                 winreg.SetValueEx(key, "InstallRegionCode", 0, winreg.REG_SZ, user_input)
             self._log(
-                self.app_translator.translate("mspcm_region_registry_key_modified_successfully").format(
+                self.app_translator.translate("modules.utilities.modify_mspcm_region_registry_value_successfully").format(
                     region_code=user_input
                 )
             )
             self.logger.info(f"Successfully switched Microsoft PC Manager region setting, region code: {user_input}")
         except Exception as e:
             self._log(
-                self.app_translator.translate("an_error_occurred_while_modifying_mspcm_region_registry").format(
+                self.app_translator.translate("modules.utilities.modify_mspcm_region_registry_value_error").format(
                     error=str(e)
                 )
             )
@@ -139,8 +139,8 @@ class SwitchRegions:
 
     def _lower_than_v3_14_0_0_with_ownership(self):
         dialog = CTkInputDialog(
-            title=self.app_translator.translate("switch_regions_title"),
-            text=self.app_translator.translate("please_enter_region_code"),
+            title=self.app_translator.translate("pages.utilities.switch_regions"),
+            text=self.app_translator.translate("modules.utilities.enter_region_code_message"),
             font=customtkinter.CTkFont(family=self.font_family, size=13)
         )
 
@@ -157,14 +157,14 @@ class SwitchRegions:
         user_input = dialog.get_input()
 
         if not user_input:
-            self._log(self.app_translator.translate("invalid_region_code"))
+            self._log(self.app_translator.translate("modules.utilities.invalid_region_code"))
             self.logger.error("Invalid Region Code: No Input Provided")
             return
 
         user_input = user_input.strip().upper()
 
         if user_input not in iso3166.countries_by_alpha2:
-            self._log(self.app_translator.translate("invalid_region_code"))
+            self._log(self.app_translator.translate("modules.utilities.invalid_region_code"))
             self.logger.error("Invalid Region Code: Region Code Not Found")
             return
 
@@ -199,28 +199,28 @@ class SwitchRegions:
             # NSudo Error Dealing
             if result.returncode != 0:
                 if result.stdout:
-                    self._log(f"NSudo {self.app_translator.translate('error_code')}: {result.returncode}")
-                    self._log(f"===== {self.app_translator.translate('stdout')}: =====\n{result.stdout}")
+                    self._log(f"NSudo {self.app_translator.translate('common.error_code')}: {result.returncode}")
+                    self._log(f"===== {self.app_translator.translate('common.stdout')}: =====\n{result.stdout}")
                     self.logger.error(f"NSudo Error Code: {result.returncode}")
                     self.logger.error(f"===== Stdout: =====\n{result.stdout}")
                 raise Exception(f"NSudo Error Code: {result.returncode}")
 
             # reg.exe Error Dealing
             if result.stderr:
-                self._log(f"===== {self.app_translator.translate('stderr')}: =====\n{result.stderr}")
+                self._log(f"===== {self.app_translator.translate('common.stderr')}: =====\n{result.stderr}")
                 self.logger.error(f"===== Stderr: =====\n{result.stderr}")
                 raise Exception(f"An Error Occurred While Modifying Microsoft PC Manager Region Registry: {result.stderr.strip()}")
 
             # Success
             self._log(
-                self.app_translator.translate("mspcm_region_registry_key_modified_successfully").format(
+                self.app_translator.translate("modules.utilities.modify_mspcm_region_registry_value_successfully").format(
                     region_code=user_input
                 )
             )
             self.logger.info(f"Successfully Switched Microsoft PC Manager Region Setting, Region Code: {user_input}")
         except Exception as e:
             self._log(
-                self.app_translator.translate("an_error_occurred_while_modifying_mspcm_region_registry").format(
+                self.app_translator.translate("modules.utilities.modify_mspcm_region_registry_value_error").format(
                     error=str(e)
                 )
             )
