@@ -222,16 +222,14 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             AppSettings.set_appearance_mode(mode)
 
             # Trigger Refresh Task in MainWindow
-            if self.master and self.master.master and hasattr(self.master.master, "refresh_ui"):
-                self.master.master.refresh_ui()
+            self._request_refresh_ui()
 
     def _change_follow_system_font(self):
         is_enabled = self.follow_system_font_switch.get()
         AppSettings.set_follow_system_font_enabled(is_enabled)
 
         # Trigger Refresh Task in MainWindow
-        if self.master and self.master.master and hasattr(self.master.master, "refresh_ui"):
-            self.master.master.refresh_ui()
+        self._request_refresh_ui()
 
     def _change_language(self, new_language: str):
         locale = self.language_map.get(new_language)
@@ -243,8 +241,7 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             PrerequisiteChecks.app_translator = main_window.app_translator
 
             # Trigger Refresh Task in MainWindow
-            if hasattr(main_window, "refresh_ui"):
-                main_window.refresh_ui()
+            self._request_refresh_ui()
 
     def _change_support_developer(self):
         is_enabled = self.support_developer_switch.get()
@@ -287,5 +284,9 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
         )
 
         # Trigger Refresh Task in MainWindow
-        if self.master and self.master.master and hasattr(self.master.master, "refresh_ui"):
-            self.master.master.refresh_ui()
+        self._request_refresh_ui()
+
+    def _request_refresh_ui(self):
+        main_window = self.master.master if self.master and self.master.master else None
+        if main_window and hasattr(main_window, "refresh_ui"):
+            main_window.after(0, main_window.refresh_ui)

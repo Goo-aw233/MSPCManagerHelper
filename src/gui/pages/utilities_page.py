@@ -1,3 +1,5 @@
+import threading
+import time
 import tkinter
 
 import customtkinter
@@ -401,20 +403,11 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         CTkToolTip(self.checkbox_store_beta_version, message="Microsoft.PCManager_8wekyb3d8bbwe",
                    font=(self.font_family, 12))
 
-        # Checkbox Configuration
-        mspcm_version = GetMSPCMVersion.get_microsoft_pc_manager_version()
-        if mspcm_version:
-            self.checkbox_stable_version.configure(state="normal")
-            self.checkbox_store_beta_version.configure(state="normal")
-        else:
-            self.checkbox_stable_version.configure(state="disabled")
-            self.checkbox_store_beta_version.configure(state="disabled")
-
-        mspcm_beta_version = GetMSPCMVersion.get_microsoft_pc_manager_beta_version()
-        if mspcm_beta_version:
-            self.checkbox_beta_version.configure(state="normal")
-        else:
-            self.checkbox_beta_version.configure(state="disabled")
+        # Checkbox Configuration (Async to Avoid Blocking UI Refresh)
+        self.checkbox_stable_version.configure(state="disabled")
+        self.checkbox_store_beta_version.configure(state="disabled")
+        self.checkbox_beta_version.configure(state="disabled")
+        self._load_mspcm_versions_async()
         
         self.restart_services_card.configure(state="disabled")
 
@@ -731,6 +724,44 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
     # ~ End of Repair Microsoft Edge WebView2 Installation ~
 
     # ~ Restart Services ~
+    def _load_mspcm_versions_async(self):
+        self.logger.debug("UtilitiesPage start async Microsoft PC Manager versions fetch.")
+        threading.Thread(target=self._fetch_mspcm_versions, daemon=True).start()
+
+    def _fetch_mspcm_versions(self):
+        self.logger.debug("UtilitiesPage fetching Microsoft PC Manager versions in background thread.")
+        start_fetch_mspcm_time = time.perf_counter()
+        mspcm_version = GetMSPCMVersion.get_microsoft_pc_manager_version()
+        mspcm_beta_version = GetMSPCMVersion.get_microsoft_pc_manager_beta_version()
+        elapsed = time.perf_counter() - start_fetch_mspcm_time
+        try:
+            self.logger.debug(
+                f"UtilitiesPage Fetch Microsoft PC Manager Versions Complete: Stable: {mspcm_version}, Beta: {mspcm_beta_version}"
+            )
+            self.logger.info(
+                f"UtilitiesPage Fetch Microsoft PC Manager versions in: {elapsed:.5f} s"
+            )
+            self.after(0, lambda: self._apply_mspcm_versions(mspcm_version, mspcm_beta_version))
+        except Exception:
+            pass
+
+    def _apply_mspcm_versions(self, mspcm_version, mspcm_beta_version):
+        self.logger.debug("UtilitiesPage apply Microsoft PC Manager versions to UI.")
+        if not self.winfo_exists():
+            return
+
+        if mspcm_version:
+            self.checkbox_stable_version.configure(state="normal")
+            self.checkbox_store_beta_version.configure(state="normal")
+        else:
+            self.checkbox_stable_version.configure(state="disabled")
+            self.checkbox_store_beta_version.configure(state="disabled")
+
+        if mspcm_beta_version:
+            self.checkbox_beta_version.configure(state="normal")
+        else:
+            self.checkbox_beta_version.configure(state="disabled")
+
     def _on_mspcm_services_checkbox_change(self):
         if (
             self.checkbox_stable_version.get() == 1 or

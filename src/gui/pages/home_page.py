@@ -29,6 +29,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         # Create a Thread-Safe Queue
         self.result_queue = queue.Queue()
         self.logger.debug("Initialized result_queue for thread-safe UI updates.")
+        self._queue_loop_job = None
 
         # === Welcome Section ===
         self._create_section_label(self.app_translator.translate("pages.home.welcome"))
@@ -187,6 +188,9 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
             pass
 
     def _check_queue_loop(self):
+        if not self.winfo_exists():
+            return
+
         try:
             # Try to get data from the queue (non-blocking).
             while True:
@@ -198,7 +202,17 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
             pass
         finally:
             # Every 100 ms, call itself to keep the loop running.
-            self.after(100, self._check_queue_loop)
+            if self.winfo_exists():
+                self._queue_loop_job = self.after(100, self._check_queue_loop)
+
+    def destroy(self):
+        if self._queue_loop_job is not None:
+            try:
+                self.after_cancel(self._queue_loop_job)
+            except Exception:
+                pass
+            self._queue_loop_job = None
+        super().destroy()
 
     def _update_mspcm_version_ui(self, mspcm_version, mspcm_beta_version):
         try:

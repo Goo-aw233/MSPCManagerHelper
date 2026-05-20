@@ -45,6 +45,9 @@ class MainWindow(customtkinter.CTk):
         self.toolbox_page = None
         self.settings_page = None
         self.about_page = None
+        self._refresh_ui_job = None
+        self._refresh_ui_pending = False
+        self._refresh_ui_running = False
 
         app_launch_message = f"{AppMetadata.APP_NAME} {AppMetadata.APP_VERSION}"
         if AdvancedStartup.is_devmode():
@@ -401,6 +404,36 @@ class MainWindow(customtkinter.CTk):
         self.select_frame_by_page_name("about")
 
     def refresh_ui(self):
+        # If a refresh is already running, set a pending flag and return.
+        # The pending flag will ensure that another refresh runs immediately after the current one finishes.
+        if self._refresh_ui_running:
+            self._refresh_ui_pending = True
+            return
+
+        # If a refresh job is already scheduled but hasn't started running yet, cancel it to avoid redundant refreshes.
+        if self._refresh_ui_job is not None:
+            try:
+                self.after_cancel(self._refresh_ui_job)
+            except Exception:
+                pass
+            self._refresh_ui_job = None
+
+        self._refresh_ui_job = self.after(50, self._run_refresh_ui)
+
+    def _run_refresh_ui(self):
+        self._refresh_ui_job = None
+        self._refresh_ui_running = True
+        try:
+            self._refresh_ui_impl()
+        finally:
+            # Reset the running flag and check if another refresh was requested while we were running.
+            self._refresh_ui_running = False
+            # Run it immediately if a refresh was requested.
+            if self._refresh_ui_pending:
+                self._refresh_ui_pending = False
+                self.refresh_ui()
+
+    def _refresh_ui_impl(self):
         self.logger.info("========================= Refreshing UI =========================")
         start_refresh_ui_time = time.perf_counter()
 
