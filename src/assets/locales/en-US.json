@@ -140,17 +140,15 @@
       "official_website_description": "Visit the official website of Microsoft PC Manager for the latest information, updates, and support.",
       "privacy_policy": "Privacy Policy",
       "privacy_policy_content": {
-        "title": "MSPCManagerHelper Privacy Policy",
-        "modification_date": "Last Revised: May 10, 2026",
         "1": "MSPCManagerHelper (hereinafter referred to as \"the Software\") does not collect or upload any data in any form, including but not limited to computer identifiers, geolocation information, etc. The Software itself does not actively collect any user data. While you use the Software, Microsoft® Windows® Operating System, Microsoft PC Manager, or other third-party software may collect data; such collection is unrelated to this Software. If future versions introduce any telemetry, crash reporting, or user data upload features, Developer will clearly state this in the update log and provide an option to disable it or obtain your explicit consent.",
-        "2": "When you access certain links (e.g., https://learn.microsoft.com/?wt.mc_id=studentamb_474966), a Microsoft Student Ambassador identifier is used to help Developer count visitor numbers. When you visit the relevant URLs, all tracking services are performed by Microsoft, and Developer does not receive any personally identifiable information."
+        "2": "When you access certain links (e.g., https://learn.microsoft.com/?wt.mc_id=studentamb_474966), a Microsoft Student Ambassador identifier is used to help Developer count visitor numbers. When you visit the relevant URLs, all tracking services are performed by Microsoft, and Developer does not receive any personally identifiable information.",
+        "title": "MSPCManagerHelper Privacy Policy",
+        "modification_date": "Last Revised: May 10, 2026"
       },
       "repository": "Repository",
       "term_of_use": "Term of Use",
       "term_of_use_content": {
         "title": "MSPCManagerHelper Terms of Use",
-        "modification_date": "Last Revised: May 10, 2026",
-        "preface": "Welcome to MSPCManagerHelper (hereinafter referred to as \"the Software\"). Please read the following Terms of Use (hereinafter referred to as \"these Terms\") carefully before using the Software. By downloading, installing, or using the Software, you agree to be bound by these Terms. If you do not agree to these Terms, please exit the Software and delete it. We may update these Terms from time to time, but any updates will not restrict or revoke the rights you have already obtained under the MIT License.",
         "1_title": "1. License to Use",
         "1_body": "This Software is developed by individual developer GuCATs (hereinafter referred to as \"Developer\") and is open-sourced under the MIT License. Anyone may freely use, copy, modify, merge, publish, distribute, sublicense, and sell copies of this Software for any purpose, including commercial use, provided that the original copyright notice and permission notice are retained.",
         "2_title": "2. Original Download URL",
@@ -166,7 +164,9 @@
         "7_title": "7. Third-Party Components",
         "7_body": "This Software uses the following third-party open-source components. Please comply with their respective licenses:\n- NSudo: https://github.com/M2Team/NSudo\n- Sysinternals: https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_474966\nFor the complete third-party license notices, see: https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/ThirdPartyNotices.txt",
         "8_title": "8. Miscellaneous",
-        "8_body": "Nothing in these Terms shall be construed to restrict or add additional restrictions to the rights granted by the MIT License. If any conflict exists between these Terms and the MIT License, the MIT License shall prevail. If you have any questions regarding these Terms, please contact Developer."
+        "8_body": "Nothing in these Terms shall be construed to restrict or add additional restrictions to the rights granted by the MIT License. If any conflict exists between these Terms and the MIT License, the MIT License shall prevail. If you have any questions regarding these Terms, please contact Developer.",
+        "modification_date": "Last Revised: May 10, 2026",
+        "preface": "Welcome to MSPCManagerHelper (hereinafter referred to as \"the Software\"). Please read the following Terms of Use (hereinafter referred to as \"these Terms\") carefully before using the Software. By downloading, installing, or using the Software, you agree to be bound by these Terms. If you do not agree to these Terms, please exit the Software and delete it. We may update these Terms from time to time, but any updates will not restrict or revoke the rights you have already obtained under the MIT License."
       },
       "translators": "Translators",
       "view_log_file": "View Log File"

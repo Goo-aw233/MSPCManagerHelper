@@ -141,16 +141,14 @@
       "official_website_description": "訪問 Microsoft 電腦管家官方網站以取得最新資訊、更新和支援。",
       "privacy_policy": "隱私權聲明",
       "privacy_policy_content": {
-        "title": "MSPCManagerHelper 隱私權聲明",
-        "modification_date": "最後修訂日期：2026 年 5 月 10 日",
         "1": "MSPCManagerHelper（以下簡稱「本軟體」）不會以任何形式收集並上傳任何資料，包括但不限於電腦識別碼、地理資訊等。本軟體本身不會主動收集任何使用者資料。您使用本軟體過程中，Microsoft® Windows® Operating System、Microsoft 電腦管家或其他第三方軟體可能進行資料收集，皆與本軟體無關。若未來版本引入任何遙測、當機回報或使用者資料上傳功能，開發人員將於更新紀錄中明確說明，並提供關閉選項或徵得您的明確同意。",
-        "2": "當您存取特定連結時（例如 https://learn.microsoft.com/?wt.mc_id=studentamb_474966），會使用 Microsoft 學生大使的識別碼，以協助開發人員統計訪客人數。當您存取相關網址時，所有追蹤服務均由 Microsoft 完成，開發人員不會取得任何個人識別資訊。"
+        "2": "當您存取特定連結時（例如 https://learn.microsoft.com/?wt.mc_id=studentamb_474966），會使用 Microsoft 學生大使的識別碼，以協助開發人員統計訪客人數。當您存取相關網址時，所有追蹤服務均由 Microsoft 完成，開發人員不會取得任何個人識別資訊。",
+        "title": "MSPCManagerHelper 隱私權聲明",
+        "modification_date": "最後修訂日期：2026 年 5 月 10 日"
       },
       "repository": "代碼倉庫",
       "term_of_use": "使用規定",
       "term_of_use_content": {
-        "title": "MSPCManagerHelper 使用規定",
-        "modification_date": "最後修訂日期：2026 年 5 月 10 日",
         "preface": "歡迎使用 MSPCManagerHelper（以下簡稱「本軟體」）。使用本軟體前，請仔細閱讀下列使用規定（以下簡稱「本規定」）。下載、安裝或使用本軟體即表示您同意遵守本規定。如您不同意本規定，請退出本軟體並將其刪除。我們可能會不定期更新本規定，但更新後的規定不會限制或撤銷您依據 MIT 授權規定已獲得之權利。",
         "1_title": "1. 授權使用",
         "1_body": "本軟體由個人開發人員 GuCATs（以下簡稱「開發人員」）開發，並依據 MIT 授權規定開放原始碼。任何人出於任何目的（包括商業用途）均可自由使用、複製、修改、合併、發行、散布、再授權及銷售本軟體之副本，前提是必須保留原始著作權聲明與授權聲明。",
@@ -167,7 +165,9 @@
         "7_title": "7. 第三方元件",
         "7_body": "本軟體使用下列第三方開放原始碼元件，請遵守其各自之授權規定：\n- NSudo：https://github.com/M2Team/NSudo\n- Sysinternals：https://learn.microsoft.com/sysinternals/license-terms/?wt.mc_id=studentamb_474966\n完整的第三方授權聲明請參閱：https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/ThirdPartyNotices.txt",
         "8_title": "8. 其他",
-        "8_body": "本規定之任何內容均不得解釋為對 MIT 授權規定所授予之權利加以限制或增加額外限制。如本規定與 MIT 授權規定有所牴觸，以 MIT 授權規定為準。如您對本規定有任何疑問，請聯絡開發人員。"
+        "8_body": "本規定之任何內容均不得解釋為對 MIT 授權規定所授予之權利加以限制或增加額外限制。如本規定與 MIT 授權規定有所牴觸，以 MIT 授權規定為準。如您對本規定有任何疑問，請聯絡開發人員。",
+        "title": "MSPCManagerHelper 使用規定",
+        "modification_date": "最後修訂日期：2026 年 5 月 10 日"
       },
       "translators": "翻譯人員",
       "view_log_file": "查看記錄檔"
