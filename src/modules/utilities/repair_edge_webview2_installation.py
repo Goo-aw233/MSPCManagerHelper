@@ -80,7 +80,8 @@ class RepairEdgeWebView2Installation:
             self._log(self.app_translator.translate("modules.utilities.remove_ifeo_registry_key_successfully"))
             self.logger.info("Old IFEO registry key removed Successfully.")
         except FileNotFoundError:
-            pass
+            self._log(self.app_translator.translate("modules.utilities.ifeo_registry_key_not_exist"))
+            self.logger.info("IFEO registry key does not exist, skipped.")
         except PermissionError:
             self._log(self.app_translator.translate("modules.utilities.remove_ifeo_registry_key_permission_error"))
             self.logger.warning("Permission Denied While Removing IFEO Registry Key. Please run the application as administrator and try again.")
@@ -241,7 +242,8 @@ class RepairEdgeWebView2Installation:
             self._log(self.app_translator.translate("modules.utilities.remove_edgeupdate_registry_key_successfully"))
             self.logger.info("EdgeUpdate registry key removed successfully.")
         except FileNotFoundError:
-            pass
+            self._log(self.app_translator.translate("modules.utilities.edgeupdate_registry_key_not_exist"))
+            self.logger.info("EdgeUpdate registry key does not exist, skipped.")
         except PermissionError:
             self._log(self.app_translator.translate("modules.utilities.remove_edgeupdate_registry_key_permission_error"))
             self.logger.warning("Permission Denied While Removing EdgeUpdate.exe Registry Key. Please run the application as administrator and try again.")

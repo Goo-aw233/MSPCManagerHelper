@@ -96,7 +96,7 @@ class ViewInstalledSecurityProducts:
 
     def _process_formatted_output(self, json_output):
         if not json_output or not json_output.strip():
-            self._log(self.app_translator.translate("modules.utilities.no_security_products_found") + "\n")
+            self._log(self.app_translator.translate("modules.utilities.no_security_products_found"))
             self.logger.info("No installed security products registered to Windows Security were found.\n")
             return
 
@@ -106,7 +106,7 @@ class ViewInstalledSecurityProducts:
                 data = [data]
 
             if not data:
-                self._log(self.app_translator.translate("modules.utilities.no_security_products_found") + "\n")
+                self._log(self.app_translator.translate("modules.utilities.no_security_products_found"))
                 self.logger.info("No installed security products registered to Windows Security were found.\n")
                 return
 
@@ -136,7 +136,7 @@ class ViewInstalledSecurityProducts:
                 translated_labels[k] = label
                 max_width = max(max_width, self._get_display_width(label))
 
-            for item in data:
+            for idx, item in enumerate(data):
                 for k in ordered_keys:
                     val = item.get(k)
                     if val is None:
@@ -145,7 +145,10 @@ class ViewInstalledSecurityProducts:
                     label = translated_labels[k]
                     padding = " " * (max_width - self._get_display_width(label))
                     output_lines.append(f"{label}{padding} : {val}")
-                output_lines.append("") # Separator Between Items
+                # Add blank line separator between items, but NOT after the last one,
+                # to avoid double blank lines before the completion message.
+                if idx < len(data) - 1:
+                    output_lines.append("")
 
             self._log("\n".join(output_lines))
             self.logger.info("\n" + "\n".join(output_lines))

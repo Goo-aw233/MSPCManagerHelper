@@ -33,7 +33,7 @@ class ComputeFilesHashes:
         if not self.selected_algos:
             return
 
-        for file_path in files:
+        for i, file_path in enumerate(files):
             output_lines = [
                 "=" * 30,
                 self.app_translator.translate("pages.utilities.path_to_compute_hashes_file").format(file_path=file_path),
@@ -48,7 +48,10 @@ class ComputeFilesHashes:
                 output_lines.append(f"  [{algo.upper()}]\t {res}")
 
             output_lines.append("=" * 30)
-            output_lines.append("")
+            # Add blank line separator between files, but NOT after the last one,
+            # to avoid double blank lines before the completion message.
+            if i < len(files) - 1:
+                output_lines.append("")
             self._log("\n".join(output_lines))
 
     @staticmethod

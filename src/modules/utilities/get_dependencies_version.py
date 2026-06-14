@@ -43,7 +43,7 @@ class GetDependenciesVersion:
                         self._log(
                             self.app_translator.translate("modules.utilities.system_webview2_version_is").format(
                                 version=version
-                            ) + "\n"
+                            )
                         )
                         self.logger.info(f"System Microsoft Edge WebView2 Runtime Version: {version}")
                     pe.close()
@@ -56,7 +56,7 @@ class GetDependenciesVersion:
                     self.logger.error(
                         f"An Error Occurred While Querying the System Microsoft Edge WebView2 Runtime Version: {e}\n({exe_path})")
         else:
-            self._log(self.app_translator.translate("modules.utilities.system_webview2_version_not_installed") + "\n")
+            self._log(self.app_translator.translate("modules.utilities.system_webview2_version_not_installed"))
             self.logger.info("System Microsoft Edge WebView2 Runtime is not installed.")
 
     def _global_webview2_version(self):
@@ -77,12 +77,11 @@ class GetDependenciesVersion:
                         self.app_translator.translate("modules.utilities.global_webview2_version_is").format(
                             version=f"{pv} ({channel})"
                         )
-                        + "\n"
                     )
                     self.logger.info(f"Global Microsoft Edge WebView2 Runtime Version: {pv} ({channel})")
                 else:
                     self._log(
-                        self.app_translator.translate("modules.utilities.global_webview2_version_is").format(version=pv) + "\n"
+                        self.app_translator.translate("modules.utilities.global_webview2_version_is").format(version=pv)
                     )
                     self.logger.info(f"Global Microsoft Edge WebView2 Runtime Version: {pv}")
         except FileNotFoundError:
@@ -107,7 +106,7 @@ class GetDependenciesVersion:
                                     self.app_translator.translate("modules.utilities.global_webview2_version_is").format(
                                         version=version
                                     )
-                                    + f"\n{exe_path}\n"
+                                    + f"\n{exe_path}"
                                 )
                                 self.logger.info(
                                     "Global Microsoft Edge WebView2 Runtime Version: "
@@ -124,7 +123,7 @@ class GetDependenciesVersion:
                                 "An Error Occurred While Querying the Global Microsoft Edge WebView2 Runtime Version: " + str(e)
                             )
                     return
-            self._log(self.app_translator.translate("modules.utilities.global_webview2_not_installed") + "\n")
+            self._log(self.app_translator.translate("modules.utilities.global_webview2_not_installed"))
             self.logger.info("Global Microsoft Edge WebView2 Runtime is not installed.")
         except Exception as e:
             self._log(
@@ -167,14 +166,14 @@ class GetDependenciesVersion:
                     self._log(
                         self.app_translator.translate("modules.utilities.windows_app_runtime_info_is").format(
                             formatted_output=formatted_output
-                            ) + "\n"
+                            )
                         )
                     self.logger.info("Windows App Runtime Info:\n" + formatted_output)
                 except Exception as e:
                     self._log(
                         self.app_translator.translate("modules.utilities.raw_windows_app_runtime_info_is").format(
                             raw_output=raw_output
-                            ) + "\n(Formatting Error: " + str(e) + ")\n"
+                            ) + "\n(Formatting Error: " + str(e) + ")"
                         )
                     self.logger.error(f"An Error Occurred While Parsing Windows App Runtime Version JSON Output: {e}")
             else:

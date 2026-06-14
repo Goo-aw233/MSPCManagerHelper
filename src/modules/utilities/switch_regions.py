@@ -66,6 +66,7 @@ class SwitchRegions:
         for method in methods:
             try:
                 method()
+                self._log(self.app_translator.translate("modules.utilities.open_region_settings_successfully"))
                 self.logger.info(f"Successfully opened the Language & Region settings via {method.__name__}.")
                 return
             except Exception as e:
