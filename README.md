@@ -75,11 +75,17 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 > 
 > If you want to build with Nuitka, install the following components in [Visual Studio](https://visualstudio.microsoft.com/downloads) (or [Visual Studio Build Tools for C++](https://visualstudio.microsoft.com/visual-cpp-build-tools)):
 > - MSBuild Tools
-> - Desktop development with C++ (C++ Build Tools core features, Visual C++ v14 redistributable updates, C++ core desktop features, MSVC Build Tools for x64/x86 (latest))
+> - Desktop development with C++ 
+>   - `C++ Build Tools core features`
+>   - `Visual C++ v14 redistributable updates`
+>   - `C++ core desktop features`
+>   - `MSVC Build Tools for x64/x86 (latest)`
+>   - `Windows SDK`(For example: `Windows 11 SDK (10.0.26100.0)`)
+>
 > In a virtual environment, install `Nuitka` and `Zstandard`: 
 > 
 > ```Batch
 > pip install nuitka zstandard
 > ```
 > 
-> Then, move the `build_nuitka_.venv.cmd` script from the `scripts\disabled` folder to the `scripts\build` folder, and use the script to build. It is recommended to use `zig` when building.
+> Then, move the `build_nuitka_.venv.cmd` script from the `scripts\disabled` folder to the `scripts\build` folder, and use the script to build. It is recommended to use `ziglang` when building.

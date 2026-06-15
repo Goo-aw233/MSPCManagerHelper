@@ -75,12 +75,18 @@ Please Select Your Language to Continue
 > 
 > 如果您想要使用 Nuitka 建置，請在 [Visual Studio](https://visualstudio.microsoft.com/downloads) (或[適用於 C++ 的 Visual Studio 建置工具](https://visualstudio.microsoft.com/visual-cpp-build-tools)) 中安裝：
 > - MSBuild 工具
-> - 使用 C++ 的桌面開發 (C++ 建置工具核心功能、Visual C++ v14 重分發更新、C++ 核心桌面功能、適用於 x64/x86 的 MSVC 建置工具 (最新版))
+> - 使用 C++ 的桌面開發
+>   - C++ 建置工具核心功能
+>   - Visual C++ v14 重分發更新
+>   - C++ 核心桌面功能
+>   - 適用於 x64/x86 的 MSVC 建置工具 (最新版)
+>   - Windows SDK（例如：`Windows 11 SDK (10.0.26100.0)`）
+> 
 > 在虛擬環境中安裝 `Nuitka` 和 `Zstandard`：
 > 
 > ```Batch
 > pip install nuitka zstandard
 > ```
 > 
-> 接著，將 `build_nuitka_.venv.cmd` 指令碼從 `scripts\disabled` 資料夾移動到 `scripts\build` 資料夾，並使用該指令碼進行建置，建置時建議使用 `zig`。
-> 對於中文使用者，請添加 `chcp 65001` 到指令碼最頂部，以確保所有字元正確顯示。
+> 接著，將 `build_nuitka_.venv.cmd` 指令碼從 `scripts\disabled` 資料夾移動到 `scripts\build` 資料夾，並使用該指令碼進行建置，建置時建議使用 `ziglang`。
+> **對於中文使用者，請添加 `chcp 65001` 到指令碼最頂部，以確保所有字元正確顯示。**
