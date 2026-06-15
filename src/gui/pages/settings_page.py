@@ -23,6 +23,8 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
         # === Personalization Section ===
         self._create_section_label(self.app_translator.translate("pages.settings.personalization"))
 
+        self.personalization_group = self._create_group_frame()
+
         # --- Appearance ---
         self.theme_map = {
             self.app_translator.translate("pages.settings.follow_system"): "System",
@@ -30,8 +32,6 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             self.app_translator.translate("pages.settings.dark_mode"): "Dark"
         }
         self.theme_map_rev = {v: k for k, v in self.theme_map.items()}
-
-        self.personalization_group = self._create_group_frame()
 
         self.appearance_mode_optionemenu = self._create_settings_card(
             self.personalization_group,
@@ -66,14 +66,15 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
         # === Language Section ===
         self._create_section_label(self.app_translator.translate("pages.settings.language"))
 
+        self.language_group = self._create_group_frame()
+
+        #--- App Display Language ---
         self.language_map = {
             self.app_translator.translate("metadata.i18n.locales.en-US"): "en-us",
             self.app_translator.translate("metadata.i18n.locales.zh-CN"): "zh-cn",
             self.app_translator.translate("metadata.i18n.locales.zh-TW"): "zh-tw"
         }
         self.language_map_rev = {v: k for k, v in self.language_map.items()}
-
-        self.language_group = self._create_group_frame()
 
         self.language_optionmenu = self._create_settings_card(
             self.language_group,
@@ -87,6 +88,22 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
         current_locale = getattr(self.master.master, "language", "en-us")
         self.language_optionmenu.set(self.language_map_rev.get(current_locale, "English"))
         # === End of Language Section ===
+
+        # === Reload Section ===
+        self._create_section_label(self.app_translator.translate("pages.settings.reload"))
+
+        self.reload_group = self._create_group_frame()
+
+        # --- Reload UI ---
+        self.reload_ui_button = self._create_settings_card(
+            self.reload_group,
+            self.app_translator.translate("pages.settings.reload_ui"),
+            self.app_translator.translate("pages.settings.reload_ui_description"),
+            customtkinter.CTkButton,
+            text=self.app_translator.translate("pages.common.refresh"),
+            command=self._request_refresh_ui
+        )
+        # === End of Reload Section ===
 
         # === Preferences ===
         self._create_section_label(self.app_translator.translate("pages.settings.preferences"))
