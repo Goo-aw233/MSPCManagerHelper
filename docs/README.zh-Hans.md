@@ -18,9 +18,11 @@ Please Select Your Language to Continue
 欢迎访问 <https://pcmanager.microsoft.com> 下载并体验最新版本的微软电脑管家，并加入到我们的[社群](https://forms.office.com/r/7YhjaEEmKc)当中！😉
 
 > [!IMPORTANT]
+> 
 > 请注意，本工具并非 Microsoft Corporation 及其子公司官方开发或发布。工具作者与 Microsoft Corporation 及其子公司无任何隶属关系，工具中的内容也不代表 Microsoft Corporation 或其子公司的官方立场。
 
 > [!NOTE]
+> 
 > 请注意，本辅助工具部分内容引用了来自第三方（即非 Microsoft 官方）网页的链接。这些网页似乎提供了准确、安全的信息以帮助你解决问题。但是，请仍然留意网页中推广的通常被归类为 PUP（Potentially Unwanted Products，潜在有害产品）的广告。在您下载及安装文件或应用前，请彻底地研究网页中推广的任何产品。
 
 ## 💻 开发
@@ -68,3 +70,17 @@ Please Select Your Language to Continue
 
     直接运行 `scripts\build` 目录下的 `build.cmd` 或 `build_.venv.cmd` 即可自己构建。
     最后，构建好的 `EXE 文件` 将会存放在根目录的 `dist` 目录下，并命名为 `MSPCManagerHelper_..._v#.#.#.#_<架构>.exe`。
+
+> [!NOTE]
+> 
+> 如果你想使用 Nuitka 构建，请在 [Visual Studio](https://visualstudio.microsoft.com/downloads)（或[适用于 C++ 的 Visual Studio 生成工具](https://visualstudio.microsoft.com/visual-cpp-build-tools)）中安装：
+> - MSBuild 工具
+> - 使用 C++ 的桌面开发（C++ 生成工具核心功能、Visual C++ v14 可再发行更新、C++ 核心桌面功能、适用于 x64/x86 的 MSVC 生成工具 (最新版)）
+> 在虚拟环境中安装 `Nuitka` 和 `Zstandard`：
+> 
+> ```Batch
+> pip install nuitka zstandard
+> ```
+> 
+> 随后，将 `build_nuitka_.venv.cmd` 脚本从 `scripts\disabled` 文件夹移动到 `scripts\build` 文件夹，并使用脚本构建，构建时推荐使用 `zig`。
+> 对于中文用户，请添加 `chcp 65001` 到脚本最顶部，以确保所有字符正确显示。

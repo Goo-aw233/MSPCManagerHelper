@@ -18,9 +18,11 @@ Please Select Your Language to Continue
 Visit <https://pcmanager.microsoft.com> to download and experience the latest version of Microsoft PC Manager and join our [User Community](https://mspcmanager.github.io/mspcm-docs/appendix/social-accounts.html)! 😉
 
 > [!IMPORTANT]
+> 
 > This tool is not developed or endorsed by Microsoft Corporation or its subsidiaries. The authors are independent developers with no affiliation to Microsoft or its subsidiaries.
 
 > [!NOTE]
+> 
 > Some features of `MSPCManagerHelper` include references to third-party (non-Microsoft) web pages. While these pages may offer accurate and helpful information, they might also contain advertisements categorized as PUPs (Potentially Unwanted Products). Please exercise caution and thoroughly review any products or files before downloading or installing them.
 
 ## 💻 Development
@@ -68,3 +70,16 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 
     Run `build.cmd` or `build_.venv.cmd` directly from the `scripts\build` directory to build it yourself.
     Finally, the built `EXE file` will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_..._v#.#.#.#_<Arch>.exe`.
+
+> [!NOTE]
+> 
+> If you want to build with Nuitka, install the following components in [Visual Studio](https://visualstudio.microsoft.com/downloads) (or [Visual Studio Build Tools for C++](https://visualstudio.microsoft.com/visual-cpp-build-tools)):
+> - MSBuild Tools
+> - Desktop development with C++ (C++ Build Tools core features, Visual C++ v14 redistributable updates, C++ core desktop features, MSVC Build Tools for x64/x86 (latest))
+> In a virtual environment, install `Nuitka` and `Zstandard`: 
+> 
+> ```Batch
+> pip install nuitka zstandard
+> ```
+> 
+> Then, move the `build_nuitka_.venv.cmd` script from the `scripts\disabled` folder to the `scripts\build` folder, and use the script to build. It is recommended to use `zig` when building.
