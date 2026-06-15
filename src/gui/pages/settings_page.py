@@ -19,6 +19,7 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             font_family=font_family,
             page_title_key="pages.navigation.settings",
         )
+        self._main_window = parent.master
 
         # === Personalization Section ===
         self._create_section_label(self.app_translator.translate("pages.settings.personalization"))
@@ -86,7 +87,7 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             command=self._change_language
         )
 
-        current_locale = getattr(self.master.master, "language", "en-us")
+        current_locale = getattr(self._main_window, "language", "en-us")
         self.language_optionmenu.set(
             self.language_map_rev.get(current_locale, self.app_translator.translate("metadata.i18n.locales.en-US")))
         # === End of Language Section ===
@@ -252,9 +253,9 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
 
     def _change_language(self, new_language: str):
         locale = self.language_map.get(new_language)
-        if locale and self.master and self.master.master:
+        if locale and self._main_window:
             self.logger.info(f"Language Switched to: {locale}")
-            main_window = self.master.master
+            main_window = self._main_window
             main_window.language = locale
             main_window.app_translator = AppTranslator(locale)
             PrerequisiteChecks.app_translator = main_window.app_translator
@@ -306,6 +307,6 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
         self._request_refresh_ui()
 
     def _request_refresh_ui(self):
-        main_window = self.master.master if self.master and self.master.master else None
+        main_window = self._main_window
         if main_window and hasattr(main_window, "refresh_ui"):
             main_window.after(0, main_window.refresh_ui)
