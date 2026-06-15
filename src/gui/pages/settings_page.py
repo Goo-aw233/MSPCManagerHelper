@@ -41,8 +41,9 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             values=list(self.theme_map.keys()),
             command=self._change_appearance_mode
         )
-        self.appearance_mode_optionemenu.set(
-            self.theme_map_rev.get(AppSettings.get_appearance_mode(), self.app_translator.translate("pages.settings.follow_system")))
+        self.appearance_mode_optionemenu.set(self.theme_map_rev.get(AppSettings.get_appearance_mode(),
+                                                                    self.app_translator.translate(
+                                                                        "pages.settings.follow_system")))
 
         # --- Separator ---
         self._create_separator(self.personalization_group)
@@ -86,7 +87,8 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
         )
 
         current_locale = getattr(self.master.master, "language", "en-us")
-        self.language_optionmenu.set(self.language_map_rev.get(current_locale, "English"))
+        self.language_optionmenu.set(
+            self.language_map_rev.get(current_locale, self.app_translator.translate("metadata.i18n.locales.en-US")))
         # === End of Language Section ===
 
         # === Reload Section ===
