@@ -1,7 +1,7 @@
 <div align=center>
 
 # MSPCManagerHelper
-<img src="./src/assets/MSPCManagerHelper.png" width="140" height="140"/>
+<img src="../src/assets/MSPCManagerHelper.png" width="140" height="140"/>
 </div>
 
 > [!IMPORTANT]
