@@ -1,5 +1,6 @@
-import os
 import tkinter
+
+from pathlib import Path
 
 import customtkinter
 
@@ -15,7 +16,7 @@ class InternalViewer(customtkinter.CTkToplevel):
     def __init__(self, file_path=None, app_translator=None):
         super().__init__()
 
-        self.file_path = file_path
+        self.file_path = Path(file_path) if file_path else None
         self.app_translator = app_translator
         self.logger = AppLogger.get_logger()
 
@@ -45,14 +46,16 @@ class InternalViewer(customtkinter.CTkToplevel):
         )
         self.content_textbox.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
 
-        if self.file_path and os.path.exists(self.file_path):
-            try:
-                with open(self.file_path, "r", encoding="utf-8", errors="replace") as f:
-                    content = f.read()
-                self.content_textbox.insert("0.0", content)
-            except Exception as e:
-                self.content_textbox.insert("0.0", f"Error Reading File: {e}")
-                self.logger.error(f"Error Reading File {self.file_path}: {e}")
+        if self.file_path:
+            if self.file_path.exists():
+                try:
+                    content = self.file_path.read_text(encoding="utf-8", errors="replace")
+                    self.content_textbox.insert("0.0", content)
+                except Exception as e:
+                    self.content_textbox.insert("0.0", f"Error Reading File: {e}")
+                    self.logger.error(f"Error Reading File {self.file_path}: {e}")
+            else:
+                self.content_textbox.insert("0.0", "")
         else:
             self.content_textbox.insert("0.0", "")
 
@@ -70,7 +73,7 @@ class InternalViewer(customtkinter.CTkToplevel):
 
     def _configure_window(self):
         if self.file_path:
-            app_title = f"{AppMetadata.APP_NAME} {AppMetadata.APP_VERSION} - {os.path.basename(self.file_path)}"
+            app_title = f"{AppMetadata.APP_NAME} {AppMetadata.APP_VERSION} - {self.file_path.name}"
         else:
             app_title = f"{AppMetadata.APP_NAME} {AppMetadata.APP_VERSION} Internal Viewer"
         self.title(app_title)
@@ -132,14 +135,14 @@ class InternalViewer(customtkinter.CTkToplevel):
                 self.clipboard_append(all_text)
 
     def _refresh_content(self):
-        if self.file_path and os.path.exists(self.file_path):
-            try:
-                with open(self.file_path, "r", encoding="utf-8", errors="replace") as f:
-                    content = f.read()
+        if self.file_path:
+            if self.file_path.exists():
+                try:
+                    content = self.file_path.read_text(encoding="utf-8", errors="replace")
 
-                self.content_textbox.configure(state="normal")
-                self.content_textbox.delete("0.0", "end")
-                self.content_textbox.insert("0.0", content)
-                self.content_textbox.configure(state="disabled")
-            except Exception as e:
-                self.logger.error(f"Error Refreshing File {self.file_path}: {e}")
+                    self.content_textbox.configure(state="normal")
+                    self.content_textbox.delete("0.0", "end")
+                    self.content_textbox.insert("0.0", content)
+                    self.content_textbox.configure(state="disabled")
+                except Exception as e:
+                    self.logger.error(f"Error Refreshing File {self.file_path}: {e}")

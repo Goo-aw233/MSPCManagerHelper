@@ -95,8 +95,8 @@ class GetMSPCMVersion:
 
                                         search_paths = []
                                         # %ProgramFiles%\WindowsApps
-                                        if os.environ.get("ProgramFiles"):
-                                            search_paths.append(Path(os.environ["ProgramFiles"]) / "WindowsApps")
+                                        if os.getenv("ProgramFiles"):
+                                            search_paths.append(Path(os.getenv("ProgramFiles", r"C:\Program Files")) / "WindowsApps")
 
                                         # Drive:\Program Files\WindowsApps or Drive:\WindowsApps
                                         drives = [f"{chr(d)}:\\" for d in range(ord('A'), ord('Z') + 1)]
@@ -154,7 +154,7 @@ class GetMSPCMVersion:
                 # EXE File Properties
                 if microsoft_pc_manager_beta_version is None:
                     try:
-                        program_files_path = os.environ.get("ProgramFiles")
+                        program_files_path = os.getenv("ProgramFiles", r"C:\Program Files")
                         if program_files_path:
                             exe_path = Path(program_files_path) / "Microsoft PC Manager" / "MSPCManager.exe"
                             if exe_path.exists():

@@ -159,8 +159,8 @@ class PrerequisiteChecks:
                 # Get Windows Feature Experience Pack version.
                 windows_feature_experience_pack = None
                 try:
-                    manifest_path = Path(os.environ[
-                                             "SystemRoot"]) / "SystemApps" / "MicrosoftWindows.Client.CBS_cw5n1h2txyewy" / "appxmanifest.xml"
+                    manifest_path = Path(os.getenv(
+                                             "SystemRoot", r"C:\Windows")) / "SystemApps" / "MicrosoftWindows.Client.CBS_cw5n1h2txyewy" / "appxmanifest.xml"
                     with open(manifest_path, "r", encoding="utf-8") as f:
                         content = f.read()
                     # Use a regular expression to find the format ` Version="..." `, ensuring there are spaces before and after.

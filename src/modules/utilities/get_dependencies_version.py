@@ -29,7 +29,7 @@ class GetDependenciesVersion:
                 self._windows_app_runtime_version()
 
     def _system_webview2_version(self):
-        system_webview2_dir = Path(os.environ.get("SystemRoot")) / "System32" / "Microsoft-Edge-WebView"
+        system_webview2_dir = Path(os.getenv("SystemRoot", r"C:\Windows")) / "System32" / "Microsoft-Edge-WebView"
 
         if system_webview2_dir.exists():
             for exe_path in system_webview2_dir.rglob("msedgewebview2.exe"):
@@ -85,10 +85,7 @@ class GetDependenciesVersion:
                     )
                     self.logger.info(f"Global Microsoft Edge WebView2 Runtime Version: {pv}")
         except FileNotFoundError:
-            try:
-                webview2_base_dir = Path(os.environ["ProgramFiles(x86)"]) / "Microsoft" / "EdgeWebView" / "Application"
-            except KeyError:
-                webview2_base_dir = None
+            webview2_base_dir = Path(os.getenv("ProgramFiles(x86)", r"C:\Program Files (x86)")) / "Microsoft" / "EdgeWebView" / "Application"
 
             if webview2_base_dir and webview2_base_dir.exists():
                 exe_paths = list(webview2_base_dir.rglob("msedgewebview2.exe"))

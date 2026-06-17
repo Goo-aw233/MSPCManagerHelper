@@ -45,7 +45,7 @@ class CleanupAfterExit:
             if exe_path.suffix.lower() == ".exe":
                 exe_name_29 = exe_path.name[:29].upper()
                 CleanupAfterExit.logger.info(f"EXE Name for Matching: {exe_name_29}")
-                prefetch_dir = Path(os.environ["SystemRoot"]) / "Prefetch"
+                prefetch_dir = Path(os.getenv("SystemRoot", r"C:\Windows")) / "Prefetch"
                 if prefetch_dir.exists() and prefetch_dir.is_dir():
                     pf_files = list(prefetch_dir.glob("*.pf"))
                     CleanupAfterExit.logger.info(f"Prefetch Files Found: {[pf.name for pf in pf_files]}")

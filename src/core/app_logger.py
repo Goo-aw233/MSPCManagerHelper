@@ -47,7 +47,9 @@ class AppLogger:
             log_dir.mkdir(parents=True, exist_ok=True)
         except (OSError, PermissionError):
             # If the default temporary directory is not accessible, fall back to %SystemRoot%\Temp.
-            log_dir = Path(os.environ["SystemRoot"]) / "Temp" / "MSPCManagerHelper"
+            # If %SystemRoot% is not set, use C:\Windows\Temp as the final fallback.
+            system_root = os.getenv("SystemRoot", r"C:\Windows")
+            log_dir = Path(system_root) / "Temp" / "MSPCManagerHelper"
             # Create the directory if it does not exist.
             log_dir.mkdir(parents=True, exist_ok=True)
 
