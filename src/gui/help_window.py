@@ -125,5 +125,5 @@ class HelpWindow(customtkinter.CTk):
             style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_STYLE)
             style = style & ~WS_MINIMIZEBOX & ~WS_MAXIMIZEBOX
             ctypes.windll.user32.SetWindowLongW(hwnd, GWL_STYLE, style)
-        except Exception:
-            pass
+        except Exception as e:
+            self.logger.error(f"Failed to remove minimize/maximize buttons.")

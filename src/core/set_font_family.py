@@ -22,7 +22,7 @@ class SetFontFamily:
             if not language:
                 language = "en-us"
             available_fonts = set(tkinter.font.families())
-            preferred_font = language_font_map.get(language, "Segoe UI Variable Text")
+            preferred_font = language_font_map.get(language.lower(), "Segoe UI Variable Text")
             if preferred_font == "Segoe UI Variable Text" and "Segoe UI Variable Text" not in available_fonts:
                 preferred_font = "Segoe UI"
             mapped_font = preferred_font
