@@ -77,10 +77,11 @@
       "remove_basic_registries_successfully": "Registries removed successfully.\nPaths:\n{paths}",
       "remove_config_cache_dir_error": "An Error Occurred While Removing Config/Cache Directory:\nPath: {path}\n{error}",
       "remove_config_cache_dir_successfully": "Config/Cache directories removed successfully.\nPaths:\n{paths}",
-      "remove_dism_provisioned_packages_error": "An Error Occurred While Removing Provisioned Package via DISM:\nPackageName: {package_name}\n{error}",
-      "remove_dism_provisioned_packages_successfully": "Provisioned packages removed successfully.\nPackageNames:\n{paths}",
+      "remove_dism_provisioned_packages_error": "An Error Occurred While Removing Provisioned Package via DISM:\n{error}",
+      "remove_dism_provisioned_packages_successfully": "Provisioned packages removed successfully.",
+      "removed_package_names": "Package Names (Package Full Names):\n{paths}",
       "querying_dism_provisioned_packages": "Querying provisioned packages...",
-      "removing_dism_provisioned_package": "Removing provisioned package...\nPackageName: {package_name}",
+      "removing_dism_provisioned_package": "Removing provisioned package...",
       "removing_dism_provisioned_packages": "Removing provisioned packages...",
       "uninstall_via_windows_powershell_error": "An Error Occurred While Uninstalling via Windows PowerShell:\n{error}",
       "uninstall_via_windows_powershell_successfully": "Uninstalled via Windows PowerShell successfully.",
@@ -336,7 +337,9 @@
       "basic_registries": "Registries",
       "uninstall_stable": "Uninstall Stable Version",
       "uninstall_via_dism_all_users": "Uninstall via DISM (All Users)",
-      "uninstall_via_dism_all_users_desc": "Uninstall Microsoft PC Manager using DISM with Windows PowerShell commands, which will remove both provisioned packages and user-installed packages."
+      "uninstall_via_dism_all_users_desc": "Uninstall Microsoft PC Manager using DISM with Windows PowerShell commands, which will remove both provisioned packages and user-installed packages.",
+      "uninstall_via_powershell_all_users": "Uninstall via Windows PowerShell (All Users)",
+      "uninstall_via_powershell_all_users_desc": "Uninstall Microsoft PC Manager using Windows PowerShell commands, which will remove user-installed packages for all users, but will not remove provisioned packages."
     },
     "utilities": {
       "antispyware_product": "Antispyware Product",

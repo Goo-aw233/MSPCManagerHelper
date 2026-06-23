@@ -78,10 +78,11 @@
       "remove_basic_registries_successfully": "已成功移除注册表。\n路径：\n{paths}",
       "remove_config_cache_dir_error": "移除配置及缓存文件夹时发生错误：\n路径: {path}\n{error}",
       "remove_config_cache_dir_successfully": "已成功移除配置及缓存文件夹。\n路径：\n{paths}",
-      "remove_dism_provisioned_packages_error": "通过 DISM 移除预配包时发生错误：\n包名称: {package_name}\n{error}",
-      "remove_dism_provisioned_packages_successfully": "已成功移除预配包。\n包名称：\n{paths}",
+      "remove_dism_provisioned_packages_error": "通过 DISM 移除预配包时发生错误：\n{error}",
+      "remove_dism_provisioned_packages_successfully": "已成功移除预配包。",
+      "removed_package_names": "包名称：\n{paths}",
       "querying_dism_provisioned_packages": "正在查询预配包...",
-      "removing_dism_provisioned_package": "正在移除预配包...\n包名称: {package_name}",
+      "removing_dism_provisioned_package": "正在移除预配包...",
       "removing_dism_provisioned_packages": "正在移除预配包...",
       "uninstall_via_windows_powershell_error": "通过 Windows PowerShell 卸载时发生错误：\n{error}",
       "uninstall_via_windows_powershell_successfully": "已通过 Windows PowerShell 成功卸载。",
@@ -337,7 +338,9 @@
       "basic_registries": "注册表",
       "uninstall_stable": "卸载正式版",
       "uninstall_via_dism_all_users": "通过 DISM 卸载（所有用户）",
-      "uninstall_via_dism_all_users_desc": "使用 DISM 与 Windows PowerShell 命令卸载微软电脑管家，这将移除预配包与用户安装项目。"
+      "uninstall_via_dism_all_users_desc": "使用 DISM 与 Windows PowerShell 命令卸载微软电脑管家，这将移除预配包与用户安装项目。",
+      "uninstall_via_powershell_all_users": "通过 Windows PowerShell 卸载（所有用户）",
+      "uninstall_via_powershell_all_users_desc": "使用 Windows PowerShell 命令卸载微软电脑管家，这将移除用户安装项目，但不会移除预配包。"
     },
     "utilities": {
       "antispyware_product": "反间谍产品",

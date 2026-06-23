@@ -78,10 +78,11 @@
       "remove_basic_registries_successfully": "已成功移除登錄值。\n路徑：\n{paths}",
       "remove_config_cache_dir_error": "移除配置與快取資料夾時發生錯誤：\n路徑: {path}\n{error}",
       "remove_config_cache_dir_successfully": "已成功移除配置與快取資料夾。\n路徑：\n{paths}",
-      "remove_dism_provisioned_packages_error": "透過 DISM 移除布建套件時發生錯誤：\nPackageName: {package_name}\n{error}",
-      "remove_dism_provisioned_packages_successfully": "成功移除布建套件。\nPackageName：\n{paths}",
+      "remove_dism_provisioned_packages_error": "透過 DISM 移除布建套件時發生錯誤：\n{error}",
+      "remove_dism_provisioned_packages_successfully": "成功移除布建套件。",
+      "removed_package_names": "布建套件名稱: \n{paths}",
       "querying_dism_provisioned_packages": "正在查詢布建套件...",
-      "removing_dism_provisioned_package": "正在移除布建套件...\nPackageName: {package_name}",
+      "removing_dism_provisioned_package": "正在移除布建套件...",
       "removing_dism_provisioned_packages": "正在移除布建套件...",
       "uninstall_via_windows_powershell_error": "透過 Windows PowerShell 解除安裝時發生錯誤：\n{error}",
       "uninstall_via_windows_powershell_successfully": "已透過 Windows PowerShell 成功解除安裝。",
@@ -337,7 +338,9 @@
       "basic_registries": "登錄值",
       "uninstall_stable": "解除安裝正式版",
       "uninstall_via_dism_all_users": "通過 DISM 解除安裝（所有使用者）",
-      "uninstall_via_dism_all_users_desc": "使用 DISM 與 Windows PowerShell 命令解除安裝 Microsoft 電腦管家，這將移除預配包與使用者安裝項目。"
+      "uninstall_via_dism_all_users_desc": "使用 DISM 與 Windows PowerShell 命令解除安裝 Microsoft 電腦管家，這將移除預配包與使用者安裝項目。",
+      "uninstall_via_powershell_all_users": "通過 Windows PowerShell 解除安裝（所有使用者）",
+      "uninstall_via_powershell_all_users_desc": "使用 Windows PowerShell 命令解除安裝 Microsoft 電腦管家，這將移除所有使用者的安裝項目，但不會移除預配包。"
     },
     "utilities": {
       "antispyware_product": "反間諜產品",

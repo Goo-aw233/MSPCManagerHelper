@@ -189,7 +189,10 @@ class UninstallViaDISMForAllUsers:
 
         if removed_packages:
             self._log(
-                self.app_translator.translate("modules.uninstaller.remove_dism_provisioned_packages_successfully").format(
+                self.app_translator.translate("modules.uninstaller.remove_dism_provisioned_packages_successfully")
+            )
+            self._log(
+                self.app_translator.translate("modules.uninstaller.removed_package_names").format(
                     paths="  - " + "\n  - ".join(removed_packages)
                 )
             )
@@ -197,7 +200,7 @@ class UninstallViaDISMForAllUsers:
         for pkg_name, error in errors:
             self._log(
                 self.app_translator.translate("modules.uninstaller.remove_dism_provisioned_packages_error").format(
-                    package_name=pkg_name, error=error
+                    error=error
                 )
             )
 
@@ -207,15 +210,15 @@ class UninstallViaDISMForAllUsers:
 
         base_command = (
             r"Get-AppxPackage -AllUsers | "
-            r"Where-Object {$_.Name -match '^Microsoft\.(MicrosoftPCManager|PCManager)$'} | "
-            r"Remove-AppxPackage -AllUsers"
+            r"Where-Object { $_.Name -match '^Microsoft\.(MicrosoftPCManager|PCManager)$' } | "
+            r"ForEach-Object { $_.PackageFullName; Remove-AppxPackage -Package $_.PackageFullName -AllUsers }"
         )
 
         for use_all_users in [True, False]:
             command = base_command if use_all_users else (
                 r"Get-AppxPackage | "
-                r"Where-Object {$_.Name -match '^Microsoft\.(MicrosoftPCManager|PCManager)$'} | "
-                r"Remove-AppxPackage"
+                r"Where-Object { $_.Name -match '^Microsoft\.(MicrosoftPCManager|PCManager)$' } | "
+                r"ForEach-Object { $_.PackageFullName; Remove-AppxPackage -Package $_.PackageFullName }"
             )
 
             try:
@@ -234,11 +237,26 @@ class UninstallViaDISMForAllUsers:
                 self.logger.error(f"An Error Occurred While Uninstalling via Windows PowerShell: {e}")
                 continue
 
+            # Parse package names from stdout (one PackageFullName per line).
+            package_names = [
+                line.strip() for line in result.stdout.splitlines()
+                if line.strip()
+            ]
+
             if result.returncode == 0:
                 self._log(
                     self.app_translator.translate("modules.uninstaller.uninstall_via_windows_powershell_successfully")
                 )
                 self.logger.info("Uninstalled via Windows PowerShell successfully.")
+
+                if package_names:
+                    self._log(
+                        self.app_translator.translate("modules.uninstaller.removed_package_names").format(
+                            paths="  - " + "\n  - ".join(package_names)
+                        )
+                    )
+                    for pkg_name in package_names:
+                        self.logger.info(f"Package Removed Successfully: {pkg_name}")
             else:
                 error_output = self._format_error_output(
                     self.app_translator, result.stdout, result.stderr
@@ -499,12 +517,12 @@ class UninstallViaDISMForAllUsers:
                 usage_logs_patterns
             ),
             (
-                Path(system_root) / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Microsoft" / "CLR_v4.0" / "UsageLogs",
-                usage_logs_patterns
-            ),
-            (
                 Path(system_root) / "Prefetch",
                 prefetch_patterns
+            ),
+            (
+                Path(system_root) / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Microsoft" / "CLR_v4.0" / "UsageLogs",
+                usage_logs_patterns
             ),
         ]
 
