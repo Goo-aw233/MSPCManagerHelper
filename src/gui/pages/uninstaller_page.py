@@ -1,5 +1,17 @@
+import tkinter
+
+import customtkinter
+from CTkToolTip import CTkToolTip
+
+from core import (
+    AdvancedStartup,
+    OptionalChecks
+)
 from gui.components import (
     BaseWidgets,
+)
+from modules.uninstaller import (
+    UninstallViaDISMForAllUsers
 )
 from .base_page_frame import BaseFuncPageFrame
 
@@ -13,3 +25,275 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             page_title_key="pages.navigation.uninstaller",
             events_textbox_wrap="none"
         )
+
+        # === Uninstall Stable ===
+        self._create_section_label(self.app_translator.translate("pages.uninstaller.uninstall_stable"))
+
+        # --- Uninstall via DISM for All Users ---
+        uninstall_via_dism_for_all_users_frame = self._create_group_frame()
+        uninstall_via_dism_for_all_users_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
+        self.uninstall_via_dism_all_users_card = self._create_actions_card(
+            parent=uninstall_via_dism_for_all_users_frame,
+            title=self.app_translator.translate("pages.uninstaller.uninstall_via_dism_all_users"),
+            description=self.app_translator.translate("pages.uninstaller.uninstall_via_dism_all_users_desc"),
+            widget_constructor=customtkinter.CTkButton,
+            text=self.app_translator.translate("pages.common.execute"),
+            command=self._run_uninstall_via_dism_all_users,
+            state=self._update_uninstall_via_dism_all_users_state()
+        )
+
+        self._create_separator(uninstall_via_dism_for_all_users_frame)
+
+        # - Uninstall Options -
+        self.uninstall_options_frame = customtkinter.CTkScrollableFrame(
+            uninstall_via_dism_for_all_users_frame,
+            orientation="horizontal",
+            fg_color="transparent",
+            height=112
+        )
+        self.uninstall_options_frame.pack(fill="x", padx=10, pady=5)
+
+        self.uninstall_image_var = tkinter.StringVar(value="online_image")
+
+        # Online Image
+        self.radiobutton_online_image = customtkinter.CTkRadioButton(
+            self.uninstall_options_frame,
+            text=self.app_translator.translate("pages.common.online_image"),
+            variable=self.uninstall_image_var,
+            value="online_image",
+            command=self._on_uninstall_image_change,
+            font=customtkinter.CTkFont(family=self.font_family, weight="bold")
+        )
+        self.radiobutton_online_image.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+
+        # Offline Image
+        self.radiobutton_offline_image = customtkinter.CTkRadioButton(
+            self.uninstall_options_frame,
+            text=self.app_translator.translate("pages.common.offline_image"),
+            variable=self.uninstall_image_var,
+            value="offline_image",
+            command=self._on_uninstall_image_change,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.radiobutton_offline_image.grid(row=0, column=1, sticky="w", padx=10, pady=5)
+        CTkToolTip(self.radiobutton_offline_image,
+                   self.app_translator.translate("pages.common.offline_image_description"), font=(self.font_family, 12))
+
+        # Basic Cleanup
+        self.checkbox_basic_cleanup = customtkinter.CTkCheckBox(
+            self.uninstall_options_frame,
+            text=self.app_translator.translate("pages.uninstaller.basic_cleanup"),
+            command=self._on_basic_cleanup_toggle,
+            font=customtkinter.CTkFont(family=self.font_family, weight="bold")
+        )
+        self.checkbox_basic_cleanup.grid(row=0, column=2, sticky="w", padx=10, pady=5)
+
+        # Advanced Cleanup
+        self.checkbox_advanced_cleanup = customtkinter.CTkCheckBox(
+            self.uninstall_options_frame,
+            text=self.app_translator.translate("pages.uninstaller.advanced_cleanup"),
+            command=self._on_advanced_cleanup_toggle,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.checkbox_advanced_cleanup.grid(row=0, column=3, sticky="w", padx=10, pady=5)
+
+        # Basic Select All
+        self.checkbox_basic_select_all = customtkinter.CTkCheckBox(
+            self.uninstall_options_frame,
+            text=self.app_translator.translate("pages.common.select_all"),
+            command=self._toggle_basic_select_all,
+            font=customtkinter.CTkFont(family=self.font_family, weight="bold")
+        )
+        self.checkbox_basic_select_all.grid(row=1, column=0, sticky="w", padx=10, pady=5)
+
+        # Basic Config & Cache Dirs
+        self.checkbox_basic_config_cache_dirs = customtkinter.CTkCheckBox(
+            self.uninstall_options_frame,
+            text=self.app_translator.translate("pages.uninstaller.basic_config_cache_dirs"),
+            command=self._on_basic_option_change,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.checkbox_basic_config_cache_dirs.grid(row=1, column=1, sticky="w", padx=10, pady=5)
+
+        # Basic Registries
+        self.checkbox_basic_registries = customtkinter.CTkCheckBox(
+            self.uninstall_options_frame,
+            text=self.app_translator.translate("pages.uninstaller.basic_registries"),
+            command=self._on_basic_option_change,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.checkbox_basic_registries.grid(row=1, column=2, sticky="w", padx=10, pady=5)
+
+        # Basic Cache Files
+        self.checkbox_basic_cache_files = customtkinter.CTkCheckBox(
+            self.uninstall_options_frame,
+            text=self.app_translator.translate("pages.uninstaller.basic_cache_files"),
+            command=self._on_basic_option_change,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.checkbox_basic_cache_files.grid(row=1, column=3, sticky="w", padx=10, pady=5)
+
+        # Advanced Select All
+        self.checkbox_advanced_select_all = customtkinter.CTkCheckBox(
+            self.uninstall_options_frame,
+            text=self.app_translator.translate("pages.common.select_all"),
+            command=self._toggle_advanced_select_all,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.checkbox_advanced_select_all.grid(row=2, column=0, sticky="w", padx=10, pady=5)
+
+        # Advanced App Package Data
+        self.checkbox_advanced_app_package_data = customtkinter.CTkCheckBox(
+            self.uninstall_options_frame,
+            text=self.app_translator.translate("pages.uninstaller.advanced_app_package_data"),
+            command=self._on_advanced_option_change,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.checkbox_advanced_app_package_data.grid(row=2, column=1, sticky="w", padx=10, pady=5)
+
+        # Advanced Registries
+        self.checkbox_advanced_registries = customtkinter.CTkCheckBox(
+            self.uninstall_options_frame,
+            text=self.app_translator.translate("pages.uninstaller.advanced_registries"),
+            command=self._on_advanced_option_change,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.checkbox_advanced_registries.grid(row=2, column=2, sticky="w", padx=10, pady=5)
+
+        # Store checkboxes in lists for easier management
+        self.basic_option_checkboxes = [
+            self.checkbox_basic_config_cache_dirs,
+            self.checkbox_basic_registries,
+            self.checkbox_basic_cache_files
+        ]
+        self.advanced_option_checkboxes = [
+            self.checkbox_advanced_app_package_data,
+            self.checkbox_advanced_registries
+        ]
+
+        self._update_cleanup_options_state()
+        # === End of Uninstall Stable ===
+
+
+    # ~~~ Features Functions ~~~
+    # ~ Uninstall via DISM for All Users ~
+    def _update_uninstall_via_dism_all_users_state(self):
+        state = "normal" if AdvancedStartup.is_administrator() else "disabled"
+        if not OptionalChecks.check_windows_utilities_availability(target_utility=["Dism.exe", "powershell.exe"]):
+            state = "disabled"
+            self.logger.warning("Dism.exe or PowerShell is not available. Disabling 'Uninstall via DISM (All Users)' option.")
+        return state
+
+    def _update_basic_select_all_state(self):
+        if all(cb.get() == 1 for cb in self.basic_option_checkboxes):
+            self.checkbox_basic_select_all.select()
+        else:
+            self.checkbox_basic_select_all.deselect()
+
+    def _update_advanced_select_all_state(self):
+        if all(cb.get() == 1 for cb in self.advanced_option_checkboxes):
+            self.checkbox_advanced_select_all.select()
+        else:
+            self.checkbox_advanced_select_all.deselect()
+
+    def _set_basic_row_enabled(self, enabled):
+        if enabled:
+            self.checkbox_basic_select_all.configure(state="normal")
+            for cb in self.basic_option_checkboxes:
+                cb.configure(state="normal")
+        else:
+            self.checkbox_basic_select_all.deselect()
+            self.checkbox_basic_select_all.configure(state="disabled")
+            for cb in self.basic_option_checkboxes:
+                cb.deselect()
+                cb.configure(state="disabled")
+
+    def _set_advanced_row_enabled(self, enabled):
+        if enabled:
+            self.checkbox_advanced_select_all.configure(state="normal")
+            for cb in self.advanced_option_checkboxes:
+                cb.configure(state="normal")
+        else:
+            self.checkbox_advanced_select_all.deselect()
+            self.checkbox_advanced_select_all.configure(state="disabled")
+            for cb in self.advanced_option_checkboxes:
+                cb.deselect()
+                cb.configure(state="disabled")
+
+    def _update_cleanup_options_state(self):
+        if self.uninstall_image_var.get() == "offline_image":
+            self.checkbox_basic_cleanup.deselect()
+            self.checkbox_basic_cleanup.configure(state="disabled")
+            self.checkbox_advanced_cleanup.deselect()
+            self.checkbox_advanced_cleanup.configure(state="disabled")
+            self._set_basic_row_enabled(False)
+            self._set_advanced_row_enabled(False)
+            return
+
+        self.checkbox_basic_cleanup.configure(state="normal")
+        self.checkbox_advanced_cleanup.configure(state="normal")
+
+        self._set_basic_row_enabled(self.checkbox_basic_cleanup.get() == 1)
+        self._set_advanced_row_enabled(self.checkbox_advanced_cleanup.get() == 1)
+
+    def _on_basic_cleanup_toggle(self):
+        self._update_cleanup_options_state()
+
+    def _on_advanced_cleanup_toggle(self):
+        self._update_cleanup_options_state()
+
+    def _on_uninstall_image_change(self):
+        self._update_cleanup_options_state()
+
+    def _toggle_basic_select_all(self):
+        state = self.checkbox_basic_select_all.get()
+        for cb in self.basic_option_checkboxes:
+            if state:
+                cb.select()
+            else:
+                cb.deselect()
+        self._update_basic_select_all_state()
+
+    def _toggle_advanced_select_all(self):
+        state = self.checkbox_advanced_select_all.get()
+        for cb in self.advanced_option_checkboxes:
+            if state:
+                cb.select()
+            else:
+                cb.deselect()
+        self._update_advanced_select_all_state()
+
+    def _on_basic_option_change(self):
+        self._update_basic_select_all_state()
+
+    def _on_advanced_option_change(self):
+        self._update_advanced_select_all_state()
+
+    def _run_uninstall_via_dism_all_users(self):
+        self.uninstall_via_dism_all_users_card.configure(state="disabled")
+        self.update_idletasks()
+
+        selected_cleanup_options = {
+            "basic_config_cache_dirs": self.checkbox_basic_config_cache_dirs.get() == 1,
+            "basic_registries": self.checkbox_basic_registries.get() == 1,
+            "basic_cache_files": self.checkbox_basic_cache_files.get() == 1,
+            "advanced_app_package_data": self.checkbox_advanced_app_package_data.get() == 1,
+            "advanced_registries": self.checkbox_advanced_registries.get() == 1
+        }
+
+        uninstaller = UninstallViaDISMForAllUsers(
+            logger=self.logger,
+            app_translator=self.app_translator,
+            log_callback=self.events_textbox.log_to_events,
+            image_type=self.uninstall_image_var.get(),
+            selected_cleanup_options=selected_cleanup_options
+        )
+
+        self._run_operation(
+            uninstaller.execute,
+            "pages.uninstaller.uninstall_via_dism_all_users",
+            on_completion=lambda: self.uninstall_via_dism_all_users_card.configure(
+                state=self._update_uninstall_via_dism_all_users_state()
+            )
+        )
+    # ~ End of Uninstall via DISM for All Users ~

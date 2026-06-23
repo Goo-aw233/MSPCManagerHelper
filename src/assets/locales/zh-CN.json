@@ -55,6 +55,7 @@
   },
   "modules": {
     "common": {
+      "select_offline_image_dir": "选择脱机映像目录"
     },
     "installer": {
     },
@@ -65,6 +66,26 @@
     "toolbox": {
     },
     "uninstaller": {
+      "no_matching_packages_found": "未找到微软电脑管家的匹配预配包。",
+      "query_dism_provisioned_packages_error": "通过 DISM 查询预配包时发生错误：\n{error}",
+      "remove_advanced_app_package_data_error": "移除应用包数据时发生错误：\n路径: {path}\n{error}",
+      "remove_advanced_app_package_data_successfully": "已成功移除应用包数据。\n路径：\n{paths}",
+      "remove_advanced_registries_error": "移除高级注册表时发生错误：\n路径: {path}\n{error}",
+      "remove_advanced_registries_successfully": "已成功移除高级注册表。\n路径：\n{paths}",
+      "remove_basic_cache_files_error": "移除缓存文件时发生错误：\n路径: {path}\n{error}",
+      "remove_basic_cache_files_successfully": "已成功移除缓存文件。\n路径：\n{paths}",
+      "remove_basic_registries_error": "移除注册表时发生错误：\n路径: {path}\n{error}",
+      "remove_basic_registries_successfully": "已成功移除注册表。\n路径：\n{paths}",
+      "remove_config_cache_dir_error": "移除配置及缓存文件夹时发生错误：\n路径: {path}\n{error}",
+      "remove_config_cache_dir_successfully": "已成功移除配置及缓存文件夹。\n路径：\n{paths}",
+      "remove_dism_provisioned_packages_error": "通过 DISM 移除预配包时发生错误：\n包名称: {package_name}\n{error}",
+      "remove_dism_provisioned_packages_successfully": "已成功移除预配包。\n包名称：\n{paths}",
+      "querying_dism_provisioned_packages": "正在查询预配包...",
+      "removing_dism_provisioned_package": "正在移除预配包...\n包名称: {package_name}",
+      "removing_dism_provisioned_packages": "正在移除预配包...",
+      "uninstall_via_windows_powershell_error": "通过 Windows PowerShell 卸载时发生错误：\n{error}",
+      "uninstall_via_windows_powershell_successfully": "已通过 Windows PowerShell 成功卸载。",
+      "uninstalling_via_windows_powershell": "正在通过 Windows PowerShell 卸载..."
     },
     "utilities": {
       "confirm_remove_edge_components_dir_message": "Microsoft Edge 组件目录不为空。是否确认移除该目录及其所有内容？",
@@ -187,7 +208,10 @@
       "executing_operation_prompt": "请等待操作完成。若操作长时间无响应，或应用程序未响应，请从任务管理器结束应用程序。",
       "features_tab": "功能",
       "off": "关",
+      "offline_image": "脱机映像",
+      "offline_image_description": "非当前系统的 Windows 映像，通常为一个已安装 Windows 的目录或装载的 Windows 映像目录。",
       "on": "开",
+      "online_image": "联机映像",
       "refresh": "刷新",
       "select_all": "全选"
     },
@@ -304,6 +328,16 @@
       "update_app_from_onedrive_title": "从 OneDrive 获取应用程序更新"
     },
     "uninstaller": {
+      "advanced_app_package_data": "应用程序包数据",
+      "advanced_cleanup": "高级清理",
+      "advanced_registries": "高级注册表",
+      "basic_cache_files": "缓存文件",
+      "basic_cleanup": "基础清理",
+      "basic_config_cache_dirs": "配置及缓存文件夹",
+      "basic_registries": "注册表",
+      "uninstall_stable": "卸载正式版",
+      "uninstall_via_dism_all_users": "通过 DISM 卸载（所有用户）",
+      "uninstall_via_dism_all_users_desc": "使用 DISM 与 Windows PowerShell 命令卸载微软电脑管家，这将移除预配包与用户安装项目。"
     },
     "utilities": {
       "antispyware_product": "反间谍产品",

@@ -55,6 +55,7 @@
   },
   "modules": {
     "common": {
+      "select_offline_image_dir": "選擇離線映像目錄"
     },
     "installer": {
     },
@@ -65,6 +66,26 @@
     "toolbox": {
     },
     "uninstaller": {
+      "no_matching_packages_found": "找不到 Microsoft 電腦管家的相符布建套件。",
+      "query_dism_provisioned_packages_error": "透過 DISM 查詢布建套件時發生錯誤：\n{error}",
+      "remove_advanced_app_package_data_error": "移除應用程式套件資料時發生錯誤：\n路徑: {path}\n{error}",
+      "remove_advanced_app_package_data_successfully": "已成功移除應用程式套件資料。\n路徑：\n{paths}",
+      "remove_advanced_registries_error": "移除進階登錄值時發生錯誤：\n路徑: {path}\n{error}",
+      "remove_advanced_registries_successfully": "已成功移除進階登錄值。\n路徑：\n{paths}",
+      "remove_basic_cache_files_error": "移除快取文件時發生錯誤：\n路徑: {path}\n{error}",
+      "remove_basic_cache_files_successfully": "已成功移除快取文件。\n路徑：\n{paths}",
+      "remove_basic_registries_error": "移除登錄值時發生錯誤：\n路徑: {path}\n{error}",
+      "remove_basic_registries_successfully": "已成功移除登錄值。\n路徑：\n{paths}",
+      "remove_config_cache_dir_error": "移除配置與快取資料夾時發生錯誤：\n路徑: {path}\n{error}",
+      "remove_config_cache_dir_successfully": "已成功移除配置與快取資料夾。\n路徑：\n{paths}",
+      "remove_dism_provisioned_packages_error": "透過 DISM 移除布建套件時發生錯誤：\nPackageName: {package_name}\n{error}",
+      "remove_dism_provisioned_packages_successfully": "成功移除布建套件。\nPackageName：\n{paths}",
+      "querying_dism_provisioned_packages": "正在查詢布建套件...",
+      "removing_dism_provisioned_package": "正在移除布建套件...\nPackageName: {package_name}",
+      "removing_dism_provisioned_packages": "正在移除布建套件...",
+      "uninstall_via_windows_powershell_error": "透過 Windows PowerShell 解除安裝時發生錯誤：\n{error}",
+      "uninstall_via_windows_powershell_successfully": "已透過 Windows PowerShell 成功解除安裝。",
+      "uninstalling_via_windows_powershell": "正在透過 Windows PowerShell 解除安裝..."
     },
     "utilities": {
       "confirm_remove_edge_components_dir_message": "Microsoft Edge 元件目錄不為空。您確定要刪除此目錄及其所有內容嗎？",
@@ -187,7 +208,10 @@
       "executing_operation_prompt": "請等待操作完成。若操作長時間無回應，或應用程式無回應，請從工作管理員結束應用程式。",
       "features_tab": "功能",
       "off": "關",
+      "offline_image": "離線映像",
+      "offline_image_description": "非當前系統的 Windows 映像，通常為一個已安裝 Windows 的目錄或掛接的 Windows 映像目錄。",
       "on": "開",
+      "online_image": "線上映像",
       "refresh": "重新整理",
       "select_all": "全選"
     },
@@ -304,6 +328,16 @@
       "update_app_from_onedrive_title": "從 OneDrive 更新應用程式"
     },
     "uninstaller": {
+      "advanced_app_package_data": "應用程式包資料",
+      "advanced_cleanup": "進階清理",
+      "advanced_registries": "進階登錄值",
+      "basic_cache_files": "快取文件",
+      "basic_cleanup": "基本清理",
+      "basic_config_cache_dirs": "配置與快取資料夾",
+      "basic_registries": "登錄值",
+      "uninstall_stable": "解除安裝正式版",
+      "uninstall_via_dism_all_users": "通過 DISM 解除安裝（所有使用者）",
+      "uninstall_via_dism_all_users_desc": "使用 DISM 與 Windows PowerShell 命令解除安裝 Microsoft 電腦管家，這將移除預配包與使用者安裝項目。"
     },
     "utilities": {
       "antispyware_product": "反間諜產品",
