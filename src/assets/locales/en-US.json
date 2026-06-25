@@ -339,7 +339,9 @@
       "uninstall_via_dism_all_users": "Uninstall via DISM (All Users)",
       "uninstall_via_dism_all_users_desc": "Uninstall Microsoft PC Manager using DISM with Windows PowerShell commands, which will remove both provisioned packages and user-installed packages.",
       "uninstall_via_powershell_all_users": "Uninstall via Windows PowerShell (All Users)",
-      "uninstall_via_powershell_all_users_desc": "Uninstall Microsoft PC Manager using Windows PowerShell commands, which will remove user-installed packages for all users, but will not remove provisioned packages."
+      "uninstall_via_powershell_all_users_desc": "Uninstall Microsoft PC Manager using Windows PowerShell commands, which will remove user-installed packages for all users, but will not remove provisioned packages.",
+      "uninstall_via_powershell_current_user": "Uninstall via Windows PowerShell (Current User)",
+      "uninstall_via_powershell_current_user_desc": "Uninstall Microsoft PC Manager using Windows PowerShell commands, which will remove user-installed packages for the current user only, but will not remove provisioned packages."
     },
     "utilities": {
       "antispyware_product": "Antispyware Product",
