@@ -438,7 +438,7 @@ class UninstallViaDISMForAllUsers:
         errors = []
 
         for key_path in self._get_basic_registry_paths():
-            full_key_path = f"HKEY_LOCAL_MACHINE\{key_path}"
+            full_key_path = fr"HKEY_LOCAL_MACHINE\{key_path}"
 
             try:
                 del_cmd = [
@@ -805,7 +805,7 @@ class UninstallViaDISMForAllUsers:
                         try:
                             subkey_name = win32api.RegEnumKey(key, index)
                             if fnmatch.fnmatch(subkey_name, pattern):
-                                full_subkey = f"{key_path}\{subkey_name}"
+                                full_subkey = fr"{key_path}\{subkey_name}"
                                 win32api.RegCloseKey(key)
                                 win32api.RegDeleteTree(root, full_subkey)
                                 removed_items.append(full_subkey)
@@ -845,7 +845,7 @@ class UninstallViaDISMForAllUsers:
 
         for spec_type, root, key_path, pattern in self._get_advanced_registry_specs():
             hive_name = self._get_hive_name(root)
-            full_path = f"{hive_name}\{key_path}"
+            full_path = fr"{hive_name}\{key_path}"
 
             try:
                 key = win32api.RegOpenKeyEx(root, key_path, 0, win32con.KEY_READ)
@@ -898,7 +898,7 @@ class UninstallViaDISMForAllUsers:
                         try:
                             subkey_name = win32api.RegEnumKey(key, index)
                             if fnmatch.fnmatch(subkey_name, pattern):
-                                subkey_full_path = f"{full_path}\{subkey_name}"
+                                subkey_full_path = fr"{full_path}\{subkey_name}"
                                 del_cmd = [
                                     self.nsudo_path,
                                     "-U:T",
@@ -922,7 +922,7 @@ class UninstallViaDISMForAllUsers:
                                     raise Exception(f"NSudo Error Code: {result.returncode}")
                                 if result.stderr:
                                     raise Exception(f"reg.exe Error: {result.stderr.strip()}")
-                                removed_items.append(f"{key_path}\{subkey_name}")
+                                removed_items.append(fr"{key_path}\{subkey_name}")
                                 self.logger.info(f"Registry Subkey Removed Successfully: {subkey_name}")
                                 win32api.RegCloseKey(key)
                                 key = win32api.RegOpenKeyEx(root, key_path, 0, win32con.KEY_READ)

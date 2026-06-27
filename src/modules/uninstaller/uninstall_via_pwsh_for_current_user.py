@@ -297,7 +297,7 @@ class UninstallViaPowerShellForCurrentUser:
         errors = []
 
         for key_path in self._get_basic_registry_paths():
-            full_key_path = f"HKEY_LOCAL_MACHINE\{key_path}"
+            full_key_path = fr"HKEY_LOCAL_MACHINE\{key_path}"
 
             try:
                 del_cmd = [
