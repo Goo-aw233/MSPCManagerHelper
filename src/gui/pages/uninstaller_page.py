@@ -11,6 +11,7 @@ from gui.components import (
     BaseWidgets,
 )
 from modules.uninstaller import (
+    UninstallBeta,
     UninstallViaDISMForAllUsers,
     UninstallViaPowerShellForAllUsers,
     UninstallViaPowerShellForCurrentUser
@@ -295,7 +296,6 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
 
         # --- Uninstall via Windows PowerShell for Current User ---
         uninstall_via_powershell_for_current_user_frame = self._create_group_frame()
-        uninstall_via_powershell_for_current_user_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
         self.uninstall_via_powershell_current_user_card = self._create_actions_card(
             parent=uninstall_via_powershell_for_current_user_frame,
             title=self.app_translator.translate("pages.uninstaller.uninstall_via_powershell_current_user"),
@@ -373,6 +373,87 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
 
         # === End of Uninstall Stable ===
 
+        # === Uninstall Beta ===
+        self._create_section_label(self.app_translator.translate("pages.uninstaller.uninstall_beta"))
+
+        # --- Uninstall Beta ---
+        uninstall_beta_frame = self._create_group_frame()
+        self.uninstall_beta_card = self._create_actions_card(
+            parent=uninstall_beta_frame,
+            title=self.app_translator.translate("pages.uninstaller.uninstall_beta"),
+            description=self.app_translator.translate("pages.uninstaller.uninstall_beta_desc"),
+            widget_constructor=customtkinter.CTkButton,
+            text=self.app_translator.translate("pages.common.execute"),
+            command=self._run_uninstall_beta,
+            state=self._update_uninstall_beta_state()
+        )
+
+        self._create_separator(uninstall_beta_frame)
+
+        # - Uninstall Options -
+        self.uninstall_beta_options_frame = customtkinter.CTkScrollableFrame(
+            uninstall_beta_frame,
+            orientation="horizontal",
+            fg_color="transparent",
+            height=77
+        )
+        self.uninstall_beta_options_frame.pack(fill="x", padx=10, pady=5)
+
+        # Basic Cleanup
+        self.checkbox_beta_basic_cleanup = customtkinter.CTkCheckBox(
+            self.uninstall_beta_options_frame,
+            text=self.app_translator.translate("pages.uninstaller.basic_cleanup"),
+            command=self._on_beta_basic_cleanup_toggle,
+            font=customtkinter.CTkFont(family=self.font_family, weight="bold")
+        )
+        self.checkbox_beta_basic_cleanup.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+
+        # Basic Select All
+        self.checkbox_beta_basic_select_all = customtkinter.CTkCheckBox(
+            self.uninstall_beta_options_frame,
+            text=self.app_translator.translate("pages.common.select_all"),
+            command=self._toggle_beta_basic_select_all,
+            font=customtkinter.CTkFont(family=self.font_family, weight="bold")
+        )
+        self.checkbox_beta_basic_select_all.grid(row=1, column=0, sticky="w", padx=10, pady=5)
+
+        # Basic Config & Cache Dirs
+        self.checkbox_beta_basic_config_cache_dirs = customtkinter.CTkCheckBox(
+            self.uninstall_beta_options_frame,
+            text=self.app_translator.translate("pages.uninstaller.basic_config_cache_dirs"),
+            command=self._on_beta_basic_option_change,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.checkbox_beta_basic_config_cache_dirs.grid(row=1, column=1, sticky="w", padx=10, pady=5)
+
+        # Basic Registries
+        self.checkbox_beta_basic_registries = customtkinter.CTkCheckBox(
+            self.uninstall_beta_options_frame,
+            text=self.app_translator.translate("pages.uninstaller.basic_registries"),
+            command=self._on_beta_basic_option_change,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.checkbox_beta_basic_registries.grid(row=1, column=2, sticky="w", padx=10, pady=5)
+
+        # Basic Cache Files
+        self.checkbox_beta_basic_cache_files = customtkinter.CTkCheckBox(
+            self.uninstall_beta_options_frame,
+            text=self.app_translator.translate("pages.uninstaller.basic_cache_files"),
+            command=self._on_beta_basic_option_change,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.checkbox_beta_basic_cache_files.grid(row=1, column=3, sticky="w", padx=10, pady=5)
+
+        # Store checkboxes in lists for easier management.
+        self.beta_basic_option_checkboxes = [
+            self.checkbox_beta_basic_config_cache_dirs,
+            self.checkbox_beta_basic_registries,
+            self.checkbox_beta_basic_cache_files
+        ]
+
+        self._update_beta_cleanup_options_state()
+
+        # === End of Uninstall Beta ===
 
     # ~~~ Features Functions ~~~
     # ~ Uninstall via DISM for All Users ~
@@ -676,3 +757,71 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             )
         )
     # ~ End of Uninstall via Windows PowerShell for Current User ~
+
+    # ~ Uninstall Beta ~
+    @staticmethod
+    def _update_uninstall_beta_state():
+        return "normal" if AdvancedStartup.is_administrator() else "disabled"
+
+    def _update_beta_basic_select_all_state(self):
+        if all(cb.get() == 1 for cb in self.beta_basic_option_checkboxes):
+            self.checkbox_beta_basic_select_all.select()
+        else:
+            self.checkbox_beta_basic_select_all.deselect()
+
+    def _set_beta_basic_row_enabled(self, enabled):
+        if enabled:
+            self.checkbox_beta_basic_select_all.configure(state="normal")
+            for cb in self.beta_basic_option_checkboxes:
+                cb.configure(state="normal")
+        else:
+            self.checkbox_beta_basic_select_all.deselect()
+            self.checkbox_beta_basic_select_all.configure(state="disabled")
+            for cb in self.beta_basic_option_checkboxes:
+                cb.deselect()
+                cb.configure(state="disabled")
+
+    def _update_beta_cleanup_options_state(self):
+        self.checkbox_beta_basic_cleanup.configure(state="normal")
+        self._set_beta_basic_row_enabled(self.checkbox_beta_basic_cleanup.get() == 1)
+
+    def _on_beta_basic_cleanup_toggle(self):
+        self._update_beta_cleanup_options_state()
+
+    def _toggle_beta_basic_select_all(self):
+        state = self.checkbox_beta_basic_select_all.get()
+        for cb in self.beta_basic_option_checkboxes:
+            if state:
+                cb.select()
+            else:
+                cb.deselect()
+        self._update_beta_basic_select_all_state()
+
+    def _on_beta_basic_option_change(self):
+        self._update_beta_basic_select_all_state()
+
+    def _run_uninstall_beta(self):
+        self.uninstall_beta_card.configure(state="disabled")
+        self.update_idletasks()
+
+        selected_cleanup_options = {
+            "basic_config_cache_dirs": self.checkbox_beta_basic_config_cache_dirs.get() == 1,
+            "basic_registries": self.checkbox_beta_basic_registries.get() == 1,
+            "basic_cache_files": self.checkbox_beta_basic_cache_files.get() == 1
+        }
+
+        uninstaller = UninstallBeta(
+            logger=self.logger,
+            app_translator=self.app_translator,
+            log_callback=self.events_textbox.log_to_events,
+            selected_cleanup_options=selected_cleanup_options
+        )
+
+        self._run_operation(
+            uninstaller.execute,
+            "pages.uninstaller.uninstall_beta",
+            on_completion=lambda: self.uninstall_beta_card.configure(
+                state=self._update_uninstall_beta_state()
+            )
+        )
+    # ~ End of Uninstall Beta ~

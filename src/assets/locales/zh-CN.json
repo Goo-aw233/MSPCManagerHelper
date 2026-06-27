@@ -55,6 +55,7 @@
   },
   "modules": {
     "common": {
+      "file_path": "文件路径: {file_path}",
       "select_offline_image_dir": "选择脱机映像目录"
     },
     "installer": {
@@ -84,8 +85,16 @@
       "querying_dism_provisioned_packages": "正在查询预配包...",
       "removing_dism_provisioned_package": "正在移除预配包...",
       "removing_dism_provisioned_packages": "正在移除预配包...",
+      "searching_for_child_process": "正在查找卸载子进程...",
+      "waiting_for_uninstaller": "正在等待卸载程序启动...",
+      "starting_uninstaller_with_pids": "正在启动微软电脑管家卸载程序...\n父 PID: {ppid} | PID: {pid}",
+      "verifying_uninstall_result": "正在验证卸载结果...",
+      "uninstall_via_uninstaller_error": "通过微软电脑管家卸载程序卸载时发生错误：\n{error}",
+      "uninstall_via_uninstaller_successfully": "已通过微软电脑管家卸载程序成功卸载。",
       "uninstall_via_windows_powershell_error": "通过 Windows PowerShell 卸载时发生错误：\n{error}",
       "uninstall_via_windows_powershell_successfully": "已通过 Windows PowerShell 成功卸载。",
+      "uninstallation_not_completed": "卸载未完成。操作已被用户取消，或卸载程序未能成功完成。",
+      "uninstaller_not_found": "未找到微软电脑管家卸载程序。",
       "uninstalling_via_windows_powershell": "正在通过 Windows PowerShell 卸载..."
     },
     "utilities": {
@@ -336,6 +345,8 @@
       "basic_cleanup": "基础清理",
       "basic_config_cache_dirs": "配置及缓存文件夹",
       "basic_registries": "注册表",
+      "uninstall_beta": "卸载公测版",
+      "uninstall_beta_desc": "卸载微软电脑管家公测版。",
       "uninstall_stable": "卸载正式版",
       "uninstall_via_dism_all_users": "通过 DISM 卸载（所有用户）",
       "uninstall_via_dism_all_users_desc": "使用 DISM 与 Windows PowerShell 命令卸载微软电脑管家，这将移除预配包与用户安装项目。",

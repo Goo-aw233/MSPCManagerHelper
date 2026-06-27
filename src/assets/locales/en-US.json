@@ -54,6 +54,7 @@
   },
   "modules": {
     "common": {
+      "file_path": "File Path: {file_path}",
       "select_offline_image_dir": "Select Offline Image Directory"
     },
     "installer": {
@@ -83,8 +84,16 @@
       "querying_dism_provisioned_packages": "Querying provisioned packages...",
       "removing_dism_provisioned_package": "Removing provisioned package...",
       "removing_dism_provisioned_packages": "Removing provisioned packages...",
+      "searching_for_child_process": "Searching for uninstall child process...",
+      "waiting_for_uninstaller": "Waiting for uninstaller to start...",
+      "starting_uninstaller_with_pids": "Starting Microsoft PC Manager uninstaller...\nParent PID: {ppid} | PID: {pid}",
+      "verifying_uninstall_result": "Verifying uninstall result...",
+      "uninstall_via_uninstaller_error": "An Error Occurred While Uninstalling via Microsoft PC Manager Uninstaller:\n{error}",
+      "uninstall_via_uninstaller_successfully": "Uninstalled via Microsoft PC Manager uninstaller successfully.",
       "uninstall_via_windows_powershell_error": "An Error Occurred While Uninstalling via Windows PowerShell:\n{error}",
       "uninstall_via_windows_powershell_successfully": "Uninstalled via Windows PowerShell successfully.",
+      "uninstallation_not_completed": "Uninstallation not completed. The operation was canceled by the user, or the uninstaller did not complete successfully.",
+      "uninstaller_not_found": "Microsoft PC Manager uninstaller not found.",
       "uninstalling_via_windows_powershell": "Uninstalling via Windows PowerShell..."
     },
     "utilities": {
@@ -335,6 +344,8 @@
       "basic_cleanup": "Basic Cleanup",
       "basic_config_cache_dirs": "Config & Cache Directories",
       "basic_registries": "Registries",
+      "uninstall_beta": "Uninstall Public Beta Version",
+      "uninstall_beta_desc": "Uninstall Microsoft PC Manager Public Beta.",
       "uninstall_stable": "Uninstall Stable Version",
       "uninstall_via_dism_all_users": "Uninstall via DISM (All Users)",
       "uninstall_via_dism_all_users_desc": "Uninstall Microsoft PC Manager using DISM with Windows PowerShell commands, which will remove both provisioned packages and user-installed packages.",

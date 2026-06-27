@@ -1,4 +1,3 @@
-import fnmatch
 import os
 import shutil
 import subprocess
@@ -132,7 +131,8 @@ class UninstallViaPowerShellForCurrentUser:
             )
 
     def _get_config_cache_dir_paths(self):
-        local_app_data = os.getenv("LocalAppData") or os.path.join(os.path.expandvars(r"%UserProfile%"), "AppData", "Local")
+        # A robust fallback using os.path.expanduser("~").
+        local_app_data = os.getenv("LocalAppData") or os.path.join(os.path.expanduser("~"), "AppData", "Local")
         program_data = os.getenv("ProgramData", r"C:\ProgramData")
         system_root = os.getenv("SystemRoot") or os.getenv("WinDir") or r"C:\Windows"
         temp_dir = tempfile.gettempdir()
@@ -348,7 +348,8 @@ class UninstallViaPowerShellForCurrentUser:
 
     @staticmethod
     def _get_basic_cache_file_specs():
-        local_app_data = os.getenv("LocalAppData") or os.path.join(os.path.expandvars(r"%UserProfile%"), "AppData", "Local")
+        # A robust fallback using os.path.expanduser("~").
+        local_app_data = os.getenv("LocalAppData") or os.path.join(os.path.expanduser("~"), "AppData", "Local")
         system_root = os.getenv("SystemRoot") or os.getenv("WinDir") or r"C:\Windows"
 
         usage_logs_patterns = [

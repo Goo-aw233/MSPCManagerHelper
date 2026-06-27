@@ -55,6 +55,7 @@
   },
   "modules": {
     "common": {
+      "file_path": "檔案路徑: {file_path}",
       "select_offline_image_dir": "選擇離線映像目錄"
     },
     "installer": {
@@ -84,8 +85,16 @@
       "querying_dism_provisioned_packages": "正在查詢布建套件...",
       "removing_dism_provisioned_package": "正在移除布建套件...",
       "removing_dism_provisioned_packages": "正在移除布建套件...",
+      "searching_for_child_process": "正在尋找解除安裝子進程...",
+      "waiting_for_uninstaller": "正在等待解除安裝程式啟動...",
+      "starting_uninstaller_with_pids": "正在啟動 Microsoft 電腦管家解除安裝程式...\n父 PID: {ppid} | PID: {pid}",
+      "verifying_uninstall_result": "正在驗證解除安裝結果...",
+      "uninstall_via_uninstaller_error": "透過 Microsoft 電腦管家解除安裝程式解除安裝時發生錯誤：\n{error}",
+      "uninstall_via_uninstaller_successfully": "已透過 Microsoft 電腦管家解除安裝程式成功解除安裝。",
       "uninstall_via_windows_powershell_error": "透過 Windows PowerShell 解除安裝時發生錯誤：\n{error}",
       "uninstall_via_windows_powershell_successfully": "已透過 Windows PowerShell 成功解除安裝。",
+      "uninstallation_not_completed": "解除安裝未完成。操作已被使用者取消，或解除安裝程式未能成功完成。",
+      "uninstaller_not_found": "未找到 Microsoft 電腦管家解除安裝程式。",
       "uninstalling_via_windows_powershell": "正在透過 Windows PowerShell 解除安裝..."
     },
     "utilities": {
@@ -336,6 +345,8 @@
       "basic_cleanup": "基本清理",
       "basic_config_cache_dirs": "配置與快取資料夾",
       "basic_registries": "登錄值",
+      "uninstall_beta": "解除安裝 Beta 版",
+      "uninstall_beta_desc": "解除安裝 Microsoft 電腦管家 Beta。",
       "uninstall_stable": "解除安裝正式版",
       "uninstall_via_dism_all_users": "通過 DISM 解除安裝（所有使用者）",
       "uninstall_via_dism_all_users_desc": "使用 DISM 與 Windows PowerShell 命令解除安裝 Microsoft 電腦管家，這將移除預配包與使用者安裝項目。",
