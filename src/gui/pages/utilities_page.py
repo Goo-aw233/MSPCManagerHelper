@@ -226,7 +226,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         self.checkbox_windows_app_runtime.grid(row=0, column=2, sticky="w", padx=10, pady=5)
 
         # Checkbox Configuration
-        if not OptionalChecks.check_windows_utilities_availability(target_utility="powershell.exe"):
+        if not OptionalChecks.check_windows_utilities_availability(target_utility=["powershell.exe"], suppress_complete_log=True):
             self.checkbox_windows_app_runtime.configure(state="disabled")
             self.logger.warning("Windows PowerShell is not available. Disabling Windows App Runtime Dependency Check Checkbox.")
 
@@ -330,18 +330,18 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             self.checkbox_remove_edge_components_dir.configure(state="disabled")
             self.checkbox_end_related_processes.configure(state="disabled")
 
-        if AppSettings.is_take_ownership_enabled() and not OptionalChecks.check_windows_utilities_availability(target_utility="reg.exe"):
+        if AppSettings.is_take_ownership_enabled() and not OptionalChecks.check_windows_utilities_availability(target_utility=["reg.exe"], suppress_complete_log=True):
             self.checkbox_restore_ifeo_registry.configure(state="disabled")
             self.checkbox_remove_edgeupdate_registry.configure(state="disabled")
             self.logger.warning("reg.exe is not available. Disabling registry repair checkboxes.")
 
-        if AppSettings.is_take_ownership_enabled() and not OptionalChecks.check_windows_utilities_availability(target_utility=["cmd.exe", "powershell.exe"]):
+        if AppSettings.is_take_ownership_enabled() and not OptionalChecks.check_windows_utilities_availability(target_utility=["cmd.exe", "powershell.exe"], suppress_complete_log=True):
             self.checkbox_remove_webview2_dir.configure(state="disabled")
             self.logger.warning("cmd.exe or powershell.exe is not available. Disabling WebView2 Directory Removal Checkbox.")
             self.checkbox_remove_edge_components_dir.configure(state="disabled")
             self.logger.warning("cmd.exe or powershell.exe is not available. Disabling Edge Components Directory Removal Checkbox.")
 
-        if AppSettings.is_take_ownership_enabled() and not OptionalChecks.check_windows_utilities_availability(target_utility=["taskkill.exe"]):
+        if AppSettings.is_take_ownership_enabled() and not OptionalChecks.check_windows_utilities_availability(target_utility=["taskkill.exe"], suppress_complete_log=True):
             self.checkbox_end_related_processes.configure(state="disabled")
             self.logger.warning("taskkill.exe is not available. Disabling End Related Processes Checkbox.")
 

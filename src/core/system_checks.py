@@ -232,7 +232,7 @@ class OptionalChecks:
             return False
 
     @staticmethod
-    def check_windows_utilities_availability(target_utility=None):
+    def check_windows_utilities_availability(target_utility=None, suppress_complete_log=False):
         # Bypass Checks If Specified
         if hasattr(AdvancedStartup, "is_bypass_checks") and AdvancedStartup.is_bypass_checks():
             OptionalChecks.logger.info("Bypass checks enabled, skipping utilities availability check.")
@@ -294,7 +294,13 @@ class OptionalChecks:
                 OptionalChecks.logger.warning(f"Utility {utility} Check Failed: {e}")
                 all_checks_passed = False
 
-        if all_checks_passed:
+        if all_checks_passed and not suppress_complete_log:
+            """
+            Use `suppress_complete_log=True` to suppress the "All utilities availability check completed. No issues found." log message.
+            USAGE EXAMPLE:
+            if OptionalChecks.check_windows_utilities_availability(suppress_complete_log=True):
+                return True # All utilities are available, but no log message will be shown.
+            """
             OptionalChecks.logger.info("All utilities availability check completed. No issues found.")
         return all_checks_passed
 
