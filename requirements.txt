@@ -2,7 +2,7 @@ altgraph==0.17.5
 certifi==2026.6.17
 charset-normalizer==3.4.7
 CTkToolTip==0.9
-customtkinter==5.2.2
+customtkinter==6.0.0
 darkdetect==0.8.0
 idna==3.18
 iso3166==2.1.1
