@@ -63,12 +63,13 @@ class BaseFuncPageFrame(BaseInfoPageFrame):
         self.scroll_frame = None
 
         # Shared Tab Switching Area
-        self.tabview = customtkinter.CTkTabview(self, fg_color="transparent")
+        self.tabview = customtkinter.CTkTabview(
+            self,
+            fg_color="transparent",
+            segmented_button_font=customtkinter.CTkFont(family=self.font_family, size=14, weight="bold")
+        )
         self.tabview.grid(row=1, column=0, sticky="nsew", padx=0, pady=0)
         self.tabview.grid_columnconfigure(0, weight=1)
-        self.tabview._segmented_button.configure(
-            font=customtkinter.CTkFont(family=self.font_family, size=14, weight="bold")
-        )
 
         self.features_tab_name = self.app_translator.translate("pages.common.features_tab")
         self.events_tab_name = self.app_translator.translate("pages.common.events_tab")
