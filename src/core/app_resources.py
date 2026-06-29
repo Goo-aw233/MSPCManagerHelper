@@ -1,9 +1,28 @@
+import os
 import platform
+import tempfile
 import winreg
 from pathlib import Path
 
 
 class AppResources:
+    @staticmethod
+    def app_temp_dir():
+        for candidate in (
+            Path(tempfile.gettempdir()) / "MSPCManagerHelper",
+            Path(os.getenv("SystemRoot", r"C:\Windows")) / "Temp" / "MSPCManagerHelper",
+            Path.home() / ".cache" / "MSPCManagerHelper",
+        ):
+            try:
+                candidate.mkdir(parents=True, exist_ok=True)
+                return str(candidate)
+            except OSError:
+                continue
+        # Current working directory as the last resort.
+        final = Path.cwd() / "MSPCManagerHelper"
+        final.mkdir(parents=True, exist_ok=True)
+        return str(final)
+
     @staticmethod
     def app_icon():
         app_base_dir = Path(__file__).resolve().parents[1]

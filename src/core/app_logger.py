@@ -1,12 +1,11 @@
 import locale
 import logging
-import os
-import tempfile
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
 from core.advanced_startup import AdvancedStartup
 from core.app_metadata import AppMetadata
+from core.app_resources import AppResources
 
 
 class AppLogger:
@@ -42,16 +41,7 @@ class AppLogger:
             # In case of any issue, we can log it or just pass.
             pass
 
-        try:
-            log_dir = Path(tempfile.gettempdir()) / "MSPCManagerHelper"
-            log_dir.mkdir(parents=True, exist_ok=True)
-        except (OSError, PermissionError):
-            # If the default temporary directory is not accessible, fall back to %SystemRoot%\Temp.
-            # If %SystemRoot% is not set, use C:\Windows\Temp as the final fallback.
-            system_root = os.getenv("SystemRoot", r"C:\Windows")
-            log_dir = Path(system_root) / "Temp" / "MSPCManagerHelper"
-            # Create the directory if it does not exist.
-            log_dir.mkdir(parents=True, exist_ok=True)
+        log_dir = Path(AppResources.app_temp_dir())
 
         # Use a fixed log file name to enable rotation.
         log_file = log_dir / f"{AppMetadata.APP_NAME}.log"
