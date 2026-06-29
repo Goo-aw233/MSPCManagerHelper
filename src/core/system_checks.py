@@ -73,6 +73,15 @@ class PrerequisiteChecks:
         return False
 
     @staticmethod
+    def check_os_architecture():
+        machine = platform.machine()
+        if machine == "ARM64":
+            return "ARM64"
+        elif machine == "AMD64":
+            return "x64"
+        return machine
+
+    @staticmethod
     def check_windows_minimum_requirements():
         try:
             # Check if the Windows meets the Microsoft PC Manager minimum requirements.

@@ -1,8 +1,8 @@
 import os
-import platform
 import tempfile
-import winreg
 from pathlib import Path
+
+from core.system_checks import PrerequisiteChecks
 
 
 class AppResources:
@@ -40,37 +40,14 @@ class AppResources:
         x64_path = tool_folder / x64_binary
         arm64_path = tool_folder / arm64_binary
 
-        arch_key = None
+        arch_key = PrerequisiteChecks.check_os_architecture()
 
-        # Method 1: platform.machine()
-        try:
-            machine = (platform.machine() or "").lower()
-            if any(k in machine for k in ("amd64", "x86_64", "x64", "intel64")):
-                arch_key = "AMD64"
-            elif any(k in machine for k in ("arm64", "aarch64")):
-                arch_key = "ARM64"
-        except Exception:
-            pass
+        if arch_key == "ARM64" and arm64_path.exists():
+            return str(arm64_path)
 
-        # Method 2: winreg
-        if not arch_key:
-            try:
-                with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
-                                    r"SYSTEM\CurrentControlSet\Control\Session Manager\Environment") as key:
-                    processor_architecture, _ = winreg.QueryValueEx(key, "PROCESSOR_ARCHITECTURE")
-                    arch_key = processor_architecture
-            except (FileNotFoundError, OSError):
-                pass
-
-        # Depend on Detected Architecture
-        if arch_key == "ARM64":
-            if arm64_path.exists():
-                return str(arm64_path)
-            if x64_path.exists():
-                return str(x64_path)
-
+        # Compatible with ARM64 when using x64.
         if x64_path.exists():
-               return str(x64_path)
+            return str(x64_path)
 
         return None
 
