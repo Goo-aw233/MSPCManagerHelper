@@ -8,17 +8,18 @@ from core.app_resources import AppResources
 
 
 class FetchResource:
-    """
-    USAGE EXAMPLE:
-    fetch("https://example.com/file.zip", download_dir=r"C:\Downloads", filename="custom_name.zip")
-    ARGS:
-        url: URL to Fetch
-        download_dir: Directory to Download the File (Optional)
-        filename: Filename to Save As (Optional)
-        timeout: Connect/Read Timeout in Seconds (Optional, Default: (15, 60))
-    """
     @staticmethod
     def fetch(url, download_dir=None, filename=None, timeout=(15, 60)):
+        """
+        USAGE EXAMPLE:
+        fetch("https://example.com/file.zip", download_dir="C:\\Downloads", filename="custom_name.zip")
+
+        ARGS:
+            url: URL to Fetch
+            download_dir: Directory to Download the File (Optional)
+            filename: Filename to Save As (Optional)
+            timeout: Connect/Read Timeout in Seconds (Optional, Default: (15, 60))
+        """
         if download_dir is None:
             download_dir = AppResources.app_temp_dir()
 
@@ -36,7 +37,7 @@ class FetchResource:
             if cd:
                 # Handle RFC 5987 encoded filename* format.
                 rfc_match = re.search(
-                    r"filename\*=(?:[^;]+)''([^;\s]+)",
+                    r"filename\*=[^;]+''([^;\s]+)",
                     cd,
                     re.IGNORECASE,
                 )

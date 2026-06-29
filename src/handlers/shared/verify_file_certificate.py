@@ -10,6 +10,7 @@ class VerifyFileCertificate:
         """
         USAGE EXAMPLE:
         verify("C:\\path\\to\\file.exe", signer_subject="CN=Example Signer, O=Example Org, C=US")
+
         ARGS:
             file_path: Path to the File to Verify
             signer_subject: Expected Signer Subject (Optional)
