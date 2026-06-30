@@ -4,21 +4,43 @@ from urllib.parse import unquote
 
 import requests
 
-from core.app_resources import AppResources
+from core import (
+    AppMetadata,
+    AppResources,
+    PrerequisiteChecks
+)
 
 
 class FetchResource:
     @staticmethod
-    def fetch(url, download_dir=None, filename=None, timeout=(15, 60)):
+    def fetch(
+        url,
+        download_dir=None,
+        filename=None,
+        timeout=(15, 60),
+        user_agent=(
+            f"Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            f"AppleWebKit/537.36 (KHTML, like Gecko) "
+            f"Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0 "
+            f"MSPCManagerHelper/{AppMetadata.APP_VERSION_WITHOUT_SPACES}"
+        ),
+    ):
         """
         USAGE EXAMPLE:
-        fetch("https://example.com/file.zip", download_dir="C:\\Downloads", filename="custom_name.zip")
+        fetch(
+            "https://example.com/file.zip",
+            download_dir="C:\\Downloads",
+            filename="custom_name.zip",
+            timeout=(10, 30),
+            user_agent="CustomUserAgent/1.0",
+        )
 
         ARGS:
             url: URL to Fetch
             download_dir: Directory to Download the File (Optional)
             filename: Filename to Save As (Optional)
             timeout: Connect/Read Timeout in Seconds (Optional, Default: (15, 60))
+            user_agent: User-Agent Header Value (Optional, Default: Built-in User-Agent)
         """
         if download_dir is None:
             download_dir = AppResources.app_temp_dir()
@@ -26,7 +48,11 @@ class FetchResource:
         download_path = Path(download_dir)
         download_path.mkdir(parents=True, exist_ok=True)
 
-        resp = requests.get(url, stream=True, timeout=timeout)
+        headers = {}
+        if user_agent:
+            headers["User-Agent"] = user_agent
+
+        resp = requests.get(url, stream=True, timeout=timeout, headers=headers)
         resp.raise_for_status()
 
         is_default_name = False

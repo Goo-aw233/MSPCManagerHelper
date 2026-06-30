@@ -6,6 +6,7 @@ class AppMetadata:
     APP_LICENSE_URL = "https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE"
     APP_NAME = "MSPCManagerHelper"
     APP_VERSION = "Beta v0.3.1.0"
+    APP_VERSION_WITHOUT_SPACES = "Beta_v0.3.1.0"
 
     # Contributors
     APP_CONTRIBUTORS = {
