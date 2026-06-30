@@ -2,8 +2,6 @@ import os
 import tempfile
 from pathlib import Path
 
-from core.system_checks import PrerequisiteChecks
-
 
 class AppResources:
     @staticmethod
@@ -40,6 +38,7 @@ class AppResources:
         x64_path = tool_folder / x64_binary
         arm64_path = tool_folder / arm64_binary
 
+        from core.system_checks import PrerequisiteChecks
         arch_key = PrerequisiteChecks.check_os_architecture()
 
         if arch_key == "ARM64" and arm64_path.exists():

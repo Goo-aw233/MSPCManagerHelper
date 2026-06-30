@@ -6,8 +6,7 @@ import requests
 
 from core import (
     AppMetadata,
-    AppResources,
-    PrerequisiteChecks
+    AppResources
 )
 
 
