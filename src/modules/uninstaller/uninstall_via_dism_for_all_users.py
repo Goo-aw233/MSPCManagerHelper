@@ -280,6 +280,7 @@ class UninstallViaDISMForAllUsers:
             Path(local_app_data) / "Packages" / "Microsoft.MicrosoftPCManager_8wekyb3d8bbwe",
             Path(local_app_data) / "Packages" / "Microsoft.PCManager_8wekyb3d8bbwe",
             Path(local_app_data) / "PC Manager Store",
+            Path(local_app_data) / "PCManager",
             Path(local_app_data) / "Windows Master Store",
             Path(program_data) / "Windows Master Setup",
             Path(program_data) / "Windows Master Store",
