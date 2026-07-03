@@ -370,7 +370,6 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         ]
 
         self._update_powershell_current_cleanup_options_state()
-
         # === End of Uninstall Stable ===
 
         # === Uninstall Beta ===
@@ -452,8 +451,8 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         ]
 
         self._update_uninstall_beta_cleanup_options_state()
-
         # === End of Uninstall Beta ===
+
 
     # ~~~ Features Functions ~~~
     # ~ Uninstall via DISM for All Users ~

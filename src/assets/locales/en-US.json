@@ -58,6 +58,17 @@
       "select_offline_image_dir": "Select Offline Image Directory"
     },
     "installer": {
+      "certificate_verification_failed": "Certificate verification failed for the downloaded installer.",
+      "compute_sha256_failed": "An Error Occurred While Computing SHA256 for the Downloaded File:\n{error}",
+      "download_online_installer_failed": "An Error Occurred While Downloading the Online Installer:\n{error}",
+      "downloading_online_installer": "Downloading online installer...",
+      "launch_msstore_error": "Unable to launch Microsoft Store. Please open Microsoft Store from the Start menu.\nLog File Location: {log_file_path}",
+      "launching_downloaded_installer": "Launching downloaded installer...",
+      "msstore_found": "Microsoft Store is installed, opening the store page...",
+      "msstore_not_found": "Microsoft Store is not installed, opening the webpage...",
+      "open_msstore_web_error": "Unable to open Microsoft Store webpage. Please visit {msstore_web_url} in your browser.\nLog File Location: {log_file_path}",
+      "opening_msstore_web": "Opening Microsoft Store webpage...",
+      "verifying_downloaded_file": "Verifying digital signature of the downloaded file..."
     },
     "maintenance": {
     },
@@ -273,6 +284,12 @@
       "windows_specifications": "Windows Specifications"
     },
     "installer": {
+      "download_online_installer": "Download Online Installer",
+      "install_via_msstore": "Install via Microsoft Store",
+      "install_via_msstore_desc": "Install Microsoft PC Manager from the Microsoft Store.",
+      "online_install": "Online Install",
+      "open_msstore": "Open Microsoft Store",
+      "open_msstore_web": "Open Microsoft Store Webpage"
     },
     "maintenance": {
     },

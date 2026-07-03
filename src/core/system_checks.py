@@ -191,7 +191,7 @@ class OptionalChecks:
 
     DEFAULT_UTILITIES = [
         "cmd.exe", "Dism.exe", "powershell.exe", "reg.exe",
-        "sc.exe", "sfc.exe", "taskkill.exe", "where.exe"
+        "sc.exe", "sfc.exe", "taskkill.exe"
     ]
 
     @staticmethod

@@ -59,6 +59,17 @@
       "select_offline_image_dir": "選擇離線映像目錄"
     },
     "installer": {
+      "certificate_verification_failed": "下載的安裝程式數位簽章驗證失敗。",
+      "compute_sha256_failed": "計算下載檔案的 SHA256 時發生錯誤：\n{error}",
+      "download_online_installer_failed": "下載線上安裝程式時發生錯誤：\n{error}",
+      "downloading_online_installer": "正在下載線上安裝程式...",
+      "launch_msstore_error": "無法啟動 Microsoft Store。請從「開始」功能表中啟動 Microsoft Store。\n記錄檔位置：{log_file_path}",
+      "launching_downloaded_installer": "正在啟動已下載的安裝程式...",
+      "msstore_found": "Microsoft Store 已安裝，正在開啓商店頁面...",
+      "msstore_not_found": "未找到已安裝的 Microsoft Store，正在開啓網頁...",
+      "open_msstore_web_error": "無法開啓 Microsoft Store 網頁。請從瀏覽器訪問：{msstore_web_url}。\n記錄檔位置：{log_file_path}",
+      "opening_msstore_web": "正在開啓 Microsoft Store 網頁...",
+      "verifying_downloaded_file": "正在驗證下載檔案的數位簽章..."
     },
     "maintenance": {
     },
@@ -274,6 +285,12 @@
       "windows_specifications": "Windows 規格"
     },
     "installer": {
+      "download_online_installer": "下載線上安裝程式",
+      "install_via_msstore": "透過 Microsoft Store 安裝",
+      "install_via_msstore_desc": "透過 Microsoft Store 安裝 Microsoft 電腦管家。",
+      "online_install": "線上安裝",
+      "open_msstore": "開啓 Microsoft Store",
+      "open_msstore_web": "開啓 Microsoft Store 網頁"
     },
     "maintenance": {
     },

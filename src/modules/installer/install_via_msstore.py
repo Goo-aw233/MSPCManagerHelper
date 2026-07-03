@@ -1,2 +1,199 @@
+import hashlib
+import shutil
+import subprocess
+from pathlib import Path
+
+from core import (
+    AppLogger,
+    AppResources
+)
+from handlers.shared import (
+    FetchResource,
+    URILauncher,
+    URLHandler,
+    VerifyFileCertificate
+)
+
+
 class InstallViaMicrosoftStore:
-    pass
+    PRODUCT_ID = "9PM860492SZD"
+    FIXED_FILENAME = "Microsoft PC Manager Installer.exe"
+    EXPECTED_SIGNER_SUBJECT = (
+        "CN=Microsoft Corporation, O=Microsoft Corporation, "
+        "L=Redmond, S=Washington, C=US"
+    )
+
+    def __init__(self, logger, app_translator, log_callback, open_method="open_msstore"):
+        self.logger = logger
+        self.app_translator = app_translator
+        self.log_callback = log_callback
+        self.open_method = open_method
+        self.log_file_path = AppLogger.get_log_file_path()
+
+    def _log(self, message):
+        if self.log_callback:
+            self.log_callback(message)
+
+    def execute(self):
+        if self.open_method == "open_msstore":
+            self._query_msstore_installation()
+        elif self.open_method == "open_msstore_web":
+            self._log(self.app_translator.translate("modules.installer.opening_msstore_web"))
+            self._open_msstore_web()
+        elif self.open_method == "download_online_installer":
+            self._download_online_installer()
+        else:
+            self.logger.warning(f"Unknown open_method: '{self.open_method}'. Falling back to query.")
+            self._query_msstore_installation()
+
+    def _query_msstore_installation(self):
+        store_app = shutil.which("store.exe") or shutil.which("microsoftstore.exe")
+        if store_app:
+            self._log(self.app_translator.translate("modules.installer.msstore_found"))
+            self.logger.info("Microsoft Store is installed, opening the store page...")
+            self._open_msstore()
+        else:
+            self._log(self.app_translator.translate("modules.installer.msstore_not_found"))
+            self.logger.info("Microsoft Store is not installed, opening the webpage...")
+            self._open_msstore_web()
+
+    def _open_msstore(self):
+        URILauncher.launch_uri(
+            uri=f"ms-windows-store://pdp/?ProductId={self.PRODUCT_ID}",
+            target_name="Microsoft Store",
+            messagebox_error_message="modules.installer.launch_msstore_error",
+            logger=self.logger,
+            log_file_path=self.log_file_path,
+            app_translator=self.app_translator,
+        )
+
+    def _open_msstore_web(self):
+        url = f"https://apps.microsoft.com/detail/{self.PRODUCT_ID}"
+        URLHandler.launch_url(
+            url=url,
+            target_name="Microsoft Store (Web)",
+            messagebox_error_message="modules.installer.open_msstore_web_error",
+            logger=self.logger,
+            log_file_path=self.log_file_path,
+            app_translator=self.app_translator,
+            msstore_web_url=url,
+        )
+
+    def _verify_certificate(self, file_path):
+        # Verify the Authenticode signature of the given file.
+        # Returns True if valid, False otherwise.
+        return VerifyFileCertificate.verify(
+            file_path=str(file_path),
+            signer_subject=self.EXPECTED_SIGNER_SUBJECT,
+            enable_crl_check=True,
+        )
+
+    def _launch_installer(self, file_path):
+        self.logger.info(f"Launching Installer via Subprocess: {file_path}")
+        self._log(self.app_translator.translate("modules.installer.launching_downloaded_installer"))
+        subprocess.Popen(
+            [str(file_path)],
+            shell=False,
+            creationflags=subprocess.CREATE_NO_WINDOW,
+        )
+
+    def _download_online_installer(self):
+        url = f"https://get.microsoft.com/installer/download/{self.PRODUCT_ID}"
+        download_dir = AppResources.app_temp_dir()
+        file_path = Path(download_dir) / self.FIXED_FILENAME
+        sha256_path = file_path.with_suffix(file_path.suffix + ".sha256")
+
+        # Check If the Downloaded File Can Be Reused
+        if self._try_reuse_cached(file_path, sha256_path):
+            return
+
+        # Download Installer
+        self._log(self.app_translator.translate("modules.installer.downloading_online_installer"))
+        self.logger.info(f"Downloading Online Installer from: {url}")
+        try:
+            downloaded_path = FetchResource.fetch(
+                url=url, download_dir=download_dir, filename=self.FIXED_FILENAME
+            )
+        except Exception as e:
+            self.logger.error(f"An Error Occurred While Downloading the Online Installer: {e}")
+            self._log(
+                self.app_translator.translate("modules.installer.download_online_installer_failed").format(error=e)
+            )
+            return
+
+        # Compute & Save SHA256
+        # Written atomically (temp file + replace) to avoid leaving a
+        # corrupted hash record if the write is interrupted.
+        try:
+            sha256_hash = self._compute_sha256(downloaded_path)
+        except Exception as e:
+            self.logger.error(f"An Error Occurred While Computing SHA256 for the Downloaded File: {e}")
+            self._log(self.app_translator.translate("modules.installer.compute_sha256_failed").format(error=e))
+            return
+        tmp_sha256_path = sha256_path.with_suffix(sha256_path.suffix + ".tmp")
+        tmp_sha256_path.write_text(sha256_hash, encoding="utf-8")
+        tmp_sha256_path.replace(sha256_path)
+        self.logger.info(f"SHA256 ({sha256_hash}) Saved to: {sha256_path}")
+
+        # Verify Certificate
+        self._log(self.app_translator.translate("modules.installer.verifying_downloaded_file"))
+        self.logger.info(f"Verifying Digital Certificate for Downloaded File: {downloaded_path}")
+        if not self._verify_certificate(downloaded_path):
+            self.logger.error(
+                "An Error Occurred While Verifying the Certificate of the Downloaded Installer: "
+                "Digital signature is invalid, the signer does not match "
+                "Microsoft Corporation, or the certificate has been revoked."
+            )
+            self._log(self.app_translator.translate("modules.installer.certificate_verification_failed"))
+            return
+
+        # Launch Downloaded Installer
+        self.logger.info(f"Certificate Verified, Launching Downloaded Installer: {downloaded_path}")
+        self._launch_installer(downloaded_path)
+
+    def _try_reuse_cached(self, file_path, sha256_path):
+        # Check whether the cached installer is valid and can be launched directly.
+        # Returns True if launched, False if re-download is needed.
+        if not file_path.exists() or not sha256_path.exists():
+            # Cache is incomplete: the exe exists but its hash sidecar is
+            # missing (or vice versa).  Remove the stale exe so that the
+            # subsequent download gets the correct filename.
+            if file_path.exists():
+                file_path.unlink()
+                self.logger.info("Stale cached installer removed, re-downloading...")
+            else:
+                self.logger.info("No cached installer found, downloading...")
+            return False
+
+        saved_sha256 = sha256_path.read_text(encoding="utf-8").strip()
+        try:
+            current_sha256 = self._compute_sha256(file_path)
+        except Exception as e:
+            self.logger.warning(f"Unable to compute SHA256 for cached file, re-downloading: {e}")
+            return False
+
+        if saved_sha256 != current_sha256:
+            self.logger.warning(
+                f"SHA256 mismatch for: {file_path} "
+                f"(saved={saved_sha256[:16]}..., "
+                f"actual={current_sha256[:16]}...), re-downloading..."
+            )
+            return False
+
+        self.logger.info(f"SHA256 Matches, Verifying Certificate for Cached File: {file_path}")
+        self._log(self.app_translator.translate("modules.installer.verifying_downloaded_file"))
+        if not self._verify_certificate(file_path):
+            self.logger.warning(f"Certificate verification failed for cached file: {file_path}, re-downloading...")
+            return False
+
+        self.logger.info(f"Certificate Verified, Reusing Cached Installer: {file_path}")
+        self._launch_installer(file_path)
+        return True
+
+    @staticmethod
+    def _compute_sha256(file_path):
+        h = hashlib.sha256()
+        with open(file_path, "rb") as f:
+            while chunk := f.read(8192):
+                h.update(chunk)
+        return h.hexdigest()
