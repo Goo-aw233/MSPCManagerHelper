@@ -196,46 +196,61 @@ class OptionalChecks:
 
     @staticmethod
     def check_narrator_status():
+        """
+        SPI_GETSCREENREADER:
+        https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-systemparametersinfow
+        """
         try:
-            # Define the structure for PROCESSENTRY32.
-            class PROCESSENTRY32(ctypes.Structure):
+            # Use system accessibility state.
+            screen_reader_running = wintypes.BOOL()
+            success = ctypes.windll.user32.SystemParametersInfoW(
+                0x0046,
+                0,
+                ctypes.byref(screen_reader_running),
+                0
+            )
+
+            if success and bool(screen_reader_running.value):
+                return True
+
+            # Fallback: detect Narrator by process name for apps that do not set SPI state.
+            class PROCESSENTRY32W(ctypes.Structure):
                 _fields_ = [
                     ("dwSize", wintypes.DWORD),
                     ("cntUsage", wintypes.DWORD),
                     ("th32ProcessID", wintypes.DWORD),
-                    ("th32DefaultHeapID", ctypes.POINTER(wintypes.ULONG)),
+                    ("th32DefaultHeapID", ctypes.c_size_t),
                     ("th32ModuleID", wintypes.DWORD),
                     ("cntThreads", wintypes.DWORD),
                     ("th32ParentProcessID", wintypes.DWORD),
                     ("pcPriClassBase", wintypes.LONG),
                     ("dwFlags", wintypes.DWORD),
-                    ("szExeFile", ctypes.c_char * 260)
+                    ("szExeFile", ctypes.c_wchar * 260)
                 ]
 
-            # Create a snapshot of the current processes.
             # TH32CS_SNAPPROCESS = 0x00000002
-            hProcessSnap = ctypes.windll.kernel32.CreateToolhelp32Snapshot(0x00000002, 0)
-            if hProcessSnap == -1:
+            h_process_snap = ctypes.windll.kernel32.CreateToolhelp32Snapshot(0x00000002, 0)
+            if h_process_snap == -1:
                 return False
 
-            pe32 = PROCESSENTRY32()
-            pe32.dwSize = ctypes.sizeof(PROCESSENTRY32)
+            pe32 = PROCESSENTRY32W()
+            pe32.dwSize = ctypes.sizeof(PROCESSENTRY32W)
 
-            # Retrieve information about the first process.
-            if not ctypes.windll.kernel32.Process32First(hProcessSnap, ctypes.byref(pe32)):
-                ctypes.windll.kernel32.CloseHandle(hProcessSnap)
+            if not ctypes.windll.kernel32.Process32FirstW(h_process_snap, ctypes.byref(pe32)):
+                ctypes.windll.kernel32.CloseHandle(h_process_snap)
                 return False
 
-            # Iterate through the processes.
+            screen_reader_targets = ("jfw", "narrator", "nvda", "zit")
+
             while True:
-                exe_file = pe32.szExeFile.decode("utf-8", errors="ignore")
-                if "narrator" in exe_file.lower():
-                    ctypes.windll.kernel32.CloseHandle(hProcessSnap)
+                exe_file = pe32.szExeFile.lower()
+                if any(target in exe_file for target in screen_reader_targets):
+                    ctypes.windll.kernel32.CloseHandle(h_process_snap)
                     return True
-                if not ctypes.windll.kernel32.Process32Next(hProcessSnap, ctypes.byref(pe32)):
+                if not ctypes.windll.kernel32.Process32NextW(h_process_snap, ctypes.byref(pe32)):
                     break
 
-            ctypes.windll.kernel32.CloseHandle(hProcessSnap)
+            ctypes.windll.kernel32.CloseHandle(h_process_snap)
             return False
         except Exception:
             return False
