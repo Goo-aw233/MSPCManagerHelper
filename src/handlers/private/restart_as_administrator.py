@@ -23,11 +23,8 @@ class RestartAsAdministrator:
             # ShellExecuteW returns > 32 on success. If result <= 32, it's an error code.
             # 1223 = ERROR_CANCELLED (User canceled the UAC prompt).
             if not result or result <= 32:
-                failed_code = ctypes.get_last_error()
-                failed_msg = ctypes.FormatError(failed_code).strip()
-
-                msg = f"Failed to request elevation (ShellExecute returned {result}). [WinError {failed_code}: {failed_msg}]"
-
+                failed_msg = ctypes.FormatError(result).strip() if result else "Unknown Error: Empty result from ShellExecuteW"
+                msg = f"Failed to request elevation (ShellExecute returned {result}). [{failed_msg}]"
                 logger.error(msg)
 
                 messagebox.showerror(
@@ -38,10 +35,7 @@ class RestartAsAdministrator:
                 logger.info("Elevation request succeeded (process elevated or ShellExecute triggered).")
         except Exception as e:
             logger.exception("Exception while attempting to restart as administrator.")
-            # Try to get more info from WinError if possible.
-            failed_code = ctypes.get_last_error()
-            failed_msg = ctypes.FormatError(failed_code).strip()
-            logger.error(f"Exception details: {e} [WinError {failed_code}: {failed_msg}]")
+            logger.error(f"Exception details: {e}")
 
             messagebox.showerror(
                 app_translator.translate("common.error"),

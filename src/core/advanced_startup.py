@@ -62,8 +62,29 @@ class AdvancedStartup:
 
     @staticmethod
     def is_administrator():
+        """
+        CheckTokenMembership:
+        https://learn.microsoft.com/windows/win32/api/securitybaseapi/nf-securitybaseapi-checktokenmembership
+        """
         try:
-            return ctypes.windll.shell32.IsUserAnAdmin()
+            sid = ctypes.c_void_p()
+            ret = ctypes.windll.advapi32.ConvertStringSidToSidW(
+                ctypes.c_wchar_p("S-1-5-32-544"),
+                ctypes.byref(sid),
+            )
+            if not ret:
+                return False
+
+            try:
+                is_member = ctypes.wintypes.BOOL()
+                ret = ctypes.windll.advapi32.CheckTokenMembership(
+                    None,  # NULL represents the access token of the current thread/process. 
+                    sid,
+                    ctypes.byref(is_member),
+                )
+                return bool(is_member.value) if ret else False
+            finally:
+                ctypes.windll.kernel32.LocalFree(sid)
         except (AttributeError, OSError):
             return False
 
@@ -72,6 +93,7 @@ class AdvancedStartup:
         result = ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, args, None, 0)
         if result > 32:
             sys.exit(0)
+        return result
 
     @staticmethod
     def specify_locale():
