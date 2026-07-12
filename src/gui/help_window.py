@@ -117,13 +117,43 @@ class HelpWindow(customtkinter.CTk):
         self.logger.info(f"Window Geometry Set to: {width} x {height} (x + {x}, y + {y}), Scaling Factor: {self._get_window_scaling()}")
 
     def _remove_minimize_maximize_buttons(self):
+        """
+        GetParent:
+        https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-getparent
+
+        GetWindowLongW:
+        https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-getwindowlongw
+
+        SetWindowLongW:
+        https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-setwindowlongw
+
+        SetWindowPos:
+        https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-setwindowpos
+        """
         try:
             hwnd = ctypes.windll.user32.GetParent(self.winfo_id())
+            if not hwnd:
+                hwnd = self.winfo_id()
+
             GWL_STYLE = -16
             WS_MINIMIZEBOX = 0x00020000
             WS_MAXIMIZEBOX = 0x00010000
+            SWP_NOMOVE = 0x0002
+            SWP_NOSIZE = 0x0001
+            SWP_FRAMECHANGED = 0x0020
+
             style = ctypes.windll.user32.GetWindowLongW(hwnd, GWL_STYLE)
-            style = style & ~WS_MINIMIZEBOX & ~WS_MAXIMIZEBOX
-            ctypes.windll.user32.SetWindowLongW(hwnd, GWL_STYLE, style)
+            new_style = style & ~WS_MINIMIZEBOX & ~WS_MAXIMIZEBOX
+            if new_style != style:
+                ctypes.windll.user32.SetWindowLongW(hwnd, GWL_STYLE, new_style)
+                ctypes.windll.user32.SetWindowPos(
+                    hwnd,
+                    0,
+                    0,
+                    0,
+                    0,
+                    0,
+                    SWP_NOMOVE | SWP_NOSIZE | SWP_FRAMECHANGED
+                )
         except Exception as e:
-            self.logger.error(f"Failed to remove minimize/maximize buttons.")
+            self.logger.error(f"Failed to remove minimize/maximize buttons: {e}")
