@@ -458,9 +458,11 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
     # ~ Uninstall via DISM for All Users ~
     def _update_uninstall_via_dism_all_users_state(self):
         state = "normal" if AdvancedStartup.is_administrator() else "disabled"
-        if not OptionalChecks.check_windows_utilities_availability(target_utility=["Dism.exe", "powershell.exe"], suppress_complete_log=True):
+        if not OptionalChecks.check_windows_utilities_availability(target_utility=["Dism.exe", "powershell.exe"],
+                                                                   suppress_complete_log=True):
             state = "disabled"
-            self.logger.warning("Dism.exe or PowerShell is not available. Disabling 'Uninstall via DISM (All Users)' option.")
+            self.logger.warning(
+                "Dism.exe or powershell.exe is not available. Disabling 'Uninstall via DISM (All Users)' option.")
         return state
 
     def _update_dism_basic_select_all_state(self):
@@ -580,9 +582,11 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
     # ~ Uninstall via Windows PowerShell for All Users ~
     def _update_uninstall_via_powershell_all_users_state(self):
         state = "normal" if AdvancedStartup.is_administrator() else "disabled"
-        if not OptionalChecks.check_windows_utilities_availability(target_utility=["powershell.exe"], suppress_complete_log=True):
+        if not OptionalChecks.check_windows_utilities_availability(target_utility=["powershell.exe"],
+                                                                   suppress_complete_log=True):
             state = "disabled"
-            self.logger.warning("Windows PowerShell is not available. Disabling 'Uninstall via Windows PowerShell (All Users)' option.")
+            self.logger.warning(
+                "powershell.exe is not available. Disabling 'Uninstall via Windows PowerShell (All Users)' option.")
         return state
 
     def _update_powershell_all_basic_select_all_state(self):
@@ -689,9 +693,11 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
     # ~ Uninstall via Windows PowerShell for Current User ~
     def _update_uninstall_via_powershell_current_user_state(self):
         state = "normal" if AdvancedStartup.is_administrator() else "disabled"
-        if not OptionalChecks.check_windows_utilities_availability(target_utility=["powershell.exe"], suppress_complete_log=True):
+        if not OptionalChecks.check_windows_utilities_availability(target_utility=["powershell.exe"],
+                                                                   suppress_complete_log=True):
             state = "disabled"
-            self.logger.warning("Windows PowerShell is not available. Disabling 'Uninstall via Windows PowerShell (Current User)' option.")
+            self.logger.warning(
+                "powershell.exe is not available. Disabling 'Uninstall via Windows PowerShell (Current User)' option.")
         return state
 
     def _update_powershell_current_basic_select_all_state(self):

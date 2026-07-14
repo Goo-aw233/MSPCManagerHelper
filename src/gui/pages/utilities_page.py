@@ -226,9 +226,10 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         self.checkbox_windows_app_runtime.grid(row=0, column=2, sticky="w", padx=10, pady=5)
 
         # Checkbox Configuration
-        if not OptionalChecks.check_windows_utilities_availability(target_utility=["powershell.exe"], suppress_complete_log=True):
+        if not OptionalChecks.check_windows_utilities_availability(target_utility=["powershell.exe"],
+                                                                   suppress_complete_log=True):
             self.checkbox_windows_app_runtime.configure(state="disabled")
-            self.logger.warning("Windows PowerShell is not available. Disabling Windows App Runtime Dependency Check Checkbox.")
+            self.logger.warning("powershell.exe is not available. Disabling 'Windows App Runtime Dependency Check' Checkbox.")
 
         self.get_dependencies_versions_card.configure(state="disabled")
 
@@ -273,7 +274,8 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         )
         self.checkbox_end_related_processes.grid(row=0, column=1, sticky="w", padx=10, pady=5)
         CTkToolTip(self.checkbox_end_related_processes,
-                   message=self.app_translator.translate("pages.utilities.end_related_processes_tooltip"), font=(self.font_family, 12))
+                   message=self.app_translator.translate("pages.utilities.end_related_processes_tooltip"),
+                   font=(self.font_family, 12))
         self.checkbox_end_related_processes.configure(state="disabled")
 
         # Restore IFEO Registry
@@ -285,7 +287,8 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         )
         self.checkbox_restore_ifeo_registry.grid(row=1, column=0, sticky="w", padx=10, pady=5)
         CTkToolTip(self.checkbox_restore_ifeo_registry,
-                   message=self.app_translator.translate("pages.utilities.restore_ifeo_registry_tooltip"), font=(self.font_family, 12))
+                   message=self.app_translator.translate("pages.utilities.restore_ifeo_registry_tooltip"),
+                   font=(self.font_family, 12))
 
         # Remove EdgeUpdate Registry
         self.checkbox_remove_edgeupdate_registry = customtkinter.CTkCheckBox(
@@ -330,18 +333,23 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             self.checkbox_remove_edge_components_dir.configure(state="disabled")
             self.checkbox_end_related_processes.configure(state="disabled")
 
-        if AppSettings.is_take_ownership_enabled() and not OptionalChecks.check_windows_utilities_availability(target_utility=["reg.exe"], suppress_complete_log=True):
+        if AppSettings.is_take_ownership_enabled() and not OptionalChecks.check_windows_utilities_availability(
+                target_utility=["reg.exe"], suppress_complete_log=True):
             self.checkbox_restore_ifeo_registry.configure(state="disabled")
             self.checkbox_remove_edgeupdate_registry.configure(state="disabled")
             self.logger.warning("reg.exe is not available. Disabling registry repair checkboxes.")
 
-        if AppSettings.is_take_ownership_enabled() and not OptionalChecks.check_windows_utilities_availability(target_utility=["cmd.exe", "powershell.exe"], suppress_complete_log=True):
+        if AppSettings.is_take_ownership_enabled() and not OptionalChecks.check_windows_utilities_availability(
+                target_utility=["cmd.exe", "powershell.exe"], suppress_complete_log=True):
             self.checkbox_remove_webview2_dir.configure(state="disabled")
-            self.logger.warning("cmd.exe or powershell.exe is not available. Disabling WebView2 Directory Removal Checkbox.")
+            self.logger.warning(
+                "cmd.exe or powershell.exe is not available. Disabling WebView2 Directory Removal Checkbox.")
             self.checkbox_remove_edge_components_dir.configure(state="disabled")
-            self.logger.warning("cmd.exe or powershell.exe is not available. Disabling Edge Components Directory Removal Checkbox.")
+            self.logger.warning(
+                "cmd.exe or powershell.exe is not available. Disabling Edge Components Directory Removal Checkbox.")
 
-        if AppSettings.is_take_ownership_enabled() and not OptionalChecks.check_windows_utilities_availability(target_utility=["taskkill.exe"], suppress_complete_log=True):
+        if AppSettings.is_take_ownership_enabled() and not OptionalChecks.check_windows_utilities_availability(
+                target_utility=["taskkill.exe"], suppress_complete_log=True):
             self.checkbox_end_related_processes.configure(state="disabled")
             self.logger.warning("taskkill.exe is not available. Disabling End Related Processes Checkbox.")
 
@@ -389,7 +397,8 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             command=self._on_mspcm_services_checkbox_change
         )
         self.checkbox_beta_version.grid(row=0, column=1, sticky="w", padx=10, pady=5)
-        CTkToolTip(self.checkbox_beta_version, message=self.app_translator.translate("pages.utilities.beta_version_tooltip"),
+        CTkToolTip(self.checkbox_beta_version,
+                   message=self.app_translator.translate("pages.utilities.beta_version_tooltip"),
                    font=(self.font_family, 12))
 
         # PC Manager Service
