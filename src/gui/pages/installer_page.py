@@ -1,12 +1,19 @@
 import tkinter
+import tkinter.filedialog
 
 import customtkinter
+from CTkToolTip import CTkToolTip
 
+from core import (
+    AdvancedStartup,
+    OptionalChecks
+)
 from gui.components import (
     BaseWidgets
 )
 from modules.installer import (
-    InstallViaMicrosoftStore
+    InstallViaMicrosoftStore,
+    InstallViaDISM
 )
 from .base_page_frame import BaseFuncPageFrame
 
@@ -24,7 +31,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         # === Online Install Section ===
         self._create_section_label(self.app_translator.translate("pages.installer.online_install"))
 
-        # --- Install Via Microsoft Store ---
+        # --- Install via Microsoft Store ---
         install_via_msstore_frame = self._create_group_frame()
         install_via_msstore_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
         self.install_via_msstore_card = self._create_actions_card(
@@ -81,9 +88,182 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.download_online_installer_radiobutton.grid(row=0, column=2, sticky="w", padx=10, pady=5)
         # === End of Online Install Section ===
 
+        # === Offline Install Section ===
+        self._create_section_label(self.app_translator.translate("pages.installer.offline_install"))
+
+        # --- Install via DISM ---
+        install_via_dism_frame = self._create_group_frame()
+        install_via_dism_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
+        self.install_via_dism_card = self._create_actions_card(
+            parent=install_via_dism_frame,
+            title=self.app_translator.translate("pages.installer.install_via_dism"),
+            description=self.app_translator.translate("pages.installer.install_via_dism_desc"),
+            widget_constructor=customtkinter.CTkButton,
+            text=self.app_translator.translate("pages.common.execute"),
+            command=self._run_install_via_dism,
+            state="normal"
+        )
+
+        self._create_separator(install_via_dism_frame)
+
+        # - Install via DISM Options -
+        self.install_via_dism_options_frame = customtkinter.CTkScrollableFrame(
+            install_via_dism_frame,
+            orientation="horizontal",
+            fg_color="transparent",
+            height=147
+        )
+        self.install_via_dism_options_frame.pack(fill="x", padx=10, pady=5)
+
+        self.install_image_var = tkinter.StringVar(value="online_image")
+
+        # Image Type Radio Buttons (in a sub-frame)
+        self.image_type_frame = customtkinter.CTkFrame(
+            self.install_via_dism_options_frame,
+            fg_color="transparent"
+        )
+        self.image_type_frame.grid(row=0, column=0, sticky="w", padx=(10, 0), pady=5)
+
+        # Online Image
+        self.online_image_radiobutton = customtkinter.CTkRadioButton(
+            self.image_type_frame,
+            text=self.app_translator.translate("pages.common.online_image"),
+            variable=self.install_image_var,
+            value="online_image",
+            command=self._toggle_offline_image_state,
+            font=customtkinter.CTkFont(family=self.font_family, weight="bold")
+        )
+        self.online_image_radiobutton.pack(side="left", padx=(0, 5))
+
+        # Offline Image
+        self.offline_image_radiobutton = customtkinter.CTkRadioButton(
+            self.image_type_frame,
+            text=self.app_translator.translate("pages.common.offline_image"),
+            variable=self.install_image_var,
+            value="offline_image",
+            command=self._toggle_offline_image_state,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.offline_image_radiobutton.pack(side="left")
+        CTkToolTip(self.offline_image_radiobutton,
+                   self.app_translator.translate("pages.common.offline_image_description"), font=(self.font_family, 12))
+        
+        # Offline Image Path Entry
+        self.offline_image_path_entry = customtkinter.CTkEntry(
+            self.install_via_dism_options_frame,
+            placeholder_text=self.app_translator.translate("pages.installer.offline_image_path_placeholder"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            width=650
+        )
+        self.offline_image_path_entry.grid(row=0, column=1, sticky="ew", padx=(0, 10), pady=5, columnspan=2)
+        self.offline_image_path_entry.bind("<KeyRelease>", lambda _: self._update_install_via_dism_state())
+
+        # Offline Image Path Select Button
+        self.offline_image_path_select_button = customtkinter.CTkButton(
+            self.install_via_dism_options_frame,
+            text=self.app_translator.translate("pages.common.browse"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            command=self._select_offline_image_path
+        )
+        self.offline_image_path_select_button.grid(row=0, column=3, sticky="w", padx=(0, 10), pady=5)
+
+        # Application Package
+        self.app_package_var = tkinter.BooleanVar(value=True)
+        self.app_package_checkbox = customtkinter.CTkCheckBox(
+            self.install_via_dism_options_frame,
+            text=self.app_translator.translate("pages.installer.app_package"),
+            variable=self.app_package_var,
+            font=customtkinter.CTkFont(family=self.font_family, weight="bold"),
+            command=self._toggle_app_package_state
+        )
+        self.app_package_checkbox.grid(row=1, column=0, sticky="w", padx=(10, 0), pady=5)
+
+        # Application Package Path Entry
+        self.app_package_path_entry = customtkinter.CTkEntry(
+            self.install_via_dism_options_frame,
+            placeholder_text=self.app_translator.translate("pages.installer.app_package_path_placeholder"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            width=650
+        )
+        self.app_package_path_entry.grid(row=1, column=1, sticky="ew", padx=(0, 10), pady=5, columnspan=2)
+        self.app_package_path_entry.bind("<KeyRelease>", lambda _: self._update_install_via_dism_state())
+
+        # Application Package Path Select Button
+        self.app_package_path_select_button = customtkinter.CTkButton(
+            self.install_via_dism_options_frame,
+            text=self.app_translator.translate("pages.common.browse"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            command=self._select_app_package_path
+        )
+        self.app_package_path_select_button.grid(row=1, column=3, sticky="w", padx=(0, 10), pady=5)
+
+        # License
+        self.license_checkbox = customtkinter.CTkCheckBox(
+            self.install_via_dism_options_frame,
+            text=self.app_translator.translate("pages.installer.license"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            command=self._toggle_license_state
+        )
+        self.license_checkbox.grid(row=2, column=0, sticky="w", padx=(10, 0), pady=5)
+
+        # License Path Entry
+        self.license_path_entry = customtkinter.CTkEntry(
+            self.install_via_dism_options_frame,
+            placeholder_text=self.app_translator.translate("pages.installer.license_path_placeholder"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            width=650
+        )
+        self.license_path_entry.grid(row=2, column=1, sticky="ew", padx=(0, 10), pady=5, columnspan=2)
+
+        # License Path Select Button
+        self.license_path_select_button = customtkinter.CTkButton(
+            self.install_via_dism_options_frame,
+            text=self.app_translator.translate("pages.common.browse"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            command=self._select_license_path,
+            state="disabled"
+        )
+        self.license_path_select_button.grid(row=2, column=3, sticky="w", padx=(0, 10), pady=5)
+
+        # Dependencies
+        self.dependencies_checkbox = customtkinter.CTkCheckBox(
+            self.install_via_dism_options_frame,
+            text=self.app_translator.translate("pages.installer.dependencies"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            command=self._toggle_dependencies_state
+        )
+        self.dependencies_checkbox.grid(row=3, column=0, sticky="w", padx=(10, 0), pady=5)
+
+        # Dependencies Paths Entry
+        self.dependencies_paths_entry = customtkinter.CTkEntry(
+            self.install_via_dism_options_frame,
+            placeholder_text=self.app_translator.translate("pages.installer.dependencies_paths_placeholder"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            width=650
+        )
+        self.dependencies_paths_entry.grid(row=3, column=1, sticky="ew", padx=(0, 10), pady=5, columnspan=2)
+
+        # Dependencies Paths Select Button
+        self.dependencies_paths_select_button = customtkinter.CTkButton(
+            self.install_via_dism_options_frame,
+            text=self.app_translator.translate("pages.common.browse"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            command=self._select_dependencies_paths,
+            state="disabled"
+        )
+        self.dependencies_paths_select_button.grid(row=3, column=3, sticky="w", padx=(0, 10), pady=5)
+
+        # Apply Initial Toggle States
+        self._toggle_offline_image_state()
+        self._toggle_app_package_state()
+        self._toggle_license_state()
+        self._toggle_dependencies_state()
+        self._update_install_via_dism_state()
+        # === End of Offline Install Section ===
+
 
     # ~~~ Features Functions ~~~
-    # ~ Install Via Microsoft Store ~
+    # ~ Install via Microsoft Store ~
     @staticmethod
     def _update_install_via_msstore_state():
         return "normal"
@@ -106,4 +286,128 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
                 state=self._update_install_via_msstore_state()
             )
         )
-    # ~ End of Install Via Microsoft Store ~
+    # ~ End of Install via Microsoft Store ~
+
+    # ~ Install via DISM ~
+    def _set_entry_group_state(self, enabled, entry, button=None):
+        if button is not None:
+            button.configure(state="normal" if enabled else "disabled")
+        if enabled:
+            entry.configure(state="normal")
+            entry.unbind("<Button-1>")
+        else:
+            entry.configure(state="normal")
+            entry.bind("<Button-1>", self._block_entry_event, add="+")
+
+    @staticmethod
+    def _set_entry_text(entry, text):
+        entry.delete(0, tkinter.END)
+        entry.insert(0, text)
+
+    def _toggle_offline_image_state(self):
+        enabled = self.install_image_var.get() == "offline_image"
+        self._set_entry_group_state(enabled, self.offline_image_path_entry,
+                                     self.offline_image_path_select_button)
+        self._update_install_via_dism_state()
+
+    def _select_offline_image_path(self):
+        folder_path = tkinter.filedialog.askdirectory(
+            title=self.app_translator.translate("pages.installer.select_offline_image_path")
+        )
+        if folder_path:
+            self._set_entry_text(self.offline_image_path_entry, folder_path)
+        self._update_install_via_dism_state()
+
+    def _select_app_package_path(self):
+        file_path = tkinter.filedialog.askopenfilename(
+            title=self.app_translator.translate("pages.installer.select_app_package_path"),
+            filetypes=[
+                (self.app_translator.translate("pages.installer.app_package"),
+                 "*.appx;*.appxbundle;*.msix;*.msixbundle"),
+                (self.app_translator.translate("pages.common.all_files"), "*.*")
+            ]
+        )
+        if file_path:
+            self._set_entry_text(self.app_package_path_entry, file_path)
+        self._update_install_via_dism_state()
+
+    def _select_license_path(self):
+        file_path = tkinter.filedialog.askopenfilename(
+            title=self.app_translator.translate("pages.installer.select_license_path"),
+            filetypes=[
+                (self.app_translator.translate("pages.installer.license"), "*.xml"),
+                (self.app_translator.translate("pages.common.all_files"), "*.*")
+            ]
+        )
+        if file_path:
+            self._set_entry_text(self.license_path_entry, file_path)
+
+    def _select_dependencies_paths(self):
+        file_paths = tkinter.filedialog.askopenfilenames(
+            title=self.app_translator.translate("pages.installer.select_dependencies_paths"),
+            filetypes=[
+                (self.app_translator.translate("pages.installer.dependencies"), "*.appx;*.msix"),
+                (self.app_translator.translate("pages.common.all_files"), "*.*")
+            ]
+        )
+        if file_paths:
+            self._set_entry_text(self.dependencies_paths_entry, " | ".join(file_paths))
+
+    def _toggle_app_package_state(self):
+        enabled = self.app_package_var.get()
+        self._set_entry_group_state(enabled, self.app_package_path_entry,
+                                     self.app_package_path_select_button)
+        self._update_install_via_dism_state()
+
+    def _toggle_license_state(self):
+        enabled = self.license_checkbox.get()
+        self._set_entry_group_state(enabled, self.license_path_entry,
+                                     self.license_path_select_button)
+
+    def _toggle_dependencies_state(self):
+        enabled = self.dependencies_checkbox.get()
+        self._set_entry_group_state(enabled, self.dependencies_paths_entry,
+                                     self.dependencies_paths_select_button)
+
+    @staticmethod
+    def _block_entry_event(_):
+        return "break"
+
+    def _update_install_via_dism_state(self):
+        if not AdvancedStartup.is_administrator():
+            self.install_via_dism_card.configure(state="disabled")
+            return
+        if not OptionalChecks.check_windows_utilities_availability(target_utility=["Dism.exe"],
+                                                                   suppress_complete_log=True):
+            self.logger.warning("Dism.exe is not available. Disabling 'Install via DISM' option.")
+            self.install_via_dism_card.configure(state="disabled")
+            return
+        if self.install_image_var.get() == "offline_image" and not self.offline_image_path_entry.get().strip():
+            self.install_via_dism_card.configure(state="disabled")
+            return
+        if not self.app_package_var.get() or not self.app_package_path_entry.get().strip():
+            self.install_via_dism_card.configure(state="disabled")
+            return
+        self.install_via_dism_card.configure(state="normal")
+    
+    def _run_install_via_dism(self):
+        self.install_via_dism_card.configure(state="disabled")
+        self.update_idletasks()
+
+        installer = InstallViaDISM(
+            logger=self.logger,
+            app_translator=self.app_translator,
+            log_callback=self.events_textbox.log_to_events,
+            image_type=self.install_image_var.get(),
+            offline_image_path=self.offline_image_path_entry.get() if self.install_image_var.get() == "offline_image" else "",
+            app_package_path=self.app_package_path_entry.get(),
+            license_path=self.license_path_entry.get() if self.license_checkbox.get() else "",
+            dependencies_paths=self.dependencies_paths_entry.get() if self.dependencies_checkbox.get() else ""
+        )
+
+        self._run_operation(
+            installer.execute,
+            "pages.installer.install_via_dism",
+            on_completion=lambda: self._update_install_via_dism_state()
+        )
+    # ~ End of Install via DISM ~

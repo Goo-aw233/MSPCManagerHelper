@@ -26,7 +26,7 @@ class ComputeFilesHashes:
     def select_files(self):
         return tkinter.filedialog.askopenfilenames(
             title=self.app_translator.translate("pages.utilities.select_files_to_compute_hashes"),
-            filetypes=[("*", "*.*")]
+            filetypes=[(self.app_translator.translate("pages.common.all_files"), "*.*")]
         )
 
     def compute(self, files):

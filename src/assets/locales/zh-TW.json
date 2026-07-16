@@ -60,9 +60,17 @@
     },
     "installer": {
       "certificate_verification_failed": "下載的安裝程式數位簽章驗證失敗。",
+      "cleaned_app_package_path": "應用程式套件: {path}",
+      "cleaned_dependencies_paths_header": "依賴項:",
+      "cleaned_license_path": "授權檔案: {path}",
+      "cleaned_offline_image_path": "離線映像: {path}",
       "compute_sha256_failed": "計算下載檔案的 SHA256 時發生錯誤：\n{error}",
       "download_online_installer_failed": "下載線上安裝程式時發生錯誤：\n{error}",
       "downloading_online_installer": "正在下載線上安裝程式...",
+      "empty_app_package_path": "應用程式套件路徑為空。",
+      "install_via_dism_error": "透過 DISM 安裝時發生錯誤：\n{error}",
+      "install_via_dism_successfully": "已透過 DISM 成功安裝。",
+      "installing_via_dism": "正在透過 DISM 安裝...",
       "launch_msstore_error": "無法啟動 Microsoft Store。請從「開始」功能表中啟動 Microsoft Store。\n記錄檔位置：{log_file_path}",
       "launching_downloaded_installer": "正在啟動已下載的安裝程式...",
       "msstore_found": "Microsoft Store 已安裝，正在開啓商店頁面...",
@@ -218,6 +226,8 @@
       "view_log_file": "查看記錄檔"
     },
     "common": {
+      "all_files": "所有檔案",
+      "browse": "瀏覽...",
       "canceled_operation": "操作已被使用者取消。",
       "clear": "清除",
       "copy": "複製",
@@ -285,12 +295,26 @@
       "windows_specifications": "Windows 規格"
     },
     "installer": {
+      "app_package": "應用程式套件",
+      "app_package_path_placeholder": "選擇應用程式套件 (.AppXBundle/.MSIXBundle) 檔案...",
+      "dependencies": "依賴項",
+      "dependencies_paths_placeholder": "選擇依賴項檔案 (.AppX/.MSIX) 檔案... (Microsoft 電腦管家版本 3.14.0.0 及以上版本需要依賴項檔案)",
       "download_online_installer": "下載線上安裝程式",
+      "install_via_dism": "透過 DISM 安裝",
+      "install_via_dism_desc": "使用 DISM 命令安裝 Microsoft 電腦管家，這將為所有使用者安裝預配包。",
       "install_via_msstore": "透過 Microsoft Store 安裝",
       "install_via_msstore_desc": "透過 Microsoft Store 安裝 Microsoft 電腦管家。",
+      "license": "授權檔案",
+      "license_path_placeholder": "選擇授權檔案 (License.xml)...",
+      "offline_image_path_placeholder": "選擇離線映像目錄...",
+      "offline_install": "離線安裝",
       "online_install": "線上安裝",
       "open_msstore": "開啓 Microsoft Store",
-      "open_msstore_web": "開啓 Microsoft Store 網頁"
+      "open_msstore_web": "開啓 Microsoft Store 網頁",
+      "select_app_package_path": "選擇應用程式套件",
+      "select_dependencies_paths": "選擇依賴項檔案",
+      "select_license_path": "選擇授權檔案",
+      "select_offline_image_path": "選擇離線映像目錄"
     },
     "maintenance": {
     },
