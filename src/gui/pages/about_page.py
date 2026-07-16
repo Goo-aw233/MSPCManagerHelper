@@ -8,7 +8,7 @@ from core import (
 )
 from gui.components import AboutPageWidgets
 from handlers.private import ViewLogFile
-from handlers.shared import URLHandler
+from handlers.shared import URILauncher
 from .base_page_frame import BaseInfoPageFrame
 
 
@@ -62,7 +62,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
                 cursor="hand2"
             )
             link.pack(side="left", padx=(0, 10))
-            link.bind("<Button-1>", lambda e, u=contributor_url, n=name: URLHandler.launch_url(
+            link.bind("<Button-1>", lambda e, u=contributor_url, n=name: URILauncher.launch_url(
                 url=u,
                 contributor_url=u,
                 target_name=f"{n}'s Profile",
@@ -106,7 +106,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
                     cursor="hand2"
                 )
                 link.pack(side="left", padx=(0, 10))
-                link.bind("<Button-1>", lambda e, u=github_profile_url, n=display_name: URLHandler.launch_url(
+                link.bind("<Button-1>", lambda e, u=github_profile_url, n=display_name: URILauncher.launch_url(
                     url=u,
                     contributor_url=u,
                     target_name=f"{n}'s GitHub Profile",
@@ -131,7 +131,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
             self.app_info_group,
             title=self.app_translator.translate("pages.about.license"),
             description=AppMetadata.APP_LICENSE_URL,
-            description_command=lambda: URLHandler.launch_url(
+            description_command=lambda: URILauncher.launch_url(
                 url=AppMetadata.APP_LICENSE_URL,
                 target_name=f"License",
                 messagebox_error_message="handlers.open_license_error",
@@ -150,7 +150,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
              self.app_info_group,
              title=self.app_translator.translate("pages.about.repository"),
              description=AppMetadata.APP_GITHUB_REPOSITORY_URL,
-             description_command=lambda: URLHandler.launch_url(
+             description_command=lambda: URILauncher.launch_url(
                 url=AppMetadata.APP_GITHUB_REPOSITORY_URL,
                 target_name=f"GitHub Repository",
                 messagebox_error_message="handlers.open_github_repository_error",
@@ -287,7 +287,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
                     title=self.app_translator.translate("common.info"),
                     message=self.app_translator.translate("pages.about.get_help_message")
                 ),
-                URLHandler.launch_url(
+                URILauncher.launch_url(
                     url=AppMetadata.MICROSOFT_PC_MANAGER_URL,
                     official_website_url=AppMetadata.MICROSOFT_PC_MANAGER_URL,
                     target_name="Official Website",
@@ -309,7 +309,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
             description=self.app_translator.translate("pages.about.official_website_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.about.official_website"),
-            command=lambda: URLHandler.launch_url(
+            command=lambda: URILauncher.launch_url(
                 url=AppMetadata.MICROSOFT_PC_MANAGER_URL,
                 official_website_url=AppMetadata.MICROSOFT_PC_MANAGER_URL,
                 target_name="Official Website",

@@ -10,7 +10,6 @@ from core import (
 from handlers.shared import (
     FetchResource,
     URILauncher,
-    URLHandler,
     VerifyFileCertificate
 )
 
@@ -69,7 +68,7 @@ class InstallViaMicrosoftStore:
 
     def _open_msstore_web(self):
         url = f"https://apps.microsoft.com/detail/{self.PRODUCT_ID}"
-        URLHandler.launch_url(
+        URILauncher.launch_url(
             url=url,
             target_name="Microsoft Store (Web)",
             messagebox_error_message="modules.installer.open_msstore_web_error",

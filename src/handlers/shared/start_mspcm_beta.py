@@ -30,17 +30,17 @@ class StartMSPCMBeta:
 
         # --- EXE Path Methods ---
         def exe_with_startfile():
-            logger.info(f"Opening Microsoft PC Manager Public Beta via os.startfile with exe path: {beta_exe_path}")
+            logger.info(f"Opening Microsoft PC Manager Public Beta via os.startfile with EXE Path: {beta_exe_path}")
             os.startfile(str(beta_exe_path))
 
         def exe_with_cmd():
-            logger.info(f"Opening Microsoft PC Manager Public Beta via CMD with exe path: {beta_exe_path}")
+            logger.info(f"Opening Microsoft PC Manager Public Beta via CMD with EXE Path: {beta_exe_path}")
             subprocess.run(["cmd.exe", "/C", "start", "Microsoft PC Manager Public Beta", str(beta_exe_path)],
                            check=True, shell=False, text=True, capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
         def exe_with_windows_powershell():
-            logger.info(f"Opening Microsoft PC Manager Public Beta via Windows PowerShell with exe path: {beta_exe_path}")
+            logger.info(f"Opening Microsoft PC Manager Public Beta via Windows PowerShell with EXE Path: {beta_exe_path}")
             subprocess.run(["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{beta_exe_path}'"],
                            check=True, shell=False, text=True, capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
@@ -64,26 +64,26 @@ class StartMSPCMBeta:
             try:
                 method()
                 logger.info(
-                    f"Successfully opened the Microsoft PC Manager Public Beta via {method.__name__} (registered class).")
+                    f"Successfully opened the Microsoft PC Manager Public Beta via {method.__name__} (Registered Class).")
                 return
             except Exception as e:
                 last_error = e
                 logger.warning(
-                    f"{method.__name__} failed to Open the Microsoft PC Manager Public Beta with Registered Class: {e}")
+                    f"{method.__name__} Failed to Open the Microsoft PC Manager Public Beta with Registered Class: {e}")
                 continue
         logger.error("All registered class methods failed to open the Microsoft PC Manager Public Beta.")
 
-        # If all registered class methods fail, try the exe path methods.
+        # If all registered class methods fail, try the EXE Path methods.
         for method in methods_exe_path:
             try:
                 method()
                 logger.info(
-                    f"Successfully opened the Microsoft PC Manager Public Beta via {method.__name__} (exe path).")
+                    f"Successfully opened the Microsoft PC Manager Public Beta via {method.__name__} (EXE Path).")
                 return
             except Exception as e:
                 last_error = e
                 logger.warning(
-                    f"{method.__name__} failed to Open the Microsoft PC Manager Public Beta with EXE Path: {e}")
+                    f"{method.__name__} Failed to Open the Microsoft PC Manager Public Beta with EXE Path: {e}")
                 continue
         logger.error("All methods failed to open the Microsoft PC Manager Public Beta.")
 

@@ -5,7 +5,7 @@ from core import (
     AppSettings
 )
 from gui.components import BaseWidgets
-from handlers.shared import URLHandler
+from handlers.shared import URILauncher
 from .base_page_frame import BaseInfoPageFrame
 
 
@@ -30,7 +30,7 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.toolbox.update_app_from_github_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.toolbox.get_update"),
-            command=lambda: URLHandler.launch_url(
+            command=lambda: URILauncher.launch_url(
                 url=AppMetadata.APP_GITHUB_REPOSITORY_URL + "/releases",
                 github_releases_url=AppMetadata.APP_GITHUB_REPOSITORY_URL + "/releases",
                 target_name="GitHub Release Page",
@@ -51,7 +51,7 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.toolbox.update_app_from_onedrive_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.toolbox.get_update"),
-            command=lambda: URLHandler.launch_url(
+            command=lambda: URILauncher.launch_url(
                 url=(
                     AppMetadata.APP_UPDATE_1DRV_DIR_URL
                     if not AppSettings.is_original_links_enabled()
@@ -83,7 +83,7 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.toolbox.download_mspcm_app_package_from_azure_blob_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.toolbox.download"),
-            command=lambda: URLHandler.launch_url(
+            command=lambda: URILauncher.launch_url(
                 url="https://kaoz.uk/PCManagerOFL",
                 mspcm_app_package_azure_blob_url="https://kaoz.uk/PCManagerOFL",
                 target_name="Microsoft PC Manager Application Package Azure Blob Releases Page",
@@ -104,7 +104,7 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.toolbox.download_mspcm_app_package_from_onedrive_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.toolbox.download"),
-            command=lambda: URLHandler.launch_url(
+            command=lambda: URILauncher.launch_url(
                 url=(
                     AppMetadata.MSPCM_APP_PACKAGE_1DRV_DIR_URL
                     if not AppSettings.is_original_links_enabled()
@@ -136,7 +136,7 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.toolbox.download_webview2_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.toolbox.download"),
-            command=lambda: URLHandler.launch_url(
+            command=lambda: URILauncher.launch_url(
                 url="https://developer.microsoft.com/microsoft-edge/webview2" + AppSettings.get_support_developer_tracking_id(),
                 webview2_download_url="https://developer.microsoft.com/microsoft-edge/webview2" + AppSettings.get_support_developer_tracking_id(),
                 target_name="Microsoft Edge WebView2 Runtime Download Page",
@@ -157,7 +157,7 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.toolbox.download_windows_app_runtime_description"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.toolbox.download"),
-            command=lambda: URLHandler.launch_url(
+            command=lambda: URILauncher.launch_url(
                 url="https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads-archive" + AppSettings.get_support_developer_tracking_id(),
                 windows_app_runtime_download_url="https://learn.microsoft.com/windows/apps/windows-app-sdk/downloads-archive" + AppSettings.get_support_developer_tracking_id(),
                 target_name="Windows App Runtime Download Page",
