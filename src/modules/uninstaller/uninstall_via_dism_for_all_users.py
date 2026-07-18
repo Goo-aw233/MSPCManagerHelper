@@ -55,7 +55,7 @@ class UninstallViaDISMForAllUsers:
             return
 
         if self.image_type == "online_image":
-            self._uninstall_via_windows_powershell()
+            self._uninstall_via_powershell()
 
             self.logger.debug(f"Selected Options for Additional Cleanup: {self.selected_cleanup_options}")
             use_ownership = AppSettings.is_take_ownership_enabled()
@@ -204,7 +204,7 @@ class UninstallViaDISMForAllUsers:
                 )
             )
 
-    def _uninstall_via_windows_powershell(self):
+    def _uninstall_via_powershell(self):
         self._log(self.app_translator.translate("modules.uninstaller.uninstalling_via_windows_powershell"))
         self.logger.info("Uninstalling via Windows PowerShell")
 

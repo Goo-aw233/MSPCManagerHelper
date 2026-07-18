@@ -46,7 +46,7 @@ class UninstallViaPowerShellForAllUsers:
         return "\n".join(parts)
 
     def execute(self):
-        self._uninstall_via_windows_powershell()
+        self._uninstall_via_powershell()
 
         self.logger.debug(f"Selected Options for Additional Cleanup: {self.selected_cleanup_options}")
         use_ownership = AppSettings.is_take_ownership_enabled()
@@ -80,7 +80,7 @@ class UninstallViaPowerShellForAllUsers:
                 else:
                     self._advanced_registries()
 
-    def _uninstall_via_windows_powershell(self):
+    def _uninstall_via_powershell(self):
         self._log(self.app_translator.translate("modules.uninstaller.uninstalling_via_windows_powershell"))
         self.logger.info("Uninstalling via Windows PowerShell")
 

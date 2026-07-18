@@ -181,8 +181,8 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         uninstall_via_powershell_for_all_users_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
         self.uninstall_via_powershell_all_users_card = self._create_actions_card(
             parent=uninstall_via_powershell_for_all_users_frame,
-            title=self.app_translator.translate("pages.uninstaller.uninstall_via_powershell_all_users"),
-            description=self.app_translator.translate("pages.uninstaller.uninstall_via_powershell_all_users_desc"),
+            title=self.app_translator.translate("pages.uninstaller.uninstall_via_windows_powershell_all_users"),
+            description=self.app_translator.translate("pages.uninstaller.uninstall_via_windows_powershell_all_users_desc"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.common.execute"),
             command=self._run_uninstall_via_powershell_all_users,
@@ -298,8 +298,8 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         uninstall_via_powershell_for_current_user_frame = self._create_group_frame()
         self.uninstall_via_powershell_current_user_card = self._create_actions_card(
             parent=uninstall_via_powershell_for_current_user_frame,
-            title=self.app_translator.translate("pages.uninstaller.uninstall_via_powershell_current_user"),
-            description=self.app_translator.translate("pages.uninstaller.uninstall_via_powershell_current_user_desc"),
+            title=self.app_translator.translate("pages.uninstaller.uninstall_via_windows_powershell_current_user"),
+            description=self.app_translator.translate("pages.uninstaller.uninstall_via_windows_powershell_current_user_desc"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.common.execute"),
             command=self._run_uninstall_via_powershell_current_user,
@@ -683,7 +683,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
 
         self._run_operation(
             uninstaller.execute,
-            "pages.uninstaller.uninstall_via_powershell_all_users",
+            "pages.uninstaller.uninstall_via_windows_powershell_all_users",
             on_completion=lambda: self.uninstall_via_powershell_all_users_card.configure(
                 state=self._update_uninstall_via_powershell_all_users_state()
             )
@@ -756,7 +756,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
 
         self._run_operation(
             uninstaller.execute,
-            "pages.uninstaller.uninstall_via_powershell_current_user",
+            "pages.uninstaller.uninstall_via_windows_powershell_current_user",
             on_completion=lambda: self.uninstall_via_powershell_current_user_card.configure(
                 state=self._update_uninstall_via_powershell_current_user_state()
             )

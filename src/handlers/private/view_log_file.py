@@ -27,7 +27,7 @@ class ViewLogFile:
                            check=True, shell=False, text=True, capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
-        def open_with_windows_powershell():
+        def open_with_powershell():
             logger.info(f"Opening log file {log_file_path} via Windows PowerShell.")
             subprocess.run(["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{log_file_path}'"],
                            check=True, shell=False, text=True, capture_output=True,
@@ -58,13 +58,13 @@ class ViewLogFile:
             methods = [
                 open_with_startfile,
                 open_with_cmd,
-                open_with_windows_powershell
+                open_with_powershell
             ]
         else:
             methods = [
                 open_with_startfile,
                 open_with_cmd,
-                open_with_windows_powershell,
+                open_with_powershell,
                 open_with_explorer
             ]
 

@@ -50,7 +50,7 @@ class SwitchRegions:
             subprocess.run(["cmd.exe", "/C", "start", "Region Settings", f"{region_settings_uri}"], check=True,
                            shell=False, text=True, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
 
-        def open_with_windows_powershell():
+        def open_with_powershell():
             self.logger.info("Opening Language & Region settings via Windows PowerShell.")
             subprocess.run(["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{region_settings_uri}'"],
                            check=True, shell=False, text=True, capture_output=True,
@@ -59,7 +59,7 @@ class SwitchRegions:
         methods = [
             open_with_startfile,
             open_with_cmd,
-            open_with_windows_powershell
+            open_with_powershell
         ]
 
         last_error = None

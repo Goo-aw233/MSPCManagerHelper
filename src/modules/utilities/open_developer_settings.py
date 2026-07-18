@@ -17,7 +17,7 @@ class OpenDeveloperSettings:
             subprocess.run(["cmd.exe", "/C", "start", "Developer Settings", f"{developer_settings_uri}"], check=True,
                            shell=False, text=True, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
 
-        def open_with_windows_powershell():
+        def open_with_powershell():
             logger.info("Opening Developer Settings page via Windows PowerShell.")
             subprocess.run(["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{developer_settings_uri}'"],
                            check=True, text=True, capture_output=True, shell=False,
@@ -26,7 +26,7 @@ class OpenDeveloperSettings:
         methods = [
             open_with_startfile,
             open_with_cmd,
-            open_with_windows_powershell
+            open_with_powershell
         ]
 
         last_error = None

@@ -18,7 +18,7 @@ class StartMSPCM:
                            check=True, shell=False, text=True, capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
-        def open_with_windows_powershell():
+        def open_with_powershell():
             logger.info("Opening Microsoft PC Manager via Windows PowerShell.")
             subprocess.run(["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{registered_class}'"],
                            check=True, shell=False, text=True, capture_output=True,
@@ -27,7 +27,7 @@ class StartMSPCM:
         methods = [
             open_with_startfile,
             open_with_cmd,
-            open_with_windows_powershell
+            open_with_powershell
         ]
 
         last_error = None
