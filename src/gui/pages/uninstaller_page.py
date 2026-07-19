@@ -80,7 +80,8 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
         self.dism_radiobutton_offline_image.grid(row=0, column=1, sticky="w", padx=10, pady=5)
         CTkToolTip(self.dism_radiobutton_offline_image,
-                   self.app_translator.translate("pages.common.offline_image_description"), font=(self.font_family, 12))
+                   self.app_translator.translate("pages.common.offline_image_tooltip"),
+                   font=(self.font_family, 12))
 
         # Basic Cleanup
         self.dism_checkbox_basic_cleanup = customtkinter.CTkCheckBox(

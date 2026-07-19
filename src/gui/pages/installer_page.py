@@ -12,8 +12,9 @@ from gui.components import (
     BaseWidgets
 )
 from modules.installer import (
+    InstallViaDISM,
     InstallViaMicrosoftStore,
-    InstallViaDISM
+    InstallViaPowerShellForCurrentUser
 )
 from .base_page_frame import BaseFuncPageFrame
 
@@ -146,7 +147,8 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
         self.offline_image_radiobutton.pack(side="left")
         CTkToolTip(self.offline_image_radiobutton,
-                   self.app_translator.translate("pages.common.offline_image_description"), font=(self.font_family, 12))
+                   self.app_translator.translate("pages.common.offline_image_tooltip"),
+                   font=(self.font_family, 12))
         
         # Offline Image Path Entry
         self.offline_image_path_entry = customtkinter.CTkEntry(
@@ -259,6 +261,108 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._toggle_license_state()
         self._toggle_dependencies_state()
         self._update_install_via_dism_state()
+
+        # --- Install via Windows PowerShell for Current User ---
+        install_via_powershell_current_user_frame = self._create_group_frame()
+        install_via_powershell_current_user_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
+        self.install_via_powershell_current_user_card = self._create_actions_card(
+            parent=install_via_powershell_current_user_frame,
+            title=self.app_translator.translate("pages.installer.install_via_powershell_current_user"),
+            description=self.app_translator.translate("pages.installer.install_via_powershell_current_user_desc"),
+            widget_constructor=customtkinter.CTkButton,
+            text=self.app_translator.translate("pages.common.execute"),
+            command=self._run_install_via_powershell,
+            state="normal"
+        )
+
+        self._create_separator(install_via_powershell_current_user_frame)
+
+        # - Install via Windows PowerShell Options -
+        self.install_via_powershell_current_user_options_frame = customtkinter.CTkScrollableFrame(
+            install_via_powershell_current_user_frame,
+            orientation="horizontal",
+            fg_color="transparent",
+            height=112
+        )
+        self.install_via_powershell_current_user_options_frame.pack(fill="x", padx=10, pady=5)
+
+        # Force Quit
+        self.powershell_force_quit_var = tkinter.BooleanVar(value=False)
+        self.powershell_force_quit_checkbox = customtkinter.CTkCheckBox(
+            self.install_via_powershell_current_user_options_frame,
+            text=self.app_translator.translate("pages.installer.force_quit"),
+            variable=self.powershell_force_quit_var,
+            font=customtkinter.CTkFont(family=self.font_family, weight="bold")
+        )
+        self.powershell_force_quit_checkbox.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+        CTkToolTip(self.powershell_force_quit_checkbox,
+                   self.app_translator.translate("pages.installer.force_quit_tooltip"),
+                   font=(self.font_family, 12))
+
+        # Application Package
+        self.powershell_app_package_var = tkinter.BooleanVar(value=True)
+        self.powershell_app_package_checkbox = customtkinter.CTkCheckBox(
+            self.install_via_powershell_current_user_options_frame,
+            text=self.app_translator.translate("pages.installer.app_package"),
+            variable=self.powershell_app_package_var,
+            font=customtkinter.CTkFont(family=self.font_family, weight="bold"),
+            command=self._toggle_powershell_app_package_state
+        )
+        self.powershell_app_package_checkbox.grid(row=1, column=0, sticky="w", padx=(10, 0), pady=5)
+
+        # Application Package Path Entry
+        self.powershell_app_package_path_entry = customtkinter.CTkEntry(
+            self.install_via_powershell_current_user_options_frame,
+            placeholder_text=self.app_translator.translate("pages.installer.app_package_path_placeholder"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            width=650
+        )
+        self.powershell_app_package_path_entry.grid(row=1, column=1, sticky="ew", padx=(0, 10), pady=5, columnspan=2)
+        self.powershell_app_package_path_entry.bind(
+            "<KeyRelease>", lambda _: self._update_install_via_powershell_state()
+        )
+
+        # Application Package Path Select Button
+        self.powershell_app_package_path_select_button = customtkinter.CTkButton(
+            self.install_via_powershell_current_user_options_frame,
+            text=self.app_translator.translate("pages.common.browse"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            command=self._select_powershell_app_package_path
+        )
+        self.powershell_app_package_path_select_button.grid(row=1, column=3, sticky="w", padx=(0, 10), pady=5)
+
+        # Dependencies
+        self.powershell_dependencies_checkbox = customtkinter.CTkCheckBox(
+            self.install_via_powershell_current_user_options_frame,
+            text=self.app_translator.translate("pages.installer.dependencies"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            command=self._toggle_powershell_dependencies_state
+        )
+        self.powershell_dependencies_checkbox.grid(row=2, column=0, sticky="w", padx=(10, 0), pady=5)
+
+        # Dependencies Paths Entry
+        self.powershell_dependencies_paths_entry = customtkinter.CTkEntry(
+            self.install_via_powershell_current_user_options_frame,
+            placeholder_text=self.app_translator.translate("pages.installer.dependencies_paths_placeholder"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            width=650
+        )
+        self.powershell_dependencies_paths_entry.grid(row=2, column=1, sticky="ew", padx=(0, 10), pady=5, columnspan=2)
+
+        # Dependencies Paths Select Button
+        self.powershell_dependencies_paths_select_button = customtkinter.CTkButton(
+            self.install_via_powershell_current_user_options_frame,
+            text=self.app_translator.translate("pages.common.browse"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            command=self._select_powershell_dependencies_paths,
+            state="disabled"
+        )
+        self.powershell_dependencies_paths_select_button.grid(row=2, column=3, sticky="w", padx=(0, 10), pady=5)
+
+        # Apply Initial Toggle States
+        self._toggle_powershell_app_package_state()
+        self._toggle_powershell_dependencies_state()
+        self._update_install_via_powershell_state()
         # === End of Offline Install Section ===
 
 
@@ -411,3 +515,70 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             on_completion=lambda: self._update_install_via_dism_state()
         )
     # ~ End of Install via DISM ~
+
+    # ~ Install via Windows PowerShell for Current User ~
+    def _toggle_powershell_app_package_state(self):
+        enabled = self.powershell_app_package_var.get()
+        self._set_entry_group_state(enabled, self.powershell_app_package_path_entry,
+                                     self.powershell_app_package_path_select_button)
+        self._update_install_via_powershell_state()
+
+    def _toggle_powershell_dependencies_state(self):
+        enabled = self.powershell_dependencies_checkbox.get()
+        self._set_entry_group_state(enabled, self.powershell_dependencies_paths_entry,
+                                     self.powershell_dependencies_paths_select_button)
+
+    def _select_powershell_app_package_path(self):
+        file_path = tkinter.filedialog.askopenfilename(
+            title=self.app_translator.translate("pages.installer.select_app_package_path"),
+            filetypes=[
+                (self.app_translator.translate("pages.installer.app_package"),
+                 "*.appx;*.appxbundle;*.msix;*.msixbundle"),
+                (self.app_translator.translate("pages.common.all_files"), "*.*")
+            ]
+        )
+        if file_path:
+            self._set_entry_text(self.powershell_app_package_path_entry, file_path)
+        self._update_install_via_powershell_state()
+
+    def _select_powershell_dependencies_paths(self):
+        file_paths = tkinter.filedialog.askopenfilenames(
+            title=self.app_translator.translate("pages.installer.select_dependencies_paths"),
+            filetypes=[
+                (self.app_translator.translate("pages.installer.dependencies"), "*.appx;*.msix"),
+                (self.app_translator.translate("pages.common.all_files"), "*.*")
+            ]
+        )
+        if file_paths:
+            self._set_entry_text(self.powershell_dependencies_paths_entry, " | ".join(file_paths))
+
+    def _update_install_via_powershell_state(self):
+        if not AdvancedStartup.is_administrator():
+            self.install_via_powershell_current_user_card.configure(state="disabled")
+            return
+        if (not self.powershell_app_package_var.get()
+                or not self.powershell_app_package_path_entry.get().strip()):
+            self.install_via_powershell_current_user_card.configure(state="disabled")
+            return
+        self.install_via_powershell_current_user_card.configure(state="normal")
+
+    def _run_install_via_powershell(self):
+        self.install_via_powershell_current_user_card.configure(state="disabled")
+        self.update_idletasks()
+
+        installer = InstallViaPowerShellForCurrentUser(
+            logger=self.logger,
+            app_translator=self.app_translator,
+            log_callback=self.events_textbox.log_to_events,
+            force_quit=self.powershell_force_quit_var.get(),
+            app_package_path=self.powershell_app_package_path_entry.get(),
+            dependencies_paths=self.powershell_dependencies_paths_entry.get()
+            if self.powershell_dependencies_checkbox.get() else ""
+        )
+
+        self._run_operation(
+            installer.execute,
+            "pages.installer.install_via_powershell_current_user",
+            on_completion=lambda: self._update_install_via_powershell_state()
+        )
+    # ~ End of Install via Windows PowerShell for Current User ~
