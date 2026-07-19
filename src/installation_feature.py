@@ -251,7 +251,6 @@ class InstallationFeature:
         else:
             command = [
                 "powershell.exe", "-NoProfile", "-Command",
-                "-Command",
                 "Get-AppxPackage *Microsoft.MicrosoftPCManager* | Foreach {Add-AppxPackage -DisableDevelopmentMode -Register \"$($_.InstallLocation)\\AppxManifest.xml\"}"
             ]
 
