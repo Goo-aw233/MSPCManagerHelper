@@ -14,7 +14,8 @@ from gui.components import (
 from modules.installer import (
     InstallViaDISM,
     InstallViaMicrosoftStore,
-    InstallViaPowerShellForCurrentUser
+    InstallViaPowerShellForCurrentUser,
+    ReinstallViaPowerShell
 )
 from .base_page_frame import BaseFuncPageFrame
 
@@ -363,6 +364,96 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._toggle_powershell_app_package_state()
         self._toggle_powershell_dependencies_state()
         self._update_install_via_powershell_state()
+
+        # --- Reinstall via Windows PowerShell ---
+        reinstall_via_powershell_frame = self._create_group_frame()
+        reinstall_via_powershell_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
+        self.reinstall_via_powershell_card = self._create_actions_card(
+            parent=reinstall_via_powershell_frame,
+            title=self.app_translator.translate("pages.installer.reinstall_via_powershell"),
+            description=self.app_translator.translate("pages.installer.reinstall_via_powershell_desc"),
+            widget_constructor=customtkinter.CTkButton,
+            text=self.app_translator.translate("pages.common.execute"),
+            command=self._run_reinstall_via_powershell,
+            state="normal"
+        )
+
+        self._create_separator(reinstall_via_powershell_frame)
+
+        # - Reinstall via Windows PowerShell Options -
+        self.reinstall_via_powershell_options_frame = customtkinter.CTkScrollableFrame(
+            reinstall_via_powershell_frame,
+            orientation="horizontal",
+            fg_color="transparent",
+            height=42
+        )
+        self.reinstall_via_powershell_options_frame.pack(fill="x", padx=10, pady=5)
+
+        self.reinstall_user_scope_var = tkinter.StringVar(value="current_user")
+
+        # All Users
+        self.reinstall_all_users_radiobutton = customtkinter.CTkRadioButton(
+            self.reinstall_via_powershell_options_frame,
+            text=self.app_translator.translate("pages.installer.all_users"),
+            variable=self.reinstall_user_scope_var,
+            value="all_users",
+            command=self._toggle_reinstall_user_scope_state,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.reinstall_all_users_radiobutton.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+
+        # Current User
+        self.reinstall_current_user_radiobutton = customtkinter.CTkRadioButton(
+            self.reinstall_via_powershell_options_frame,
+            text=self.app_translator.translate("pages.installer.current_user"),
+            variable=self.reinstall_user_scope_var,
+            value="current_user",
+            command=self._toggle_reinstall_user_scope_state,
+            font=customtkinter.CTkFont(family=self.font_family, weight="bold")
+        )
+        self.reinstall_current_user_radiobutton.grid(row=0, column=1, sticky="w", padx=10, pady=5)
+
+        self.reinstall_action_var = tkinter.StringVar(value="reset")
+
+        # Reinstall
+        self.reinstall_reinstall_radiobutton = customtkinter.CTkRadioButton(
+            self.reinstall_via_powershell_options_frame,
+            text=self.app_translator.translate("pages.installer.reinstall"),
+            variable=self.reinstall_action_var,
+            value="reinstall",
+            command=self._toggle_reinstall_force_quit_state,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.reinstall_reinstall_radiobutton.grid(row=0, column=2, sticky="w", padx=10, pady=5)
+
+        # Force Quit
+        self.reinstall_force_quit_var = tkinter.BooleanVar(value=False)
+        self.reinstall_force_quit_checkbox = customtkinter.CTkCheckBox(
+            self.reinstall_via_powershell_options_frame,
+            text=self.app_translator.translate("pages.installer.force_quit"),
+            variable=self.reinstall_force_quit_var,
+            font=customtkinter.CTkFont(family=self.font_family, weight="bold")
+        )
+        self.reinstall_force_quit_checkbox.grid(row=0, column=3, sticky="w", padx=10, pady=5)
+        CTkToolTip(self.reinstall_force_quit_checkbox,
+                   self.app_translator.translate("pages.installer.force_quit_tooltip"),
+                   font=(self.font_family, 12))
+
+        # Reset
+        self.reinstall_reset_radiobutton = customtkinter.CTkRadioButton(
+            self.reinstall_via_powershell_options_frame,
+            text=self.app_translator.translate("pages.installer.reset"),
+            variable=self.reinstall_action_var,
+            value="reset",
+            command=self._toggle_reinstall_force_quit_state,
+            font=customtkinter.CTkFont(family=self.font_family, weight="bold")
+        )
+        self.reinstall_reset_radiobutton.grid(row=0, column=4, sticky="w", padx=10, pady=5)
+
+        # Apply Initial Toggle States
+        self._toggle_reinstall_user_scope_state()
+        self._toggle_reinstall_force_quit_state()
+        self._update_reinstall_via_powershell_state()
         # === End of Offline Install Section ===
 
 
@@ -556,6 +647,12 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         if not AdvancedStartup.is_administrator():
             self.install_via_powershell_current_user_card.configure(state="disabled")
             return
+        if not OptionalChecks.check_windows_utilities_availability(target_utility=["powershell.exe"],
+                                                                   suppress_complete_log=True):
+            self.logger.warning(
+                "powershell.exe is not available. Disabling 'Install via Windows PowerShell (Current User)' option.")
+            self.install_via_powershell_current_user_card.configure(state="disabled")
+            return
         if (not self.powershell_app_package_var.get()
                 or not self.powershell_app_package_path_entry.get().strip()):
             self.install_via_powershell_current_user_card.configure(state="disabled")
@@ -582,3 +679,48 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             on_completion=lambda: self._update_install_via_powershell_state()
         )
     # ~ End of Install via Windows PowerShell for Current User ~
+
+    # ~ Reinstall via Windows PowerShell ~
+    def _toggle_reinstall_user_scope_state(self):
+        if self.reinstall_user_scope_var.get() == "all_users":
+            self.reinstall_reset_radiobutton.configure(state="disabled")
+            self.reinstall_action_var.set("reinstall")
+        else:
+            self.reinstall_reset_radiobutton.configure(state="normal")
+        self._toggle_reinstall_force_quit_state()
+
+    def _toggle_reinstall_force_quit_state(self):
+        if self.reinstall_action_var.get() == "reinstall":
+            self.reinstall_force_quit_checkbox.configure(state="normal")
+        else:
+            self.reinstall_force_quit_var.set(False)
+            self.reinstall_force_quit_checkbox.configure(state="disabled")
+
+    def _update_reinstall_via_powershell_state(self):
+        if not OptionalChecks.check_windows_utilities_availability(target_utility=["powershell.exe"],
+                                                                   suppress_complete_log=True):
+            self.logger.warning(
+                "powershell.exe is not available. Disabling 'Reinstall via Windows PowerShell' option.")
+            self.reinstall_via_powershell_card.configure(state="disabled")
+            return
+        self.reinstall_via_powershell_card.configure(state="normal")
+
+    def _run_reinstall_via_powershell(self):
+        self.reinstall_via_powershell_card.configure(state="disabled")
+        self.update_idletasks()
+
+        installer = ReinstallViaPowerShell(
+            logger=self.logger,
+            app_translator=self.app_translator,
+            log_callback=self.events_textbox.log_to_events,
+            action=self.reinstall_action_var.get(),
+            user_scope=self.reinstall_user_scope_var.get(),
+            force_quit=self.reinstall_force_quit_var.get()
+        )
+
+        self._run_operation(
+            installer.execute,
+            "pages.installer.reinstall_via_powershell",
+            on_completion=lambda: self.reinstall_via_powershell_card.configure(state="normal")
+        )
+    # ~ End of Reinstall via Windows PowerShell ~

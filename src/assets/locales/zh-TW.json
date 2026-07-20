@@ -80,6 +80,12 @@
       "msstore_not_found": "未找到已安裝的 Microsoft Store，正在開啓網頁...",
       "open_msstore_web_error": "無法開啓 Microsoft Store 網頁。請從瀏覽器訪問：{msstore_web_url}。\n記錄檔位置：{log_file_path}",
       "opening_msstore_web": "正在開啓 Microsoft Store 網頁...",
+      "reinstall_via_windows_powershell_error": "透過 Windows PowerShell 重新安裝時發生錯誤：\n{error}",
+      "reinstall_via_windows_powershell_successfully": "已透過 Windows PowerShell 成功重新安裝。",
+      "reinstalling_via_windows_powershell": "正在透過 Windows PowerShell 重新安裝...",
+      "reset_via_windows_powershell_error": "透過 Windows PowerShell 重設時發生錯誤：\n{error}",
+      "reset_via_windows_powershell_successfully": "已透過 Windows PowerShell 成功重設。",
+      "resetting_via_windows_powershell": "正在透過 Windows PowerShell 重設...",
       "verifying_downloaded_file": "正在驗證下載檔案的數位簽章..."
     },
     "maintenance": {
@@ -298,8 +304,10 @@
       "windows_specifications": "Windows 規格"
     },
     "installer": {
+      "all_users": "所有使用者",
       "app_package": "應用程式套件",
       "app_package_path_placeholder": "選擇應用程式套件檔案 (.AppXBundle/.MSIXBundle)",
+      "current_user": "目前使用者",
       "dependencies": "依賴項",
       "dependencies_paths_placeholder": "選擇依賴項檔案 (.AppX/.MSIX) (Microsoft 電腦管家 v3.14.0.0 及以上版本需要依賴項檔案)",
       "download_online_installer": "下載線上安裝程式",
@@ -318,6 +326,10 @@
       "online_install": "線上安裝",
       "open_msstore": "開啓 Microsoft Store",
       "open_msstore_web": "開啓 Microsoft Store 網頁",
+      "reinstall": "重新安裝",
+      "reinstall_via_powershell": "透過 Windows PowerShell 重新安裝",
+      "reinstall_via_powershell_desc": "使用 Windows PowerShell 命令重新安裝或重設 Microsoft 電腦管家。",
+      "reset": "重設",
       "select_app_package_path": "選擇應用程式套件",
       "select_dependencies_paths": "選擇依賴項檔案",
       "select_license_path": "選擇授權檔案",

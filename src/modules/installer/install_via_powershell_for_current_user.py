@@ -56,17 +56,17 @@ class InstallViaPowerShellForCurrentUser:
             return
 
         # Build Windows PowerShell Command
-        ps_command = f"Add-AppxPackage -Path '{app_package_path}'"
+        powershell_command = f"Add-AppxPackage -Path '{app_package_path}'"
 
         # Dependencies
         dependencies_paths = OrganizeFilePaths.clean_paths(self.dependencies_paths)
         if dependencies_paths:
             dependency_args = ",".join(f"'{p}'" for p in dependencies_paths)
-            ps_command += f" -DependencyPath {dependency_args}"
+            powershell_command += f" -DependencyPath {dependency_args}"
 
         # Force Quit
         if self.force_quit:
-            ps_command += " -ForceApplicationShutdown"
+            powershell_command += " -ForceApplicationShutdown"
 
         # Build Full Command
         command = [
@@ -74,7 +74,7 @@ class InstallViaPowerShellForCurrentUser:
             "-NoProfile",
             "-NonInteractive",
             "-Command",
-            ps_command
+            powershell_command
         ]
 
         # Show Cleaned Paths

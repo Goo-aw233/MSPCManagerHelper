@@ -80,6 +80,12 @@
       "msstore_not_found": "未找到已安装的 Microsoft Store，正在打开网页...",
       "open_msstore_web_error": "无法打开 Microsoft Store 网页。请从浏览器访问：{msstore_web_url}。\n日志文件位置：{log_file_path}",
       "opening_msstore_web": "正在打开 Microsoft Store 网页...",
+      "reinstall_via_windows_powershell_error": "通过 Windows PowerShell 重新安装时发生错误：\n{error}",
+      "reinstall_via_windows_powershell_successfully": "已通过 Windows PowerShell 成功重新安装。",
+      "reinstalling_via_windows_powershell": "正在通过 Windows PowerShell 重新安装...",
+      "reset_via_windows_powershell_error": "通过 Windows PowerShell 重置时发生错误：\n{error}",
+      "reset_via_windows_powershell_successfully": "已通过 Windows PowerShell 成功重置。",
+      "resetting_via_windows_powershell": "正在通过 Windows PowerShell 重置...",
       "verifying_downloaded_file": "正在验证下载文件的数字签名..."
     },
     "maintenance": {
@@ -298,8 +304,10 @@
       "windows_specifications": "Windows 规格"
     },
     "installer": {
+      "all_users": "所有用户",
       "app_package": "应用程序包",
       "app_package_path_placeholder": "选择应用程序包文件 (.AppXBundle/.MSIXBundle)",
+      "current_user": "当前用户",
       "dependencies": "依赖项",
       "dependencies_paths_placeholder": "选择依赖项文件 (.AppX/.MSIX) (微软电脑管家 v3.14.0.0 及以上版本需要依赖项文件)",
       "download_online_installer": "下载在线安装程序",
@@ -318,6 +326,10 @@
       "online_install": "在线安装",
       "open_msstore": "打开 Microsoft Store",
       "open_msstore_web": "打开 Microsoft Store 网页",
+      "reinstall": "重新安装",
+      "reinstall_via_powershell": "通过 Windows PowerShell 重新安装",
+      "reinstall_via_powershell_desc": "使用 Windows PowerShell 命令重新安装或重置微软电脑管家。",
+      "reset": "重置",
       "select_app_package_path": "选择应用程序包",
       "select_dependencies_paths": "选择依赖项文件",
       "select_license_path": "选择许可证文件",

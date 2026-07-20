@@ -4,7 +4,6 @@ from handlers.shared.organize_file_paths import OrganizeFilePaths
 
 
 class InstallViaDISM:
-
     def __init__(self, logger, app_translator, log_callback, image_type="online_image",
                  offline_image_path="", app_package_path="", license_path="", dependencies_paths=""):
         self.logger = logger

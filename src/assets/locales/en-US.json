@@ -79,6 +79,12 @@
       "msstore_not_found": "Microsoft Store is not installed, opening the webpage...",
       "open_msstore_web_error": "Unable to open Microsoft Store webpage. Please visit {msstore_web_url} in your browser.\nLog File Location: {log_file_path}",
       "opening_msstore_web": "Opening Microsoft Store webpage...",
+      "reinstall_via_windows_powershell_error": "An Error Occurred While Reinstalling via Windows PowerShell:\n{error}",
+      "reinstall_via_windows_powershell_successfully": "Reinstalled via Windows PowerShell successfully.",
+      "reinstalling_via_windows_powershell": "Reinstalling via Windows PowerShell...",
+      "reset_via_windows_powershell_error": "An Error Occurred While Resetting via Windows PowerShell:\n{error}",
+      "reset_via_windows_powershell_successfully": "Reset via Windows PowerShell successfully.",
+      "resetting_via_windows_powershell": "Resetting via Windows PowerShell...",
       "verifying_downloaded_file": "Verifying digital signature of the downloaded file..."
     },
     "maintenance": {
@@ -297,8 +303,10 @@
       "windows_specifications": "Windows Specifications"
     },
     "installer": {
+      "all_users": "All Users",
       "app_package": "Application Package",
       "app_package_path_placeholder": "Select Application Package File (.AppXBundle/.MSIXBundle)",
+      "current_user": "Current User",
       "dependencies": "Dependencies",
       "dependencies_paths_placeholder": "Select Dependency Files (.AppX/.MSIX) (Microsoft PC Manager v3.14.0.0 and Above Require Dependency)",
       "download_online_installer": "Download Online Installer",
@@ -317,6 +325,10 @@
       "online_install": "Online Install",
       "open_msstore": "Open Microsoft Store",
       "open_msstore_web": "Open Microsoft Store Webpage",
+      "reinstall": "Reinstall",
+      "reinstall_via_powershell": "Reinstall via Windows PowerShell",
+      "reinstall_via_powershell_desc": "Reinstall or reset Microsoft PC Manager using Windows PowerShell commands.",
+      "reset": "Reset",
       "select_app_package_path": "Select Application Package",
       "select_dependencies_paths": "Select Dependency Files",
       "select_license_path": "Select License File",
