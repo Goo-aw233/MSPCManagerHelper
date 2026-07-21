@@ -11,17 +11,23 @@ from pathlib import Path
 
 import pefile
 
-from core.advanced_startup import AdvancedStartup
 from core.app_logger import AppLogger
 
 
 class PrerequisiteChecks:
     app_translator = None
+    _suppressed = False
+
+    @staticmethod
+    def set_suppressed(value):
+        PrerequisiteChecks._suppressed = value
 
     @staticmethod
     def check_admin_approval_mode():
+        if PrerequisiteChecks._suppressed:
+            return False
         try:
-            # Check the Windows current build number.
+            # Check Windows Current Build Number
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
                                 r"SOFTWARE\Microsoft\Windows NT\CurrentVersion") as version_key:
                 current_build_number = int(winreg.QueryValueEx(version_key, "CurrentBuildNumber")[0])
@@ -29,14 +35,14 @@ class PrerequisiteChecks:
                 if current_build_number < 26100:
                     return False
 
-            # Check the Administrator Protection status.
+            # Check Administrator Protection Status
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
                                 r"SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System") as policy_key:
                 admin_approval_mode = int(winreg.QueryValueEx(policy_key, "TypeOfAdminApprovalMode")[0])
-                # Administrator Protection is enabled.
+                # Enabled
                 if admin_approval_mode == 2:
                     return True
-                # Administrator Protection is disabled.
+                # Disabled
                 else:
                     return False
         except (FileNotFoundError, OSError, ValueError):
@@ -44,6 +50,8 @@ class PrerequisiteChecks:
 
     @staticmethod
     def check_if_long_paths_enabled():
+        if PrerequisiteChecks._suppressed:
+            return True
         try:
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
                                 r"SYSTEM\CurrentControlSet\Control\FileSystem") as key:
@@ -59,6 +67,8 @@ class PrerequisiteChecks:
 
     @staticmethod
     def check_if_windows_nt():
+        if PrerequisiteChecks._suppressed:
+            return True
         check_uname = [
             os.name == "nt",
             platform.system() == "Windows",
@@ -84,14 +94,14 @@ class PrerequisiteChecks:
     @staticmethod
     def check_windows_minimum_requirements():
         try:
-            # Check if the Windows meets the Microsoft PC Manager minimum requirements.
+            # Check if Windows meets Microsoft PC Manager Minimum Requirements
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
                                 r"SOFTWARE\Microsoft\Windows NT\CurrentVersion") as key:
                 current_build_number = winreg.QueryValueEx(key, "CurrentBuildNumber")[0]
-                # Meet the requirements.
+                # Meet Requirements
                 if int(current_build_number) >= 19042:
                     return True
-                # Not meet the requirements.
+                # Does Not Meet Requirements
                 else:
                     return False
         except (FileNotFoundError, ValueError, OSError):
@@ -112,8 +122,10 @@ class PrerequisiteChecks:
         if PrerequisiteChecks.check_windows_server_levels(check_type="is_windows_server"):
             return True # Windows Server
         """
+        if PrerequisiteChecks._suppressed:
+            return False
         try:
-            # Check if the InstallationType is Server or Server Core.
+            # Check if InstallationType is Server or Server Core
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
                                 r"SOFTWARE\Microsoft\Windows NT\CurrentVersion") as installation_type_key:
                 installation_type = winreg.QueryValueEx(installation_type_key, "InstallationType")[0]
@@ -121,14 +133,15 @@ class PrerequisiteChecks:
                 if check_type == "is_windows_server":
                     return "Server" in installation_type
 
-                # An error will be reported if it is Server Core.
+                # Server Core
                 if "Server Core" in installation_type:
                     return True
-                # Skip if it is not Server.
+                # Not Server
                 if installation_type != "Server":
                     return False
 
-            # Check if ClientExperienceEnabled exists. (Secondary confirmation if Installation Type is Desktop Experience.)
+            # Check if ClientExperienceEnabled Exists
+            # (Secondary Confirmation if Installation Type is Desktop Experience)
             try:
                 with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,
                                     r"SOFTWARE\Microsoft\Windows NT\CurrentVersion\Server") as client_experience_enabled_key:
@@ -156,7 +169,6 @@ class PrerequisiteChecks:
                     if lcu_ver:
                         return f"Microsoft Windows {display_version} {lcu_ver} {edition_id}\n{build_lab_ex}"
                 except OSError:
-                    # LCUVer not exists, reading other version information from the registry.
                     pass
                 """
 
@@ -165,14 +177,15 @@ class PrerequisiteChecks:
                 build_number = winreg.QueryValueEx(key, "CurrentBuildNumber")[0]
                 ubr = winreg.QueryValueEx(key, "UBR")[0]
 
-                # Get Windows Feature Experience Pack version.
+                # Get Windows Feature Experience Pack Version
                 windows_feature_experience_pack = None
                 try:
                     manifest_path = Path(os.getenv(
                                              "SystemRoot", r"C:\Windows")) / "SystemApps" / "MicrosoftWindows.Client.CBS_cw5n1h2txyewy" / "appxmanifest.xml"
                     with open(manifest_path, "r", encoding="utf-8") as f:
                         content = f.read()
-                    # Use a regular expression to find the format ` Version="..." `, ensuring there are spaces before and after.
+                    # Use a regular expression to find the format ` Version="..." `,
+                    # ensuring there are spaces before and after.
                     match = re.search(r' Version="([^"]*)" ', content)
                     if match:
                         windows_feature_experience_pack = match.group(1)
@@ -187,7 +200,12 @@ class PrerequisiteChecks:
             return None
 
 class OptionalChecks:
+    _suppressed = False
     logger = AppLogger.get_logger()
+
+    @staticmethod
+    def set_suppressed(value):
+        OptionalChecks._suppressed = value
 
     DEFAULT_UTILITIES = [
         "cmd.exe", "Dism.exe", "powershell.exe", "reg.exe",
@@ -200,8 +218,10 @@ class OptionalChecks:
         SPI_GETSCREENREADER:
         https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-systemparametersinfow
         """
+        if OptionalChecks._suppressed:
+            return False
         try:
-            # Use system accessibility state.
+            # Use System Accessibility State
             screen_reader_running = wintypes.BOOL()
             success = ctypes.windll.user32.SystemParametersInfoW(
                 0x0046,
@@ -257,15 +277,13 @@ class OptionalChecks:
 
     @staticmethod
     def check_windows_utilities_availability(target_utility=None, suppress_complete_log=False):
-        # Bypass Checks If Specified
-        if hasattr(AdvancedStartup, "is_bypass_checks") and AdvancedStartup.is_bypass_checks():
-            OptionalChecks.logger.info("Bypass checks enabled, skipping utilities availability check.")
+        if OptionalChecks._suppressed:
             return True
 
-        # Define the list of utilities to check.
+        # List of Utilities to Check
         if target_utility:
             if isinstance(target_utility, str):
-                # Supports separating with commas or spaces.
+                # Supports Separating with Commas or Spaces
                 utilities = [u.strip() for u in re.split(r"[,\s]+", target_utility) if u.strip()]
             elif isinstance(target_utility, (list, tuple)):
                 utilities = list(target_utility)
@@ -300,7 +318,7 @@ class OptionalChecks:
             return False
 
         # Check Availability
-        # Ignored not found utilities.
+        # Ignored Not Found Utilities
         for utility, path in found_utilities.items():
             try:
                 is_text = utility not in {"sfc.exe"}

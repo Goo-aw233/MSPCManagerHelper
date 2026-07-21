@@ -70,11 +70,13 @@ class MainWindow(customtkinter.CTk):
         self.logger.info("========================= Initializing Base GUI =========================")
         self._set_language()
         self._configure_window()
-        if AdvancedStartup.is_bypass_checks():
+        bypass_checks = AdvancedStartup.is_bypass_checks()
+        PrerequisiteChecks.set_suppressed(bypass_checks)
+        OptionalChecks.set_suppressed(bypass_checks)
+        if bypass_checks:
             self.logger.info("Startup system checks has been bypassed.")
-        else:
-            self._internal_prerequisite_system_checks()
-            self._internal_optional_system_checks()
+        self._internal_prerequisite_system_checks()
+        self._internal_optional_system_checks()
         self._configure_ui()
         self.logger.info("========================= Base GUI Initialized =========================")
 
