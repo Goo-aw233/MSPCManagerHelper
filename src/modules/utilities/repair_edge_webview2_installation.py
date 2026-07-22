@@ -147,11 +147,11 @@ class RepairEdgeWebView2Installation:
             # NSudo Error Dealing
             if result.returncode != 0:
                 if result.stdout:
-                    self._log(f"NSudo {self.app_translator.translate('common.error_code')}: {result.returncode}")
+                    self._log(f"NSudo {self.app_translator.translate('common.return_code')}: {result.returncode}")
                     self._log(f"===== {self.app_translator.translate('common.stdout')}: =====\n{result.stdout}")
-                    self.logger.error(f"NSudo Error Code: {result.returncode}")
+                    self.logger.error(f"NSudo Return Code: {result.returncode}")
                     self.logger.error(f"===== Stdout: =====\n{result.stdout}")
-                raise Exception(f"NSudo Error Code: {result.returncode}")
+                raise Exception(f"NSudo Return Code: {result.returncode}")
 
             # reg.exe Error Dealing
             if result.stderr:
@@ -201,11 +201,11 @@ class RepairEdgeWebView2Installation:
             # NSudo Error Dealing
             if result.returncode != 0:
                 if result.stdout:
-                    self._log(f"NSudo {self.app_translator.translate('common.error_code')}: {result.returncode}")
+                    self._log(f"NSudo {self.app_translator.translate('common.return_code')}: {result.returncode}")
                     self._log(f"===== {self.app_translator.translate('common.stdout')}: =====\n{result.stdout}")
-                    self.logger.error(f"NSudo Error Code: {result.returncode}")
+                    self.logger.error(f"NSudo Return Code: {result.returncode}")
                     self.logger.error(f"===== Stdout: =====\n{result.stdout}")
-                raise Exception(f"NSudo Error Code: {result.returncode}")
+                raise Exception(f"NSudo Return Code: {result.returncode}")
 
             # reg.exe Error Dealing
             if result.stderr:
@@ -282,11 +282,11 @@ class RepairEdgeWebView2Installation:
             # NSudo Error Dealing
             if result.returncode != 0:
                 if result.stdout:
-                    self._log(f"NSudo {self.app_translator.translate('common.error_code')}: {result.returncode}")
+                    self._log(f"NSudo {self.app_translator.translate('common.return_code')}: {result.returncode}")
                     self._log(f"===== {self.app_translator.translate('common.stdout')}: =====\n{result.stdout}")
-                    self.logger.error(f"NSudo Error Code: {result.returncode}")
+                    self.logger.error(f"NSudo Return Code: {result.returncode}")
                     self.logger.error(f"===== Stdout: =====\n{result.stdout}")
-                raise Exception(f"NSudo Error Code: {result.returncode}")
+                raise Exception(f"NSudo Return Code: {result.returncode}")
 
             # reg.exe Error Dealing
             if result.stderr:
@@ -388,11 +388,11 @@ class RepairEdgeWebView2Installation:
                 # NSudo Error Dealing
                 if result.returncode != 0:
                     if result.stdout:
-                        self._log(f"NSudo {self.app_translator.translate('common.error_code')}: {result.returncode}")
+                        self._log(f"NSudo {self.app_translator.translate('common.return_code')}: {result.returncode}")
                         self._log(f"===== {self.app_translator.translate('common.stdout')}: =====\n{result.stdout}")
-                        self.logger.error(f"NSudo Error Code: {result.returncode}")
+                        self.logger.error(f"NSudo Return Code: {result.returncode}")
                         self.logger.error(f"===== Stdout: =====\n{result.stdout}")
-                    raise Exception(f"NSudo Error Code: {result.returncode}")
+                    raise Exception(f"NSudo Return Code: {result.returncode}")
 
                 # CMD Error Dealing
                 if webview2_dir_path.exists():
@@ -502,11 +502,11 @@ class RepairEdgeWebView2Installation:
                 # NSudo Error Dealing
                 if result.returncode != 0:
                     if result.stdout:
-                        self._log(f"NSudo {self.app_translator.translate('common.error_code')}: {result.returncode}")
+                        self._log(f"NSudo {self.app_translator.translate('common.return_code')}: {result.returncode}")
                         self._log(f"===== {self.app_translator.translate('common.stdout')}: =====\n{result.stdout}")
-                        self.logger.error(f"NSudo Error Code: {result.returncode}")
+                        self.logger.error(f"NSudo Return Code: {result.returncode}")
                         self.logger.error(f"===== Stdout: =====\n{result.stdout}")
-                    raise Exception(f"NSudo Error Code: {result.returncode}")
+                    raise Exception(f"NSudo Return Code: {result.returncode}")
                 
                 # CMD Error Dealing
                 if edge_components_dir_path.exists():
@@ -606,9 +606,9 @@ class RepairEdgeWebView2Installation:
                     )
                     self.logger.error(f"An Error Occurred While Ending Process: {process_name}")
                     if result.stdout:
-                        self._log(f"NSudo {self.app_translator.translate('common.error_code')}: {result.returncode}")
+                        self._log(f"NSudo {self.app_translator.translate('common.return_code')}: {result.returncode}")
                         self._log(f"===== {self.app_translator.translate('common.stdout')}: =====\n{result.stdout}")
-                        self.logger.error(f"NSudo Error Code: {result.returncode}")
+                        self.logger.error(f"NSudo Return Code: {result.returncode}")
                         self.logger.error(f"===== Stdout: =====\n{result.stdout}")
                     continue
 

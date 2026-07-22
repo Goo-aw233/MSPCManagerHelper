@@ -14,9 +14,9 @@
   },
   "common": {
     "error": "Error",
-    "error_code": "Error Code",
     "error_message": "Error Message",
     "info": "Info",
+    "return_code": "Return Code",
     "stderr": "Standard Error",
     "stdout": "Standard Output",
     "warning": "Warning"

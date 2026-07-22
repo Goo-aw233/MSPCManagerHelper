@@ -15,9 +15,9 @@
   },
   "common": {
     "error": "错误",
-    "error_code": "错误代码",
     "error_message": "错误信息",
     "info": "信息",
+    "return_code": "返回代码",
     "stderr": "标准错误",
     "stdout": "标准输出",
     "warning": "警告"

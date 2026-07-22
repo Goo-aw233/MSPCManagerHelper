@@ -19,12 +19,16 @@ class InstallViaPowerShellForCurrentUser:
             self.log_callback(message)
 
     @staticmethod
-    def _format_error_output(app_translator, stdout_text, stderr_text, use_localized=True):
+    def _format_error_output(app_translator, stdout_text, stderr_text, use_localized=True, returncode=None):
         stdout_label = app_translator.translate(
             "common.stdout") if use_localized else "Stdout"
         stderr_label = app_translator.translate(
             "common.stderr") if use_localized else "Stderr"
+        return_code_label = app_translator.translate(
+            "common.return_code") if use_localized else "Return Code"
         parts = []
+        if returncode is not None:
+            parts.append(f"{return_code_label}: {returncode}")
         if stdout_text:
             parts.append(f"{stdout_label}:\n{stdout_text}")
         if stderr_text:
@@ -78,12 +82,11 @@ class InstallViaPowerShellForCurrentUser:
         ]
 
         # Show Cleaned Paths
-        cleaned_paths_lines = []
-        cleaned_paths_lines.append(
+        cleaned_paths_lines = [
             self.app_translator.translate("modules.installer.cleaned_app_package_path").format(
                 path=app_package_path
             )
-        )
+        ]
         if dependencies_paths:
             cleaned_paths_lines.append(
                 self.app_translator.translate("modules.installer.cleaned_dependencies_paths_header")
@@ -128,7 +131,7 @@ class InstallViaPowerShellForCurrentUser:
             )
             return
 
-        if result.returncode == 0:
+        if result.returncode == 0 and not result.stderr.strip():
             self._log(
                 self.app_translator.translate(
                     "modules.installer.install_via_windows_powershell_successfully"
@@ -139,7 +142,7 @@ class InstallViaPowerShellForCurrentUser:
             )
         else:
             error_output = self._format_error_output(
-                self.app_translator, result.stdout, result.stderr
+                self.app_translator, result.stdout, result.stderr, returncode=result.returncode
             )
             self._log(
                 self.app_translator.translate(
@@ -149,6 +152,6 @@ class InstallViaPowerShellForCurrentUser:
             self.logger.error(
                 "An Error Occurred While Installing via Windows PowerShell:\n"
                 + self._format_error_output(
-                    self.app_translator, result.stdout, result.stderr, use_localized=False
+                    self.app_translator, result.stdout, result.stderr, use_localized=False, returncode=result.returncode
                 )
             )

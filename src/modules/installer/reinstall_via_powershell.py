@@ -16,12 +16,16 @@ class ReinstallViaPowerShell:
             self.log_callback(message)
 
     @staticmethod
-    def _format_error_output(app_translator, stdout_text, stderr_text, use_localized=True):
+    def _format_error_output(app_translator, stdout_text, stderr_text, use_localized=True, returncode=None):
         stdout_label = app_translator.translate(
             "common.stdout") if use_localized else "Stdout"
         stderr_label = app_translator.translate(
             "common.stderr") if use_localized else "Stderr"
+        return_code_label = app_translator.translate(
+            "common.return_code") if use_localized else "Return Code"
         parts = []
+        if returncode is not None:
+            parts.append(f"{return_code_label}: {returncode}")
         if stdout_text:
             parts.append(f"{stdout_label}:\n{stdout_text}")
         if stderr_text:
@@ -106,7 +110,7 @@ class ReinstallViaPowerShell:
             self.logger.info("Reinstalled via Windows PowerShell successfully.")
         else:
             error_output = self._format_error_output(
-                self.app_translator, result.stdout, result.stderr
+                self.app_translator, result.stdout, result.stderr, returncode=result.returncode
             )
             self._log(
                 self.app_translator.translate(
@@ -116,7 +120,7 @@ class ReinstallViaPowerShell:
             self.logger.error(
                 "An Error Occurred While Reinstalling via Windows PowerShell:\n"
                 + self._format_error_output(
-                    self.app_translator, result.stdout, result.stderr, use_localized=False
+                    self.app_translator, result.stdout, result.stderr, use_localized=False, returncode=result.returncode
                 )
             )
 
@@ -170,7 +174,7 @@ class ReinstallViaPowerShell:
             self.logger.info("Reset via Windows PowerShell successfully.")
         else:
             error_output = self._format_error_output(
-                self.app_translator, result.stdout, result.stderr
+                self.app_translator, result.stdout, result.stderr, returncode=result.returncode
             )
             self._log(
                 self.app_translator.translate(
@@ -180,6 +184,6 @@ class ReinstallViaPowerShell:
             self.logger.error(
                 "An Error Occurred While Resetting via Windows PowerShell:\n"
                 + self._format_error_output(
-                    self.app_translator, result.stdout, result.stderr, use_localized=False
+                    self.app_translator, result.stdout, result.stderr, use_localized=False, returncode=result.returncode
                 )
             )

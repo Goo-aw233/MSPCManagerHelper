@@ -15,9 +15,9 @@
   },
   "common": {
     "error": "錯誤",
-    "error_code": "錯誤碼",
     "error_message": "錯誤訊息",
     "info": "資訊",
+    "return_code": "返回碼",
     "stderr": "標準錯誤",
     "stdout": "標準輸出",
     "warning": "警告"

@@ -33,12 +33,16 @@ class UninstallViaDISMForAllUsers:
             self.log_callback(message)
 
     @staticmethod
-    def _format_error_output(app_translator, stdout_text, stderr_text, use_localized=True):
+    def _format_error_output(app_translator, stdout_text, stderr_text, use_localized=True, returncode=None):
         stdout_label = app_translator.translate(
             "common.stdout") if use_localized else "Stdout"
         stderr_label = app_translator.translate(
             "common.stderr") if use_localized else "Stderr"
+        return_code_label = app_translator.translate(
+            "common.return_code") if use_localized else "Return Code"
         parts = []
+        if returncode is not None:
+            parts.append(f"{return_code_label}: {returncode}")
         if stdout_text:
             parts.append(f"{stdout_label}:\n{stdout_text}")
         if stderr_text:
@@ -118,21 +122,24 @@ class UninstallViaDISMForAllUsers:
             )
         except Exception as e:
             self._log(
-                self.app_translator.translate("modules.uninstaller.query_dism_provisioned_packages_error").format(error=str(e))
+                self.app_translator.translate("modules.uninstaller.query_dism_provisioned_packages_error").format(
+                    error=str(e))
             )
             self.logger.error(f"An Error Occurred While Querying Provisioned Packages via DISM ({image_status}): {e}")
             return
 
         if result.returncode != 0:
             error_output = self._format_error_output(
-                self.app_translator, result.stdout, result.stderr
+                self.app_translator, result.stdout, result.stderr, returncode=result.returncode
             )
             self._log(
-                self.app_translator.translate("modules.uninstaller.query_dism_provisioned_packages_error").format(error=error_output)
+                self.app_translator.translate("modules.uninstaller.query_dism_provisioned_packages_error").format(
+                    error=error_output)
             )
             self.logger.error(
                 f"An Error Occurred While Querying Provisioned Packages via DISM ({image_status}):\n"
-                + self._format_error_output(self.app_translator, result.stdout, result.stderr, use_localized=False)
+                + self._format_error_output(self.app_translator, result.stdout, result.stderr, use_localized=False,
+                                            returncode=result.returncode)
             )
             return
 
@@ -171,20 +178,22 @@ class UninstallViaDISMForAllUsers:
                 )
             except Exception as e:
                 errors.append((pkg_name, str(e)))
-                self.logger.error(f"An Error Occurred While Removing Provisioned Package via DISM ({image_status}): {pkg_name}\n{e}")
+                self.logger.error(
+                    f"An Error Occurred While Removing Provisioned Package via DISM ({image_status}): {pkg_name}\n{e}")
                 continue
 
-            if remove_result.returncode == 0:
+            if remove_result.returncode == 0 and not remove_result.stderr.strip():
                 removed_packages.append(pkg_name)
                 self.logger.info(f"Provisioned Package Removed Successfully: {pkg_name}")
             else:
                 error_output = self._format_error_output(
-                    self.app_translator, remove_result.stdout, remove_result.stderr
+                    self.app_translator, remove_result.stdout, remove_result.stderr, returncode=remove_result.returncode
                 )
                 errors.append((pkg_name, error_output))
                 self.logger.error(
                     f"An Error Occurred While Removing Provisioned Package via DISM ({image_status}): {pkg_name}\n"
-                    + self._format_error_output(self.app_translator, remove_result.stdout, remove_result.stderr, use_localized=False)
+                    + self._format_error_output(self.app_translator, remove_result.stdout, remove_result.stderr,
+                                                use_localized=False, returncode=remove_result.returncode)
                 )
 
         if removed_packages:
@@ -232,7 +241,8 @@ class UninstallViaDISMForAllUsers:
                 )
             except Exception as e:
                 self._log(
-                    self.app_translator.translate("modules.uninstaller.uninstall_via_windows_powershell_error").format(error=str(e))
+                    self.app_translator.translate("modules.uninstaller.uninstall_via_windows_powershell_error").format(
+                        error=str(e))
                 )
                 self.logger.error(f"An Error Occurred While Uninstalling via Windows PowerShell: {e}")
                 continue
@@ -243,7 +253,7 @@ class UninstallViaDISMForAllUsers:
                 if line.strip()
             ]
 
-            if result.returncode == 0:
+            if result.returncode == 0 and not result.stderr.strip():
                 self._log(
                     self.app_translator.translate("modules.uninstaller.uninstall_via_windows_powershell_successfully")
                 )
@@ -259,17 +269,20 @@ class UninstallViaDISMForAllUsers:
                         self.logger.info(f"Package Removed Successfully: {pkg_name}")
             else:
                 error_output = self._format_error_output(
-                    self.app_translator, result.stdout, result.stderr
+                    self.app_translator, result.stdout, result.stderr, returncode=result.returncode
                 )
                 self._log(
-                    self.app_translator.translate("modules.uninstaller.uninstall_via_windows_powershell_error").format(error=error_output)
+                    self.app_translator.translate("modules.uninstaller.uninstall_via_windows_powershell_error").format(
+                        error=error_output)
                 )
                 self.logger.error(
                     "An Error Occurred While Uninstalling via Windows PowerShell:\n"
-                    + self._format_error_output(self.app_translator, result.stdout, result.stderr, use_localized=False)
+                    + self._format_error_output(self.app_translator, result.stdout, result.stderr, use_localized=False,
+                                                returncode=result.returncode)
                 )
 
-    def _get_config_cache_dir_paths(self):
+    @staticmethod
+    def _get_config_cache_dir_paths():
         # A robust fallback using os.path.expanduser("~").
         local_app_data = os.getenv("LocalAppData") or os.path.join(os.path.expanduser("~"), "AppData", "Local")
         program_data = os.getenv("ProgramData", r"C:\ProgramData")
@@ -355,7 +368,7 @@ class UninstallViaDISMForAllUsers:
                 )
 
                 if result.returncode != 0:
-                    raise Exception(f"NSudo Error Code: {result.returncode}")
+                    raise Exception(f"NSudo Return Code: {result.returncode}")
 
                 # Retry existence check to avoid race condition after RMDIR.
                 still_exists = True
@@ -463,7 +476,7 @@ class UninstallViaDISMForAllUsers:
                 )
 
                 if result.returncode != 0:
-                    raise Exception(f"NSudo Error Code: {result.returncode}")
+                    raise Exception(f"NSudo Return Code: {result.returncode}")
 
                 if result.stderr:
                     raise Exception(f"reg.exe Error: {result.stderr.strip()}")
@@ -594,7 +607,7 @@ class UninstallViaDISMForAllUsers:
                         )
 
                         if result.returncode != 0:
-                            raise Exception(f"NSudo Error Code: {result.returncode}")
+                            raise Exception(f"NSudo Return Code: {result.returncode}")
 
                         # Retry existence check to avoid race condition after DEL.
                         still_exists = True
@@ -710,7 +723,7 @@ class UninstallViaDISMForAllUsers:
                     )
 
                     if result.returncode != 0:
-                        raise Exception(f"NSudo Error Code: {result.returncode}")
+                        raise Exception(f"NSudo Return Code: {result.returncode}")
 
                     # Retry existence check to avoid race condition after RMDIR/DEL.
                     still_exists = True
@@ -736,7 +749,8 @@ class UninstallViaDISMForAllUsers:
 
         if removed_items:
             self._log(
-                self.app_translator.translate("modules.uninstaller.remove_advanced_app_package_data_successfully").format(
+                self.app_translator.translate(
+                    "modules.uninstaller.remove_advanced_app_package_data_successfully").format(
                     paths="  - " + "\n  - ".join(removed_items)
                 )
             )
@@ -883,7 +897,7 @@ class UninstallViaDISMForAllUsers:
                                     creationflags=subprocess.CREATE_NO_WINDOW
                                 )
                                 if result.returncode != 0:
-                                    raise Exception(f"NSudo Error Code: {result.returncode}")
+                                    raise Exception(f"NSudo Return Code: {result.returncode}")
                                 if result.stderr:
                                     raise Exception(f"reg.exe Error: {result.stderr.strip()}")
                                 removed_items.append(f"{key_path} ({value_name})")
@@ -920,7 +934,7 @@ class UninstallViaDISMForAllUsers:
                                     creationflags=subprocess.CREATE_NO_WINDOW
                                 )
                                 if result.returncode != 0:
-                                    raise Exception(f"NSudo Error Code: {result.returncode}")
+                                    raise Exception(f"NSudo Return Code: {result.returncode}")
                                 if result.stderr:
                                     raise Exception(f"reg.exe Error: {result.stderr.strip()}")
                                 removed_items.append(fr"{key_path}\{subkey_name}")

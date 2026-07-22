@@ -29,12 +29,16 @@ class UninstallBeta:
             self.log_callback(message)
 
     @staticmethod
-    def _format_error_output(app_translator, stdout_text, stderr_text, use_localized=True):
+    def _format_error_output(app_translator, stdout_text, stderr_text, use_localized=True, returncode=None):
         stdout_label = app_translator.translate(
             "common.stdout") if use_localized else "Stdout"
         stderr_label = app_translator.translate(
             "common.stderr") if use_localized else "Stderr"
+        return_code_label = app_translator.translate(
+            "common.return_code") if use_localized else "Return Code"
         parts = []
+        if returncode is not None:
+            parts.append(f"{return_code_label}: {returncode}")
         if stdout_text:
             parts.append(f"{stdout_label}:\n{stdout_text}")
         if stderr_text:
@@ -72,7 +76,8 @@ class UninstallBeta:
                     else:
                         self._basic_cache_files()
 
-    def find_child_processes_by_ppid(self, ppid, name_pattern):
+    @staticmethod
+    def find_child_processes_by_ppid(ppid, name_pattern):
         # Match child processes based on parent PID and process name pattern.
         matched_pids = []
         for proc in psutil.process_iter(["pid", "ppid", "name"]):
@@ -86,7 +91,8 @@ class UninstallBeta:
         return matched_pids
 
     def monitor_uninstall(self, ppid, child_pattern="Uninst*.exe", exe_path=None, check_interval=2.0, timeout=2.0):
-        self.logger.info(f"Monitoring Uninstall Process: Parent PID = {ppid}, Child Pattern = {child_pattern}, EXE Path = {exe_path}")
+        self.logger.info(
+            f"Monitoring Uninstall Process: Parent PID = {ppid}, Child Pattern = {child_pattern}, EXE Path = {exe_path}")
         # Store all target child PIDs to monitor
         target_pids = set()
 
@@ -110,14 +116,16 @@ class UninstallBeta:
         # Phase 2: If direct capture fails, attempt PPID reverse lookup across the OS.
         if not target_pids:
             self._log(self.app_translator.translate("modules.uninstaller.searching_for_child_process"))
-            self.logger.info("No child processes captured through direct parent-child relationship, attempting Parent PID reverse lookup across the OS...")
+            self.logger.info(
+                "No child processes captured through direct parent-child relationship, attempting Parent PID reverse lookup across the OS...")
             found = self.find_child_processes_by_ppid(ppid, child_pattern)
             if found:
                 target_pids.update(found)
                 for pid in found:
                     try:
                         p = psutil.Process(pid)
-                        self.logger.info(f"Found Child Process via Parent PID Reverse Lookup: PID = {pid}, Name = {p.name()}")
+                        self.logger.info(
+                            f"Found Child Process via Parent PID Reverse Lookup: PID = {pid}, Name = {p.name()}")
                     except psutil.NoSuchProcess:
                         pass
             else:
@@ -127,7 +135,10 @@ class UninstallBeta:
 
         # Output the list of target PIDs being monitored.
         for child_pid in sorted(target_pids):
-            self._log(self.app_translator.translate("modules.uninstaller.starting_uninstaller_with_pids").format(ppid=ppid, pid=child_pid))
+            self._log(
+                self.app_translator.translate("modules.uninstaller.starting_uninstaller_with_pids").format(
+                    ppid=ppid,pid=child_pid)
+            )
 
         process_word = "Process" if len(target_pids) == 1 else "Processes"
         self.logger.info(f"Starting to Monitor {len(target_pids)} Target {process_word}: {sorted(target_pids)}")
@@ -151,13 +162,15 @@ class UninstallBeta:
                 else:
                     # If the uninstaller executable still exists, it may indicate that the uninstallation was canceled or failed.
                     self._log(self.app_translator.translate("modules.uninstaller.uninstallation_not_completed"))
-                    self.logger.info("All target processes have exited but the uninstaller executable still exists, indicating a potential cancellation.")
+                    self.logger.info(
+                        "All target processes have exited but the uninstaller executable still exists, indicating a potential cancellation.")
                     return False
             time.sleep(check_interval)
 
     def _uninstall_beta(self):
         try:
-            uninstaller_path = Path(os.getenv("ProgramFiles", r"C:\Program Files")) / "Microsoft PC Manager" / "Uninst.exe"
+            uninstaller_path = Path(
+                os.getenv("ProgramFiles", r"C:\Program Files")) / "Microsoft PC Manager" / "Uninst.exe"
             self._log(self.app_translator.translate("modules.common.file_path").format(file_path=uninstaller_path))
             self.logger.info(f"Attempting to Execute Microsoft PC Manager Beta Uninstaller at: {uninstaller_path}")
             if not uninstaller_path.exists():
@@ -178,7 +191,8 @@ class UninstallBeta:
                 self._log(self.app_translator.translate("modules.uninstaller.uninstall_via_uninstaller_successfully"))
             return is_uninstall
         except Exception as e:
-            self._log(self.app_translator.translate("modules.uninstaller.uninstall_via_uninstaller_error").format(error=str(e)))
+            self._log(self.app_translator.translate("modules.uninstaller.uninstall_via_uninstaller_error").format(
+                error=str(e)))
             self.logger.error(f"An Error Occurred While Uninstalling via Microsoft PC Manager Beta Uninstaller:\n{e}")
             return False
 
@@ -269,7 +283,7 @@ class UninstallBeta:
                 )
 
                 if result.returncode != 0:
-                    raise Exception(f"NSudo Error Code: {result.returncode}")
+                    raise Exception(f"NSudo Return Code: {result.returncode}")
 
                 still_exists = True
                 for _ in range(3):
@@ -310,7 +324,8 @@ class UninstallBeta:
     def _get_basic_registry_paths():
         return [
             (win32con.HKEY_CURRENT_USER, r"Software\WindowsMaster"),
-            (win32con.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run\WindowsMasterUI"),
+            (win32con.HKEY_LOCAL_MACHINE,
+             r"SOFTWARE\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run\WindowsMasterUI"),
             (win32con.HKEY_LOCAL_MACHINE, r"SOFTWARE\Microsoft\Windows\CurrentVersion\Run\WindowsMasterUI"),
             (win32con.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\MSPCManager"),
             (win32con.HKEY_LOCAL_MACHINE, r"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\微软电脑管家"),
@@ -393,7 +408,7 @@ class UninstallBeta:
                 )
 
                 if result.returncode != 0:
-                    raise Exception(f"NSudo Error Code: {result.returncode}")
+                    raise Exception(f"NSudo Return Code: {result.returncode}")
 
                 if result.stderr:
                     raise Exception(f"reg.exe Error: {result.stderr.strip()}")
@@ -542,7 +557,7 @@ class UninstallBeta:
                         )
 
                         if result.returncode != 0:
-                            raise Exception(f"NSudo Error Code: {result.returncode}")
+                            raise Exception(f"NSudo Return Code: {result.returncode}")
 
                         still_exists = True
                         for _ in range(3):
