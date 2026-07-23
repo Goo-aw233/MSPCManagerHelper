@@ -12,6 +12,7 @@ from gui.components import (
     BaseWidgets
 )
 from modules.installer import (
+    InstallMicrosoftEdgeWebView2Runtime,
     InstallViaDISM,
     InstallViaMicrosoftStore,
     InstallViaPowerShellForCurrentUser,
@@ -49,19 +50,19 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(install_via_msstore_frame)
 
         # - Open Options -
-        self.open_options_frame = customtkinter.CTkScrollableFrame(
+        self.open_msstore_options_frame = customtkinter.CTkScrollableFrame(
             install_via_msstore_frame,
             orientation="horizontal",
             fg_color="transparent",
             height=42
         )
-        self.open_options_frame.pack(fill="x", padx=10, pady=5)
+        self.open_msstore_options_frame.pack(fill="x", padx=10, pady=5)
 
         self.open_msstore_var = tkinter.StringVar(value="open_msstore")
 
         # Open Microsoft Store
         self.open_msstore_radiobutton = customtkinter.CTkRadioButton(
-            self.open_options_frame,
+            self.open_msstore_options_frame,
             text=self.app_translator.translate("pages.installer.open_msstore"),
             variable=self.open_msstore_var,
             value="open_msstore",
@@ -71,7 +72,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
 
         # Open Microsoft Store Web Page
         self.open_msstore_web_radiobutton = customtkinter.CTkRadioButton(
-            self.open_options_frame,
+            self.open_msstore_options_frame,
             text=self.app_translator.translate("pages.installer.open_msstore_web"),
             variable=self.open_msstore_var,
             value="open_msstore_web",
@@ -81,13 +82,83 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
 
         # Download Online Installer
         self.download_online_installer_radiobutton = customtkinter.CTkRadioButton(
-            self.open_options_frame,
+            self.open_msstore_options_frame,
             text=self.app_translator.translate("pages.installer.download_online_installer"),
             variable=self.open_msstore_var,
             value="download_online_installer",
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.download_online_installer_radiobutton.grid(row=0, column=2, sticky="w", padx=10, pady=5)
+
+        # --- Install Microsoft EdgeWebView2 Runtime ---
+        install_webview2_frame = self._create_group_frame()
+        install_webview2_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
+        self.install_webview2_card = self._create_actions_card(
+            parent=install_webview2_frame,
+            title=self.app_translator.translate("pages.installer.install_webview2"),
+            description=self.app_translator.translate("pages.installer.install_webview2_desc"),
+            widget_constructor=customtkinter.CTkButton,
+            text=self.app_translator.translate("pages.common.execute"),
+            command=self._run_install_webview2,
+            state="normal"
+        )
+
+        self._create_separator(install_webview2_frame)
+
+        # - Install Microsoft EdgeWebView2 Runtime Options -
+        self.install_webview2_options_frame = customtkinter.CTkScrollableFrame(
+            install_webview2_frame,
+            orientation="horizontal",
+            fg_color="transparent",
+            height=42
+        )
+        self.install_webview2_options_frame.pack(fill="x", padx=10, pady=5)
+
+        self.install_webview2_installer_var = tkinter.StringVar(value="online_install")
+        self.install_webview2_mode_var = tkinter.StringVar(value="auto_install")
+
+        # Online Installer
+        self.online_installer_radiobutton = customtkinter.CTkRadioButton(
+            self.install_webview2_options_frame,
+            text=self.app_translator.translate("pages.installer.online_installer"),
+            variable=self.install_webview2_installer_var,
+            value="online_install",
+            font=customtkinter.CTkFont(family=self.font_family, weight="bold")
+        )
+        self.online_installer_radiobutton.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+
+        # Offline Installer
+        self.offline_installer_radiobutton = customtkinter.CTkRadioButton(
+            self.install_webview2_options_frame,
+            text=self.app_translator.translate("pages.installer.offline_installer"),
+            variable=self.install_webview2_installer_var,
+            value="offline_install",
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.offline_installer_radiobutton.grid(row=0, column=1, sticky="w", padx=10, pady=5)
+
+        # Auto Install
+        self.auto_install_checkbox = customtkinter.CTkCheckBox(
+            self.install_webview2_options_frame,
+            text=self.app_translator.translate("pages.installer.auto_install"),
+            onvalue="auto_install",
+            variable=self.install_webview2_mode_var,
+            command=self._toggle_webview2_silent_install_state,
+            font=customtkinter.CTkFont(family=self.font_family, weight="bold")
+        )
+        self.auto_install_checkbox.grid(row=0, column=3, sticky="w", padx=10, pady=5)
+
+        # Silent Install
+        self.silent_install_checkbox = customtkinter.CTkCheckBox(
+            self.install_webview2_options_frame,
+            text=self.app_translator.translate("pages.installer.silent_install"),
+            onvalue="silent_install",
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.silent_install_checkbox.grid(row=0, column=4, sticky="w", padx=10, pady=5)
+
+        # Apply Initial Toggle State
+        self._toggle_webview2_silent_install_state()
         # === End of Online Install Section ===
 
         # === Offline Install Section ===
@@ -482,6 +553,34 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             )
         )
     # ~ End of Install via Microsoft Store ~
+
+    # ~ Install Microsoft EdgeWebView2 Runtime ~
+    def _toggle_webview2_silent_install_state(self):
+        if self.install_webview2_mode_var.get() != "auto_install":
+            self.silent_install_checkbox.deselect()
+            self.silent_install_checkbox.configure(state="disabled")
+        else:
+            self.silent_install_checkbox.configure(state="normal")
+
+    def _run_install_webview2(self):
+        self.install_webview2_card.configure(state="disabled")
+        self.update_idletasks()
+
+        installer = InstallMicrosoftEdgeWebView2Runtime(
+            logger=self.logger,
+            app_translator=self.app_translator,
+            log_callback=self.events_textbox.log_to_events,
+            installer_type=self.install_webview2_installer_var.get(),
+            auto_install=self.install_webview2_mode_var.get() == "auto_install",
+            silent_install=bool(self.silent_install_checkbox.get())
+        )
+
+        self._run_operation(
+            installer.execute,
+            "pages.installer.install_webview2",
+            on_completion=lambda: self.install_webview2_card.configure(state="normal")
+        )
+    # ~ End of Install Microsoft EdgeWebView2 Runtime ~
 
     # ~ Install via DISM ~
     def _set_entry_group_state(self, enabled, entry, button=None):
