@@ -115,7 +115,6 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.install_webview2_options_frame.pack(fill="x", padx=10, pady=5)
 
         self.install_webview2_installer_var = tkinter.StringVar(value="online_install")
-        self.install_webview2_mode_var = tkinter.StringVar(value="auto_install")
 
         # Online Installer
         self.online_installer_radiobutton = customtkinter.CTkRadioButton(
@@ -137,17 +136,6 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
         self.offline_installer_radiobutton.grid(row=0, column=1, sticky="w", padx=10, pady=5)
 
-        # Auto Install
-        self.auto_install_checkbox = customtkinter.CTkCheckBox(
-            self.install_webview2_options_frame,
-            text=self.app_translator.translate("pages.installer.auto_install"),
-            onvalue="auto_install",
-            variable=self.install_webview2_mode_var,
-            command=self._toggle_webview2_silent_install_state,
-            font=customtkinter.CTkFont(family=self.font_family, weight="bold")
-        )
-        self.auto_install_checkbox.grid(row=0, column=3, sticky="w", padx=10, pady=5)
-
         # Silent Install
         self.silent_install_checkbox = customtkinter.CTkCheckBox(
             self.install_webview2_options_frame,
@@ -155,10 +143,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             onvalue="silent_install",
             font=customtkinter.CTkFont(family=self.font_family)
         )
-        self.silent_install_checkbox.grid(row=0, column=4, sticky="w", padx=10, pady=5)
-
-        # Apply Initial Toggle State
-        self._toggle_webview2_silent_install_state()
+        self.silent_install_checkbox.grid(row=0, column=3, sticky="w", padx=10, pady=5)
         # === End of Online Install Section ===
 
         # === Offline Install Section ===
@@ -555,13 +540,6 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
     # ~ End of Install via Microsoft Store ~
 
     # ~ Install Microsoft EdgeWebView2 Runtime ~
-    def _toggle_webview2_silent_install_state(self):
-        if self.install_webview2_mode_var.get() != "auto_install":
-            self.silent_install_checkbox.deselect()
-            self.silent_install_checkbox.configure(state="disabled")
-        else:
-            self.silent_install_checkbox.configure(state="normal")
-
     def _run_install_webview2(self):
         self.install_webview2_card.configure(state="disabled")
         self.update_idletasks()
@@ -571,7 +549,6 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
             installer_type=self.install_webview2_installer_var.get(),
-            auto_install=self.install_webview2_mode_var.get() == "auto_install",
             silent_install=bool(self.silent_install_checkbox.get())
         )
 

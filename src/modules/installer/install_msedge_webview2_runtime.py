@@ -2,7 +2,8 @@ import subprocess
 from pathlib import Path
 
 from core import (
-    AppResources
+    AppResources,
+    PrerequisiteChecks
 )
 from handlers.shared import (
     FetchResource,
@@ -11,23 +12,21 @@ from handlers.shared import (
 
 
 class InstallMicrosoftEdgeWebView2Runtime:
-    FIXED_FILENAME = "MicrosoftEdgeWebView2RuntimeInstaller.exe"
     EXPECTED_SIGNER_SUBJECT = (
         "CN=Microsoft Corporation, O=Microsoft Corporation, "
         "L=Redmond, S=Washington, C=US"
     )
-
     ONLINE_INSTALLER_URL = "https://go.microsoft.com/fwlink/p/?LinkId=2124703"
-    OFFLINE_INSTALLER_URL = "https://go.microsoft.com/fwlink/?linkid=2124701"
+    OFFLINE_INSTALLER_ARM64_URL = "https://go.microsoft.com/fwlink/?LinkId=2099616"
+    OFFLINE_INSTALLER_X64_URL = "https://go.microsoft.com/fwlink/?LinkId=2124701"
 
     def __init__(self, logger, app_translator, log_callback,
-                 installer_type="online_install", auto_install=True,
+                 installer_type="online_install",
                  silent_install=False):
         self.logger = logger
         self.app_translator = app_translator
         self.log_callback = log_callback
         self.installer_type = installer_type
-        self.auto_install = auto_install
         self.silent_install = silent_install
 
     def _log(self, message):
@@ -35,9 +34,16 @@ class InstallMicrosoftEdgeWebView2Runtime:
             self.log_callback(message)
 
     def execute(self):
+        self._install_webview2()
+
+    def _install_webview2(self):
         # Determine Download URL
         if self.installer_type == "offline_install":
-            url = self.OFFLINE_INSTALLER_URL
+            arch = PrerequisiteChecks.check_os_architecture()
+            if arch == "ARM64":
+                url = self.OFFLINE_INSTALLER_ARM64_URL
+            else:
+                url = self.OFFLINE_INSTALLER_X64_URL
         else:
             url = self.ONLINE_INSTALLER_URL
 
@@ -45,8 +51,9 @@ class InstallMicrosoftEdgeWebView2Runtime:
         is_online = self.installer_type == "online_install"
         installer_label = "online" if is_online else "offline"
 
+        filename = self._get_filename()
         download_dir = AppResources.app_temp_dir()
-        file_path = Path(download_dir) / self.FIXED_FILENAME
+        file_path = Path(download_dir) / filename
         sha256_path = file_path.with_suffix(file_path.suffix + ".sha256")
 
         # Check If the Downloaded File Can Be Reused
@@ -64,7 +71,7 @@ class InstallMicrosoftEdgeWebView2Runtime:
 
         try:
             downloaded_path = FetchResource.fetch(
-                url=url, download_dir=download_dir, filename=self.FIXED_FILENAME,
+                url=url, download_dir=download_dir, filename=filename,
                 progress_callback=FetchResource.throttled_progress(self._log),
                 save_sha256=True,
             )
@@ -147,9 +154,7 @@ class InstallMicrosoftEdgeWebView2Runtime:
 
     def _launch_installer(self, file_path):
         # Build Arguments
-        args = [str(file_path)]
-        if self.auto_install:
-            args.append("/install")
+        args = [str(file_path), "/install"]
         if self.silent_install:
             args.append("/silent")
 
@@ -204,6 +209,16 @@ class InstallMicrosoftEdgeWebView2Runtime:
                 "An Error Occurred While Installing Microsoft Edge WebView2 Runtime: "
                 f"Return Code: {result.returncode}"
             )
+
+    def _get_filename(self):
+        if self.installer_type == "online_install":
+            return "MicrosoftEdgeWebview2Setup.exe"
+
+        arch = PrerequisiteChecks.check_os_architecture()
+        if arch == "ARM64":
+            return "MicrosoftEdgeWebView2RuntimeInstallerARM64.exe"
+
+        return "MicrosoftEdgeWebView2RuntimeInstallerX64.exe"
 
     def _verify_certificate(self, file_path):
         return VerifyFileCertificate.verify(
