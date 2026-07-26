@@ -92,8 +92,7 @@
       "reset_via_windows_powershell_error": "透過 Windows PowerShell 重設時發生錯誤：\n{error}",
       "reset_via_windows_powershell_successfully": "已透過 Windows PowerShell 成功重設。",
       "resetting_via_windows_powershell": "正在透過 Windows PowerShell 重設...",
-      "verifying_downloaded_file": "正在驗證下載檔案的數位簽章...",
-      "verifying_webview2_installer": "正在驗證下載的 Microsoft Edge WebView2 執行階段安裝程式的數位簽章..."
+      "verifying_downloaded_file": "正在驗證下載檔案的數位簽章..."
     },
     "maintenance": {
     },

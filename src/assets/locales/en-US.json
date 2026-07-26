@@ -91,8 +91,7 @@
       "reset_via_windows_powershell_error": "An Error Occurred While Resetting via Windows PowerShell:\n{error}",
       "reset_via_windows_powershell_successfully": "Reset via Windows PowerShell successfully.",
       "resetting_via_windows_powershell": "Resetting via Windows PowerShell...",
-      "verifying_downloaded_file": "Verifying digital signature of the downloaded file...",
-      "verifying_webview2_installer": "Verifying digital signature of the downloaded Microsoft Edge WebView2 Runtime Installer..."
+      "verifying_downloaded_file": "Verifying digital signature of the downloaded file..."
     },
     "maintenance": {
     },

@@ -1,4 +1,3 @@
-import hashlib
 import shutil
 import subprocess
 from pathlib import Path
@@ -111,7 +110,9 @@ class InstallViaMicrosoftStore:
         self.logger.info(f"Downloading Online Installer from: {url}")
         try:
             downloaded_path = FetchResource.fetch(
-                url=url, download_dir=download_dir, filename=self.FIXED_FILENAME
+                url=url, download_dir=download_dir, filename=self.FIXED_FILENAME,
+                progress_callback=FetchResource.throttled_progress(self._log),
+                save_sha256=True,
             )
         except Exception as e:
             self.logger.error(f"An Error Occurred While Downloading the Online Installer: {e}")
@@ -120,23 +121,11 @@ class InstallViaMicrosoftStore:
             )
             return
 
-        # Compute & Save SHA256
-        # Written atomically (temp file + replace) to avoid leaving a
-        # corrupted hash record if the write is interrupted.
-        try:
-            sha256_hash = self._compute_sha256(downloaded_path)
-        except Exception as e:
-            self.logger.error(f"An Error Occurred While Computing SHA256 for the Downloaded File: {e}")
-            self._log(self.app_translator.translate("modules.installer.compute_sha256_failed").format(error=e))
-            return
-        tmp_sha256_path = sha256_path.with_suffix(sha256_path.suffix + ".tmp")
-        tmp_sha256_path.write_text(sha256_hash, encoding="utf-8")
-        tmp_sha256_path.replace(sha256_path)
-        self.logger.info(f"SHA256 ({sha256_hash}) Saved to: {sha256_path}")
-
         # Verify Certificate
         self._log(self.app_translator.translate("modules.installer.verifying_downloaded_file"))
-        self.logger.info(f"Verifying Digital Certificate for Downloaded File: {downloaded_path}")
+        self.logger.info(
+            f"Verifying Digital Certificate for Downloaded File: {downloaded_path}"
+        )
         if not self._verify_certificate(downloaded_path):
             self.logger.error(
                 "An Error Occurred While Verifying the Certificate of the Downloaded Installer: "
@@ -151,12 +140,7 @@ class InstallViaMicrosoftStore:
         self._launch_installer(downloaded_path)
 
     def _try_reuse_cached(self, file_path, sha256_path):
-        # Check whether the cached installer is valid and can be launched directly.
-        # Returns True if launched, False if re-download is needed.
         if not file_path.exists() or not sha256_path.exists():
-            # Cache is incomplete: the exe exists but its hash sidecar is
-            # missing (or vice versa).  Remove the stale exe so that the
-            # subsequent download gets the correct filename.
             if file_path.exists():
                 file_path.unlink()
                 self.logger.info("Stale cached installer removed, re-downloading...")
@@ -166,9 +150,9 @@ class InstallViaMicrosoftStore:
 
         saved_sha256 = sha256_path.read_text(encoding="utf-8").strip()
         try:
-            current_sha256 = self._compute_sha256(file_path)
+            current_sha256 = FetchResource.compute_sha256(file_path)
         except Exception as e:
-            self.logger.warning(f"Unable to compute SHA256 for cached file, re-downloading: {e}")
+            self.logger.warning(f"Unable to Compute SHA256 for Cached File, Re-downloading: {e}")
             return False
 
         if saved_sha256 != current_sha256:
@@ -182,17 +166,12 @@ class InstallViaMicrosoftStore:
         self.logger.info(f"SHA256 Matches, Verifying Certificate for Cached File: {file_path}")
         self._log(self.app_translator.translate("modules.installer.verifying_downloaded_file"))
         if not self._verify_certificate(file_path):
-            self.logger.warning(f"Certificate verification failed for cached file: {file_path}, re-downloading...")
+            self.logger.warning(
+                f"Certificate Verification Failed for Cached File: {file_path}, "
+                "Re-downloading..."
+            )
             return False
 
         self.logger.info(f"Certificate Verified, Reusing Cached Installer: {file_path}")
         self._launch_installer(file_path)
         return True
-
-    @staticmethod
-    def _compute_sha256(file_path):
-        h = hashlib.sha256()
-        with open(file_path, "rb") as f:
-            while chunk := f.read(8192):
-                h.update(chunk)
-        return h.hexdigest()

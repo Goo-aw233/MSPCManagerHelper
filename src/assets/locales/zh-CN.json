@@ -92,8 +92,7 @@
       "reset_via_windows_powershell_error": "通过 Windows PowerShell 重置时发生错误：\n{error}",
       "reset_via_windows_powershell_successfully": "已通过 Windows PowerShell 成功重置。",
       "resetting_via_windows_powershell": "正在通过 Windows PowerShell 重置...",
-      "verifying_downloaded_file": "正在验证下载文件的数字签名...",
-      "verifying_webview2_installer": "正在验证下载的 Microsoft Edge WebView2 运行时安装程序的数字签名..."
+      "verifying_downloaded_file": "正在验证下载文件的数字签名..."
     },
     "maintenance": {
     },

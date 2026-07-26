@@ -1,4 +1,3 @@
-import hashlib
 import subprocess
 from pathlib import Path
 
@@ -65,7 +64,9 @@ class InstallMicrosoftEdgeWebView2Runtime:
 
         try:
             downloaded_path = FetchResource.fetch(
-                url=url, download_dir=download_dir, filename=self.FIXED_FILENAME
+                url=url, download_dir=download_dir, filename=self.FIXED_FILENAME,
+                progress_callback=FetchResource.throttled_progress(self._log),
+                save_sha256=True,
             )
         except Exception as e:
             self.logger.error(
@@ -81,24 +82,8 @@ class InstallMicrosoftEdgeWebView2Runtime:
 
         file_path = Path(downloaded_path)
 
-        # Compute & Save SHA256
-        try:
-            sha256_hash = self._compute_sha256(downloaded_path)
-        except Exception as e:
-            self.logger.error(
-                f"An Error Occurred While Computing SHA256 for the Downloaded File: {e}"
-            )
-            self._log(
-                self.app_translator.translate("modules.installer.compute_sha256_failed").format(error=e)
-            )
-            return
-        tmp_sha256_path = sha256_path.with_suffix(sha256_path.suffix + ".tmp")
-        tmp_sha256_path.write_text(sha256_hash, encoding="utf-8")
-        tmp_sha256_path.replace(sha256_path)
-        self.logger.info(f"SHA256 ({sha256_hash}) Saved to: {sha256_path}")
-
         # Verify Certificate
-        self._log(self.app_translator.translate("modules.installer.verifying_webview2_installer"))
+        self._log(self.app_translator.translate("modules.installer.verifying_downloaded_file"))
         self.logger.info(
             f"Verifying Digital Certificate for Downloaded File: {downloaded_path}"
         )
@@ -128,7 +113,7 @@ class InstallMicrosoftEdgeWebView2Runtime:
 
         saved_sha256 = sha256_path.read_text(encoding="utf-8").strip()
         try:
-            current_sha256 = self._compute_sha256(file_path)
+            current_sha256 = FetchResource.compute_sha256(file_path)
         except Exception as e:
             self.logger.warning(
                 f"Unable to Compute SHA256 for Cached File, Re-downloading: {e}"
@@ -146,11 +131,11 @@ class InstallMicrosoftEdgeWebView2Runtime:
         self.logger.info(
             f"SHA256 Matches, Verifying Certificate for Cached File: {file_path}"
         )
-        self._log(self.app_translator.translate("modules.installer.verifying_webview2_installer"))
+        self._log(self.app_translator.translate("modules.installer.verifying_downloaded_file"))
         if not self._verify_certificate(file_path):
             self.logger.warning(
                 f"Certificate Verification Failed for Cached File: {file_path}, "
-                "re-downloading..."
+                "Re-downloading..."
             )
             return False
 
@@ -216,17 +201,9 @@ class InstallMicrosoftEdgeWebView2Runtime:
                 ).format(error=error_output)
             )
             self.logger.error(
-                "An Error Occurred While Installing Microsoft Edge WebView2 Runtime.\n"
+                "An Error Occurred While Installing Microsoft Edge WebView2 Runtime: "
                 f"Return Code: {result.returncode}"
             )
-
-    @staticmethod
-    def _compute_sha256(file_path):
-        h = hashlib.sha256()
-        with open(file_path, "rb") as f:
-            while chunk := f.read(8192):
-                h.update(chunk)
-        return h.hexdigest()
 
     def _verify_certificate(self, file_path):
         return VerifyFileCertificate.verify(

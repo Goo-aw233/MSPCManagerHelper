@@ -1,5 +1,7 @@
+import hashlib
+import os
 import re
-from pathlib import Path
+import time
 from urllib.parse import unquote
 
 import requests
@@ -11,27 +13,34 @@ from core import (
 
 
 class FetchResource:
+    DEFAULT_USER_AGENT = (
+        f"Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        f"AppleWebKit/537.36 (KHTML, like Gecko) "
+        f"Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0 "
+        f"MSPCManagerHelper/{AppMetadata.APP_VERSION_WITHOUT_SPACES}"
+    )
+    WINDOWS_INVALID_CHARS = re.compile(r'[<>:"/\\|?*]')
+
     @staticmethod
     def fetch(
         url,
         download_dir=None,
         filename=None,
         timeout=(15, 60),
-        user_agent=(
-            f"Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-            f"AppleWebKit/537.36 (KHTML, like Gecko) "
-            f"Chrome/150.0.0.0 Safari/537.36 Edg/150.0.0.0 "
-            f"MSPCManagerHelper/{AppMetadata.APP_VERSION_WITHOUT_SPACES}"
-        ),
+        user_agent=DEFAULT_USER_AGENT,
+        progress_callback=None,
+        save_sha256=False,
     ):
         """
         USAGE EXAMPLE:
         fetch(
-            "https://example.com/file.zip",
+            url="https://example.com/file.zip",
             download_dir="C:\\Downloads",
             filename="custom_name.zip",
             timeout=(10, 30),
             user_agent="CustomUserAgent/1.0",
+            progress_callback=FetchResource.throttled_progress(self._log),
+            save_sha256=True
         )
 
         ARGS:
@@ -40,98 +49,209 @@ class FetchResource:
             filename: Filename to Save As (Optional)
             timeout: Connect/Read Timeout in Seconds (Optional, Default: (15, 60))
             user_agent: User-Agent Header Value (Optional, Default: Built-in User-Agent)
+            progress_callback: Return Progress Once for Each Chunk Processed (Optional)
+            save_sha256: Compute SHA256 & Save to <file>.sha256 (Optional)
         """
-        if download_dir is None:
-            download_dir = AppResources.app_temp_dir()
+        download_dir = FetchResource._get_download_dir(download_dir)
+        user_agent = FetchResource._get_user_agent(user_agent)
 
-        download_path = Path(download_dir)
-        download_path.mkdir(parents=True, exist_ok=True)
+        response = requests.get(
+            url,
+            stream=True,
+            timeout=timeout,
+            headers={"User-Agent": user_agent},
+        )
+        response.raise_for_status()
 
-        headers = {}
-        if user_agent:
-            headers["User-Agent"] = user_agent
+        filename = FetchResource._get_filename(filename, response, download_dir)
+        file_path = os.path.join(download_dir, filename)
+        part_path = file_path + ".part"
 
-        resp = requests.get(url, stream=True, timeout=timeout, headers=headers)
-        resp.raise_for_status()
+        total_bytes = response.headers.get("Content-Length")
+        if total_bytes is not None:
+            total_bytes = int(total_bytes)
 
-        is_default_name = False
+        # Set Filename Attribute for Display if progress_callback is Provided
+        if progress_callback is not None:
+            progress_callback._filename = filename
 
-        # Determine filename from Content-Disposition header if not provided.
-        if filename is None:
-            cd = resp.headers.get("Content-Disposition")
-            if cd:
-                # Handle RFC 5987 encoded filename* format.
-                rfc_match = re.search(
-                    r"filename\*=[^;]+''([^;\s]+)",
-                    cd,
-                    re.IGNORECASE,
-                )
-                if rfc_match:
-                    filename = unquote(rfc_match.group(1).strip())
-                else:
-                    # Fallback to standard filename format.
-                    fallback_match = re.search(
-                        r"""filename\s*=\s*["']?([^"';]+)["']?""",
-                        cd,
-                        re.IGNORECASE,
-                    )
-                    if fallback_match:
-                        filename = fallback_match.group(1).strip()
-
-            # Use default cache filename if no filename could be determined.
-            if filename is None:
-                is_default_name = True
-                num = 1
-                while True:
-                    candidate = f"CacheFile_{num}"
-                    if not (download_path / candidate).exists():
-                        filename = candidate
-                        break
-                    num += 1
-
-        # Filter out illegal characters in Windows filenames.
-        filename = FetchResource._sanitize_filename(filename)
-
-        file_path = download_path / filename
-
-        # File already exists, automatically handle naming conflicts.
-        if file_path.exists():
-            if is_default_name:
-                # Default filename continues to increment numbering.
-                stem = file_path.stem
-                match = re.match(r"CacheFile_(\d+)", stem)
-                if match:
-                    num = int(match.group(1)) + 1
-                    while True:
-                        candidate = f"CacheFile_{num}"
-                        if not (download_path / candidate).exists():
-                            file_path = download_path / candidate
-                            break
-                        num += 1
-            else:
-                # Other filenames have (num) added before the extension.
-                stem = file_path.stem
-                suffix = file_path.suffix
-                num = 1
-                while True:
-                    new_name = f"{stem}({num}){suffix}"
-                    new_path = download_path / new_name
-                    if not new_path.exists():
-                        file_path = new_path
-                        break
-                    num += 1
-
-        # Stream write file.
-        with open(file_path, "wb") as f:
-            for chunk in resp.iter_content(chunk_size=8192):
-                if chunk:
+        bytes_read = 0
+        try:
+            with open(part_path, "wb") as f:
+                for chunk in response.iter_content(chunk_size=8192):
                     f.write(chunk)
+                    bytes_read += len(chunk)
+                    if progress_callback:
+                        progress_callback(bytes_read, total_bytes)
+        except BaseException:
+            if os.path.exists(part_path):
+                os.remove(part_path)
+            raise
 
-        return str(file_path)
+        os.replace(part_path, file_path)
+
+        if save_sha256:
+            sha256_path = file_path + ".sha256"
+            sha256_hash = FetchResource.compute_sha256(file_path)
+            tmp_sha256_path = sha256_path + ".tmp"
+            with open(tmp_sha256_path, "w", encoding="utf-8") as f:
+                f.write(sha256_hash)
+            os.replace(tmp_sha256_path, sha256_path)
+
+        return file_path
 
     @staticmethod
-    def _sanitize_filename(name):
-        # Filter out illegal characters in Windows filenames
-        # and replace them with underscores.
-        illegal_chars = set(r"\/:*?\"<>|")
-        return "".join(c if c not in illegal_chars else "_" for c in name)
+    def _get_download_dir(download_dir=None):
+        if download_dir:
+            return download_dir
+        return AppResources.app_temp_dir()
+
+    @staticmethod
+    def _get_user_agent(user_agent=None):
+        if user_agent:
+            return user_agent
+        return FetchResource.DEFAULT_USER_AGENT
+
+    @staticmethod
+    def _get_filename(filename=None, response=None, download_dir=None):
+        if not filename:
+            filename = FetchResource._parse_content_disposition(response)
+        if not filename:
+            date_part = time.strftime('%x_%X').replace('/', '-').replace('\\', '-').replace(':', '-')
+            filename = f"download_{date_part}_{time.time_ns()}"
+
+        filename = FetchResource._sanitize_filename(filename)
+
+        if download_dir:
+            filename = FetchResource._deduplicate_filename(filename, download_dir)
+        return filename
+
+    @staticmethod
+    def _parse_content_disposition(response):
+        # Extract Filename from Content-Disposition (RFC 5987 / RFC 6266)
+        if response is None:
+            return None
+        header = response.headers.get("Content-Disposition", "")
+        if not header:
+            return None
+        # RFC 5987: filename*=UTF-8''encoded-name
+        match = re.search(r"filename\*\s*=\s*(?:UTF-8''|utf-8'')([^;]+)", header, re.IGNORECASE)
+        if match:
+            return unquote(match.group(1).strip().strip('"'))
+        # RFC 6266: filename="name"
+        match = re.search(r'filename\s*=\s*"([^"]+)"', header, re.IGNORECASE)
+        if match:
+            return match.group(1)
+        # Bare: filename=name
+        match = re.search(r"filename\s*=\s*([^;]+)", header, re.IGNORECASE)
+        if match:
+            return match.group(1).strip().strip('"')
+        return None
+
+    @staticmethod
+    def _deduplicate_filename(filename, download_dir):
+        base, ext = os.path.splitext(filename)
+        candidate = filename
+        counter = 1
+        while os.path.exists(os.path.join(download_dir, candidate)):
+            candidate = f"{base}_({counter}){ext}"
+            counter += 1
+        return candidate
+
+    @staticmethod
+    def _sanitize_filename(filename):
+        # Uses `os.path.basename` to discard any directory components, then replaces `< > : " / \\ | ? *` with `_`.
+        sanitized = os.path.basename(filename)
+        sanitized = FetchResource.WINDOWS_INVALID_CHARS.sub("_", str(sanitized))
+        return sanitized or "download"
+
+    @staticmethod
+    def throttled_progress(log_func):
+        # Pre-fetch EventsTextbox instance and CTkTextbox widget (via __self__ chain).
+        # Note: This chain depends on the structure of the log_func instance passed by the caller.
+        _events_textbox = log_func.__self__.log_callback.__self__
+        _textbox_widget = _events_textbox.textbox
+
+        def _update_textbox(text):
+            _textbox_widget.configure(state="normal")
+            # Search Backward from Last Line for a Line with Existing Progress
+            # (Number + Storage Units, E.g. 123.4 MB or 56.7%)
+            line_count = int(_textbox_widget.index("end-1c").split(".")[0])
+            for ln in range(line_count, 0, -1):
+                line_content = _textbox_widget.get(f"{ln}.0", f"{ln}.end")
+                if re.search(r'\d+(\.\d+)?\s*(B|KB|MB|GB|%)\s', line_content):
+                    _textbox_widget.delete(f"{ln}.0", f"{ln}.end")
+                    _textbox_widget.insert(f"{ln}.0", text)
+                    break
+            else:
+                # Append to End if No Existing Progress Line Found
+                _textbox_widget.insert("end", text if text.endswith("\n") else text + "\n")
+            _textbox_widget.see("end")
+            _textbox_widget.configure(state="disabled")
+
+        def _textbox(text):
+            # Schedule Update on Main Thread to Avoid Tkinter Threading Issues
+            _textbox_widget.after(0, _update_textbox, text)
+
+        def _fmt(b):
+            _GB = 1 << 30
+            _MB = 1 << 20
+            _KB = 1 << 10
+            if b >= _GB:
+                return f"{b / _GB:.1f} GB"
+            if b >= _MB:
+                return f"{b / _MB:.1f} MB"
+            if b >= _KB:
+                return f"{b / _KB:.1f} KB"
+            return f"{b} B"
+
+        _state = {"last_pct": -1, "last_at": 0.0, "last_bytes": 0, "interval": 0.5}
+
+        def _tick(now, bytes_read):
+            # Record tick time & bytes, return instant speed in bytes/s.
+            elapsed = now - _state["last_at"]
+            speed_bytes = 0
+            if _state["last_at"] > 0 and elapsed > 0:
+                speed_bytes = (bytes_read - _state["last_bytes"]) / elapsed
+            _state["last_at"] = now
+            _state["last_bytes"] = bytes_read
+            return speed_bytes
+
+        def _bar(pct):
+            w = 20
+            filled = w * pct // 100
+            return f"[{'█' * filled}{'░' * (w - filled)}]"
+
+        def _cb(bytes_read, total_bytes):
+            prefix = f"{_cb._filename}: " if _cb._filename else ""
+            now = time.time()
+
+            if total_bytes:
+                pct = bytes_read * 100 // total_bytes
+                if pct == _state["last_pct"] and now - _state["last_at"] < _state["interval"]:
+                    return
+                _state["last_pct"] = pct
+
+                speed = _tick(now, bytes_read)
+                speed_str = f" @ {_fmt(speed)}/s" if speed > 0 else ""
+                _textbox(
+                    f"{prefix}{_bar(pct)} {_fmt(bytes_read)} / {_fmt(total_bytes)} ({pct}%){speed_str}"
+                )
+            else:
+                if now - _state["last_at"] < _state["interval"]:
+                    return
+
+                speed = _tick(now, bytes_read)
+                speed_str = f" @ {_fmt(speed)}/s" if speed > 0 else ""
+                _textbox(f"{prefix}{_fmt(bytes_read)}{speed_str}")
+
+        _cb._filename = None
+        return _cb
+
+    @staticmethod
+    def compute_sha256(file_path):
+        h = hashlib.sha256()
+        with open(file_path, "rb") as f:
+            while chunk := f.read(8192):
+                h.update(chunk)
+        return h.hexdigest()
