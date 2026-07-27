@@ -1,7 +1,7 @@
 @echo off
 setlocal
 
-cd %~dp0
+cd "%~dp0"
 
 echo "Creating .venv"
 py.exe -3.14 -m venv "%~dp0..\.venv"

@@ -1,5 +1,5 @@
 altgraph==0.17.5
-certifi==2026.6.17
+certifi==2026.7.22
 charset-normalizer==3.4.9
 CTkToolTip==0.9
 customtkinter==6.0.0

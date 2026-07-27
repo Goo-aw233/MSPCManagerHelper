@@ -24,15 +24,15 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Set Up Python 3.14
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7
       with:
         python-version: "3.14"
     - name: Create .venv & Install Dependencies
       run: |
         ./scripts/install_requirements_.venv.cmd
-    - name: Cleanup Before Build
+    - name: Cleanup Before First Build
       run: |
         ./scripts/build/cleanup-before-first-build.cmd
     - name: Build EXE in .venv
