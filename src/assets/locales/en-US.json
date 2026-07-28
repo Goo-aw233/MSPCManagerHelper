@@ -55,10 +55,11 @@
   "modules": {
     "common": {
       "file_path": "File Path: {file_path}",
-      "select_offline_image_dir": "Select Offline Image Directory"
+      "select_offline_image_dir": "Select Offline Image Directory",
+      "verify_certificate_failed": "File digital signature verification failed.",
+      "verifying_certificate": "Verifying file digital signature..."
     },
     "installer": {
-      "certificate_verification_failed": "Certificate verification failed for the downloaded installer.",
       "cleaned_app_package_path": "Application Package: {path}",
       "cleaned_dependencies_paths_header": "Dependencies:",
       "cleaned_license_path": "License File: {path}",
@@ -90,10 +91,14 @@
       "reinstalling_via_windows_powershell": "Reinstalling via Windows PowerShell...",
       "reset_via_windows_powershell_error": "An Error Occurred While Resetting via Windows PowerShell:\n{error}",
       "reset_via_windows_powershell_successfully": "Reset via Windows PowerShell successfully.",
-      "resetting_via_windows_powershell": "Resetting via Windows PowerShell...",
-      "verifying_downloaded_file": "Verifying digital signature of the downloaded file..."
+      "resetting_via_windows_powershell": "Resetting via Windows PowerShell..."
     },
     "maintenance": {
+      "downloading_procdump": "Downloading ProcDump from Microsoft...",
+      "downloading_procdump_error": "An Error Occurred While Downloading ProcDump:\n{error}",
+      "extracting_procdump": "Extracting {exe_name} from ProcDump package...",
+      "extracting_procdump_error": "An Error Occurred While Extracting ProcDump:\n{error}",
+      "local_file_not_found": "Local ProcDump file not found."
     },
     "message": {
     },
@@ -347,6 +352,13 @@
       "silent_install": "Silent Install"
     },
     "maintenance": {
+      "collect_mspcm_logs": "Collect Microsoft PC Manager Logs",
+      "collect_mspcm_logs_desc": "Collect logs, dumps, and other necessary information related to Microsoft PC Manager to assist in troubleshooting.",
+      "local_file": "Local File",
+      "local_file_placeholder": "Select a local ProcDump executable file signed by Microsoft.",
+      "log_collection": "Log Collection",
+      "online_download": "Online Download",
+      "online_download_procdump_tooltip": "Download ProcDump from Microsoft to collect dump files."
     },
     "navigation": {
       "about": "About",

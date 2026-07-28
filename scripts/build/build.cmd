@@ -53,7 +53,6 @@ if "%arch%"=="AMD64" (
         --name "MSPCManagerHelper_Beta_v0.3.1.0_x64" ^
         --add-data "%~dp0..\\..\\src\\assets\\locales;assets\\locales" ^
         --add-data "%~dp0..\\..\\src\\assets\\icons\\MSPCManagerHelper.ico;assets\\icons" ^
-        --add-binary "%~dp0..\\..\\src\\assets\\tools\\ProcDump\\procdump64.exe;assets\\tools\\ProcDump" ^
         --add-binary "%~dp0..\\..\\src\\assets\\tools\\NSudo\\NSudoLC_x64.exe;assets\\tools\\NSudo" ^
         --clean ^
         --distpath "%~dp0..\\..\\dist" ^
@@ -68,7 +67,6 @@ if "%arch%"=="AMD64" (
         --name "MSPCManagerHelper_Beta_v0.3.1.0_ARM64" ^
         --add-data "%~dp0..\\..\\src\\assets\\locales;assets\\locales" ^
         --add-data "%~dp0..\\..\\src\\assets\\icons\\MSPCManagerHelper.ico;assets\\icons" ^
-        --add-binary "%~dp0..\\..\\src\\assets\\tools\\ProcDump\\procdump64a.exe;assets\\tools\\ProcDump" ^
         --add-binary "%~dp0..\\..\\src\\assets\\tools\\NSudo\\NSudoLC_ARM64.exe;assets\\tools\\NSudo" ^
         --clean ^
         --distpath "%~dp0..\\..\\dist" ^

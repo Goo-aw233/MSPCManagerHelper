@@ -90,7 +90,7 @@ class InstallMicrosoftEdgeWebView2Runtime:
         file_path = Path(downloaded_path)
 
         # Verify Certificate
-        self._log(self.app_translator.translate("modules.installer.verifying_downloaded_file"))
+        self._log(self.app_translator.translate("modules.common.verifying_certificate"))
         self.logger.info(
             f"Verifying Digital Certificate for Downloaded File: {downloaded_path}"
         )
@@ -102,7 +102,7 @@ class InstallMicrosoftEdgeWebView2Runtime:
             )
             self._log(
                 self.app_translator.translate(
-                    "modules.installer.certificate_verification_failed"
+                    "modules.common.verify_certificate_failed"
                 )
             )
             return
@@ -138,7 +138,7 @@ class InstallMicrosoftEdgeWebView2Runtime:
         self.logger.info(
             f"SHA256 Matches, Verifying Certificate for Cached File: {file_path}"
         )
-        self._log(self.app_translator.translate("modules.installer.verifying_downloaded_file"))
+        self._log(self.app_translator.translate("modules.common.verifying_certificate"))
         if not self._verify_certificate(file_path):
             self.logger.warning(
                 f"Certificate Verification Failed for Cached File: {file_path}, "

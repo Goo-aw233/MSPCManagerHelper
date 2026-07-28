@@ -563,7 +563,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             "advanced_registries": self.dism_checkbox_advanced_registries.get() == 1
         }
 
-        uninstaller = UninstallViaDISMForAllUsers(
+        worker = UninstallViaDISMForAllUsers(
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
@@ -572,7 +572,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
 
         self._run_operation(
-            uninstaller.execute,
+            worker.execute,
             "pages.uninstaller.uninstall_via_dism_all_users",
             on_completion=lambda: self.uninstall_via_dism_all_users_card.configure(
                 state=self._update_uninstall_via_dism_all_users_state()
@@ -675,7 +675,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             "advanced_registries": self.powershell_all_checkbox_advanced_registries.get() == 1
         }
 
-        uninstaller = UninstallViaPowerShellForAllUsers(
+        worker = UninstallViaPowerShellForAllUsers(
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
@@ -683,7 +683,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
 
         self._run_operation(
-            uninstaller.execute,
+            worker.execute,
             "pages.uninstaller.uninstall_via_windows_powershell_all_users",
             on_completion=lambda: self.uninstall_via_powershell_all_users_card.configure(
                 state=self._update_uninstall_via_powershell_all_users_state()
@@ -748,7 +748,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             "basic_cache_files": self.powershell_current_checkbox_basic_cache_files.get() == 1
         }
 
-        uninstaller = UninstallViaPowerShellForCurrentUser(
+        worker = UninstallViaPowerShellForCurrentUser(
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
@@ -756,7 +756,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
 
         self._run_operation(
-            uninstaller.execute,
+            worker.execute,
             "pages.uninstaller.uninstall_via_windows_powershell_current_user",
             on_completion=lambda: self.uninstall_via_powershell_current_user_card.configure(
                 state=self._update_uninstall_via_powershell_current_user_state()
@@ -816,7 +816,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             "basic_cache_files": self.uninstall_beta_checkbox_basic_cache_files.get() == 1
         }
 
-        uninstaller = UninstallBeta(
+        worker = UninstallBeta(
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
@@ -824,7 +824,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
 
         self._run_operation(
-            uninstaller.execute,
+            worker.execute,
             "pages.uninstaller.uninstall_beta",
             on_completion=lambda: self.uninstall_beta_card.configure(
                 state=self._update_uninstall_beta_state()

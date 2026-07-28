@@ -54,7 +54,6 @@ if "%arch%"=="AMD64" (
         --output-filename="MSPCManagerHelper_Beta_v0.3.1.0_x64.exe" ^
         --include-data-dir="%~dp0..\..\src\assets\locales=assets\locales" ^
         --include-data-files="%~dp0..\..\src\assets\icons\MSPCManagerHelper.ico=assets\icons\MSPCManagerHelper.ico" ^
-        --include-data-files="%~dp0..\..\src\assets\tools\ProcDump\procdump64.exe=assets\tools\ProcDump\procdump64.exe" ^
         --include-data-files="%~dp0..\..\src\assets\tools\NSudo\NSudoLC_x64.exe=assets\tools\NSudo\NSudoLC_x64.exe" ^
         --include-module=winrt.windows.foundation ^
         --include-module=winrt.windows.foundation.collections ^
@@ -76,7 +75,6 @@ if "%arch%"=="AMD64" (
         --output-filename="MSPCManagerHelper_Beta_v0.3.1.0_ARM64.exe" ^
         --include-data-dir="%~dp0..\..\src\assets\locales=assets\locales" ^
         --include-data-files="%~dp0..\..\src\assets\icons\MSPCManagerHelper.ico=assets\icons\MSPCManagerHelper.ico" ^
-        --include-data-files="%~dp0..\..\src\assets\tools\ProcDump\procdump64.exe=assets\tools\ProcDump\procdump64.exe" ^
         --include-data-files="%~dp0..\..\src\assets\tools\NSudo\NSudoLC_ARM64.exe=assets\tools\NSudo\NSudoLC_ARM64.exe" ^
         --include-module=winrt.windows.foundation ^
         --include-module=winrt.windows.foundation.collections ^

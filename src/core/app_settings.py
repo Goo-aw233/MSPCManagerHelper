@@ -88,12 +88,12 @@ class AppSettings:
     @classmethod
     def is_compatibility_mode_enabled(cls) -> bool:
         return cls._is_compatibility_mode_enabled
-    
+
     @classmethod
     def set_compatibility_mode_enabled(cls, enabled: bool) -> None:
         cls._is_compatibility_mode_enabled = bool(enabled)
         AppSettings.logger.info(f"Compatibility Mode Set to: {cls._is_compatibility_mode_enabled}")
-    
+
     @classmethod
     def toggle_compatibility_mode(cls) -> None:
         cls.set_compatibility_mode_enabled(not cls._is_compatibility_mode_enabled)
@@ -118,12 +118,12 @@ class AppSettings:
     @classmethod
     def is_take_ownership_enabled(cls) -> bool:
         return cls._is_take_ownership_enabled
-    
+
     @classmethod
     def set_take_ownership_enabled(cls, enabled: bool) -> None:
         cls._is_take_ownership_enabled = bool(enabled)
         AppSettings.logger.info(f"Take Ownership Set to: {cls._is_take_ownership_enabled}")
-    
+
     @classmethod
     def toggle_take_ownership(cls) -> None:
         cls.set_take_ownership_enabled(not cls._is_take_ownership_enabled)

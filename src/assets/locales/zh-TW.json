@@ -56,10 +56,11 @@
   "modules": {
     "common": {
       "file_path": "檔案路徑: {file_path}",
-      "select_offline_image_dir": "選擇離線映像目錄"
+      "select_offline_image_dir": "選擇離線映像目錄",
+      "verify_certificate_failed": "檔案的數位簽章驗證失敗。",
+      "verifying_certificate": "正在驗證檔案的數位簽章..."
     },
     "installer": {
-      "certificate_verification_failed": "下載的安裝程式數位簽章驗證失敗。",
       "cleaned_app_package_path": "應用程式套件: {path}",
       "cleaned_dependencies_paths_header": "依賴項:",
       "cleaned_license_path": "授權檔案: {path}",
@@ -91,10 +92,14 @@
       "reinstalling_via_windows_powershell": "正在透過 Windows PowerShell 重新安裝...",
       "reset_via_windows_powershell_error": "透過 Windows PowerShell 重設時發生錯誤：\n{error}",
       "reset_via_windows_powershell_successfully": "已透過 Windows PowerShell 成功重設。",
-      "resetting_via_windows_powershell": "正在透過 Windows PowerShell 重設...",
-      "verifying_downloaded_file": "正在驗證下載檔案的數位簽章..."
+      "resetting_via_windows_powershell": "正在透過 Windows PowerShell 重設..."
     },
     "maintenance": {
+      "downloading_procdump": "正在從 Microsoft 下載 ProcDump...",
+      "downloading_procdump_error": "下載 ProcDump 時發生錯誤：\n{error}",
+      "extracting_procdump": "正在從 ProcDump 套件中解壓縮 {exe_name}...",
+      "extracting_procdump_error": "解壓縮 ProcDump 時發生錯誤：\n{error}",
+      "local_file_not_found": "找不到本機 ProcDump 檔案。"
     },
     "message": {
     },
@@ -348,6 +353,13 @@
       "silent_install": "靜默安裝"
     },
     "maintenance": {
+      "collect_mspcm_logs": "收集 Microsoft 電腦管家記錄檔",
+      "collect_mspcm_logs_desc": "收集 Microsoft 電腦管家相關的記錄檔、轉儲檔以及其他必要的資訊，以協助排查問題。",
+      "local_file": "本地檔案",
+      "local_file_placeholder": "選擇磁碟上已由 Microsoft 簽署的 ProcDump 可執行檔。",
+      "log_collection": "記錄檔收集",
+      "online_download": "線上下載",
+      "online_download_procdump_tooltip": "從 Microsoft 下載 ProcDump 以收集轉儲檔案。"
     },
     "navigation": {
       "about": "關於",

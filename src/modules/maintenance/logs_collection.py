@@ -1,2 +1,0 @@
-class LogsCollection:
-    pass

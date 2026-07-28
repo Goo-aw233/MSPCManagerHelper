@@ -569,7 +569,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
 
         operation_name = self.app_translator.translate("pages.utilities.compute_files_hashes")
 
-        hasher = ComputeFilesHashes(
+        worker = ComputeFilesHashes(
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
@@ -577,7 +577,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             uppercase_results=self.uppercase_all_results.get() == 1
         )
 
-        files = hasher.select_files()
+        files = worker.select_files()
         if not files:
             # Keep cancel behavior consistent with normal operation flow.
             self.tabview.set(self.events_tab_name)
@@ -595,7 +595,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             return
 
         self._run_operation(
-            lambda: hasher.compute(files),
+            lambda: worker.compute(files),
             "pages.utilities.compute_files_hashes",
             on_completion=self._update_compute_button_state
         )
@@ -624,7 +624,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         if self.checkbox_windows_app_runtime.get() == 1:
             selected_dependencies.append("windows_app_runtime")
 
-        getter = GetDependenciesVersion(
+        worker = GetDependenciesVersion(
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
@@ -632,7 +632,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         )
 
         self._run_operation(
-            getter.execute,
+            worker.execute,
             "pages.utilities.get_dependencies_versions",
             on_completion=self._on_dependencies_checkbox_change
         )
@@ -718,7 +718,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             "end_related_processes": self.checkbox_end_related_processes.get() == 1
         }
 
-        repairer = RepairEdgeWebView2Installation(
+        worker = RepairEdgeWebView2Installation(
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
@@ -726,7 +726,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         )
 
         self._run_operation(
-            repairer.execute,
+            worker.execute,
             "pages.utilities.repair_edge_webview_2_installation",
             on_completion=self._on_webview2_repair_checkbox_change
         )
@@ -791,7 +791,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             "store_beta_version": self.checkbox_store_beta_version.get() == 1
         }
 
-        restarter = RestartServices(
+        worker = RestartServices(
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
@@ -799,7 +799,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         )
 
         self._run_operation(
-            lambda: restarter.execute(),
+            lambda: worker.execute(),
             "pages.utilities.restart_services",
             on_completion=lambda: self.restart_services_card.configure(state="normal")
         )
@@ -822,7 +822,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         self.switch_regions_card.configure(state="disabled")
         self.update_idletasks()
 
-        switcher = SwitchRegions(
+        worker = SwitchRegions(
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
@@ -831,7 +831,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         )
 
         self._run_operation(
-            lambda: switcher.execute(),
+            lambda: worker.execute(),
             "pages.utilities.switch_regions",
             on_completion=lambda: self.switch_regions_card.configure(state="normal")
         )
@@ -878,7 +878,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         if self.checkbox_firewall_product.get() == 1:
             selected_products.append("firewall")
 
-        viewer = ViewInstalledSecurityProducts(
+        worker = ViewInstalledSecurityProducts(
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
@@ -887,7 +887,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         )
 
         self._run_operation(
-            lambda: viewer.execute(),
+            lambda: worker.execute(),
             "pages.utilities.view_installed_security_products",
             on_completion=lambda: self.view_installed_security_products_card.configure(state="normal")
         )

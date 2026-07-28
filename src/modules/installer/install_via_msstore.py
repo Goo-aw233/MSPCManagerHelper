@@ -122,17 +122,15 @@ class InstallViaMicrosoftStore:
             return
 
         # Verify Certificate
-        self._log(self.app_translator.translate("modules.installer.verifying_downloaded_file"))
+        self._log(self.app_translator.translate("modules.common.verifying_certificate"))
         self.logger.info(
             f"Verifying Digital Certificate for Downloaded File: {downloaded_path}"
         )
         if not self._verify_certificate(downloaded_path):
             self.logger.error(
-                "An Error Occurred While Verifying the Certificate of the Downloaded Installer: "
-                "Digital signature is invalid, the signer does not match "
-                "Microsoft Corporation, or the certificate has been revoked."
+                "Certificate verification failed for the Microsoft PC Manager Installer."
             )
-            self._log(self.app_translator.translate("modules.installer.certificate_verification_failed"))
+            self._log(self.app_translator.translate("modules.common.verify_certificate_failed"))
             return
 
         # Launch Downloaded Installer
@@ -164,7 +162,7 @@ class InstallViaMicrosoftStore:
             return False
 
         self.logger.info(f"SHA256 Matches, Verifying Certificate for Cached File: {file_path}")
-        self._log(self.app_translator.translate("modules.installer.verifying_downloaded_file"))
+        self._log(self.app_translator.translate("modules.common.verifying_certificate"))
         if not self._verify_certificate(file_path):
             self.logger.warning(
                 f"Certificate Verification Failed for Cached File: {file_path}, "

@@ -523,7 +523,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.install_via_msstore_card.configure(state="disabled")
         self.update_idletasks()
 
-        installer = InstallViaMicrosoftStore(
+        worker = InstallViaMicrosoftStore(
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
@@ -531,7 +531,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
 
         self._run_operation(
-            installer.execute,
+            worker.execute,
             "pages.installer.install_via_msstore",
             on_completion=lambda: self.install_via_msstore_card.configure(
                 state=self._update_install_via_msstore_state()
@@ -544,7 +544,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.install_webview2_card.configure(state="disabled")
         self.update_idletasks()
 
-        installer = InstallMicrosoftEdgeWebView2Runtime(
+        worker = InstallMicrosoftEdgeWebView2Runtime(
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
@@ -553,7 +553,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
 
         self._run_operation(
-            installer.execute,
+            worker.execute,
             "pages.installer.install_webview2",
             on_completion=lambda: self.install_webview2_card.configure(state="normal")
         )
@@ -665,7 +665,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.install_via_dism_card.configure(state="disabled")
         self.update_idletasks()
 
-        installer = InstallViaDISM(
+        worker = InstallViaDISM(
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
@@ -677,7 +677,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
 
         self._run_operation(
-            installer.execute,
+            worker.execute,
             "pages.installer.install_via_dism",
             on_completion=lambda: self._update_install_via_dism_state()
         )
@@ -739,7 +739,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.install_via_powershell_current_user_card.configure(state="disabled")
         self.update_idletasks()
 
-        installer = InstallViaPowerShellForCurrentUser(
+        worker = InstallViaPowerShellForCurrentUser(
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
@@ -750,7 +750,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
 
         self._run_operation(
-            installer.execute,
+            worker.execute,
             "pages.installer.install_via_powershell_current_user",
             on_completion=lambda: self._update_install_via_powershell_state()
         )
@@ -785,7 +785,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.reinstall_via_powershell_card.configure(state="disabled")
         self.update_idletasks()
 
-        installer = ReinstallViaPowerShell(
+        worker = ReinstallViaPowerShell(
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
@@ -795,7 +795,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
 
         self._run_operation(
-            installer.execute,
+            worker.execute,
             "pages.installer.reinstall_via_powershell",
             on_completion=lambda: self.reinstall_via_powershell_card.configure(state="normal")
         )

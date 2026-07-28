@@ -53,7 +53,3 @@ class AppResources:
     @staticmethod
     def nsudo_path():
         return AppResources._get_binary_path("NSudo", "NSudoLC_x64.exe", "NSudoLC_ARM64.exe")
-
-    @staticmethod
-    def procdump_path():
-        return AppResources._get_binary_path("ProcDump", "procdump64.exe", "procdump64a.exe")

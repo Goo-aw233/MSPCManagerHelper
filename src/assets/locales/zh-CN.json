@@ -56,10 +56,11 @@
   "modules": {
     "common": {
       "file_path": "文件路径: {file_path}",
-      "select_offline_image_dir": "选择脱机映像目录"
+      "select_offline_image_dir": "选择脱机映像目录",
+      "verify_certificate_failed": "文件的数字签名验证失败。",
+      "verifying_certificate": "正在验证文件的数字签名..."
     },
     "installer": {
-      "certificate_verification_failed": "下载的安装程序数字证书验证失败。",
       "cleaned_app_package_path": "应用程序包: {path}",
       "cleaned_dependencies_paths_header": "依赖项:",
       "cleaned_license_path": "许可证文件: {path}",
@@ -91,10 +92,14 @@
       "reinstalling_via_windows_powershell": "正在通过 Windows PowerShell 重新安装...",
       "reset_via_windows_powershell_error": "通过 Windows PowerShell 重置时发生错误：\n{error}",
       "reset_via_windows_powershell_successfully": "已通过 Windows PowerShell 成功重置。",
-      "resetting_via_windows_powershell": "正在通过 Windows PowerShell 重置...",
-      "verifying_downloaded_file": "正在验证下载文件的数字签名..."
+      "resetting_via_windows_powershell": "正在通过 Windows PowerShell 重置..."
     },
     "maintenance": {
+      "downloading_procdump": "正在从 Microsoft 下载 ProcDump...",
+      "downloading_procdump_error": "下载 ProcDump 时发生错误：\n{error}",
+      "extracting_procdump": "正在从 ProcDump 包中提取 {exe_name}...",
+      "extracting_procdump_error": "提取 ProcDump 时发生错误：\n{error}",
+      "local_file_not_found": "未找到本地 ProcDump 文件。"
     },
     "message": {
     },
@@ -348,6 +353,13 @@
       "silent_install": "静默安装"
     },
     "maintenance": {
+      "collect_mspcm_logs": "采集微软电脑管家日志",
+      "collect_mspcm_logs_desc": "采集微软电脑管家相关的日志文件、转储文件以及其他必要的信息，以协助排查问题。",
+      "local_file": "本地文件",
+      "local_file_placeholder": "选择磁盘上已由 Microsoft 签名的 ProcDump 可执行文件。",
+      "log_collection": "日志采集",
+      "online_download": "在线下载",
+      "online_download_procdump_tooltip": "从 Microsoft 下载 ProcDump 以采集转储文件。"
     },
     "navigation": {
       "about": "关于",

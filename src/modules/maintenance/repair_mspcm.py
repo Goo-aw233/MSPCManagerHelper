@@ -1,2 +1,0 @@
-class RepairMSCPM:
-    pass
