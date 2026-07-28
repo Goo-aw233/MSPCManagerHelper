@@ -490,6 +490,16 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         )
         self.security_products_types_frame.pack(fill="x", padx=10, pady=5)
 
+        # Output as Raw Data
+        self.output_as_raw_data_checkbox = customtkinter.CTkCheckBox(
+            self.security_products_types_frame,
+            text=self.app_translator.translate("pages.utilities.output_as_raw_data"),
+            font=customtkinter.CTkFont(family=self.font_family),
+            command=self._on_output_raw_data_checkbox_change
+        )
+        self.output_as_raw_data_checkbox.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+        self.output_as_raw_data_checkbox.configure(state="disabled")
+
         # Antivirus
         self.checkbox_antivirus_product = customtkinter.CTkCheckBox(
             self.security_products_types_frame,
@@ -497,7 +507,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_security_products_checkbox_change
         )
-        self.checkbox_antivirus_product.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+        self.checkbox_antivirus_product.grid(row=1, column=0, sticky="w", padx=10, pady=5)
 
         # Antispyware
         self.checkbox_antispyware_product = customtkinter.CTkCheckBox(
@@ -506,7 +516,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_security_products_checkbox_change
         )
-        self.checkbox_antispyware_product.grid(row=0, column=1, sticky="w", padx=10, pady=5)
+        self.checkbox_antispyware_product.grid(row=1, column=1, sticky="w", padx=10, pady=5)
 
         # Firewall
         self.checkbox_firewall_product = customtkinter.CTkCheckBox(
@@ -515,17 +525,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             font=customtkinter.CTkFont(family=self.font_family),
             command=self._on_security_products_checkbox_change
         )
-        self.checkbox_firewall_product.grid(row=0, column=2, sticky="w", padx=10, pady=5)
-
-        # Output as Raw Data
-        self.output_as_raw_data_checkbox = customtkinter.CTkCheckBox(
-            self.security_products_types_frame,
-            text=self.app_translator.translate("pages.utilities.output_as_raw_data"),
-            font=customtkinter.CTkFont(family=self.font_family),
-            command=self._on_output_raw_data_checkbox_change
-        )
-        self.output_as_raw_data_checkbox.grid(row=1, column=0, sticky="w", padx=10, pady=5)
-        self.output_as_raw_data_checkbox.configure(state="disabled")
+        self.checkbox_firewall_product.grid(row=1, column=2, sticky="w", padx=10, pady=5)
 
         # Checkbox Configuration
         if PrerequisiteChecks.check_windows_server_levels(check_type="is_windows_server"):
