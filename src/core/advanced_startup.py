@@ -66,6 +66,8 @@ class AdvancedStartup:
         CheckTokenMembership:
         https://learn.microsoft.com/windows/win32/api/securitybaseapi/nf-securitybaseapi-checktokenmembership
         """
+        if AdvancedStartup.is_bypass_checks():
+            return True
         try:
             sid = ctypes.c_void_p()
             ret = ctypes.windll.advapi32.ConvertStringSidToSidW(

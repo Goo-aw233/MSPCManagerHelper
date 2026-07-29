@@ -88,7 +88,9 @@ class MainWindow(customtkinter.CTk):
         start_time = time.perf_counter()
 
         app_title = f"{AppMetadata.APP_NAME} {AppMetadata.APP_VERSION}"
-        if AdvancedStartup.is_administrator():
+        if AdvancedStartup.is_bypass_checks():
+            app_title += " [Bypass Checks]"
+        elif AdvancedStartup.is_administrator():
             app_title += " [Administrator]"
         if AdvancedStartup.is_devmode():
             app_title += " [DevMode]"

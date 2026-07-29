@@ -348,6 +348,8 @@ class OptionalChecks:
 
     @staticmethod
     def check_windows_utilities_version():
+        if OptionalChecks._suppressed:
+            return {}
         utilities_versions = {}
 
         for utility in OptionalChecks.DEFAULT_UTILITIES:
