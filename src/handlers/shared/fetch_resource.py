@@ -2,6 +2,8 @@ import hashlib
 import os
 import re
 import time
+from datetime import datetime
+from pathlib import Path
 from urllib.parse import unquote
 
 import requests
@@ -64,8 +66,8 @@ class FetchResource:
         response.raise_for_status()
 
         filename = FetchResource._get_filename(filename, response, download_dir)
-        file_path = os.path.join(download_dir, filename)
-        part_path = file_path + ".part"
+        file_path = Path(download_dir) / filename
+        part_path = Path(str(file_path) + ".part")
 
         total_bytes = response.headers.get("Content-Length")
         if total_bytes is not None:
@@ -84,16 +86,15 @@ class FetchResource:
                     if progress_callback:
                         progress_callback(bytes_read, total_bytes)
         except BaseException:
-            if os.path.exists(part_path):
-                os.remove(part_path)
+            part_path.unlink(missing_ok=True)
             raise
 
         os.replace(part_path, file_path)
 
         if save_sha256:
-            sha256_path = file_path + ".sha256"
+            sha256_path = Path(str(file_path) + ".sha256")
             sha256_hash = FetchResource.compute_sha256(file_path)
-            tmp_sha256_path = sha256_path + ".tmp"
+            tmp_sha256_path = Path(str(sha256_path) + ".tmp")
             with open(tmp_sha256_path, "w", encoding="utf-8") as f:
                 f.write(sha256_hash)
             os.replace(tmp_sha256_path, sha256_path)
@@ -117,7 +118,8 @@ class FetchResource:
         if not filename:
             filename = FetchResource._parse_content_disposition(response)
         if not filename:
-            date_part = time.strftime('%x_%X').replace('/', '-').replace('\\', '-').replace(':', '-')
+            # E.g., 1970-01-01T00.00.00 (ISO 8601)
+            date_part = datetime.now().replace(microsecond=0).isoformat().replace(':', '.')
             filename = f"download_{date_part}_{time.time_ns()}"
 
         filename = FetchResource._sanitize_filename(filename)
@@ -150,18 +152,20 @@ class FetchResource:
 
     @staticmethod
     def _deduplicate_filename(filename, download_dir):
-        base, ext = os.path.splitext(filename)
+        filename_path = Path(filename)
+        base = filename_path.stem
+        ext = filename_path.suffix
         candidate = filename
         counter = 1
-        while os.path.exists(os.path.join(download_dir, candidate)):
+        while (Path(download_dir) / candidate).exists():
             candidate = f"{base}_({counter}){ext}"
             counter += 1
         return candidate
 
     @staticmethod
     def _sanitize_filename(filename):
-        # Uses `os.path.basename` to discard any directory components, then replaces `< > : " / \\ | ? *` with `_`.
-        sanitized = os.path.basename(filename)
+        # Discard any directory components via `Path.name`, then replace `< > : " / \\ | ? *` with `_`.
+        sanitized = Path(filename).name
         sanitized = FetchResource.WINDOWS_INVALID_CHARS.sub("_", str(sanitized))
         return sanitized or "download"
 

@@ -139,26 +139,25 @@ class UninstallViaPowerShellForCurrentUser:
 
     @staticmethod
     def _get_config_cache_dir_paths():
-        # A robust fallback using os.path.expanduser("~").
-        local_app_data = os.getenv("LocalAppData") or os.path.join(os.path.expanduser("~"), "AppData", "Local")
-        program_data = os.getenv("ProgramData", r"C:\ProgramData")
-        system_root = os.getenv("SystemRoot") or os.getenv("WinDir") or r"C:\Windows"
-        temp_dir = tempfile.gettempdir()
+        local_app_data = Path(os.getenv("LocalAppData") or Path.home() / "AppData" / "Local")
+        program_data = Path(os.getenv("ProgramData", r"C:\ProgramData"))
+        system_root = Path(os.getenv("SystemRoot") or os.getenv("WinDir") or r"C:\Windows")
+        temp_dir = Path(tempfile.gettempdir())
 
         return [
-            Path(local_app_data) / "Packages" / "Microsoft.MicrosoftPCManager_8wekyb3d8bbwe",
-            Path(local_app_data) / "Packages" / "Microsoft.PCManager_8wekyb3d8bbwe",
-            Path(local_app_data) / "PC Manager Store",
-            Path(local_app_data) / "PCManager",
-            Path(local_app_data) / "Windows Master Store",
-            Path(program_data) / "Windows Master Setup",
-            Path(program_data) / "Windows Master Store",
-            Path(system_root) / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Packages" / "Microsoft.MicrosoftPCManager_8wekyb3d8bbwe",
-            Path(system_root) / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Packages" / "Microsoft.PCManager_8wekyb3d8bbwe",
-            Path(system_root) / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Windows Master",
-            Path(system_root) / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Windows Master Store",
-            Path(temp_dir) / "Windows Master Store",
-            Path(temp_dir) / "WM Scan Test",
+            local_app_data / "Packages" / "Microsoft.MicrosoftPCManager_8wekyb3d8bbwe",
+            local_app_data / "Packages" / "Microsoft.PCManager_8wekyb3d8bbwe",
+            local_app_data / "PC Manager Store",
+            local_app_data / "PCManager",
+            local_app_data / "Windows Master Store",
+            program_data / "Windows Master Setup",
+            program_data / "Windows Master Store",
+            system_root / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Packages" / "Microsoft.MicrosoftPCManager_8wekyb3d8bbwe",
+            system_root / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Packages" / "Microsoft.PCManager_8wekyb3d8bbwe",
+            system_root / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Windows Master",
+            system_root / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Windows Master Store",
+            temp_dir / "Windows Master Store",
+            temp_dir / "WM Scan Test",
         ]
 
     def _basic_config_cache_dirs(self):
@@ -357,9 +356,8 @@ class UninstallViaPowerShellForCurrentUser:
 
     @staticmethod
     def _get_basic_cache_file_specs():
-        # A robust fallback using os.path.expanduser("~").
-        local_app_data = os.getenv("LocalAppData") or os.path.join(os.path.expanduser("~"), "AppData", "Local")
-        system_root = os.getenv("SystemRoot") or os.getenv("WinDir") or r"C:\Windows"
+        local_app_data = Path(os.getenv("LocalAppData") or Path.home() / "AppData" / "Local")
+        system_root = Path(os.getenv("SystemRoot") or os.getenv("WinDir") or r"C:\Windows")
 
         usage_logs_patterns = [
             "*BGADefMgr*.log",
@@ -381,15 +379,15 @@ class UninstallViaPowerShellForCurrentUser:
 
         return [
             (
-                Path(local_app_data) / "Microsoft" / "CLR_v4.0" / "UsageLogs",
+                local_app_data / "Microsoft" / "CLR_v4.0" / "UsageLogs",
                 usage_logs_patterns
             ),
             (
-                Path(system_root) / "Prefetch",
+                system_root / "Prefetch",
                 prefetch_patterns
             ),
             (
-                Path(system_root) / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Microsoft" / "CLR_v4.0" / "UsageLogs",
+                system_root / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Microsoft" / "CLR_v4.0" / "UsageLogs",
                 usage_logs_patterns
             ),
         ]

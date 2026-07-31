@@ -198,26 +198,25 @@ class UninstallBeta:
 
     @staticmethod
     def _get_config_cache_dir_paths():
-        # A robust fallback using os.path.expanduser("~").
-        local_app_data = os.getenv("LocalAppData") or os.path.join(os.path.expanduser("~"), "AppData", "Local")
-        program_data = os.getenv("ProgramData", r"C:\ProgramData")
-        program_files = os.getenv("ProgramFiles", r"C:\Program Files")
-        system_root = os.getenv("SystemRoot") or os.getenv("WinDir") or r"C:\Windows"
-        temp_dir = tempfile.gettempdir()
+        local_app_data = Path(os.getenv("LocalAppData") or Path.home() / "AppData" / "Local")
+        program_data = Path(os.getenv("ProgramData", r"C:\ProgramData"))
+        program_files = Path(os.getenv("ProgramFiles", r"C:\Program Files"))
+        system_root = Path(os.getenv("SystemRoot") or os.getenv("WinDir") or r"C:\Windows")
+        temp_dir = Path(tempfile.gettempdir())
 
         return [
-            Path(local_app_data) / "PC Manager",
-            Path(local_app_data) / "Windows Master",
-            Path(program_data) / "PCMConfigPath",
-            Path(program_data) / "Windows Master",
-            Path(program_data) / "Windows Master Setup",
-            Path(program_files) / "Microsoft PC Manager",
-            Path(program_files) / "WindowsMaster",
-            Path(program_files) / "Windows Master",
-            Path(system_root) / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Windows Master",
-            Path(system_root) / "SystemTemp" / "Windows Master",
-            Path(temp_dir) / "Windows Master",
-            Path(temp_dir) / "WM Scan Test",
+            local_app_data / "PC Manager",
+            local_app_data / "Windows Master",
+            program_data / "PCMConfigPath",
+            program_data / "Windows Master",
+            program_data / "Windows Master Setup",
+            program_files / "Microsoft PC Manager",
+            program_files / "WindowsMaster",
+            program_files / "Windows Master",
+            system_root / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Windows Master",
+            system_root / "SystemTemp" / "Windows Master",
+            temp_dir / "Windows Master",
+            temp_dir / "WM Scan Test",
         ]
 
     def _basic_config_cache_dirs(self):
@@ -435,11 +434,10 @@ class UninstallBeta:
 
     @staticmethod
     def _get_basic_cache_file_specs():
-        # A robust fallback using os.path.expanduser("~").
-        local_app_data = os.getenv("LocalAppData") or os.path.join(os.path.expanduser("~"), "AppData", "Local")
-        program_data = os.getenv("ProgramData", r"C:\ProgramData")
-        system_root = os.getenv("SystemRoot") or os.getenv("WinDir") or r"C:\Windows"
-        user_profile = os.getenv("UserProfile") or os.path.expanduser("~")
+        local_app_data = Path(os.getenv("LocalAppData") or Path.home() / "AppData" / "Local")
+        program_data = Path(os.getenv("ProgramData", r"C:\ProgramData"))
+        system_root = Path(os.getenv("SystemRoot") or os.getenv("WinDir") or r"C:\Windows")
+        user_profile = Path(os.getenv("UserProfile") or Path.home())
 
         usage_logs_patterns = [
             "*BGADefMgr*.log",
@@ -469,23 +467,23 @@ class UninstallBeta:
 
         return [
             (
-                Path(local_app_data) / "Microsoft" / "CLR_v4.0" / "UsageLogs",
+                local_app_data / "Microsoft" / "CLR_v4.0" / "UsageLogs",
                 usage_logs_patterns
             ),
             (
-                Path(system_root) / "Prefetch",
+                system_root / "Prefetch",
                 prefetch_patterns
             ),
             (
-                Path(system_root) / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Microsoft" / "CLR_v4.0" / "UsageLogs",
+                system_root / "System32" / "config" / "systemprofile" / "AppData" / "Local" / "Microsoft" / "CLR_v4.0" / "UsageLogs",
                 usage_logs_patterns
             ),
             (
-                Path(user_profile) / "Desktop",
+                user_profile / "Desktop",
                 shortcut_patterns
             ),
             (
-                Path(program_data) / "Microsoft" / "Windows" / "Start Menu" / "Programs",
+                program_data / "Microsoft" / "Windows" / "Start Menu" / "Programs",
                 shortcut_patterns
             ),
         ]
