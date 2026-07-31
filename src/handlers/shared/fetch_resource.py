@@ -197,7 +197,7 @@ class FetchResource:
             # Schedule Update on Main Thread to Avoid Tkinter Threading Issues
             _textbox_widget.after(0, _update_textbox, text)
 
-        def _fmt(b):
+        def _fmt(b: float) -> str:
             _GB = 1 << 30
             _MB = 1 << 20
             _KB = 1 << 10
