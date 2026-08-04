@@ -1,3 +1,4 @@
+import os
 import subprocess
 from pathlib import Path
 
@@ -33,10 +34,34 @@ class InstallMicrosoftEdgeWebView2Runtime:
         if self.log_callback:
             self.log_callback(message)
 
+    @staticmethod
+    def _format_error_output(app_translator, stdout_text, stderr_text, use_localized=True, returncode=None):
+        stdout_label = app_translator.translate(
+            "common.stdout") if use_localized else "Stdout"
+        stderr_label = app_translator.translate(
+            "common.stderr") if use_localized else "Stderr"
+        return_code_label = app_translator.translate(
+            "common.return_code") if use_localized else "Return Code"
+        parts = []
+        if returncode is not None:
+            parts.append(f"{return_code_label}: {returncode}")
+        if stdout_text:
+            parts.append(f"{stdout_label}:\n{stdout_text}")
+        if stderr_text:
+            if parts:
+                parts.append("---")
+            parts.append(f"{stderr_label}:\n{stderr_text}")
+        return "\n".join(parts)
+
     def execute(self):
         self._install_webview2()
 
     def _install_webview2(self):
+        # Install via EdgeUpdate (no download required)
+        if self.installer_type == "via_edgeupdate":
+            self._install_via_edgeupdate()
+            return
+
         # Determine Download URL
         if self.installer_type == "offline_install":
             arch = PrerequisiteChecks.check_os_architecture()
@@ -108,6 +133,101 @@ class InstallMicrosoftEdgeWebView2Runtime:
             return
 
         self._launch_installer(file_path)
+
+    def _install_via_edgeupdate(self):
+        edgeupdate_path = self._find_edgeupdate_path()
+        if not edgeupdate_path:
+            self.logger.error(
+                "MicrosoftEdgeUpdate.exe not found. Unable to install via EdgeUpdate."
+            )
+            self._log(
+                self.app_translator.translate("modules.installer.edgeupdate_not_found")
+            )
+            return
+
+        args = [
+            str(edgeupdate_path),
+            "/installsource", "taggedmi",
+            "/install",
+            "appguid={F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"
+            "&appname=Microsoft%20Edge%20Webview2%20Runtime"
+            "&needsadmin=prefers",
+        ]
+
+        self._log(
+            self.app_translator.translate(
+                "modules.installer.launching_webview2_installer"
+            )
+        )
+        self.logger.info(
+            "Installing Microsoft Edge WebView2 Runtime via EdgeUpdate. "
+            f"Command: {' '.join(args)}"
+        )
+
+        try:
+            result = subprocess.run(
+                args,
+                check=False,
+                shell=False,
+                text=True,
+                capture_output=True,
+                creationflags=subprocess.CREATE_NO_WINDOW,
+            )
+        except Exception as e:
+            self._log(
+                self.app_translator.translate(
+                    "modules.installer.install_webview2_error"
+                ).format(error=str(e))
+            )
+            self.logger.error(
+                f"An Error Occurred While Installing Microsoft Edge WebView2 Runtime via EdgeUpdate: {e}"
+            )
+            return
+
+        if result.returncode == 0:
+            self.logger.info(
+                "Microsoft Edge WebView2 Runtime installed successfully via EdgeUpdate."
+            )
+            self._log(
+                self.app_translator.translate(
+                    "modules.installer.install_webview2_successfully"
+                )
+            )
+        else:
+            error_output = self._format_error_output(
+                self.app_translator, result.stdout, result.stderr, returncode=result.returncode
+            )
+            self._log(
+                self.app_translator.translate(
+                    "modules.installer.install_webview2_error"
+                ).format(error=error_output)
+            )
+            self.logger.error(
+                "An Error Occurred While Installing Microsoft Edge WebView2 Runtime via EdgeUpdate:\n"
+                + self._format_error_output(
+                    self.app_translator, result.stdout, result.stderr,
+                    use_localized=False, returncode=result.returncode
+                )
+            )
+
+    @staticmethod
+    def _find_edgeupdate_path():
+        local_app_data = Path(os.getenv("LocalAppData") or Path.home() / "AppData" / "Local")
+        program_files_x86 = Path(os.getenv("ProgramFiles(x86)") or r"C:\Program Files (x86)")
+
+        candidates = [
+            local_app_data / "Microsoft" / "EdgeUpdate" / "MicrosoftEdgeUpdate.exe",
+            program_files_x86 / "Microsoft" / "EdgeUpdate" / "MicrosoftEdgeUpdate.exe",
+        ]
+
+        for candidate in candidates:
+            if candidate.is_file():
+                return candidate
+        return None
+
+    @staticmethod
+    def is_edgeupdate_available():
+        return InstallMicrosoftEdgeWebView2Runtime._find_edgeupdate_path() is not None
 
     def _try_reuse_cached(self, file_path, sha256_path):
         if not file_path.exists() or not sha256_path.exists():
@@ -196,9 +316,8 @@ class InstallMicrosoftEdgeWebView2Runtime:
                 )
             )
         else:
-            error_output = (
-                self.app_translator.translate("common.return_code")
-                + f": {result.returncode}"
+            error_output = self._format_error_output(
+                self.app_translator, result.stdout, result.stderr, returncode=result.returncode
             )
             self._log(
                 self.app_translator.translate(
@@ -206,8 +325,11 @@ class InstallMicrosoftEdgeWebView2Runtime:
                 ).format(error=error_output)
             )
             self.logger.error(
-                "An Error Occurred While Installing Microsoft Edge WebView2 Runtime: "
-                f"Return Code: {result.returncode}"
+                "An Error Occurred While Installing Microsoft Edge WebView2 Runtime:\n"
+                + self._format_error_output(
+                    self.app_translator, result.stdout, result.stderr,
+                    use_localized=False, returncode=result.returncode
+                )
             )
 
     def _get_filename(self):

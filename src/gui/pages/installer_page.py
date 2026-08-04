@@ -116,15 +116,30 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
 
         self.install_webview2_installer_var = tkinter.StringVar(value="online_install")
 
+        # via EdgeUpdate
+        self.via_edgeupdate_radiobutton = customtkinter.CTkRadioButton(
+            self.install_webview2_options_frame,
+            text=self.app_translator.translate("pages.installer.via_edgeupdate"),
+            variable=self.install_webview2_installer_var,
+            value="via_edgeupdate",
+            command=self._update_install_webview2_state,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.via_edgeupdate_radiobutton.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+        CTkToolTip(self.via_edgeupdate_radiobutton,
+                   self.app_translator.translate("pages.installer.via_edgeupdate_tooltip"),
+                   font=(self.font_family, 12))
+
         # Online Installer
         self.online_installer_radiobutton = customtkinter.CTkRadioButton(
             self.install_webview2_options_frame,
             text=self.app_translator.translate("pages.installer.online_installer"),
             variable=self.install_webview2_installer_var,
             value="online_install",
+            command=self._update_install_webview2_state,
             font=customtkinter.CTkFont(family=self.font_family, weight="bold")
         )
-        self.online_installer_radiobutton.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+        self.online_installer_radiobutton.grid(row=0, column=1, sticky="w", padx=10, pady=5)
 
         # Offline Installer
         self.offline_installer_radiobutton = customtkinter.CTkRadioButton(
@@ -132,18 +147,23 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             text=self.app_translator.translate("pages.installer.offline_installer"),
             variable=self.install_webview2_installer_var,
             value="offline_install",
+            command=self._update_install_webview2_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
-        self.offline_installer_radiobutton.grid(row=0, column=1, sticky="w", padx=10, pady=5)
+        self.offline_installer_radiobutton.grid(row=0, column=2, sticky="w", padx=10, pady=5)
 
         # Silent Install
+        self.silent_install_var = tkinter.BooleanVar(value=False)
         self.silent_install_checkbox = customtkinter.CTkCheckBox(
             self.install_webview2_options_frame,
             text=self.app_translator.translate("pages.installer.silent_install"),
-            onvalue="silent_install",
+            variable=self.silent_install_var,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.silent_install_checkbox.grid(row=0, column=3, sticky="w", padx=10, pady=5)
+
+        # Apply Initial WebView2 Installer State
+        self._update_install_webview2_state()
         # === End of Online Install Section ===
 
         # === Offline Install Section ===
@@ -540,6 +560,25 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
     # ~ End of Install via Microsoft Store ~
 
     # ~ Install Microsoft EdgeWebView2 Runtime ~
+    def _update_install_webview2_state(self):
+        is_via_edgeupdate = self.install_webview2_installer_var.get() == "via_edgeupdate"
+
+        # Silent Install is Not Applicable When Installing via EdgeUpdate
+        if is_via_edgeupdate:
+            self.silent_install_var.set(False)
+            self.silent_install_checkbox.configure(state="disabled")
+        else:
+            self.silent_install_checkbox.configure(state="normal")
+
+        if (is_via_edgeupdate
+                and not InstallMicrosoftEdgeWebView2Runtime.is_edgeupdate_available()):
+            self.logger.warning(
+                "MicrosoftEdgeUpdate.exe is not available. "
+                "Disabling 'Install via EdgeUpdate' option.")
+            self.install_webview2_card.configure(state="disabled")
+            return
+        self.install_webview2_card.configure(state="normal")
+
     def _run_install_webview2(self):
         self.install_webview2_card.configure(state="disabled")
         self.update_idletasks()
@@ -549,13 +588,13 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
             installer_type=self.install_webview2_installer_var.get(),
-            silent_install=bool(self.silent_install_checkbox.get())
+            silent_install=self.silent_install_var.get()
         )
 
         self._run_operation(
             worker.execute,
             "pages.installer.install_webview2",
-            on_completion=lambda: self.install_webview2_card.configure(state="normal")
+            on_completion=lambda: self._update_install_webview2_state()
         )
     # ~ End of Install Microsoft EdgeWebView2 Runtime ~
 
@@ -634,11 +673,13 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         enabled = self.license_checkbox.get()
         self._set_entry_group_state(enabled, self.license_path_entry,
                                      self.license_path_select_button)
+        self._update_install_via_dism_state()
 
     def _toggle_dependencies_state(self):
         enabled = self.dependencies_checkbox.get()
         self._set_entry_group_state(enabled, self.dependencies_paths_entry,
                                      self.dependencies_paths_select_button)
+        self._update_install_via_dism_state()
 
     @staticmethod
     def _block_entry_event(_):
@@ -764,6 +805,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         else:
             self.reinstall_reset_radiobutton.configure(state="normal")
         self._toggle_reinstall_force_quit_state()
+        self._update_reinstall_via_powershell_state()
 
     def _toggle_reinstall_force_quit_state(self):
         if self.reinstall_action_var.get() == "reinstall":
@@ -777,6 +819,13 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
                                                                    suppress_complete_log=True):
             self.logger.warning(
                 "powershell.exe is not available. Disabling 'Reinstall via Windows PowerShell' option.")
+            self.reinstall_via_powershell_card.configure(state="disabled")
+            return
+        if (self.reinstall_user_scope_var.get() == "all_users"
+                and not AdvancedStartup.is_administrator()):
+            self.logger.warning(
+                "Administrator privileges are required for the 'All Users' scope. "
+                "Disabling 'Reinstall via Windows PowerShell' option.")
             self.reinstall_via_powershell_card.configure(state="disabled")
             return
         self.reinstall_via_powershell_card.configure(state="normal")

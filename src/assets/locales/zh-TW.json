@@ -71,6 +71,7 @@
       "downloading_online_installer": "正在下載線上安裝程式...",
       "downloading_webview2_offline_installer": "正在下載離線 Microsoft Edge WebView2 執行階段安裝程式...",
       "downloading_webview2_online_installer": "正在下載線上 Microsoft Edge WebView2 執行階段安裝程式...",
+      "edgeupdate_not_found": "找不到 MicrosoftEdgeUpdate.exe。請確認已安裝 Microsoft Edge。",
       "empty_app_package_path": "應用程式套件路徑為空。",
       "install_via_dism_error": "透過 DISM 安裝時發生錯誤：\n{error}",
       "install_via_dism_successfully": "已透過 DISM 成功安裝。",
@@ -350,7 +351,9 @@
       "select_dependencies_paths": "選擇依賴項檔案",
       "select_license_path": "選擇授權檔案",
       "select_offline_image_path": "選擇離線映像目錄",
-      "silent_install": "靜默安裝"
+      "silent_install": "靜默安裝",
+      "via_edgeupdate": "透過 EdgeUpdate 安裝",
+      "via_edgeupdate_tooltip": "透過現有的 EdgeUpdate 安裝 Microsoft Edge WebView2 執行階段，無需下載任何額外的安裝程式。"
     },
     "maintenance": {
       "collect_mspcm_logs": "收集 Microsoft 電腦管家記錄檔",

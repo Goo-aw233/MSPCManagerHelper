@@ -71,6 +71,7 @@
       "downloading_online_installer": "正在下载在线安装程序...",
       "downloading_webview2_offline_installer": "正在下载脱机 Microsoft Edge WebView2 运行时安装程序...",
       "downloading_webview2_online_installer": "正在下载在线 Microsoft Edge WebView2 运行时安装程序...",
+      "edgeupdate_not_found": "未找到 MicrosoftEdgeUpdate.exe。请确保已安装 Microsoft Edge。",
       "empty_app_package_path": "应用程序包路径为空。",
       "install_via_dism_error": "通过 DISM 安装时发生错误：\n{error}",
       "install_via_dism_successfully": "已通过 DISM 成功安装。",
@@ -350,7 +351,9 @@
       "select_dependencies_paths": "选择依赖项文件",
       "select_license_path": "选择许可证文件",
       "select_offline_image_path": "选择脱机映像目录",
-      "silent_install": "静默安装"
+      "silent_install": "静默安装",
+      "via_edgeupdate": "通过 EdgeUpdate 安装",
+      "via_edgeupdate_tooltip": "使用现有的 EdgeUpdate 安装 Microsoft Edge WebView2 运行时，无需下载任何额外的安装程序。"
     },
     "maintenance": {
       "collect_mspcm_logs": "采集微软电脑管家日志",
