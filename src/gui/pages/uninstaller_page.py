@@ -29,6 +29,11 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             events_textbox_wrap="none"
         )
 
+        # Build UI Sections
+        self._create_uninstall_stable_section()
+        self._create_uninstall_beta_section()
+
+    def _create_uninstall_stable_section(self):
         # === Uninstall Stable ===
         self._create_section_label(self.app_translator.translate("pages.uninstaller.uninstall_stable"))
 
@@ -41,8 +46,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.uninstaller.uninstall_via_dism_all_users_desc"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.common.execute"),
-            command=self._run_uninstall_via_dism_all_users,
-            state=self._update_uninstall_via_dism_all_users_state()
+            command=self._run_uninstall_via_dism_all_users
         )
 
         self._create_separator(uninstall_via_dism_for_all_users_frame)
@@ -64,7 +68,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             text=self.app_translator.translate("pages.common.online_image"),
             variable=self.uninstall_image_var,
             value="online_image",
-            command=self._on_dism_uninstall_image_change,
+            command=self._refresh_uninstall_via_dism_state,
             font=customtkinter.CTkFont(family=self.font_family, weight="bold")
         )
         self.dism_radiobutton_online_image.grid(row=0, column=0, sticky="w", padx=10, pady=5)
@@ -75,7 +79,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             text=self.app_translator.translate("pages.common.offline_image"),
             variable=self.uninstall_image_var,
             value="offline_image",
-            command=self._on_dism_uninstall_image_change,
+            command=self._refresh_uninstall_via_dism_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.dism_radiobutton_offline_image.grid(row=0, column=1, sticky="w", padx=10, pady=5)
@@ -87,7 +91,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.dism_checkbox_basic_cleanup = customtkinter.CTkCheckBox(
             self.dism_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_cleanup"),
-            command=self._on_dism_basic_cleanup_toggle,
+            command=self._refresh_uninstall_via_dism_state,
             font=customtkinter.CTkFont(family=self.font_family, weight="bold")
         )
         self.dism_checkbox_basic_cleanup.grid(row=0, column=2, sticky="w", padx=10, pady=5)
@@ -96,7 +100,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.dism_checkbox_advanced_cleanup = customtkinter.CTkCheckBox(
             self.dism_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.advanced_cleanup"),
-            command=self._on_dism_advanced_cleanup_toggle,
+            command=self._refresh_uninstall_via_dism_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.dism_checkbox_advanced_cleanup.grid(row=0, column=3, sticky="w", padx=10, pady=5)
@@ -114,7 +118,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.dism_checkbox_basic_config_cache_dirs = customtkinter.CTkCheckBox(
             self.dism_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_config_cache_dirs"),
-            command=self._on_dism_basic_option_change,
+            command=self._refresh_dism_basic_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.dism_checkbox_basic_config_cache_dirs.grid(row=1, column=1, sticky="w", padx=10, pady=5)
@@ -123,7 +127,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.dism_checkbox_basic_registries = customtkinter.CTkCheckBox(
             self.dism_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_registries"),
-            command=self._on_dism_basic_option_change,
+            command=self._refresh_dism_basic_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.dism_checkbox_basic_registries.grid(row=1, column=2, sticky="w", padx=10, pady=5)
@@ -132,7 +136,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.dism_checkbox_basic_cache_files = customtkinter.CTkCheckBox(
             self.dism_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_cache_files"),
-            command=self._on_dism_basic_option_change,
+            command=self._refresh_dism_basic_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.dism_checkbox_basic_cache_files.grid(row=1, column=3, sticky="w", padx=10, pady=5)
@@ -150,7 +154,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.dism_checkbox_advanced_app_package_data = customtkinter.CTkCheckBox(
             self.dism_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.advanced_app_package_data"),
-            command=self._on_dism_advanced_option_change,
+            command=self._refresh_dism_advanced_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.dism_checkbox_advanced_app_package_data.grid(row=2, column=1, sticky="w", padx=10, pady=5)
@@ -159,7 +163,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.dism_checkbox_advanced_registries = customtkinter.CTkCheckBox(
             self.dism_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.advanced_registries"),
-            command=self._on_dism_advanced_option_change,
+            command=self._refresh_dism_advanced_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.dism_checkbox_advanced_registries.grid(row=2, column=2, sticky="w", padx=10, pady=5)
@@ -175,7 +179,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             self.dism_checkbox_advanced_registries
         ]
 
-        self._update_dism_cleanup_options_state()
+        self._refresh_uninstall_via_dism_state()
 
         # --- Uninstall via Windows PowerShell for All Users ---
         uninstall_via_powershell_for_all_users_frame = self._create_group_frame()
@@ -186,8 +190,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.uninstaller.uninstall_via_windows_powershell_all_users_desc"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.common.execute"),
-            command=self._run_uninstall_via_powershell_all_users,
-            state=self._update_uninstall_via_powershell_all_users_state()
+            command=self._run_uninstall_via_powershell_all_users
         )
 
         self._create_separator(uninstall_via_powershell_for_all_users_frame)
@@ -205,7 +208,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.powershell_all_checkbox_basic_cleanup = customtkinter.CTkCheckBox(
             self.powershell_all_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_cleanup"),
-            command=self._on_powershell_all_basic_cleanup_toggle,
+            command=self._refresh_uninstall_via_powershell_all_state,
             font=customtkinter.CTkFont(family=self.font_family, weight="bold")
         )
         self.powershell_all_checkbox_basic_cleanup.grid(row=0, column=0, sticky="w", padx=10, pady=5)
@@ -214,7 +217,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.powershell_all_checkbox_advanced_cleanup = customtkinter.CTkCheckBox(
             self.powershell_all_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.advanced_cleanup"),
-            command=self._on_powershell_all_advanced_cleanup_toggle,
+            command=self._refresh_uninstall_via_powershell_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.powershell_all_checkbox_advanced_cleanup.grid(row=0, column=1, sticky="w", padx=10, pady=5)
@@ -232,7 +235,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.powershell_all_checkbox_basic_config_cache_dirs = customtkinter.CTkCheckBox(
             self.powershell_all_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_config_cache_dirs"),
-            command=self._on_powershell_all_basic_option_change,
+            command=self._refresh_powershell_all_basic_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.powershell_all_checkbox_basic_config_cache_dirs.grid(row=1, column=1, sticky="w", padx=10, pady=5)
@@ -241,7 +244,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.powershell_all_checkbox_basic_registries = customtkinter.CTkCheckBox(
             self.powershell_all_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_registries"),
-            command=self._on_powershell_all_basic_option_change,
+            command=self._refresh_powershell_all_basic_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.powershell_all_checkbox_basic_registries.grid(row=1, column=2, sticky="w", padx=10, pady=5)
@@ -250,7 +253,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.powershell_all_checkbox_basic_cache_files = customtkinter.CTkCheckBox(
             self.powershell_all_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_cache_files"),
-            command=self._on_powershell_all_basic_option_change,
+            command=self._refresh_powershell_all_basic_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.powershell_all_checkbox_basic_cache_files.grid(row=1, column=3, sticky="w", padx=10, pady=5)
@@ -268,7 +271,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.powershell_all_checkbox_advanced_app_package_data = customtkinter.CTkCheckBox(
             self.powershell_all_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.advanced_app_package_data"),
-            command=self._on_powershell_all_advanced_option_change,
+            command=self._refresh_powershell_all_advanced_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.powershell_all_checkbox_advanced_app_package_data.grid(row=2, column=1, sticky="w", padx=10, pady=5)
@@ -277,7 +280,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.powershell_all_checkbox_advanced_registries = customtkinter.CTkCheckBox(
             self.powershell_all_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.advanced_registries"),
-            command=self._on_powershell_all_advanced_option_change,
+            command=self._refresh_powershell_all_advanced_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.powershell_all_checkbox_advanced_registries.grid(row=2, column=2, sticky="w", padx=10, pady=5)
@@ -293,7 +296,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             self.powershell_all_checkbox_advanced_registries
         ]
 
-        self._update_powershell_all_cleanup_options_state()
+        self._refresh_uninstall_via_powershell_all_state()
 
         # --- Uninstall via Windows PowerShell for Current User ---
         uninstall_via_powershell_for_current_user_frame = self._create_group_frame()
@@ -303,8 +306,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.uninstaller.uninstall_via_windows_powershell_current_user_desc"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.common.execute"),
-            command=self._run_uninstall_via_powershell_current_user,
-            state=self._update_uninstall_via_powershell_current_user_state()
+            command=self._run_uninstall_via_powershell_current_user
         )
 
         self._create_separator(uninstall_via_powershell_for_current_user_frame)
@@ -322,7 +324,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.powershell_current_checkbox_basic_cleanup = customtkinter.CTkCheckBox(
             self.powershell_current_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_cleanup"),
-            command=self._on_powershell_current_basic_cleanup_toggle,
+            command=self._refresh_uninstall_via_powershell_current_state,
             font=customtkinter.CTkFont(family=self.font_family, weight="bold")
         )
         self.powershell_current_checkbox_basic_cleanup.grid(row=0, column=0, sticky="w", padx=10, pady=5)
@@ -340,7 +342,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.powershell_current_checkbox_basic_config_cache_dirs = customtkinter.CTkCheckBox(
             self.powershell_current_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_config_cache_dirs"),
-            command=self._on_powershell_current_basic_option_change,
+            command=self._refresh_powershell_current_basic_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.powershell_current_checkbox_basic_config_cache_dirs.grid(row=1, column=1, sticky="w", padx=10, pady=5)
@@ -349,7 +351,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.powershell_current_checkbox_basic_registries = customtkinter.CTkCheckBox(
             self.powershell_current_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_registries"),
-            command=self._on_powershell_current_basic_option_change,
+            command=self._refresh_powershell_current_basic_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.powershell_current_checkbox_basic_registries.grid(row=1, column=2, sticky="w", padx=10, pady=5)
@@ -358,21 +360,21 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.powershell_current_checkbox_basic_cache_files = customtkinter.CTkCheckBox(
             self.powershell_current_uninstall_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_cache_files"),
-            command=self._on_powershell_current_basic_option_change,
+            command=self._refresh_powershell_current_basic_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.powershell_current_checkbox_basic_cache_files.grid(row=1, column=3, sticky="w", padx=10, pady=5)
 
-        # Store checkboxes in lists for easier management.
         self.powershell_current_basic_option_checkboxes = [
             self.powershell_current_checkbox_basic_config_cache_dirs,
             self.powershell_current_checkbox_basic_registries,
             self.powershell_current_checkbox_basic_cache_files
         ]
 
-        self._update_powershell_current_cleanup_options_state()
+        self._refresh_uninstall_via_powershell_current_state()
         # === End of Uninstall Stable ===
 
+    def _create_uninstall_beta_section(self):
         # === Uninstall Beta ===
         self._create_section_label(self.app_translator.translate("pages.uninstaller.uninstall_beta"))
 
@@ -384,8 +386,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.uninstaller.uninstall_beta_desc"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.common.execute"),
-            command=self._run_uninstall_beta,
-            state=self._update_uninstall_beta_state()
+            command=self._run_uninstall_beta
         )
 
         self._create_separator(uninstall_beta_frame)
@@ -403,7 +404,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.uninstall_beta_checkbox_basic_cleanup = customtkinter.CTkCheckBox(
             self.uninstall_beta_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_cleanup"),
-            command=self._on_uninstall_beta_basic_cleanup_toggle,
+            command=self._refresh_uninstall_beta_state,
             font=customtkinter.CTkFont(family=self.font_family, weight="bold")
         )
         self.uninstall_beta_checkbox_basic_cleanup.grid(row=0, column=0, sticky="w", padx=10, pady=5)
@@ -421,7 +422,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.uninstall_beta_checkbox_basic_config_cache_dirs = customtkinter.CTkCheckBox(
             self.uninstall_beta_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_config_cache_dirs"),
-            command=self._on_uninstall_beta_basic_option_change,
+            command=self._refresh_uninstall_beta_basic_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.uninstall_beta_checkbox_basic_config_cache_dirs.grid(row=1, column=1, sticky="w", padx=10, pady=5)
@@ -430,7 +431,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.uninstall_beta_checkbox_basic_registries = customtkinter.CTkCheckBox(
             self.uninstall_beta_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_registries"),
-            command=self._on_uninstall_beta_basic_option_change,
+            command=self._refresh_uninstall_beta_basic_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.uninstall_beta_checkbox_basic_registries.grid(row=1, column=2, sticky="w", padx=10, pady=5)
@@ -439,7 +440,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.uninstall_beta_checkbox_basic_cache_files = customtkinter.CTkCheckBox(
             self.uninstall_beta_options_frame,
             text=self.app_translator.translate("pages.uninstaller.basic_cache_files"),
-            command=self._on_uninstall_beta_basic_option_change,
+            command=self._refresh_uninstall_beta_basic_select_all_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.uninstall_beta_checkbox_basic_cache_files.grid(row=1, column=3, sticky="w", padx=10, pady=5)
@@ -451,28 +452,28 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             self.uninstall_beta_checkbox_basic_cache_files
         ]
 
-        self._update_uninstall_beta_cleanup_options_state()
+        self._refresh_uninstall_beta_state()
         # === End of Uninstall Beta ===
 
 
     # ~~~ Features Functions ~~~
     # ~ Uninstall via DISM for All Users ~
-    def _update_uninstall_via_dism_all_users_state(self):
+    def _refresh_uninstall_via_dism_card_state(self):
         state = "normal" if AdvancedStartup.is_administrator() else "disabled"
         if not OptionalChecks.check_windows_utilities_availability(target_utility=["Dism.exe", "powershell.exe"],
                                                                    suppress_complete_log=True):
             state = "disabled"
             self.logger.warning(
                 "Dism.exe or powershell.exe is not available. Disabling 'Uninstall via DISM (All Users)' option.")
-        return state
+        self.uninstall_via_dism_all_users_card.configure(state=state)
 
-    def _update_dism_basic_select_all_state(self):
+    def _refresh_dism_basic_select_all_state(self):
         if all(cb.get() == 1 for cb in self.dism_basic_option_checkboxes):
             self.dism_checkbox_basic_select_all.select()
         else:
             self.dism_checkbox_basic_select_all.deselect()
 
-    def _update_dism_advanced_select_all_state(self):
+    def _refresh_dism_advanced_select_all_state(self):
         if all(cb.get() == 1 for cb in self.dism_advanced_option_checkboxes):
             self.dism_checkbox_advanced_select_all.select()
         else:
@@ -502,30 +503,29 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
                 cb.deselect()
                 cb.configure(state="disabled")
 
-    def _update_dism_cleanup_options_state(self):
-        if self.uninstall_image_var.get() == "offline_image":
+    def _refresh_uninstall_via_dism_options_state(self):
+        is_offline = self.uninstall_image_var.get() == "offline_image"
+
+        # Cleanup options are not applicable to offline images.
+        if is_offline:
             self.dism_checkbox_basic_cleanup.deselect()
-            self.dism_checkbox_basic_cleanup.configure(state="disabled")
             self.dism_checkbox_advanced_cleanup.deselect()
-            self.dism_checkbox_advanced_cleanup.configure(state="disabled")
-            self._set_dism_basic_row_enabled(False)
-            self._set_dism_advanced_row_enabled(False)
-            return
+        self.dism_checkbox_basic_cleanup.configure(
+            state="disabled" if is_offline else "normal")
+        self.dism_checkbox_advanced_cleanup.configure(
+            state="disabled" if is_offline else "normal")
 
-        self.dism_checkbox_basic_cleanup.configure(state="normal")
-        self.dism_checkbox_advanced_cleanup.configure(state="normal")
+        self._set_dism_basic_row_enabled(
+            not is_offline and self.dism_checkbox_basic_cleanup.get() == 1)
+        self._set_dism_advanced_row_enabled(
+            not is_offline and self.dism_checkbox_advanced_cleanup.get() == 1)
 
-        self._set_dism_basic_row_enabled(self.dism_checkbox_basic_cleanup.get() == 1)
-        self._set_dism_advanced_row_enabled(self.dism_checkbox_advanced_cleanup.get() == 1)
+        self._refresh_dism_basic_select_all_state()
+        self._refresh_dism_advanced_select_all_state()
 
-    def _on_dism_basic_cleanup_toggle(self):
-        self._update_dism_cleanup_options_state()
-
-    def _on_dism_advanced_cleanup_toggle(self):
-        self._update_dism_cleanup_options_state()
-
-    def _on_dism_uninstall_image_change(self):
-        self._update_dism_cleanup_options_state()
+    def _refresh_uninstall_via_dism_state(self):
+        self._refresh_uninstall_via_dism_options_state()
+        self._refresh_uninstall_via_dism_card_state()
 
     def _toggle_dism_basic_select_all(self):
         state = self.dism_checkbox_basic_select_all.get()
@@ -534,7 +534,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
                 cb.select()
             else:
                 cb.deselect()
-        self._update_dism_basic_select_all_state()
+        self._refresh_dism_basic_select_all_state()
 
     def _toggle_dism_advanced_select_all(self):
         state = self.dism_checkbox_advanced_select_all.get()
@@ -543,13 +543,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
                 cb.select()
             else:
                 cb.deselect()
-        self._update_dism_advanced_select_all_state()
-
-    def _on_dism_basic_option_change(self):
-        self._update_dism_basic_select_all_state()
-
-    def _on_dism_advanced_option_change(self):
-        self._update_dism_advanced_select_all_state()
+        self._refresh_dism_advanced_select_all_state()
 
     def _run_uninstall_via_dism_all_users(self):
         self.uninstall_via_dism_all_users_card.configure(state="disabled")
@@ -574,29 +568,27 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._run_operation(
             worker.execute,
             "pages.uninstaller.uninstall_via_dism_all_users",
-            on_completion=lambda: self.uninstall_via_dism_all_users_card.configure(
-                state=self._update_uninstall_via_dism_all_users_state()
-            )
+            on_completion=lambda: self._refresh_uninstall_via_dism_state()
         )
     # ~ End of Uninstall via DISM for All Users ~
 
     # ~ Uninstall via Windows PowerShell for All Users ~
-    def _update_uninstall_via_powershell_all_users_state(self):
+    def _refresh_uninstall_via_powershell_all_card_state(self):
         state = "normal" if AdvancedStartup.is_administrator() else "disabled"
         if not OptionalChecks.check_windows_utilities_availability(target_utility=["powershell.exe"],
                                                                    suppress_complete_log=True):
             state = "disabled"
             self.logger.warning(
                 "powershell.exe is not available. Disabling 'Uninstall via Windows PowerShell (All Users)' option.")
-        return state
+        self.uninstall_via_powershell_all_users_card.configure(state=state)
 
-    def _update_powershell_all_basic_select_all_state(self):
+    def _refresh_powershell_all_basic_select_all_state(self):
         if all(cb.get() == 1 for cb in self.powershell_all_basic_option_checkboxes):
             self.powershell_all_checkbox_basic_select_all.select()
         else:
             self.powershell_all_checkbox_basic_select_all.deselect()
 
-    def _update_powershell_all_advanced_select_all_state(self):
+    def _refresh_powershell_all_advanced_select_all_state(self):
         if all(cb.get() == 1 for cb in self.powershell_all_advanced_option_checkboxes):
             self.powershell_all_checkbox_advanced_select_all.select()
         else:
@@ -626,18 +618,19 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
                 cb.deselect()
                 cb.configure(state="disabled")
 
-    def _update_powershell_all_cleanup_options_state(self):
+    def _refresh_uninstall_via_powershell_all_options_state(self):
         self.powershell_all_checkbox_basic_cleanup.configure(state="normal")
         self.powershell_all_checkbox_advanced_cleanup.configure(state="normal")
 
         self._set_powershell_all_basic_row_enabled(self.powershell_all_checkbox_basic_cleanup.get() == 1)
         self._set_powershell_all_advanced_row_enabled(self.powershell_all_checkbox_advanced_cleanup.get() == 1)
 
-    def _on_powershell_all_basic_cleanup_toggle(self):
-        self._update_powershell_all_cleanup_options_state()
+        self._refresh_powershell_all_basic_select_all_state()
+        self._refresh_powershell_all_advanced_select_all_state()
 
-    def _on_powershell_all_advanced_cleanup_toggle(self):
-        self._update_powershell_all_cleanup_options_state()
+    def _refresh_uninstall_via_powershell_all_state(self):
+        self._refresh_uninstall_via_powershell_all_options_state()
+        self._refresh_uninstall_via_powershell_all_card_state()
 
     def _toggle_powershell_all_basic_select_all(self):
         state = self.powershell_all_checkbox_basic_select_all.get()
@@ -646,7 +639,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
                 cb.select()
             else:
                 cb.deselect()
-        self._update_powershell_all_basic_select_all_state()
+        self._refresh_powershell_all_basic_select_all_state()
 
     def _toggle_powershell_all_advanced_select_all(self):
         state = self.powershell_all_checkbox_advanced_select_all.get()
@@ -655,13 +648,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
                 cb.select()
             else:
                 cb.deselect()
-        self._update_powershell_all_advanced_select_all_state()
-
-    def _on_powershell_all_basic_option_change(self):
-        self._update_powershell_all_basic_select_all_state()
-
-    def _on_powershell_all_advanced_option_change(self):
-        self._update_powershell_all_advanced_select_all_state()
+        self._refresh_powershell_all_advanced_select_all_state()
 
     def _run_uninstall_via_powershell_all_users(self):
         self.uninstall_via_powershell_all_users_card.configure(state="disabled")
@@ -685,23 +672,21 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._run_operation(
             worker.execute,
             "pages.uninstaller.uninstall_via_windows_powershell_all_users",
-            on_completion=lambda: self.uninstall_via_powershell_all_users_card.configure(
-                state=self._update_uninstall_via_powershell_all_users_state()
-            )
+            on_completion=lambda: self._refresh_uninstall_via_powershell_all_state()
         )
     # ~ End of Uninstall via Windows PowerShell for All Users ~
 
     # ~ Uninstall via Windows PowerShell for Current User ~
-    def _update_uninstall_via_powershell_current_user_state(self):
+    def _refresh_uninstall_via_powershell_current_card_state(self):
         state = "normal" if AdvancedStartup.is_administrator() else "disabled"
         if not OptionalChecks.check_windows_utilities_availability(target_utility=["powershell.exe"],
                                                                    suppress_complete_log=True):
             state = "disabled"
             self.logger.warning(
                 "powershell.exe is not available. Disabling 'Uninstall via Windows PowerShell (Current User)' option.")
-        return state
+        self.uninstall_via_powershell_current_user_card.configure(state=state)
 
-    def _update_powershell_current_basic_select_all_state(self):
+    def _refresh_powershell_current_basic_select_all_state(self):
         if all(cb.get() == 1 for cb in self.powershell_current_basic_option_checkboxes):
             self.powershell_current_checkbox_basic_select_all.select()
         else:
@@ -719,12 +704,14 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
                 cb.deselect()
                 cb.configure(state="disabled")
 
-    def _update_powershell_current_cleanup_options_state(self):
+    def _refresh_uninstall_via_powershell_current_options_state(self):
         self.powershell_current_checkbox_basic_cleanup.configure(state="normal")
         self._set_powershell_current_basic_row_enabled(self.powershell_current_checkbox_basic_cleanup.get() == 1)
+        self._refresh_powershell_current_basic_select_all_state()
 
-    def _on_powershell_current_basic_cleanup_toggle(self):
-        self._update_powershell_current_cleanup_options_state()
+    def _refresh_uninstall_via_powershell_current_state(self):
+        self._refresh_uninstall_via_powershell_current_options_state()
+        self._refresh_uninstall_via_powershell_current_card_state()
 
     def _toggle_powershell_current_basic_select_all(self):
         state = self.powershell_current_checkbox_basic_select_all.get()
@@ -733,10 +720,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
                 cb.select()
             else:
                 cb.deselect()
-        self._update_powershell_current_basic_select_all_state()
-
-    def _on_powershell_current_basic_option_change(self):
-        self._update_powershell_current_basic_select_all_state()
+        self._refresh_powershell_current_basic_select_all_state()
 
     def _run_uninstall_via_powershell_current_user(self):
         self.uninstall_via_powershell_current_user_card.configure(state="disabled")
@@ -758,18 +742,16 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._run_operation(
             worker.execute,
             "pages.uninstaller.uninstall_via_windows_powershell_current_user",
-            on_completion=lambda: self.uninstall_via_powershell_current_user_card.configure(
-                state=self._update_uninstall_via_powershell_current_user_state()
-            )
+            on_completion=lambda: self._refresh_uninstall_via_powershell_current_state()
         )
     # ~ End of Uninstall via Windows PowerShell for Current User ~
 
     # ~ Uninstall Beta ~
-    @staticmethod
-    def _update_uninstall_beta_state():
-        return "normal" if AdvancedStartup.is_administrator() else "disabled"
+    def _refresh_uninstall_beta_card_state(self):
+        state = "normal" if AdvancedStartup.is_administrator() else "disabled"
+        self.uninstall_beta_card.configure(state=state)
 
-    def _update_uninstall_beta_basic_select_all_state(self):
+    def _refresh_uninstall_beta_basic_select_all_state(self):
         if all(cb.get() == 1 for cb in self.uninstall_beta_basic_option_checkboxes):
             self.uninstall_beta_checkbox_basic_select_all.select()
         else:
@@ -787,12 +769,14 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
                 cb.deselect()
                 cb.configure(state="disabled")
 
-    def _update_uninstall_beta_cleanup_options_state(self):
+    def _refresh_uninstall_beta_options_state(self):
         self.uninstall_beta_checkbox_basic_cleanup.configure(state="normal")
         self._set_uninstall_beta_basic_row_enabled(self.uninstall_beta_checkbox_basic_cleanup.get() == 1)
+        self._refresh_uninstall_beta_basic_select_all_state()
 
-    def _on_uninstall_beta_basic_cleanup_toggle(self):
-        self._update_uninstall_beta_cleanup_options_state()
+    def _refresh_uninstall_beta_state(self):
+        self._refresh_uninstall_beta_options_state()
+        self._refresh_uninstall_beta_card_state()
 
     def _toggle_uninstall_beta_basic_select_all(self):
         state = self.uninstall_beta_checkbox_basic_select_all.get()
@@ -801,10 +785,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
                 cb.select()
             else:
                 cb.deselect()
-        self._update_uninstall_beta_basic_select_all_state()
-
-    def _on_uninstall_beta_basic_option_change(self):
-        self._update_uninstall_beta_basic_select_all_state()
+        self._refresh_uninstall_beta_basic_select_all_state()
 
     def _run_uninstall_beta(self):
         self.uninstall_beta_card.configure(state="disabled")
@@ -826,8 +807,6 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._run_operation(
             worker.execute,
             "pages.uninstaller.uninstall_beta",
-            on_completion=lambda: self.uninstall_beta_card.configure(
-                state=self._update_uninstall_beta_state()
-            )
+            on_completion=lambda: self._refresh_uninstall_beta_state()
         )
     # ~ End of Uninstall Beta ~

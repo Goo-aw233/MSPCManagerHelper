@@ -116,7 +116,8 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
             text=self.app_translator.translate(
                 "pages.common.on") if AppSettings.is_cleanup_after_exit_enabled() else self.app_translator.translate(
                 "pages.common.off"),
-            command=self._on_cleanup_after_exit_toggled
+            command=self._on_cleanup_after_exit_toggled,
+            state="normal"
         )
         if AppSettings.is_cleanup_after_exit_enabled():
             self.cleanup_after_exit_checkbox.select()
@@ -133,7 +134,8 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
             self.app_translator.translate("pages.home.exit_description"),
             customtkinter.CTkButton,
             text=self.app_translator.translate("pages.home.exit"),
-            command=self._exit_app
+            command=self._exit_app,
+            state="normal"
         )
         # === End of Advanced Section ===
 

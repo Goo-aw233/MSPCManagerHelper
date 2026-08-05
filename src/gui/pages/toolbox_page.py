@@ -38,7 +38,8 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator
-            )
+            ),
+            state="normal"
         )
 
         # --- Separator ---
@@ -67,7 +68,8 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
                     if not AppSettings.is_original_links_enabled()
                     else AppMetadata.APP_UPDATE_1DRV_URL
                 )
-            )
+            ),
+            state="normal"
         )
         # === End of App Update Section ===
 
@@ -91,7 +93,8 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator
-            )
+            ),
+            state="normal"
         )
 
         # --- Separator ---
@@ -120,7 +123,8 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
                     if not AppSettings.is_original_links_enabled()
                     else AppMetadata.MSPCM_APP_PACKAGE_1DRV_URL
                 )
-            )
+            ),
+            state="normal"
         )
         # === End of Microsoft PC Manager App Package Download Section ===
 
@@ -144,7 +148,8 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator
-            )
+            ),
+            state="normal"
         )
 
         # Separator
@@ -165,6 +170,7 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
                 logger=self.logger,
                 log_file_path=self.log_file_path,
                 app_translator=self.app_translator
-            )
+            ),
+            state="normal"
         )
         # === End of Download Runtime Section ===

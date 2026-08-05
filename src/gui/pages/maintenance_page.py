@@ -23,10 +23,14 @@ class MaintenancePage(BaseFuncPageFrame, BaseWidgets):
             events_textbox_wrap="none"
         )
 
+        # Build UI Sections
+        self._create_log_collection_section()
+
+    def _create_log_collection_section(self):
         # === Log Collection Section ===
         self._create_section_label(self.app_translator.translate("pages.maintenance.log_collection"))
 
-        # --- Collect MSPCM Logs
+        # --- Collect MSPCM Logs ---
         collect_mspcm_logs_frame = self._create_group_frame()
         collect_mspcm_logs_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
         self.collect_mspcm_logs_card = self._create_actions_card(
@@ -35,8 +39,7 @@ class MaintenancePage(BaseFuncPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.maintenance.collect_mspcm_logs_desc"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.common.execute"),
-            command=self._run_collect_mspcm_logs,
-            state="disabled"
+            command=self._run_collect_mspcm_logs
         )
 
         self._create_separator(collect_mspcm_logs_frame)
@@ -65,7 +68,7 @@ class MaintenancePage(BaseFuncPageFrame, BaseWidgets):
             text=self.app_translator.translate("pages.maintenance.online_download"),
             variable=self.procdump_from_var,
             value="online_download",
-            command=self._toggle_local_procdump_state,
+            command=self._refresh_collect_mspcm_logs_state,
             font=customtkinter.CTkFont(family=self.font_family, weight="bold")
         )
         self.procdump_online_radiobutton.pack(side="left", padx=(0, 5))
@@ -79,7 +82,7 @@ class MaintenancePage(BaseFuncPageFrame, BaseWidgets):
             text=self.app_translator.translate("pages.maintenance.local_file"),
             variable=self.procdump_from_var,
             value="local_file",
-            command=self._toggle_local_procdump_state,
+            command=self._refresh_collect_mspcm_logs_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.procdump_local_radiobutton.pack(side="left")
@@ -92,7 +95,7 @@ class MaintenancePage(BaseFuncPageFrame, BaseWidgets):
             width=650
         )
         self.local_procdump_path_entry.grid(row=0, column=1, sticky="ew", padx=(0, 10), pady=5, columnspan=2)
-        self.local_procdump_path_entry.bind("<KeyRelease>", lambda _: self._update_collect_mspcm_logs_state())
+        self.local_procdump_path_entry.bind("<KeyRelease>", lambda _: self._refresh_collect_mspcm_logs_state())
 
         # Local ProcDump Path Select Button
         self.local_procdump_path_select_button = customtkinter.CTkButton(
@@ -103,37 +106,27 @@ class MaintenancePage(BaseFuncPageFrame, BaseWidgets):
         )
         self.local_procdump_path_select_button.grid(row=0, column=3, sticky="w", padx=(0, 10), pady=5)
 
-        # Apply Initial Toggle States
-        self._toggle_local_procdump_state()
-        self._update_collect_mspcm_logs_state()
+        # Apply Initial State
+        self._refresh_collect_mspcm_logs_state()
+        # === End of Log Collection Section ===
 
 
     # ~~~ Features Functions ~~~
     # ~ Collect MSPCM Logs ~
-    def _set_entry_group_state(self, enabled, entry, button=None):
-        if button is not None:
-            button.configure(state="normal" if enabled else "disabled")
-        if enabled:
-            entry.configure(state="normal")
-            entry.unbind("<Button-1>")
-        else:
-            entry.configure(state="normal")
-            entry.bind("<Button-1>", self._block_entry_event, add="+")
+    def _refresh_collect_mspcm_logs_options_state(self):
+        self._set_entry_group_state(self.procdump_from_var.get() == "local_file",
+                                    self.local_procdump_path_entry,
+                                    self.local_procdump_path_select_button)
 
-    @staticmethod
-    def _set_entry_text(entry, text):
-        entry.delete(0, tkinter.END)
-        entry.insert(0, text)
+    def _refresh_collect_mspcm_logs_card_state(self):
+        if self.procdump_from_var.get() == "local_file" and not self.local_procdump_path_entry.get().strip():
+            self.collect_mspcm_logs_card.configure(state="disabled")
+            return
+        self.collect_mspcm_logs_card.configure(state="normal")
 
-    @staticmethod
-    def _block_entry_event(_):
-        return "break"
-
-    def _toggle_local_procdump_state(self):
-        enabled = self.procdump_from_var.get() == "local_file"
-        self._set_entry_group_state(enabled, self.local_procdump_path_entry,
-                                     self.local_procdump_path_select_button)
-        self._update_collect_mspcm_logs_state()
+    def _refresh_collect_mspcm_logs_state(self):
+        self._refresh_collect_mspcm_logs_options_state()
+        self._refresh_collect_mspcm_logs_card_state()
 
     def _select_local_procdump_path(self):
         file_path = tkinter.filedialog.askopenfilename(
@@ -142,13 +135,7 @@ class MaintenancePage(BaseFuncPageFrame, BaseWidgets):
         )
         if file_path:
             self._set_entry_text(self.local_procdump_path_entry, file_path)
-        self._update_collect_mspcm_logs_state()
-
-    def _update_collect_mspcm_logs_state(self):
-        if self.procdump_from_var.get() == "local_file" and not self.local_procdump_path_entry.get().strip():
-            self.collect_mspcm_logs_card.configure(state="disabled")
-            return
-        self.collect_mspcm_logs_card.configure(state="normal")
+        self._refresh_collect_mspcm_logs_state()
 
     def _run_collect_mspcm_logs(self):
         self.collect_mspcm_logs_card.configure(state="disabled")
@@ -165,6 +152,6 @@ class MaintenancePage(BaseFuncPageFrame, BaseWidgets):
         self._run_operation(
             worker.execute,
             "pages.maintenance.collect_mspcm_logs",
-            on_completion=lambda: self._update_collect_mspcm_logs_state()
+            on_completion=lambda: self._refresh_collect_mspcm_logs_state()
         )
     # ~ End of Collect MSPCM Logs ~

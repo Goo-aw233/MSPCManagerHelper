@@ -31,6 +31,11 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             events_textbox_wrap="none"
         )
 
+        # Build UI Sections
+        self._create_online_install_section()
+        self._create_offline_install_section()
+
+    def _create_online_install_section(self):
         # === Online Install Section ===
         self._create_section_label(self.app_translator.translate("pages.installer.online_install"))
 
@@ -43,8 +48,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.installer.install_via_msstore_desc"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.common.execute"),
-            command=self._run_install_via_msstore,
-            state=self._update_install_via_msstore_state()
+            command=self._run_install_via_msstore
         )
 
         self._create_separator(install_via_msstore_frame)
@@ -90,6 +94,9 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
         self.download_online_installer_radiobutton.grid(row=0, column=2, sticky="w", padx=10, pady=5)
 
+        # Apply Initial State
+        self._refresh_install_via_msstore_state()
+
         # --- Install Microsoft EdgeWebView2 Runtime ---
         install_webview2_frame = self._create_group_frame()
         install_webview2_frame.pack_configure(pady=(0, 5)) # Add a 9-Pixel Spacing Below
@@ -99,8 +106,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.installer.install_webview2_desc"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.common.execute"),
-            command=self._run_install_webview2,
-            state="normal"
+            command=self._run_install_webview2
         )
 
         self._create_separator(install_webview2_frame)
@@ -122,7 +128,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             text=self.app_translator.translate("pages.installer.via_edgeupdate"),
             variable=self.install_webview2_installer_var,
             value="via_edgeupdate",
-            command=self._update_install_webview2_state,
+            command=self._refresh_install_webview2_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.via_edgeupdate_radiobutton.grid(row=0, column=0, sticky="w", padx=10, pady=5)
@@ -136,7 +142,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             text=self.app_translator.translate("pages.installer.online_installer"),
             variable=self.install_webview2_installer_var,
             value="online_install",
-            command=self._update_install_webview2_state,
+            command=self._refresh_install_webview2_state,
             font=customtkinter.CTkFont(family=self.font_family, weight="bold")
         )
         self.online_installer_radiobutton.grid(row=0, column=1, sticky="w", padx=10, pady=5)
@@ -147,7 +153,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             text=self.app_translator.translate("pages.installer.offline_installer"),
             variable=self.install_webview2_installer_var,
             value="offline_install",
-            command=self._update_install_webview2_state,
+            command=self._refresh_install_webview2_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.offline_installer_radiobutton.grid(row=0, column=2, sticky="w", padx=10, pady=5)
@@ -163,9 +169,10 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.silent_install_checkbox.grid(row=0, column=3, sticky="w", padx=10, pady=5)
 
         # Apply Initial WebView2 Installer State
-        self._update_install_webview2_state()
+        self._refresh_install_webview2_state()
         # === End of Online Install Section ===
 
+    def _create_offline_install_section(self):
         # === Offline Install Section ===
         self._create_section_label(self.app_translator.translate("pages.installer.offline_install"))
 
@@ -178,8 +185,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.installer.install_via_dism_desc"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.common.execute"),
-            command=self._run_install_via_dism,
-            state="normal"
+            command=self._run_install_via_dism
         )
 
         self._create_separator(install_via_dism_frame)
@@ -208,7 +214,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             text=self.app_translator.translate("pages.common.online_image"),
             variable=self.install_image_var,
             value="online_image",
-            command=self._toggle_offline_image_state,
+            command=self._refresh_install_via_dism_state,
             font=customtkinter.CTkFont(family=self.font_family, weight="bold")
         )
         self.online_image_radiobutton.pack(side="left", padx=(0, 5))
@@ -219,7 +225,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             text=self.app_translator.translate("pages.common.offline_image"),
             variable=self.install_image_var,
             value="offline_image",
-            command=self._toggle_offline_image_state,
+            command=self._refresh_install_via_dism_state,
             font=customtkinter.CTkFont(family=self.font_family)
         )
         self.offline_image_radiobutton.pack(side="left")
@@ -235,7 +241,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             width=650
         )
         self.offline_image_path_entry.grid(row=0, column=1, sticky="ew", padx=(0, 10), pady=5, columnspan=2)
-        self.offline_image_path_entry.bind("<KeyRelease>", lambda _: self._update_install_via_dism_state())
+        self.offline_image_path_entry.bind("<KeyRelease>", lambda _: self._refresh_install_via_dism_state())
 
         # Offline Image Path Select Button
         self.offline_image_path_select_button = customtkinter.CTkButton(
@@ -253,7 +259,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             text=self.app_translator.translate("pages.installer.app_package"),
             variable=self.app_package_var,
             font=customtkinter.CTkFont(family=self.font_family, weight="bold"),
-            command=self._toggle_app_package_state
+            command=self._refresh_install_via_dism_state
         )
         self.app_package_checkbox.grid(row=1, column=0, sticky="w", padx=(10, 0), pady=5)
 
@@ -265,7 +271,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             width=650
         )
         self.app_package_path_entry.grid(row=1, column=1, sticky="ew", padx=(0, 10), pady=5, columnspan=2)
-        self.app_package_path_entry.bind("<KeyRelease>", lambda _: self._update_install_via_dism_state())
+        self.app_package_path_entry.bind("<KeyRelease>", lambda _: self._refresh_install_via_dism_state())
 
         # Application Package Path Select Button
         self.app_package_path_select_button = customtkinter.CTkButton(
@@ -281,7 +287,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             self.install_via_dism_options_frame,
             text=self.app_translator.translate("pages.installer.license"),
             font=customtkinter.CTkFont(family=self.font_family),
-            command=self._toggle_license_state
+            command=self._refresh_install_via_dism_state
         )
         self.license_checkbox.grid(row=2, column=0, sticky="w", padx=(10, 0), pady=5)
 
@@ -299,8 +305,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             self.install_via_dism_options_frame,
             text=self.app_translator.translate("pages.common.browse"),
             font=customtkinter.CTkFont(family=self.font_family),
-            command=self._select_license_path,
-            state="disabled"
+            command=self._select_license_path
         )
         self.license_path_select_button.grid(row=2, column=3, sticky="w", padx=(0, 10), pady=5)
 
@@ -309,7 +314,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             self.install_via_dism_options_frame,
             text=self.app_translator.translate("pages.installer.dependencies"),
             font=customtkinter.CTkFont(family=self.font_family),
-            command=self._toggle_dependencies_state
+            command=self._refresh_install_via_dism_state
         )
         self.dependencies_checkbox.grid(row=3, column=0, sticky="w", padx=(10, 0), pady=5)
 
@@ -327,17 +332,12 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             self.install_via_dism_options_frame,
             text=self.app_translator.translate("pages.common.browse"),
             font=customtkinter.CTkFont(family=self.font_family),
-            command=self._select_dependencies_paths,
-            state="disabled"
+            command=self._select_dependencies_paths
         )
         self.dependencies_paths_select_button.grid(row=3, column=3, sticky="w", padx=(0, 10), pady=5)
 
         # Apply Initial Toggle States
-        self._toggle_offline_image_state()
-        self._toggle_app_package_state()
-        self._toggle_license_state()
-        self._toggle_dependencies_state()
-        self._update_install_via_dism_state()
+        self._refresh_install_via_dism_state()
 
         # --- Install via Windows PowerShell for Current User ---
         install_via_powershell_current_user_frame = self._create_group_frame()
@@ -348,8 +348,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.installer.install_via_powershell_current_user_desc"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.common.execute"),
-            command=self._run_install_via_powershell,
-            state="normal"
+            command=self._run_install_via_powershell
         )
 
         self._create_separator(install_via_powershell_current_user_frame)
@@ -383,7 +382,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             text=self.app_translator.translate("pages.installer.app_package"),
             variable=self.powershell_app_package_var,
             font=customtkinter.CTkFont(family=self.font_family, weight="bold"),
-            command=self._toggle_powershell_app_package_state
+            command=self._refresh_install_via_powershell_state
         )
         self.powershell_app_package_checkbox.grid(row=1, column=0, sticky="w", padx=(10, 0), pady=5)
 
@@ -396,7 +395,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
         self.powershell_app_package_path_entry.grid(row=1, column=1, sticky="ew", padx=(0, 10), pady=5, columnspan=2)
         self.powershell_app_package_path_entry.bind(
-            "<KeyRelease>", lambda _: self._update_install_via_powershell_state()
+            "<KeyRelease>", lambda _: self._refresh_install_via_powershell_state()
         )
 
         # Application Package Path Select Button
@@ -413,7 +412,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             self.install_via_powershell_current_user_options_frame,
             text=self.app_translator.translate("pages.installer.dependencies"),
             font=customtkinter.CTkFont(family=self.font_family),
-            command=self._toggle_powershell_dependencies_state
+            command=self._refresh_install_via_powershell_state
         )
         self.powershell_dependencies_checkbox.grid(row=2, column=0, sticky="w", padx=(10, 0), pady=5)
 
@@ -431,15 +430,12 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             self.install_via_powershell_current_user_options_frame,
             text=self.app_translator.translate("pages.common.browse"),
             font=customtkinter.CTkFont(family=self.font_family),
-            command=self._select_powershell_dependencies_paths,
-            state="disabled"
+            command=self._select_powershell_dependencies_paths
         )
         self.powershell_dependencies_paths_select_button.grid(row=2, column=3, sticky="w", padx=(0, 10), pady=5)
 
         # Apply Initial Toggle States
-        self._toggle_powershell_app_package_state()
-        self._toggle_powershell_dependencies_state()
-        self._update_install_via_powershell_state()
+        self._refresh_install_via_powershell_state()
 
         # --- Reinstall via Windows PowerShell ---
         reinstall_via_powershell_frame = self._create_group_frame()
@@ -450,8 +446,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             description=self.app_translator.translate("pages.installer.reinstall_via_powershell_desc"),
             widget_constructor=customtkinter.CTkButton,
             text=self.app_translator.translate("pages.common.execute"),
-            command=self._run_reinstall_via_powershell,
-            state="normal"
+            command=self._run_reinstall_via_powershell
         )
 
         self._create_separator(reinstall_via_powershell_frame)
@@ -527,17 +522,15 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self.reinstall_reset_radiobutton.grid(row=0, column=4, sticky="w", padx=10, pady=5)
 
         # Apply Initial Toggle States
-        self._toggle_reinstall_user_scope_state()
-        self._toggle_reinstall_force_quit_state()
-        self._update_reinstall_via_powershell_state()
+        self._refresh_reinstall_via_powershell_state()
         # === End of Offline Install Section ===
 
 
     # ~~~ Features Functions ~~~
     # ~ Install via Microsoft Store ~
-    @staticmethod
-    def _update_install_via_msstore_state():
-        return "normal"
+    def _refresh_install_via_msstore_state(self):
+        # Microsoft Store installation is always available.
+        self.install_via_msstore_card.configure(state="normal")
 
     def _run_install_via_msstore(self):
         self.install_via_msstore_card.configure(state="disabled")
@@ -553,17 +546,15 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._run_operation(
             worker.execute,
             "pages.installer.install_via_msstore",
-            on_completion=lambda: self.install_via_msstore_card.configure(
-                state=self._update_install_via_msstore_state()
-            )
+            on_completion=lambda: self._refresh_install_via_msstore_state()
         )
     # ~ End of Install via Microsoft Store ~
 
     # ~ Install Microsoft EdgeWebView2 Runtime ~
-    def _update_install_webview2_state(self):
+    def _refresh_install_webview2_state(self):
         is_via_edgeupdate = self.install_webview2_installer_var.get() == "via_edgeupdate"
 
-        # Silent Install is Not Applicable When Installing via EdgeUpdate
+        # Silent Install is not applicable when installing via EdgeUpdate.
         if is_via_edgeupdate:
             self.silent_install_var.set(False)
             self.silent_install_checkbox.configure(state="disabled")
@@ -594,39 +585,18 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._run_operation(
             worker.execute,
             "pages.installer.install_webview2",
-            on_completion=lambda: self._update_install_webview2_state()
+            on_completion=lambda: self._refresh_install_webview2_state()
         )
     # ~ End of Install Microsoft EdgeWebView2 Runtime ~
 
     # ~ Install via DISM ~
-    def _set_entry_group_state(self, enabled, entry, button=None):
-        if button is not None:
-            button.configure(state="normal" if enabled else "disabled")
-        if enabled:
-            entry.configure(state="normal")
-            entry.unbind("<Button-1>")
-        else:
-            entry.configure(state="normal")
-            entry.bind("<Button-1>", self._block_entry_event, add="+")
-
-    @staticmethod
-    def _set_entry_text(entry, text):
-        entry.delete(0, tkinter.END)
-        entry.insert(0, text)
-
-    def _toggle_offline_image_state(self):
-        enabled = self.install_image_var.get() == "offline_image"
-        self._set_entry_group_state(enabled, self.offline_image_path_entry,
-                                     self.offline_image_path_select_button)
-        self._update_install_via_dism_state()
-
     def _select_offline_image_path(self):
         folder_path = tkinter.filedialog.askdirectory(
             title=self.app_translator.translate("pages.installer.select_offline_image_path")
         )
         if folder_path:
             self._set_entry_text(self.offline_image_path_entry, folder_path)
-        self._update_install_via_dism_state()
+        self._refresh_install_via_dism_state()
 
     def _select_app_package_path(self):
         file_path = tkinter.filedialog.askopenfilename(
@@ -639,7 +609,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
         if file_path:
             self._set_entry_text(self.app_package_path_entry, file_path)
-        self._update_install_via_dism_state()
+        self._refresh_install_via_dism_state()
 
     def _select_license_path(self):
         file_path = tkinter.filedialog.askopenfilename(
@@ -651,6 +621,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
         if file_path:
             self._set_entry_text(self.license_path_entry, file_path)
+        self._refresh_install_via_dism_state()
 
     def _select_dependencies_paths(self):
         file_paths = tkinter.filedialog.askopenfilenames(
@@ -662,30 +633,23 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
         if file_paths:
             self._set_entry_text(self.dependencies_paths_entry, " | ".join(file_paths))
+        self._refresh_install_via_dism_state()
 
-    def _toggle_app_package_state(self):
-        enabled = self.app_package_var.get()
-        self._set_entry_group_state(enabled, self.app_package_path_entry,
-                                     self.app_package_path_select_button)
-        self._update_install_via_dism_state()
+    def _refresh_install_via_dism_options_state(self):
+        self._set_entry_group_state(self.install_image_var.get() == "offline_image",
+                                    self.offline_image_path_entry,
+                                    self.offline_image_path_select_button)
+        self._set_entry_group_state(self.app_package_var.get(),
+                                    self.app_package_path_entry,
+                                    self.app_package_path_select_button)
+        self._set_entry_group_state(bool(self.license_checkbox.get()),
+                                    self.license_path_entry,
+                                    self.license_path_select_button)
+        self._set_entry_group_state(bool(self.dependencies_checkbox.get()),
+                                    self.dependencies_paths_entry,
+                                    self.dependencies_paths_select_button)
 
-    def _toggle_license_state(self):
-        enabled = self.license_checkbox.get()
-        self._set_entry_group_state(enabled, self.license_path_entry,
-                                     self.license_path_select_button)
-        self._update_install_via_dism_state()
-
-    def _toggle_dependencies_state(self):
-        enabled = self.dependencies_checkbox.get()
-        self._set_entry_group_state(enabled, self.dependencies_paths_entry,
-                                     self.dependencies_paths_select_button)
-        self._update_install_via_dism_state()
-
-    @staticmethod
-    def _block_entry_event(_):
-        return "break"
-
-    def _update_install_via_dism_state(self):
+    def _refresh_install_via_dism_card_state(self):
         if not AdvancedStartup.is_administrator():
             self.install_via_dism_card.configure(state="disabled")
             return
@@ -701,6 +665,10 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             self.install_via_dism_card.configure(state="disabled")
             return
         self.install_via_dism_card.configure(state="normal")
+
+    def _refresh_install_via_dism_state(self):
+        self._refresh_install_via_dism_options_state()
+        self._refresh_install_via_dism_card_state()
     
     def _run_install_via_dism(self):
         self.install_via_dism_card.configure(state="disabled")
@@ -720,22 +688,11 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._run_operation(
             worker.execute,
             "pages.installer.install_via_dism",
-            on_completion=lambda: self._update_install_via_dism_state()
+            on_completion=lambda: self._refresh_install_via_dism_state()
         )
     # ~ End of Install via DISM ~
 
     # ~ Install via Windows PowerShell for Current User ~
-    def _toggle_powershell_app_package_state(self):
-        enabled = self.powershell_app_package_var.get()
-        self._set_entry_group_state(enabled, self.powershell_app_package_path_entry,
-                                     self.powershell_app_package_path_select_button)
-        self._update_install_via_powershell_state()
-
-    def _toggle_powershell_dependencies_state(self):
-        enabled = self.powershell_dependencies_checkbox.get()
-        self._set_entry_group_state(enabled, self.powershell_dependencies_paths_entry,
-                                     self.powershell_dependencies_paths_select_button)
-
     def _select_powershell_app_package_path(self):
         file_path = tkinter.filedialog.askopenfilename(
             title=self.app_translator.translate("pages.installer.select_app_package_path"),
@@ -747,7 +704,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
         if file_path:
             self._set_entry_text(self.powershell_app_package_path_entry, file_path)
-        self._update_install_via_powershell_state()
+        self._refresh_install_via_powershell_state()
 
     def _select_powershell_dependencies_paths(self):
         file_paths = tkinter.filedialog.askopenfilenames(
@@ -759,8 +716,18 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         )
         if file_paths:
             self._set_entry_text(self.powershell_dependencies_paths_entry, " | ".join(file_paths))
+        self._refresh_install_via_powershell_state()
 
-    def _update_install_via_powershell_state(self):
+    def _refresh_install_via_powershell_state(self):
+        # Options
+        self._set_entry_group_state(self.powershell_app_package_var.get(),
+                                    self.powershell_app_package_path_entry,
+                                    self.powershell_app_package_path_select_button)
+        self._set_entry_group_state(bool(self.powershell_dependencies_checkbox.get()),
+                                    self.powershell_dependencies_paths_entry,
+                                    self.powershell_dependencies_paths_select_button)
+
+        # Card
         if not AdvancedStartup.is_administrator():
             self.install_via_powershell_current_user_card.configure(state="disabled")
             return
@@ -793,36 +760,40 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._run_operation(
             worker.execute,
             "pages.installer.install_via_powershell_current_user",
-            on_completion=lambda: self._update_install_via_powershell_state()
+            on_completion=lambda: self._refresh_install_via_powershell_state()
         )
     # ~ End of Install via Windows PowerShell for Current User ~
 
     # ~ Reinstall via Windows PowerShell ~
     def _toggle_reinstall_user_scope_state(self):
         if self.reinstall_user_scope_var.get() == "all_users":
-            self.reinstall_reset_radiobutton.configure(state="disabled")
             self.reinstall_action_var.set("reinstall")
-        else:
-            self.reinstall_reset_radiobutton.configure(state="normal")
-        self._toggle_reinstall_force_quit_state()
-        self._update_reinstall_via_powershell_state()
+        self._refresh_reinstall_via_powershell_state()
 
     def _toggle_reinstall_force_quit_state(self):
-        if self.reinstall_action_var.get() == "reinstall":
+        self._refresh_reinstall_via_powershell_state()
+
+    def _refresh_reinstall_via_powershell_state(self):
+        is_all_users = self.reinstall_user_scope_var.get() == "all_users"
+        is_reinstall = self.reinstall_action_var.get() == "reinstall"
+
+        # Options
+        self.reinstall_reset_radiobutton.configure(
+            state="disabled" if is_all_users else "normal")
+        if is_reinstall:
             self.reinstall_force_quit_checkbox.configure(state="normal")
         else:
             self.reinstall_force_quit_var.set(False)
             self.reinstall_force_quit_checkbox.configure(state="disabled")
 
-    def _update_reinstall_via_powershell_state(self):
+        # Card
         if not OptionalChecks.check_windows_utilities_availability(target_utility=["powershell.exe"],
                                                                    suppress_complete_log=True):
             self.logger.warning(
                 "powershell.exe is not available. Disabling 'Reinstall via Windows PowerShell' option.")
             self.reinstall_via_powershell_card.configure(state="disabled")
             return
-        if (self.reinstall_user_scope_var.get() == "all_users"
-                and not AdvancedStartup.is_administrator()):
+        if is_all_users and not AdvancedStartup.is_administrator():
             self.logger.warning(
                 "Administrator privileges are required for the 'All Users' scope. "
                 "Disabling 'Reinstall via Windows PowerShell' option.")
@@ -846,6 +817,6 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._run_operation(
             worker.execute,
             "pages.installer.reinstall_via_powershell",
-            on_completion=lambda: self.reinstall_via_powershell_card.configure(state="normal")
+            on_completion=lambda: self._refresh_reinstall_via_powershell_state()
         )
     # ~ End of Reinstall via Windows PowerShell ~

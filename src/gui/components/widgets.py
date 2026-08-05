@@ -1,3 +1,5 @@
+import tkinter
+
 import customtkinter
 
 
@@ -60,10 +62,31 @@ class BaseWidgets:
             if "font" not in widget_kwargs:
                 widget_kwargs["font"] = customtkinter.CTkFont(family=self.font_family)
 
+            # Fail-safe: default new action widgets to disabled. Section-end refresh
+            # functions immediately override this with the correct state.
+            widget_kwargs.setdefault("state", "disabled")
+
             widget = widget_constructor(container, **widget_kwargs)
             widget.pack(side="right", padx=5)
             return widget
         return None
+
+    def _set_entry_group_state(self, enabled, entry, button=None):
+        if button is not None:
+            button.configure(state="normal" if enabled else "disabled")
+        entry.unbind("<Button-1>")
+        entry.configure(state="normal")
+        if not enabled:
+            entry.bind("<Button-1>", self._block_entry_event)
+
+    @staticmethod
+    def _set_entry_text(entry, text):
+        entry.delete(0, tkinter.END)
+        entry.insert(0, text)
+
+    @staticmethod
+    def _block_entry_event(_):
+        return "break"
 
 
 class AboutPageWidgets(BaseWidgets):
