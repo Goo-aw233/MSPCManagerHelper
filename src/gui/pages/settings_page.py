@@ -1,12 +1,17 @@
 import customtkinter
+from windows_toasts import Toast, WindowsToaster
 
 from core import (
     AdvancedStartup,
+    AppMetadata,
     AppSettings,
     AppTranslator,
     PrerequisiteChecks
 )
-from gui.components import SettingsPageWidgets
+from gui.components import (
+    SettingsPageWidgets,
+    task_coordinator
+)
 from handlers.shared import URILauncher
 from .base_page_frame import BaseInfoPageFrame
 
@@ -20,6 +25,10 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             page_title_key="pages.navigation.settings",
         )
         self._main_window = parent.master
+
+        # Flags for deferring UI refresh while an operation is running.
+        self._refresh_ui_pending = False
+        self._refresh_deferred_toast_shown = False
 
         # === Personalization Section ===
         self._create_section_label(self.app_translator.translate("pages.settings.personalization"))
@@ -59,10 +68,7 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             command=self._change_follow_system_font
         )
 
-        if AppSettings.is_follow_system_font_enabled():
-            self.follow_system_font_switch.select()
-        else:
-            self.follow_system_font_switch.deselect()
+        self._apply_switch_state(self.follow_system_font_switch, AppSettings.is_follow_system_font_enabled())
         # === End of Personalization Section ===
 
         # === Language Section ===
@@ -125,10 +131,7 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             command=self._change_support_developer
         )
 
-        if AppSettings.is_support_developer_enabled():
-            self.support_developer_switch.select()
-        else:
-            self.support_developer_switch.deselect()
+        self._apply_switch_state(self.support_developer_switch, AppSettings.is_support_developer_enabled())
 
         # --- Separator ---
         self._create_separator(self.preferences_group)
@@ -144,10 +147,7 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
                 "pages.common.off"),
             command=self._change_original_links
         )
-        if AppSettings.is_original_links_enabled():
-            self.original_links_switch.select()
-        else:
-            self.original_links_switch.deselect()
+        self._apply_switch_state(self.original_links_switch, AppSettings.is_original_links_enabled())
 
         # --- Separator ---
         self._create_separator(self.preferences_group)
@@ -163,10 +163,7 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
                 "pages.common.off"),
             command=self._change_compatibility_mode
         )
-        if AppSettings.is_compatibility_mode_enabled():
-            self.compatibility_mode_switch.select()
-        else:
-            self.compatibility_mode_switch.deselect()
+        self._apply_switch_state(self.compatibility_mode_switch, AppSettings.is_compatibility_mode_enabled())
 
         # --- Separator ---
         self._create_separator(self.preferences_group)
@@ -182,10 +179,7 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
                 "pages.common.off"),
             command=self._change_use_internal_viewer
         )
-        if AppSettings.is_use_internal_viewer_enabled():
-            self.use_internal_viewer_switch.select()
-        else:
-            self.use_internal_viewer_switch.deselect()
+        self._apply_switch_state(self.use_internal_viewer_switch, AppSettings.is_use_internal_viewer_enabled())
         # === End of Preferences ===
 
         # === Privacy & Security ===
@@ -228,10 +222,7 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
                     "pages.common.off"),
                 command=self._change_take_ownership
             )
-            if AppSettings.is_take_ownership_enabled():
-                self.take_ownership_card.select()
-            else:
-                self.take_ownership_card.deselect()
+            self._apply_switch_state(self.take_ownership_card, AppSettings.is_take_ownership_enabled())
         # === End of Advanced ===
 
 
@@ -264,49 +255,76 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             self._request_refresh_ui()
 
     def _change_support_developer(self):
-        is_enabled = self.support_developer_switch.get()
-        AppSettings.set_support_developer_enabled(is_enabled)
-        self.support_developer_switch.configure(
-            text=self.app_translator.translate("pages.common.on") if is_enabled else self.app_translator.translate(
-                "pages.common.off")
-        )
+        self._toggle_switch_setting(self.support_developer_switch, AppSettings.set_support_developer_enabled)
 
     def _change_compatibility_mode(self):
-        is_enabled = self.compatibility_mode_switch.get()
-        AppSettings.set_compatibility_mode_enabled(is_enabled)
-        self.compatibility_mode_switch.configure(
-            text=self.app_translator.translate("pages.common.on") if is_enabled else self.app_translator.translate(
-                "pages.common.off")
-        )
+        self._toggle_switch_setting(self.compatibility_mode_switch, AppSettings.set_compatibility_mode_enabled)
 
     def _change_original_links(self):
-        is_enabled = self.original_links_switch.get()
-        AppSettings.set_original_links_enabled(is_enabled)
-        self.original_links_switch.configure(
-            text=self.app_translator.translate("pages.common.on") if is_enabled else self.app_translator.translate(
-                "pages.common.off")
-        )
+        self._toggle_switch_setting(self.original_links_switch, AppSettings.set_original_links_enabled)
 
     def _change_use_internal_viewer(self):
-        is_enabled = self.use_internal_viewer_switch.get()
-        AppSettings.set_use_internal_viewer_enabled(is_enabled)
-        self.use_internal_viewer_switch.configure(
-            text=self.app_translator.translate("pages.common.on") if is_enabled else self.app_translator.translate(
-                "pages.common.off")
-        )
+        self._toggle_switch_setting(self.use_internal_viewer_switch, AppSettings.set_use_internal_viewer_enabled)
 
     def _change_take_ownership(self):
-        is_enabled = self.take_ownership_card.get()
-        AppSettings.set_take_ownership_enabled(is_enabled)
-        self.take_ownership_card.configure(
-            text=self.app_translator.translate("pages.common.on") if is_enabled else self.app_translator.translate(
-                "pages.common.off")
-        )
+        self._toggle_switch_setting(self.take_ownership_card, AppSettings.set_take_ownership_enabled)
 
         # Trigger Refresh Task in MainWindow
         self._request_refresh_ui()
 
+    @staticmethod
+    def _apply_switch_state(switch, enabled):
+        if enabled:
+            switch.select()
+        else:
+            switch.deselect()
+
+    def _toggle_switch_setting(self, switch, setting_setter):
+        is_enabled = switch.get()
+        setting_setter(is_enabled)
+        switch.configure(
+            text=self.app_translator.translate("pages.common.on") if is_enabled else self.app_translator.translate(
+                "pages.common.off")
+        )
+
     def _request_refresh_ui(self):
         main_window = self._main_window
         if main_window and hasattr(main_window, "refresh_ui"):
+            if task_coordinator.is_busy():
+                # Do not rebuild the UI while an operation is running; defer
+                # refresh until the operation completes and notify the user.
+                if not self._refresh_deferred_toast_shown:
+                    self._refresh_deferred_toast_shown = True
+                    self._notify_refresh_deferred()
+                self._schedule_refresh_ui_after_operation()
+                return
+            # Reset the toast flag once the UI is actually refreshed again.
+            self._refresh_deferred_toast_shown = False
             main_window.after(0, main_window.refresh_ui)
+
+    def _notify_refresh_deferred(self):
+        try:
+            toaster = WindowsToaster(AppMetadata.APP_NAME)
+            refresh_deferred_toast = Toast()
+            refresh_deferred_toast.text_fields = [
+                self.app_translator.translate("pages.settings.refresh_deferred_title"),
+                self.app_translator.translate("pages.settings.refresh_deferred_message")
+            ]
+            refresh_deferred_toast.tag = "refresh_deferred_toast"
+            toaster.show_toast(refresh_deferred_toast)
+        except Exception as e:
+            self.logger.warning(f"Failed to Show Refresh-deferred Toast Notification: {e}")
+
+    def _schedule_refresh_ui_after_operation(self):
+        if self._refresh_ui_pending:
+            return
+        self._refresh_ui_pending = True
+
+        def _poll():
+            self._refresh_ui_pending = False
+            if task_coordinator.is_busy():
+                self._schedule_refresh_ui_after_operation()
+                return
+            self._request_refresh_ui()
+
+        self.after(200, _poll)

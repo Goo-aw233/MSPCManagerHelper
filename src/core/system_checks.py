@@ -202,6 +202,7 @@ class PrerequisiteChecks:
 class OptionalChecks:
     _suppressed = False
     logger = AppLogger.get_logger()
+    _utilities_availability_cache = {}
 
     @staticmethod
     def set_suppressed(value):
@@ -301,6 +302,13 @@ class OptionalChecks:
         else:
             # Default List of Utilities
             utilities = OptionalChecks.DEFAULT_UTILITIES
+
+        # Caches availability results per normalized utility set for the process
+        # lifetime, so repeated checks do not spawn child processes again.
+        cache_key = tuple(sorted(u.lower() for u in utilities))
+        if cache_key in OptionalChecks._utilities_availability_cache:
+            return OptionalChecks._utilities_availability_cache[cache_key]
+
         found_utilities = {}
         all_checks_passed = True
 
@@ -344,6 +352,8 @@ class OptionalChecks:
                 return True # All utilities are available, but no log message will be shown.
             """
             OptionalChecks.logger.info("All utilities availability check completed. No issues found.")
+
+        OptionalChecks._utilities_availability_cache[cache_key] = all_checks_passed
         return all_checks_passed
 
     @staticmethod

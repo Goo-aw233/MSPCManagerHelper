@@ -43,6 +43,19 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         self._create_open_to_section()
         self._create_maintenance_management_section()
 
+        # Operation cards protected by the global operation lock.
+        self._operation_cards = [
+            (self.compute_files_hashes_card, self._refresh_compute_hashes_card_state),
+            # Opening a webpage is not protected by the global operation lock,
+            # as it is not a long-running operation and does not produce output to events_textbox.
+            (self.get_dependencies_versions_card, self._refresh_get_dependencies_card_state),
+            (self.repair_edge_webview_2_installation_card, self._refresh_webview2_repair_state),
+            (self.restart_services_card, self._refresh_restart_services_card_state),
+            (self.switch_regions_card, self._refresh_switch_regions_card_state),
+            (self.view_installed_security_products_card, self._refresh_view_security_products_state),
+        ]
+        self._register_operation_cards()
+
     def _create_file_management_section(self):
         # === File Management ===
         self._create_section_label(self.app_translator.translate("pages.utilities.file_management"))
@@ -528,9 +541,9 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
 
     def _refresh_compute_hashes_card_state(self):
         if any(cb.get() == 1 for cb in self.hash_checkbox_widgets.values()):
-            self.compute_files_hashes_card.configure(state="normal")
+            self._set_card_state(self.compute_files_hashes_card, "normal")
         else:
-            self.compute_files_hashes_card.configure(state="disabled")
+            self._set_card_state(self.compute_files_hashes_card, "disabled")
 
     def _refresh_compute_hashes_state(self):
         self._refresh_compute_hashes_options_state()
@@ -573,9 +586,9 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             self.checkbox_global_webview2.get() == 1 or
             self.checkbox_windows_app_runtime.get() == 1
         ):
-            self.get_dependencies_versions_card.configure(state="normal")
+            self._set_card_state(self.get_dependencies_versions_card, "normal")
         else:
-            self.get_dependencies_versions_card.configure(state="disabled")
+            self._set_card_state(self.get_dependencies_versions_card, "disabled")
 
     def _run_get_dependencies_versions(self):
         self.get_dependencies_versions_card.configure(state="disabled")
@@ -692,9 +705,9 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
                 self.checkbox_remove_webview2_dir,
                 self.checkbox_remove_edge_components_dir,
                 self.checkbox_end_related_processes)):
-            self.repair_edge_webview_2_installation_card.configure(state="normal")
+            self._set_card_state(self.repair_edge_webview_2_installation_card, "normal")
         else:
-            self.repair_edge_webview_2_installation_card.configure(state="disabled")
+            self._set_card_state(self.repair_edge_webview_2_installation_card, "disabled")
 
     def _refresh_webview2_repair_state(self):
         self._refresh_webview2_repair_options_state()
@@ -787,9 +800,9 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             self.checkbox_beta_version.get() == 1 or
             self.checkbox_store_beta_version.get() == 1
         ):
-            self.restart_services_card.configure(state="normal")
+            self._set_card_state(self.restart_services_card, "normal")
         else:
-            self.restart_services_card.configure(state="disabled")
+            self._set_card_state(self.restart_services_card, "disabled")
 
     def _run_restart_services(self):
         self.restart_services_card.configure(state="disabled")
@@ -824,7 +837,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             state = "normal" if AdvancedStartup.is_administrator() else "disabled"
         else:
             state = "disabled"
-        self.switch_regions_card.configure(state=state)
+        self._set_card_state(self.switch_regions_card, state)
 
     def _run_switch_regions(self):
         self.switch_regions_card.configure(state="disabled")
@@ -878,9 +891,9 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
                 self.checkbox_antivirus_product,
                 self.checkbox_antispyware_product,
                 self.checkbox_firewall_product)):
-            self.view_installed_security_products_card.configure(state="normal")
+            self._set_card_state(self.view_installed_security_products_card, "normal")
         else:
-            self.view_installed_security_products_card.configure(state="disabled")
+            self._set_card_state(self.view_installed_security_products_card, "disabled")
 
     def _refresh_view_security_products_state(self):
         self._refresh_view_security_products_options_state()

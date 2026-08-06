@@ -2,8 +2,13 @@ import tkinter
 
 import customtkinter
 
+from .task_coordinator import task_coordinator
+
 
 class BaseWidgets:
+    scroll_frame: customtkinter.CTkScrollableFrame
+    font_family: str
+
     def _create_section_label(self, text):
         label = customtkinter.CTkLabel(
             self.scroll_frame,
@@ -70,6 +75,13 @@ class BaseWidgets:
             widget.pack(side="right", padx=5)
             return widget
         return None
+
+    @staticmethod
+    def _set_card_state(card, state):
+        # While an operation is running, no action card may be enabled.
+        if task_coordinator.is_busy():
+            state = "disabled"
+        card.configure(state=state)
 
     def _set_entry_group_state(self, enabled, entry, button=None):
         if button is not None:

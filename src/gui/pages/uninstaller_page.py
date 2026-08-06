@@ -33,6 +33,15 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._create_uninstall_stable_section()
         self._create_uninstall_beta_section()
 
+        # Operation cards protected by the global operation lock.
+        self._operation_cards = [
+            (self.uninstall_via_dism_all_users_card, self._refresh_uninstall_via_dism_state),
+            (self.uninstall_via_powershell_all_users_card, self._refresh_uninstall_via_powershell_all_state),
+            (self.uninstall_via_powershell_current_user_card, self._refresh_uninstall_via_powershell_current_state),
+            (self.uninstall_beta_card, self._refresh_uninstall_beta_state),
+        ]
+        self._register_operation_cards()
+
     def _create_uninstall_stable_section(self):
         # === Uninstall Stable ===
         self._create_section_label(self.app_translator.translate("pages.uninstaller.uninstall_stable"))
@@ -465,7 +474,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             state = "disabled"
             self.logger.warning(
                 "Dism.exe or powershell.exe is not available. Disabling 'Uninstall via DISM (All Users)' option.")
-        self.uninstall_via_dism_all_users_card.configure(state=state)
+        self._set_card_state(self.uninstall_via_dism_all_users_card, state)
 
     def _refresh_dism_basic_select_all_state(self):
         if all(cb.get() == 1 for cb in self.dism_basic_option_checkboxes):
@@ -580,7 +589,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             state = "disabled"
             self.logger.warning(
                 "powershell.exe is not available. Disabling 'Uninstall via Windows PowerShell (All Users)' option.")
-        self.uninstall_via_powershell_all_users_card.configure(state=state)
+        self._set_card_state(self.uninstall_via_powershell_all_users_card, state)
 
     def _refresh_powershell_all_basic_select_all_state(self):
         if all(cb.get() == 1 for cb in self.powershell_all_basic_option_checkboxes):
@@ -684,7 +693,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             state = "disabled"
             self.logger.warning(
                 "powershell.exe is not available. Disabling 'Uninstall via Windows PowerShell (Current User)' option.")
-        self.uninstall_via_powershell_current_user_card.configure(state=state)
+        self._set_card_state(self.uninstall_via_powershell_current_user_card, state)
 
     def _refresh_powershell_current_basic_select_all_state(self):
         if all(cb.get() == 1 for cb in self.powershell_current_basic_option_checkboxes):
@@ -749,7 +758,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
     # ~ Uninstall Beta ~
     def _refresh_uninstall_beta_card_state(self):
         state = "normal" if AdvancedStartup.is_administrator() else "disabled"
-        self.uninstall_beta_card.configure(state=state)
+        self._set_card_state(self.uninstall_beta_card, state)
 
     def _refresh_uninstall_beta_basic_select_all_state(self):
         if all(cb.get() == 1 for cb in self.uninstall_beta_basic_option_checkboxes):

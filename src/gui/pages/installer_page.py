@@ -35,6 +35,16 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._create_online_install_section()
         self._create_offline_install_section()
 
+        # Operation cards protected by the global operation lock.
+        self._operation_cards = [
+            (self.install_via_msstore_card, self._refresh_install_via_msstore_state),
+            (self.install_webview2_card, self._refresh_install_webview2_state),
+            (self.install_via_dism_card, self._refresh_install_via_dism_state),
+            (self.install_via_powershell_current_user_card, self._refresh_install_via_powershell_state),
+            (self.reinstall_via_powershell_card, self._refresh_reinstall_via_powershell_state),
+        ]
+        self._register_operation_cards()
+
     def _create_online_install_section(self):
         # === Online Install Section ===
         self._create_section_label(self.app_translator.translate("pages.installer.online_install"))
@@ -530,7 +540,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
     # ~ Install via Microsoft Store ~
     def _refresh_install_via_msstore_state(self):
         # Microsoft Store installation is always available.
-        self.install_via_msstore_card.configure(state="normal")
+        self._set_card_state(self.install_via_msstore_card, "normal")
 
     def _run_install_via_msstore(self):
         self.install_via_msstore_card.configure(state="disabled")
@@ -566,9 +576,9 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             self.logger.warning(
                 "MicrosoftEdgeUpdate.exe is not available. "
                 "Disabling 'Install via EdgeUpdate' option.")
-            self.install_webview2_card.configure(state="disabled")
+            self._set_card_state(self.install_webview2_card, "disabled")
             return
-        self.install_webview2_card.configure(state="normal")
+        self._set_card_state(self.install_webview2_card, "normal")
 
     def _run_install_webview2(self):
         self.install_webview2_card.configure(state="disabled")
@@ -651,20 +661,20 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
 
     def _refresh_install_via_dism_card_state(self):
         if not AdvancedStartup.is_administrator():
-            self.install_via_dism_card.configure(state="disabled")
+            self._set_card_state(self.install_via_dism_card, "disabled")
             return
         if not OptionalChecks.check_windows_utilities_availability(target_utility=["Dism.exe"],
                                                                    suppress_complete_log=True):
             self.logger.warning("Dism.exe is not available. Disabling 'Install via DISM' option.")
-            self.install_via_dism_card.configure(state="disabled")
+            self._set_card_state(self.install_via_dism_card, "disabled")
             return
         if self.install_image_var.get() == "offline_image" and not self.offline_image_path_entry.get().strip():
-            self.install_via_dism_card.configure(state="disabled")
+            self._set_card_state(self.install_via_dism_card, "disabled")
             return
         if not self.app_package_var.get() or not self.app_package_path_entry.get().strip():
-            self.install_via_dism_card.configure(state="disabled")
+            self._set_card_state(self.install_via_dism_card, "disabled")
             return
-        self.install_via_dism_card.configure(state="normal")
+        self._set_card_state(self.install_via_dism_card, "normal")
 
     def _refresh_install_via_dism_state(self):
         self._refresh_install_via_dism_options_state()
@@ -729,19 +739,19 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
 
         # Card
         if not AdvancedStartup.is_administrator():
-            self.install_via_powershell_current_user_card.configure(state="disabled")
+            self._set_card_state(self.install_via_powershell_current_user_card, "disabled")
             return
         if not OptionalChecks.check_windows_utilities_availability(target_utility=["powershell.exe"],
                                                                    suppress_complete_log=True):
             self.logger.warning(
                 "powershell.exe is not available. Disabling 'Install via Windows PowerShell (Current User)' option.")
-            self.install_via_powershell_current_user_card.configure(state="disabled")
+            self._set_card_state(self.install_via_powershell_current_user_card, "disabled")
             return
         if (not self.powershell_app_package_var.get()
                 or not self.powershell_app_package_path_entry.get().strip()):
-            self.install_via_powershell_current_user_card.configure(state="disabled")
+            self._set_card_state(self.install_via_powershell_current_user_card, "disabled")
             return
-        self.install_via_powershell_current_user_card.configure(state="normal")
+        self._set_card_state(self.install_via_powershell_current_user_card, "normal")
 
     def _run_install_via_powershell(self):
         self.install_via_powershell_current_user_card.configure(state="disabled")
@@ -791,15 +801,15 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
                                                                    suppress_complete_log=True):
             self.logger.warning(
                 "powershell.exe is not available. Disabling 'Reinstall via Windows PowerShell' option.")
-            self.reinstall_via_powershell_card.configure(state="disabled")
+            self._set_card_state(self.reinstall_via_powershell_card, "disabled")
             return
         if is_all_users and not AdvancedStartup.is_administrator():
             self.logger.warning(
                 "Administrator privileges are required for the 'All Users' scope. "
                 "Disabling 'Reinstall via Windows PowerShell' option.")
-            self.reinstall_via_powershell_card.configure(state="disabled")
+            self._set_card_state(self.reinstall_via_powershell_card, "disabled")
             return
-        self.reinstall_via_powershell_card.configure(state="normal")
+        self._set_card_state(self.reinstall_via_powershell_card, "normal")
 
     def _run_reinstall_via_powershell(self):
         self.reinstall_via_powershell_card.configure(state="disabled")

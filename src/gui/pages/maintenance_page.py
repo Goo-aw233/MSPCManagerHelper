@@ -26,6 +26,12 @@ class MaintenancePage(BaseFuncPageFrame, BaseWidgets):
         # Build UI Sections
         self._create_log_collection_section()
 
+        # Operation cards protected by the global operation lock.
+        self._operation_cards = [
+            (self.collect_mspcm_logs_card, self._refresh_collect_mspcm_logs_state),
+        ]
+        self._register_operation_cards()
+
     def _create_log_collection_section(self):
         # === Log Collection Section ===
         self._create_section_label(self.app_translator.translate("pages.maintenance.log_collection"))
@@ -120,9 +126,9 @@ class MaintenancePage(BaseFuncPageFrame, BaseWidgets):
 
     def _refresh_collect_mspcm_logs_card_state(self):
         if self.procdump_from_var.get() == "local_file" and not self.local_procdump_path_entry.get().strip():
-            self.collect_mspcm_logs_card.configure(state="disabled")
+            self._set_card_state(self.collect_mspcm_logs_card, "disabled")
             return
-        self.collect_mspcm_logs_card.configure(state="normal")
+        self._set_card_state(self.collect_mspcm_logs_card, "normal")
 
     def _refresh_collect_mspcm_logs_state(self):
         self._refresh_collect_mspcm_logs_options_state()

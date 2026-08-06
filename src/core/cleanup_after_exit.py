@@ -3,7 +3,7 @@ import shutil
 import sys
 from pathlib import Path
 
-from windows_toasts import Toast, WindowsToaster
+from windows_toasts import WindowsToaster
 
 from core.advanced_startup import AdvancedStartup
 from core.app_logger import AppLogger
@@ -120,9 +120,9 @@ class CleanupAfterExit:
             return
         try:
             toaster = WindowsToaster(AppMetadata.APP_NAME)
-            run_as_administrator_toast = Toast()
-            run_as_administrator_toast.tag = "administrator_required_toast"
-            toaster.remove_toast(run_as_administrator_toast)
+            # Clear every toast belonging to this application regardless of tag,
+            # so newly added toast tags do not need to be listed here.
+            toaster.clear_toasts()
             CleanupAfterExit.logger.info("Toast notifications cleaned up.")
         except Exception as e:
             CleanupAfterExit.logger.warning(f"Failed to Clean Up Toast Notifications: {e}")

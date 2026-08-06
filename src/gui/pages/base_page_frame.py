@@ -3,11 +3,42 @@ import customtkinter
 from core import AppLogger
 from gui.components import (
     EventsTextbox,
-    OperationRunner
+    OperationRunner,
+    task_coordinator
 )
 
 
 class BaseInfoPageFrame(customtkinter.CTkFrame):
+    """USAGE EXAMPLE:
+
+    class SamplePage(BaseInfoPageFrame, SamplePageWidgets):
+        def __init__(self, parent, app_translator, font_family):
+            super().__init__(
+                parent=parent,
+                app_translator=app_translator,
+                font_family=font_family,
+                page_title_key="sample_page"    # Translation key for the page title.
+            )
+
+            # Add page widgets into self.scroll_frame.
+            # Example:
+            # customtkinter.CTkLabel(
+            #     self.scroll_frame,
+            #     text=self.app_translator.translate("sample_text"),
+            #     font=customtkinter.CTkFont(family=self.font_family)
+            # ).pack(fill="x", padx=20, pady=10)
+
+            # Build the page content with the widget mixin helpers
+            # (e.g. AboutPageWidgets provides _create_info_card).
+            self._create_section_label(self.app_translator.translate("sample_section"))
+            group = self._create_group_frame()
+            self._create_info_card(
+                group,
+                title=self.app_translator.translate("sample_title"),
+                description=self.app_translator.translate("sample_description")
+            )
+    """
+
     def __init__(self, parent, app_translator, font_family, page_title_key):
         super().__init__(parent, fg_color="transparent")
         self.logger = AppLogger.get_logger()
@@ -32,29 +63,48 @@ class BaseInfoPageFrame(customtkinter.CTkFrame):
         self.scroll_frame.grid(row=1, column=0, sticky="nsew", padx=0, pady=0)
         self.scroll_frame.grid_columnconfigure(0, weight=1)
 
-    """
-    USAGE EXAMPLE:
 
-    class SamplePage(BaseInfoPageFrame):
+class BaseFuncPageFrame(BaseInfoPageFrame):
+    """USAGE EXAMPLE:
+
+    class SamplePage(BaseFuncPageFrame, BaseWidgets):
         def __init__(self, parent, app_translator, font_family):
             super().__init__(
                 parent=parent,
                 app_translator=app_translator,
                 font_family=font_family,
-                page_title_key="sample_page"    # Translation key for the page title.
+                page_title_key="sample_page",   # Translation key for the page title.
+                events_textbox_wrap="none"
             )
 
-            # Add page widgets into self.scroll_frame.
+            # Add feature widgets into self.scroll_frame (Features tab).
             # Example:
-            # customtkinter.CTkLabel(
+            # customtkinter.CTkButton(
             #     self.scroll_frame,
-            #     text=self.app_translator.translate("sample_text"),
-            #     font=customtkinter.CTkFont(family=self.font_family)
-            # ).pack(fill="x", padx=20, pady=10)
+            #     text=self.app_translator.translate("pages.common.execute"),
+            #     command=self._run_sample_operation
+            # ).pack(padx=20, pady=10)
+
+            # Register the action cards protected by the global operation lock.
+            self._operation_cards = [
+                (self.sample_card, self._refresh_sample_card_state),
+            ]
+            self._register_operation_cards()
+
+        def _refresh_sample_card_state(self):
+            # _set_card_state also keeps the card disabled while another
+            # operation is running.
+            self._set_card_state(self.sample_card, "normal")
+
+        def _run_sample_operation(self):
+            # Runs with the global lock: rejects if busy, disables every
+            # registered card, and restores them on completion.
+            self._run_operation(
+                operation_func=lambda: self.events_textbox.log_to_events("Sample operation finished."),
+                operation_name_key="sample_operation"
+            )
     """
 
-
-class BaseFuncPageFrame(BaseInfoPageFrame):
     def __init__(self, parent, app_translator, font_family, page_title_key, events_textbox_wrap="none"):
         super().__init__(parent, app_translator, font_family, page_title_key)
 
@@ -96,32 +146,35 @@ class BaseFuncPageFrame(BaseInfoPageFrame):
 
     # ~~~ UI/Events Functions ~~~
     def _run_operation(self, operation_func, operation_name_key, on_completion=None):
-        OperationRunner.run(self, operation_func, operation_name_key, on_completion)
+        operation_name = self.app_translator.translate(operation_name_key)
 
-    """
-    USAGE EXAMPLE:
+        # Global operation lock: reject the operation if another one is running.
+        if not task_coordinator.try_acquire(operation_name):
+            self.logger.warning(
+                f"Operation '{operation_name}' rejected: another operation "
+                f"('{task_coordinator.current_operation()}') is already running.")
+            self.events_textbox.log_to_events(
+                self.app_translator.translate("pages.common.operation_rejected_busy").format(
+                    operation_name=task_coordinator.current_operation()))
+            return
 
-    class SamplePage(BaseFuncPageFrame):
-        def __init__(self, parent, app_translator, font_family):
-            super().__init__(
-                parent=parent,
-                app_translator=app_translator,
-                font_family=font_family,
-                page_title_key="sample_page",   # Translation key for the page title.
-                events_textbox_wrap="none"
-            )
+        # Disable every registered action card while this operation is running.
+        task_coordinator.disable_all()
+        self.update_idletasks()
 
-            # Add feature widgets into self.scroll_frame (Features tab).
-            # Example:
-            # customtkinter.CTkButton(
-            #     self.scroll_frame,
-            #     text=self.app_translator.translate("pages.common.execute"),
-            #     command=self._run_sample_operation
-            # ).pack(padx=20, pady=10)
+        def _on_completion():
+            # Release the global lock first, then let every registered card
+            # recompute its own state before running the caller's completion
+            # callback.
+            task_coordinator.release()
+            task_coordinator.restore_all()
+            if on_completion:
+                on_completion()
 
-        def _run_sample_operation(self):
-            self._run_operation(
-                operation_func=lambda: self.events_textbox.log_to_events("Sample operation finished."),
-                operation_name_key="sample_operation"
-            )
-    """
+        OperationRunner.run(self, operation_func, operation_name_key, _on_completion)
+
+    def _register_operation_cards(self):
+        # Register every (card, refresh) pair so the global operation lock can
+        # disable all cards while one operation runs and restore them after.
+        for card, refresh in getattr(self, "_operation_cards", ()):
+            task_coordinator.register(self, card, refresh)

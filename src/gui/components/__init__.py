@@ -4,6 +4,7 @@ Components Package for MSPCManagerHelper GUI
 
 from .events_textbox import EventsTextbox
 from .operation_runner import OperationRunner
+from .task_coordinator import task_coordinator
 from .widgets import (
     AboutPageWidgets,
     BaseWidgets,
@@ -18,4 +19,5 @@ __all__ = [
     "HomePageWidgets",
     "OperationRunner",
     "SettingsPageWidgets",
+    "task_coordinator",
 ]
