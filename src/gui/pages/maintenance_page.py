@@ -5,10 +5,10 @@ import customtkinter
 from CTkToolTip import CTkToolTip
 
 from gui.components import (
-    BaseWidgets,
+    BaseWidgets
 )
 from modules.maintenance import (
-    CollectMSPCMLogs,
+    CollectMSPCMLogs
 )
 from .base_page_frame import BaseFuncPageFrame
 

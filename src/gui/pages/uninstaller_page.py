@@ -8,10 +8,11 @@ from core import (
     OptionalChecks
 )
 from gui.components import (
-    BaseWidgets,
+    BaseWidgets
 )
 from modules.uninstaller import (
     UninstallBeta,
+    UninstallEdgeComponents,
     UninstallViaDISMForAllUsers,
     UninstallViaPowerShellForAllUsers,
     UninstallViaPowerShellForCurrentUser
@@ -32,6 +33,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         # Build UI Sections
         self._create_uninstall_stable_section()
         self._create_uninstall_beta_section()
+        self._create_uninstall_edge_components_section()
 
         # Operation cards protected by the global operation lock.
         self._operation_cards = [
@@ -39,6 +41,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             (self.uninstall_via_powershell_all_users_card, self._refresh_uninstall_via_powershell_all_state),
             (self.uninstall_via_powershell_current_user_card, self._refresh_uninstall_via_powershell_current_state),
             (self.uninstall_beta_card, self._refresh_uninstall_beta_state),
+            (self.uninstall_edge_components_card, self._refresh_uninstall_edge_components_state),
         ]
         self._register_operation_cards()
 
@@ -464,6 +467,71 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._refresh_uninstall_beta_state()
         # === End of Uninstall Beta ===
 
+    def _create_uninstall_edge_components_section(self):
+        # === Uninstall Edge Components ===
+        self._create_section_label(self.app_translator.translate("pages.uninstaller.uninstall_edge_components"))
+
+        uninstall_edge_components_frame = self._create_group_frame()
+        self.uninstall_edge_components_card = self._create_actions_card(
+            parent=uninstall_edge_components_frame,
+            title=self.app_translator.translate("pages.uninstaller.uninstall_edge_components"),
+            description=self.app_translator.translate("pages.uninstaller.uninstall_edge_components_desc"),
+            widget_constructor=customtkinter.CTkButton,
+            text=self.app_translator.translate("pages.common.execute"),
+            command=self._run_uninstall_edge_components
+        )
+
+        self._create_separator(uninstall_edge_components_frame)
+
+        # - Uninstall Options -
+        self.uninstall_edge_components_options_frame = customtkinter.CTkScrollableFrame(
+            uninstall_edge_components_frame,
+            orientation="horizontal",
+            fg_color="transparent",
+            height=77
+        )
+        self.uninstall_edge_components_options_frame.pack(fill="x", padx=10, pady=5)
+
+        # Force Uninstall
+        self.uninstall_force_uninstall_checkbox = customtkinter.CTkCheckBox(
+            self.uninstall_edge_components_options_frame,
+            text=self.app_translator.translate("pages.uninstaller.uninstall_force_uninstall"),
+            command=self._refresh_uninstall_edge_components_state,
+            font=customtkinter.CTkFont(family=self.font_family, weight="bold")
+        )
+        self.uninstall_force_uninstall_checkbox.grid(row=0, column=0, sticky="w", padx=10, pady=5)
+
+        # Microsoft Edge
+        self.uninstall_edge_checkbox = customtkinter.CTkCheckBox(
+            self.uninstall_edge_components_options_frame,
+            text=self.app_translator.translate("pages.uninstaller.uninstall_edge"),
+            command=self._refresh_uninstall_edge_components_state,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.uninstall_edge_checkbox.grid(row=1, column=0, sticky="w", padx=10, pady=5)
+
+        # Microsoft Edge WebView2 Runtime
+        self.uninstall_webview2_checkbox = customtkinter.CTkCheckBox(
+            self.uninstall_edge_components_options_frame,
+            text=self.app_translator.translate("pages.uninstaller.uninstall_webview2"),
+            command=self._refresh_uninstall_edge_components_state,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.uninstall_webview2_checkbox.grid(row=1, column=1, sticky="w", padx=10, pady=5)
+
+        # Microsoft EdgeUpdate
+        self.uninstall_edgeupdate_checkbox = customtkinter.CTkCheckBox(
+            self.uninstall_edge_components_options_frame,
+            text=self.app_translator.translate("pages.uninstaller.uninstall_edgeupdate"),
+            command=self._refresh_uninstall_edge_components_state,
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.uninstall_edgeupdate_checkbox.grid(row=1, column=2, sticky="w", padx=10, pady=5)
+
+        # Apply initial state (availability is detected on every refresh).
+        self._refresh_uninstall_edge_components_state()
+        # === End of Uninstall Edge Components ===
+
 
     # ~~~ Features Functions ~~~
     # ~ Uninstall via DISM for All Users ~
@@ -819,3 +887,58 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             on_completion=lambda: self._refresh_uninstall_beta_state()
         )
     # ~ End of Uninstall Beta ~
+
+    # ~ Uninstall Edge Components ~
+    @staticmethod
+    def _set_uninstall_edge_option_state(checkbox, available):
+        if available:
+            checkbox.configure(state="normal")
+        else:
+            checkbox.deselect()
+            checkbox.configure(state="disabled")
+
+    def _refresh_uninstall_edge_components_options_state(self):
+        self._set_uninstall_edge_option_state(
+            self.uninstall_edge_checkbox, UninstallEdgeComponents.is_edge_available())
+        self._set_uninstall_edge_option_state(
+            self.uninstall_webview2_checkbox, UninstallEdgeComponents.is_webview2_available())
+        self._set_uninstall_edge_option_state(
+            self.uninstall_edgeupdate_checkbox, UninstallEdgeComponents.is_edgeupdate_available())
+
+        can_force = (self.uninstall_edge_checkbox.get() == 1) or (self.uninstall_webview2_checkbox.get() == 1)
+        self._set_uninstall_edge_option_state(self.uninstall_force_uninstall_checkbox, can_force)
+
+    def _refresh_uninstall_edge_components_card_state(self):
+        state = "disabled"
+        if (AdvancedStartup.is_administrator()
+                and any(cb.get() == 1 for cb in (
+                    self.uninstall_edge_checkbox,
+                    self.uninstall_webview2_checkbox,
+                    self.uninstall_edgeupdate_checkbox))):
+            state = "normal"
+        self._set_card_state(self.uninstall_edge_components_card, state)
+
+    def _refresh_uninstall_edge_components_state(self):
+        self._refresh_uninstall_edge_components_options_state()
+        self._refresh_uninstall_edge_components_card_state()
+
+    def _run_uninstall_edge_components(self):
+        self.uninstall_edge_components_card.configure(state="disabled")
+        self.update_idletasks()
+
+        worker = UninstallEdgeComponents(
+            logger=self.logger,
+            app_translator=self.app_translator,
+            log_callback=self.events_textbox.log_to_events,
+            force_uninstall=self.uninstall_force_uninstall_checkbox.get() == 1,
+            uninstall_edge=self.uninstall_edge_checkbox.get() == 1,
+            uninstall_webview2=self.uninstall_webview2_checkbox.get() == 1,
+            uninstall_edgeupdate=self.uninstall_edgeupdate_checkbox.get() == 1
+        )
+
+        self._run_operation(
+            worker.execute,
+            "pages.uninstaller.uninstall_edge_components",
+            on_completion=lambda: self._refresh_uninstall_edge_components_state()
+        )
+    # ~ End of Uninstall Edge Components ~

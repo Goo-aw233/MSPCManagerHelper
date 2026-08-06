@@ -13,7 +13,7 @@ from core import (
     PrerequisiteChecks
 )
 from gui.components import (
-    BaseWidgets,
+    BaseWidgets
 )
 from .base_page_frame import BaseFuncPageFrame
 from modules.utilities import (
