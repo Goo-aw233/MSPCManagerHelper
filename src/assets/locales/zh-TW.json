@@ -49,6 +49,7 @@
     "open_mspcm_doc_error": "無法打開 Microsoft 電腦管家說明文件頁面。請從瀏覽器訪問：{mspcm_doc_url}。\n記錄檔位置：{log_file_path}",
     "open_official_website_error": "無法打開官方網站。請從瀏覽器訪問：{official_website_url}。\n記錄檔位置：{log_file_path}",
     "open_privacy_settings_error": "無法打開「隱私權與安全性」頁面。請開啓至 Windows 設定 > 「隱私權與安全性」。\n記錄檔位置：{log_file_path}",
+    "open_region_settings_error": "無法開啓「語言和區域」設定。請開啓至 Windows 設定 > 「時間和語言」 > 「語言和區域」。\n記錄檔位置：{log_file_path}",
     "open_webview2_download_page_error": "無法打開 Microsoft Edge WebView2 執行階段下載頁面。請從瀏覽器訪問：{webview2_download_url}。\n記錄檔位置：{log_file_path}",
     "open_windows_app_runtime_download_page_error": "無法打開 Windows 應用執行階段下載頁面。請從瀏覽器訪問：{windows_app_runtime_download_url}。\n記錄檔位置：{log_file_path}",
     "run_as_administrator_error": "無法以系統管理員身分重新啟動應用程式。請手動以系統管理員身分重新執行應用程式。\n記錄檔位置：{log_file_path}"
@@ -172,8 +173,6 @@
       "modify_mspcm_region_registry_value_error": "修改 Microsoft 電腦管家區域登錄值時發生錯誤: {error}",
       "modify_mspcm_region_registry_value_successfully": "已成功修改 Microsoft 電腦管家區域設定，區域設定碼: {region_code}。",
       "no_security_products_found": "未找到任何已安裝並註冊至 Windows 安全性的安全產品。",
-      "open_region_settings_error": "開啟「語言和區域」時發生錯誤: {error}",
-      "open_region_settings_successfully": "已開啟「語言和區域」設定。",
       "query_global_webview2_version_error": "查詢全域 Microsoft Edge WebView2 執行階段版本時發生錯誤: {error}",
       "query_security_products_error": "查詢註冊至 Windows 安全性的安全產品時發生錯誤：\n{stderr}",
       "query_system_webview2_version_error": "查詢系統 Microsoft Edge WebView2 執行階段版本時發生錯誤: {error}",

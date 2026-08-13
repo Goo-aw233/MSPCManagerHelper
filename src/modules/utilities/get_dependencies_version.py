@@ -70,20 +70,15 @@ class GetDependenciesVersion:
                 pv, _ = winreg.QueryValueEx(key, "pv")
                 try:
                     channel, _ = winreg.QueryValueEx(key, "channel")
+                    version = f"{pv} ({channel})" if channel else pv
                 except FileNotFoundError:
-                    channel = None
-                if channel:
-                    self._log(
-                        self.app_translator.translate("modules.utilities.global_webview2_version_is").format(
-                            version=f"{pv} ({channel})"
-                        )
+                    version = pv
+                self._log(
+                    self.app_translator.translate("modules.utilities.global_webview2_version_is").format(
+                        version=version
                     )
-                    self.logger.info(f"Global Microsoft Edge WebView2 Runtime Version: {pv} ({channel})")
-                else:
-                    self._log(
-                        self.app_translator.translate("modules.utilities.global_webview2_version_is").format(version=pv)
-                    )
-                    self.logger.info(f"Global Microsoft Edge WebView2 Runtime Version: {pv}")
+                )
+                self.logger.info(f"Global Microsoft Edge WebView2 Runtime Version: {version}")
         except FileNotFoundError:
             webview2_base_dir = Path(os.getenv("ProgramFiles(x86)", r"C:\Program Files (x86)")) / "Microsoft" / "EdgeWebView" / "Application"
 
@@ -98,7 +93,6 @@ class GetDependenciesVersion:
                                 ms = ver_info.FileVersionMS
                                 ls = ver_info.FileVersionLS
                                 version = f"{ms >> 16}.{ms & 0xFFFF}.{ls >> 16}.{ls & 0xFFFF}"
-                                channel = None
                                 self._log(
                                     self.app_translator.translate("modules.utilities.global_webview2_version_is").format(
                                         version=version

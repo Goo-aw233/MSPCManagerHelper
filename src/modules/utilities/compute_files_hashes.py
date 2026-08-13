@@ -14,14 +14,20 @@ class ComputeFilesHashes:
         if self.log_callback:
             self.log_callback(message)
 
-    def execute(self):
+    def execute(self, files):
+        """Compute the hashes of the given files and output the results.
+
+        ``files`` must be selected on the main thread beforehand via
+        :meth:`select_files`, because the file dialog is modal and cannot run
+        inside the background-thread operation.
+        """
         self.logger.debug(f"Selected Algorithms: {self.selected_algos}")
-        files = self.select_files()
         if not files:
-         self._log(self.app_translator.translate("pages.common.canceled_operation"))
-         self.logger.info("The operation was canceled by the user.")
-         return None
-        return self.compute(files)
+            self._log(self.app_translator.translate("pages.common.canceled_operation"))
+            self.logger.info("The operation was canceled by the user.")
+            return None
+        self.compute(files)
+        return None
 
     def select_files(self):
         return tkinter.filedialog.askopenfilenames(

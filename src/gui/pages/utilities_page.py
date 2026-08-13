@@ -573,7 +573,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             return
 
         self._run_operation(
-            lambda: worker.compute(files),
+            lambda: worker.execute(files),
             "pages.utilities.compute_files_hashes",
             on_completion=self._refresh_compute_hashes_card_state
         )

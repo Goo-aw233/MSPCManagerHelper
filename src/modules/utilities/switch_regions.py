@@ -1,4 +1,3 @@
-import os
 import subprocess
 import winreg
 
@@ -7,9 +6,11 @@ import iso3166
 from customtkinter import CTkInputDialog
 
 from core import (
+    AppLogger,
     AppResources,
     AppSettings
 )
+from handlers.shared.launch_uri import URILauncher
 
 
 class SwitchRegions:
@@ -20,6 +21,7 @@ class SwitchRegions:
         self.selected_mspcm_version = selected_mspcm_version
         self.font_family = font_family
         self.nsudo_path = AppResources.nsudo_path()
+        self.log_file_path = AppLogger.get_log_file_path()
 
     def _log(self, message):
         if self.log_callback:
@@ -39,55 +41,14 @@ class SwitchRegions:
                 self._lower_than_v3_14_0_0()
 
     def _at_least_v3_14_0_0(self):
-        region_settings_uri = "ms-settings:regionformatting"
-
-        def open_with_startfile():
-            self.logger.info("Opening Language & Region settings via os.startfile.")
-            os.startfile(region_settings_uri)
-
-        def open_with_cmd():
-            self.logger.info("Opening Language & Region settings via CMD.")
-            subprocess.run(["cmd.exe", "/C", "start", "Region Settings", f"{region_settings_uri}"], check=True,
-                           shell=False, text=True, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
-
-        def open_with_powershell():
-            self.logger.info("Opening Language & Region settings via Windows PowerShell.")
-            subprocess.run(["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{region_settings_uri}'"],
-                           check=True, shell=False, text=True, capture_output=True,
-                           creationflags=subprocess.CREATE_NO_WINDOW)
-
-        methods = [
-            open_with_startfile,
-            open_with_cmd,
-            open_with_powershell
-        ]
-
-        last_error = None
-        for method in methods:
-            try:
-                method()
-                self._log(self.app_translator.translate("modules.utilities.open_region_settings_successfully"))
-                self.logger.info(f"Successfully opened the Language & Region settings via {method.__name__}.")
-                return
-            except Exception as e:
-                last_error = e
-                self.logger.warning(f"{method.__name__} Failed to Open the Language & Region settings: {e}")
-                continue
-
-        self._log(
-            self.app_translator.translate("modules.utilities.open_region_settings_error").format(
-                error=str(last_error)
-                )
-            )
-        self.logger.error("All methods failed to open the Language & Region settings.") 
-
-        if last_error:
-            error_details = [f"Exception: {last_error}"]
-            if hasattr(last_error, "stdout") and last_error.stdout:
-                error_details.append(f"{'=' * 20} Stdout {'=' * 20}\n{last_error.stdout.strip()}")
-            if hasattr(last_error, "stderr") and last_error.stderr:
-                error_details.append(f"{'=' * 20} Stderr {'=' * 20}\n{last_error.stderr.strip()}")
-            self.logger.error("\n".join(error_details))
+        URILauncher.launch_uri(
+            uri="ms-settings:regionformatting",
+            target_name="Language & Region settings",
+            messagebox_error_message="handlers.open_region_settings_error",
+            logger=self.logger,
+            log_file_path=self.log_file_path,
+            app_translator=self.app_translator
+        )
 
     def _lower_than_v3_14_0_0(self):
         dialog = CTkInputDialog(

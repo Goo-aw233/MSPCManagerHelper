@@ -48,6 +48,7 @@
     "open_mspcm_doc_error": "Unable to open the Microsoft PC Manager Help Documentation page. Please visit {mspcm_doc_url} in your browser.\nLog File Location: {log_file_path}",
     "open_official_website_error": "Unable to open the Official Website. Please visit {official_website_url} in your browser.\nLog File Location: {log_file_path}",
     "open_privacy_settings_error": "Unable to open the Privacy & Security. Please open the Windows Settings > Privacy & Security.\nLog File Location: {log_file_path}",
+    "open_region_settings_error": "Unable to open the Language & Region settings. Please open the Windows Settings > Time & Language > Language & Region.\nLog File Location: {log_file_path}",
     "open_webview2_download_page_error": "Unable to open the Microsoft Edge WebView2 Runtime download page. Please visit {webview2_download_url} in your browser.\nLog File Location: {log_file_path}",
     "open_windows_app_runtime_download_page_error": "Unable to open the Windows App Runtime download page. Please visit {windows_app_runtime_download_url} in your browser.\nLog File Location: {log_file_path}",
     "run_as_administrator_error": "Unable to restart the application as administrator. Please manually run the application as administrator.\nLog File Location: {log_file_path}"
@@ -171,8 +172,6 @@
       "modify_mspcm_region_registry_value_error": "An Error Occurred While Modifying Microsoft PC Manager Region Registry Value: {error}",
       "modify_mspcm_region_registry_value_successfully": "Microsoft PC Manager region setting switched successfully, region code: {region_code}.",
       "no_security_products_found": "No installed security products registered to Windows Security were found.",
-      "open_region_settings_error": "An Error Occurred While Opening Language & Region: {error}",
-      "open_region_settings_successfully": "Language & Region settings opened successfully.",
       "query_global_webview2_version_error": "An Error Occurred While Querying Global Microsoft Edge WebView2 Runtime Version: {error}",
       "query_security_products_error": "An Error Occurred While Querying Security Products Registered to Windows Security:\n{stderr}",
       "query_system_webview2_version_error": "An Error Occurred While Querying System Microsoft Edge WebView2 Runtime Version: {error}",

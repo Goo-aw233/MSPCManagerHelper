@@ -49,6 +49,7 @@
     "open_mspcm_doc_error": "无法打开微软电脑管家帮助文档页面。请从浏览器访问：{mspcm_doc_url}。\n日志文件位置：{log_file_path}",
     "open_official_website_error": "无法打开官方网站。请从浏览器访问：{official_website_url}。\n日志文件位置：{log_file_path}",
     "open_privacy_settings_error": "无法打开“隐私和安全性”。请打开到 Windows 设置 > “隐私和安全性”。\n日志文件位置：{log_file_path}",
+    "open_region_settings_error": "无法打开“语言和区域”设置。请打开到 Windows 设置 > “时间和语言” > “语言和区域”。\n日志文件位置：{log_file_path}",
     "open_webview2_download_page_error": "无法打开 Microsoft Edge WebView2 运行时下载页面。请从浏览器访问：{webview2_download_url}。\n日志文件位置：{log_file_path}",
     "open_windows_app_runtime_download_page_error": "无法打开 Windows 应用运行时下载页面。请从浏览器访问：{windows_app_runtime_download_url}。\n日志文件位置：{log_file_path}",
     "run_as_administrator_error": "无法以管理员身份重新启动应用程序。请手动以管理员身份重新运行应用程序。\n日志文件位置：{log_file_path}"
@@ -172,8 +173,6 @@
       "modify_mspcm_region_registry_value_error": "修改微软电脑管家区域注册表值时发生错误: {error}",
       "modify_mspcm_region_registry_value_successfully": "已成功切换微软电脑管家区域设置，区域代码: {region_code}。",
       "no_security_products_found": "未找到任何已安装并注册到 Windows 安全中心的安全产品。",
-      "open_region_settings_error": "打开“语言和区域”时发生错误: {error}",
-      "open_region_settings_successfully": "已打开“语言和区域”设置。",
       "query_global_webview2_version_error": "查询全局 Microsoft Edge WebView2 运行时版本时发生错误: {error}",
       "query_security_products_error": "查询注册到 Windows 安全中心的安全产品时发生错误：\n{stderr}",
       "query_system_webview2_version_error": "查询系统 Microsoft Edge WebView2 运行时版本时发生错误: {error}",
