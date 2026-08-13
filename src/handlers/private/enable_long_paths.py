@@ -2,6 +2,8 @@ import subprocess
 import winreg
 from tkinter import messagebox
 
+from core import WindowsUtilities
+
 
 class EnableLongPaths:
     @staticmethod
@@ -27,7 +29,7 @@ class EnableLongPaths:
         def enable_with_reg_exe():
             logger.info("Enabling long paths via reg.exe.")
             check_cmd = [
-                "reg.exe", "query",
+                str(WindowsUtilities.reg()), "query",
                 fr"HKEY_LOCAL_MACHINE\{reg_path}",
                 "/v", value_name
             ]
@@ -39,7 +41,7 @@ class EnableLongPaths:
                 logger.info(f"{value_name} does not exist, will create.")
 
             set_cmd = [
-                "reg.exe", "add",
+                str(WindowsUtilities.reg()), "add",
                 fr"HKEY_LOCAL_MACHINE\{reg_path}",
                 "/v", value_name,
                 "/t", "REG_DWORD",

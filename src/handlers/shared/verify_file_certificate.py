@@ -1,6 +1,8 @@
 import re
 import subprocess
 
+from core import WindowsUtilities
+
 
 class VerifyFileCertificate:
     @staticmethod
@@ -27,7 +29,7 @@ class VerifyFileCertificate:
 
         try:
             result = subprocess.run(
-                ["powershell.exe", "-NoProfile", "-Command", cmd],
+                [str(WindowsUtilities.powershell()), "-NoProfile", "-Command", cmd],
                 capture_output=True, text=True, shell=False,
                 creationflags=subprocess.CREATE_NO_WINDOW
             )

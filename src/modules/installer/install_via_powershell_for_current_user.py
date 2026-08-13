@@ -1,5 +1,6 @@
 import subprocess
 
+from core import WindowsUtilities
 from handlers.shared.organize_file_paths import OrganizeFilePaths
 
 
@@ -74,7 +75,7 @@ class InstallViaPowerShellForCurrentUser:
 
         # Build Full Command
         command = [
-            "powershell.exe",
+            str(WindowsUtilities.powershell()),
             "-NoProfile",
             "-NonInteractive",
             "-Command",

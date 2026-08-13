@@ -8,7 +8,8 @@ from customtkinter import CTkInputDialog
 from core import (
     AppLogger,
     AppResources,
-    AppSettings
+    AppSettings,
+    WindowsUtilities
 )
 from handlers.shared.launch_uri import URILauncher
 
@@ -138,7 +139,7 @@ class SwitchRegions:
                 "-P:E",
                 "-ShowWindowMode:Hide",
                 "-UseCurrentConsole",
-                "reg.exe",
+                str(WindowsUtilities.reg()),
                 "add",
                 reg_path,
                 "/v",

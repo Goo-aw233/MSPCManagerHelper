@@ -1,4 +1,3 @@
-import os
 import shutil
 import subprocess
 import tempfile
@@ -10,7 +9,9 @@ import win32con
 
 from core import (
     AppResources,
-    AppSettings
+    AppSettings,
+    PathResolver,
+    WindowsUtilities
 )
 
 
@@ -88,7 +89,7 @@ class UninstallViaPowerShellForCurrentUser:
 
         try:
             result = subprocess.run(
-                ["powershell.exe", "-NoProfile", "-Command", command],
+                [str(WindowsUtilities.powershell()), "-NoProfile", "-Command", command],
                 check=False,
                 shell=False,
                 text=True,
@@ -139,9 +140,9 @@ class UninstallViaPowerShellForCurrentUser:
 
     @staticmethod
     def _get_config_cache_dir_paths():
-        local_app_data = Path(os.getenv("LocalAppData") or Path.home() / "AppData" / "Local")
-        program_data = Path(os.getenv("ProgramData", r"C:\ProgramData"))
-        system_root = Path(os.getenv("SystemRoot") or os.getenv("WinDir") or r"C:\Windows")
+        local_app_data = PathResolver.local_app_data()
+        program_data = PathResolver.program_data()
+        system_root = PathResolver.system_root()
         temp_dir = Path(tempfile.gettempdir())
 
         return [
@@ -207,7 +208,7 @@ class UninstallViaPowerShellForCurrentUser:
                     "-P:E",
                     "-ShowWindowMode:Hide",
                     "-UseCurrentConsole",
-                    "cmd.exe",
+                    str(WindowsUtilities.cmd()),
                     "/C",
                     "RMDIR",
                     "/S",
@@ -314,7 +315,7 @@ class UninstallViaPowerShellForCurrentUser:
                     "-P:E",
                     "-ShowWindowMode:Hide",
                     "-UseCurrentConsole",
-                    "reg.exe",
+                    str(WindowsUtilities.reg()),
                     "delete",
                     full_key_path,
                     "/f"
@@ -356,8 +357,8 @@ class UninstallViaPowerShellForCurrentUser:
 
     @staticmethod
     def _get_basic_cache_file_specs():
-        local_app_data = Path(os.getenv("LocalAppData") or Path.home() / "AppData" / "Local")
-        system_root = Path(os.getenv("SystemRoot") or os.getenv("WinDir") or r"C:\Windows")
+        local_app_data = PathResolver.local_app_data()
+        system_root = PathResolver.system_root()
 
         usage_logs_patterns = [
             "*BGADefMgr*.log",
@@ -443,7 +444,7 @@ class UninstallViaPowerShellForCurrentUser:
                             "-P:E",
                             "-ShowWindowMode:Hide",
                             "-UseCurrentConsole",
-                            "cmd.exe",
+                            str(WindowsUtilities.cmd()),
                             "/C",
                             "DEL",
                             "/F",

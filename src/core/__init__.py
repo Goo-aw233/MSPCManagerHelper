@@ -12,6 +12,7 @@ from .cleanup_after_exit import CleanupAfterExit
 from .get_localization_translators import get_localization_translators
 from .get_mspcm_version import GetMSPCMVersion
 from .internal_viewer import InternalViewer
+from .path_resolver import PathResolver, WindowsUtilities
 from .set_font_family import SetFontFamily
 from .system_checks import OptionalChecks, PrerequisiteChecks
 
@@ -26,7 +27,9 @@ __all__ = [
     "get_localization_translators",
     "GetMSPCMVersion",
     "InternalViewer",
-    "SetFontFamily",
     "OptionalChecks",
+    "PathResolver",
     "PrerequisiteChecks",
+    "SetFontFamily",
+    "WindowsUtilities",
 ]

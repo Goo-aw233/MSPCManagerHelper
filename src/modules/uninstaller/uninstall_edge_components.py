@@ -1,11 +1,11 @@
-import os
 import re
 import subprocess
 from pathlib import Path
 
+from core import PathResolver
+
 
 class UninstallEdgeComponents:
-    PROGRAM_FILES_X86 = os.getenv("ProgramFiles(x86)", r"C:\Program Files (x86)")
     _COMPONENTS = {
         "edge": {
             "dir_name": "Edge",
@@ -46,20 +46,20 @@ class UninstallEdgeComponents:
 
     @staticmethod
     def is_edge_available():
-        base = Path(UninstallEdgeComponents.PROGRAM_FILES_X86) / "Microsoft" / "Edge"
+        base = PathResolver.program_files_x86() / "Microsoft" / "Edge"
         return UninstallEdgeComponents._find_latest_setup_exe(base) is not None
 
     @staticmethod
     def is_webview2_available():
-        base = Path(UninstallEdgeComponents.PROGRAM_FILES_X86) / "Microsoft" / "EdgeWebView"
+        base = PathResolver.program_files_x86() / "Microsoft" / "EdgeWebView"
         return UninstallEdgeComponents._find_latest_setup_exe(base) is not None
 
     @staticmethod
     def _find_edgeupdate_path():
-        local_app_data = Path(os.getenv("LocalAppData") or Path.home() / "AppData" / "Local")
+        local_app_data = PathResolver.local_app_data()
         candidates = [
             local_app_data / "Microsoft" / "EdgeUpdate" / "MicrosoftEdgeUpdate.exe",
-            Path(UninstallEdgeComponents.PROGRAM_FILES_X86) / "Microsoft" / "EdgeUpdate" / "MicrosoftEdgeUpdate.exe",
+            PathResolver.program_files_x86() / "Microsoft" / "EdgeUpdate" / "MicrosoftEdgeUpdate.exe",
         ]
         for candidate in candidates:
             if candidate.is_file():
@@ -171,7 +171,7 @@ class UninstallEdgeComponents:
         cfg = UninstallEdgeComponents._COMPONENTS[component]
         key_prefix = cfg["key_prefix"]
 
-        base_dir = Path(UninstallEdgeComponents.PROGRAM_FILES_X86) / "Microsoft" / cfg["dir_name"]
+        base_dir = PathResolver.program_files_x86() / "Microsoft" / cfg["dir_name"]
         setup_exe, version_dirs = UninstallEdgeComponents._find_latest_setup(base_dir)
         if setup_exe is None:
             self._log(self.app_translator.translate(f"modules.uninstaller.{key_prefix}_not_found"))

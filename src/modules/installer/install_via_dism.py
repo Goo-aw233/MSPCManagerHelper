@@ -1,5 +1,6 @@
 import subprocess
 
+from core import WindowsUtilities
 from handlers.shared.organize_file_paths import OrganizeFilePaths
 
 
@@ -67,7 +68,7 @@ class InstallViaDISM:
 
         # Build Command
         command = [
-            "Dism.exe",
+            str(WindowsUtilities.dism()),
             image_status,
             "/Add-ProvisionedAppxPackage",
             f"/PackagePath:{app_package_path}"

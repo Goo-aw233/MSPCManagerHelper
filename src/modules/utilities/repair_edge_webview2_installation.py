@@ -1,15 +1,15 @@
-import os
 import shutil
 import subprocess
 import winreg
-from pathlib import Path
 from tkinter import messagebox
 
 import psutil
 
 from core import (
     AppResources,
-    AppSettings
+    AppSettings,
+    PathResolver,
+    WindowsUtilities
 )
 
 
@@ -130,7 +130,7 @@ class RepairEdgeWebView2Installation:
                 "-P:E",
                 "-ShowWindowMode:Hide",
                 "-UseCurrentConsole",
-                "reg.exe",
+                str(WindowsUtilities.reg()),
                 "delete",
                 msedgeupdate_ifeo_key,
                 "/f"
@@ -178,7 +178,7 @@ class RepairEdgeWebView2Installation:
                 "-P:E",
                 "-ShowWindowMode:Hide",
                 "-UseCurrentConsole",
-                "reg.exe",
+                str(WindowsUtilities.reg()),
                 "add",
                 msedgeupdate_ifeo_key,
                 "/v",
@@ -265,7 +265,7 @@ class RepairEdgeWebView2Installation:
                 "-P:E",
                 "-ShowWindowMode:Hide",
                 "-UseCurrentConsole",
-                "reg.exe",
+                str(WindowsUtilities.reg()),
                 "delete",
                 edgeupdate_reg_key,
                 "/f"
@@ -306,7 +306,7 @@ class RepairEdgeWebView2Installation:
             self.logger.error(f"An Error Occurred While Removing EdgeUpdate.exe Registry Key: {e}")
 
     def _remove_webview2_dir(self):
-        webview2_dir_path = Path(os.getenv("ProgramFiles(x86)", r"C:\Program Files (x86)")) / "Microsoft" / "EdgeWebView"
+        webview2_dir_path = PathResolver.program_files_x86() / "Microsoft" / "EdgeWebView"
 
         if not webview2_dir_path.exists():
             self._log(self.app_translator.translate("modules.utilities.webview2_dir_not_exist"))
@@ -345,7 +345,7 @@ class RepairEdgeWebView2Installation:
                     break
 
     def _remove_webview2_dir_with_ownership(self):
-        webview2_dir_path = Path(os.getenv("ProgramFiles(x86)", r"C:\Program Files (x86)")) / "Microsoft" / "EdgeWebView"
+        webview2_dir_path = PathResolver.program_files_x86() / "Microsoft" / "EdgeWebView"
 
         if not webview2_dir_path.exists():
             self._log(self.app_translator.translate("modules.utilities.webview2_dir_not_exist"))
@@ -370,7 +370,7 @@ class RepairEdgeWebView2Installation:
                     "-P:E",
                     "-ShowWindowMode:Hide",
                     "-UseCurrentConsole",
-                    "cmd.exe",
+                    str(WindowsUtilities.cmd()),
                     "/C",
                     "RMDIR",
                     "/S",
@@ -421,7 +421,7 @@ class RepairEdgeWebView2Installation:
                     break
 
     def _remove_edge_components_dir(self):
-        edge_components_dir_path = Path(os.getenv("ProgramFiles(x86)", r"C:\Program Files (x86)")) / "Microsoft"
+        edge_components_dir_path = PathResolver.program_files_x86() / "Microsoft"
 
         if not edge_components_dir_path.exists():
             self._log(self.app_translator.translate("modules.utilities.edge_components_dir_not_exist"))
@@ -459,7 +459,7 @@ class RepairEdgeWebView2Installation:
                     break
 
     def _remove_edge_components_dir_with_ownership(self):
-        edge_components_dir_path = Path(os.getenv("ProgramFiles(x86)", r"C:\Program Files (x86)")) / "Microsoft"
+        edge_components_dir_path = PathResolver.program_files_x86() / "Microsoft"
 
         if not edge_components_dir_path.exists():
             self._log(self.app_translator.translate("modules.utilities.edge_components_dir_not_exist"))
@@ -484,7 +484,7 @@ class RepairEdgeWebView2Installation:
                     "-P:E",
                     "-ShowWindowMode:Hide",
                     "-UseCurrentConsole",
-                    "cmd.exe",
+                    str(WindowsUtilities.cmd()),
                     "/C",
                     "RMDIR",
                     "/S",

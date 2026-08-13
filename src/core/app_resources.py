@@ -1,6 +1,7 @@
-import os
 import tempfile
 from pathlib import Path
+
+from core.path_resolver import PathResolver
 
 
 class AppResources:
@@ -8,7 +9,7 @@ class AppResources:
     def app_temp_dir():
         for candidate in (
             Path(tempfile.gettempdir()) / "MSPCManagerHelper",
-            Path(os.getenv("SystemRoot", r"C:\Windows")) / "Temp" / "MSPCManagerHelper",
+            PathResolver.system_root() / "Temp" / "MSPCManagerHelper",
             Path.home() / ".cache" / "MSPCManagerHelper",
         ):
             try:

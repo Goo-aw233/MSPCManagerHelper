@@ -5,7 +5,8 @@ from tkinter import messagebox
 from core import (
     AppSettings,
     InternalViewer,
-    PrerequisiteChecks
+    PrerequisiteChecks,
+    WindowsUtilities
 )
 
 
@@ -22,13 +23,13 @@ class ViewLogFile:
 
         def open_with_cmd():
             logger.info(f"Opening log file {log_file_path} via CMD.")
-            subprocess.run(["cmd.exe", "/C", "start", "Log File", f"{log_file_path}"],
+            subprocess.run([str(WindowsUtilities.cmd()), "/C", "start", "Log File", f"{log_file_path}"],
                            check=True, shell=False, text=True, capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_powershell():
             logger.info(f"Opening log file {log_file_path} via Windows PowerShell.")
-            subprocess.run(["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{log_file_path}'"],
+            subprocess.run([str(WindowsUtilities.powershell()), "-NoProfile", "-Command", f"Start-Process '{log_file_path}'"],
                            check=True, shell=False, text=True, capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 

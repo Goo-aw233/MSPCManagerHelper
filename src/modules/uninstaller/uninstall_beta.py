@@ -1,5 +1,4 @@
 import fnmatch
-import os
 import shutil
 import subprocess
 import tempfile
@@ -12,7 +11,9 @@ import win32con
 
 from core import (
     AppResources,
-    AppSettings
+    AppSettings,
+    PathResolver,
+    WindowsUtilities
 )
 
 
@@ -169,8 +170,7 @@ class UninstallBeta:
 
     def _uninstall_beta(self):
         try:
-            uninstaller_path = Path(
-                os.getenv("ProgramFiles", r"C:\Program Files")) / "Microsoft PC Manager" / "Uninst.exe"
+            uninstaller_path = PathResolver.program_files() / "Microsoft PC Manager" / "Uninst.exe"
             self._log(self.app_translator.translate("modules.common.file_path").format(file_path=uninstaller_path))
             self.logger.info(f"Attempting to Execute Microsoft PC Manager Beta Uninstaller at: {uninstaller_path}")
             if not uninstaller_path.exists():
@@ -198,10 +198,10 @@ class UninstallBeta:
 
     @staticmethod
     def _get_config_cache_dir_paths():
-        local_app_data = Path(os.getenv("LocalAppData") or Path.home() / "AppData" / "Local")
-        program_data = Path(os.getenv("ProgramData", r"C:\ProgramData"))
-        program_files = Path(os.getenv("ProgramFiles", r"C:\Program Files"))
-        system_root = Path(os.getenv("SystemRoot") or os.getenv("WinDir") or r"C:\Windows")
+        local_app_data = PathResolver.local_app_data()
+        program_data = PathResolver.program_data()
+        program_files = PathResolver.program_files()
+        system_root = PathResolver.system_root()
         temp_dir = Path(tempfile.gettempdir())
 
         return [
@@ -266,7 +266,7 @@ class UninstallBeta:
                     "-P:E",
                     "-ShowWindowMode:Hide",
                     "-UseCurrentConsole",
-                    "cmd.exe",
+                    str(WindowsUtilities.cmd()),
                     "/C",
                     "RMDIR",
                     "/S",
@@ -392,7 +392,7 @@ class UninstallBeta:
                     "-P:E",
                     "-ShowWindowMode:Hide",
                     "-UseCurrentConsole",
-                    "reg.exe",
+                    str(WindowsUtilities.reg()),
                     "delete",
                     full_key_path,
                     "/f"
@@ -434,10 +434,10 @@ class UninstallBeta:
 
     @staticmethod
     def _get_basic_cache_file_specs():
-        local_app_data = Path(os.getenv("LocalAppData") or Path.home() / "AppData" / "Local")
-        program_data = Path(os.getenv("ProgramData", r"C:\ProgramData"))
-        system_root = Path(os.getenv("SystemRoot") or os.getenv("WinDir") or r"C:\Windows")
-        user_profile = Path(os.getenv("UserProfile") or Path.home())
+        local_app_data = PathResolver.local_app_data()
+        program_data = PathResolver.program_data()
+        system_root = PathResolver.system_root()
+        user_profile = PathResolver.user_profile()
 
         usage_logs_patterns = [
             "*BGADefMgr*.log",
@@ -539,7 +539,7 @@ class UninstallBeta:
                             "-P:E",
                             "-ShowWindowMode:Hide",
                             "-UseCurrentConsole",
-                            "cmd.exe",
+                            str(WindowsUtilities.cmd()),
                             "/C",
                             "DEL",
                             "/F",

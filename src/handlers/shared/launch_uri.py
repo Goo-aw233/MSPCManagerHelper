@@ -3,6 +3,8 @@ import subprocess
 import webbrowser
 from tkinter import messagebox
 
+from core import WindowsUtilities
+
 
 class URILauncher:
     """
@@ -37,12 +39,12 @@ class URILauncher:
 
         def open_with_cmd():
             logger.info(f"Opening {target_name} via CMD.")
-            subprocess.run(["cmd.exe", "/C", "start", target_name, f"{uri}"], check=True,
+            subprocess.run([str(WindowsUtilities.cmd()), "/C", "start", target_name, f"{uri}"], check=True,
                            shell=False, text=True, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_powershell():
             logger.info(f"Opening {target_name} via Windows PowerShell.")
-            subprocess.run(["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{uri}'"],
+            subprocess.run([str(WindowsUtilities.powershell()), "-NoProfile", "-Command", f"Start-Process '{uri}'"],
                            check=True, shell=False, text=True, capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
@@ -89,12 +91,12 @@ class URILauncher:
 
         def open_with_cmd():
             logger.info(f"Opening {target_name} ({url}) via CMD.")
-            subprocess.run(["cmd.exe", "/C", "start", target_name, f"{url}"], check=True,
+            subprocess.run([str(WindowsUtilities.cmd()), "/C", "start", target_name, f"{url}"], check=True,
                            shell=False, text=True, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_powershell():
             logger.info(f"Opening {target_name} ({url}) via Windows PowerShell.")
-            subprocess.run(["powershell.exe", "-NoProfile", "-Command", f"Start-Process '{url}'"],
+            subprocess.run([str(WindowsUtilities.powershell()), "-NoProfile", "-Command", f"Start-Process '{url}'"],
                            check=True, shell=False, text=True, capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 

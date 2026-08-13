@@ -1,10 +1,13 @@
 import json
-import os
 import subprocess
 import winreg
-from pathlib import Path
 
 import pefile
+
+from core import (
+    PathResolver,
+    WindowsUtilities
+)
 
 
 class GetDependenciesVersion:
@@ -29,7 +32,7 @@ class GetDependenciesVersion:
                 self._windows_app_runtime_version()
 
     def _system_webview2_version(self):
-        system_webview2_dir = Path(os.getenv("SystemRoot", r"C:\Windows")) / "System32" / "Microsoft-Edge-WebView"
+        system_webview2_dir = PathResolver.system_root() / "System32" / "Microsoft-Edge-WebView"
 
         if system_webview2_dir.exists():
             for exe_path in system_webview2_dir.rglob("msedgewebview2.exe"):
@@ -80,7 +83,7 @@ class GetDependenciesVersion:
                 )
                 self.logger.info(f"Global Microsoft Edge WebView2 Runtime Version: {version}")
         except FileNotFoundError:
-            webview2_base_dir = Path(os.getenv("ProgramFiles(x86)", r"C:\Program Files (x86)")) / "Microsoft" / "EdgeWebView" / "Application"
+            webview2_base_dir = PathResolver.program_files_x86() / "Microsoft" / "EdgeWebView" / "Application"
 
             if webview2_base_dir and webview2_base_dir.exists():
                 exe_paths = list(webview2_base_dir.rglob("msedgewebview2.exe"))
@@ -135,7 +138,7 @@ class GetDependenciesVersion:
 
         try:
             completed = subprocess.run(
-                ["powershell.exe", "-NoProfile","-Command", get_windows_app_runtime_versions],
+                [str(WindowsUtilities.powershell()), "-NoProfile","-Command", get_windows_app_runtime_versions],
                 check=True, text=True, capture_output=True, shell=False, creationflags=subprocess.CREATE_NO_WINDOW
             )
             raw_output = completed.stdout.strip()

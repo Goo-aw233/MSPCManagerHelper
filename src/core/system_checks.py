@@ -2,16 +2,15 @@ import ctypes
 import os
 import platform
 import re
-import shutil
 import subprocess
 import sys
 import winreg
 from ctypes import wintypes
-from pathlib import Path
 
 import pefile
 
 from core.app_logger import AppLogger
+from core.path_resolver import PathResolver, WindowsUtilities
 
 
 class PrerequisiteChecks:
@@ -180,8 +179,7 @@ class PrerequisiteChecks:
                 # Get Windows Feature Experience Pack Version
                 windows_feature_experience_pack = None
                 try:
-                    manifest_path = Path(os.getenv(
-                                             "SystemRoot", r"C:\Windows")) / "SystemApps" / "MicrosoftWindows.Client.CBS_cw5n1h2txyewy" / "appxmanifest.xml"
+                    manifest_path = PathResolver.system_root() / "SystemApps" / "MicrosoftWindows.Client.CBS_cw5n1h2txyewy" / "appxmanifest.xml"
                     with open(manifest_path, "r", encoding="utf-8") as f:
                         content = f.read()
                     # Use a regular expression to find the format ` Version="..." `,
@@ -312,10 +310,10 @@ class OptionalChecks:
         found_utilities = {}
         all_checks_passed = True
 
-        # Find Utilities (Including PATH Search)
+        # Find Utilities (System32 full path via WindowsUtilities, no PATH dependency)
         for utility in utilities:
-            path = shutil.which(utility)
-            if path:
+            path = WindowsUtilities.path(utility)
+            if path.is_file():
                 found_utilities[utility] = path
             else:
                 OptionalChecks.logger.warning(f"Utility Not Found: {utility}")
@@ -363,10 +361,10 @@ class OptionalChecks:
         utilities_versions = {}
 
         for utility in OptionalChecks.DEFAULT_UTILITIES:
-            path = shutil.which(utility)
-            if path:
+            path = WindowsUtilities.path(utility)
+            if path.is_file():
                 try:
-                    pe = pefile.PE(path)
+                    pe = pefile.PE(str(path))
                     try:
                         if hasattr(pe, "VS_FIXEDFILEINFO"):
                             ver_info = pe.VS_FIXEDFILEINFO[0]

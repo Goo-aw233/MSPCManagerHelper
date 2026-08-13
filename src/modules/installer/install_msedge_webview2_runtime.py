@@ -1,9 +1,9 @@
-import os
 import subprocess
 from pathlib import Path
 
 from core import (
     AppResources,
+    PathResolver,
     PrerequisiteChecks
 )
 from handlers.shared import (
@@ -212,8 +212,8 @@ class InstallMicrosoftEdgeWebView2Runtime:
 
     @staticmethod
     def _find_edgeupdate_path():
-        local_app_data = Path(os.getenv("LocalAppData") or Path.home() / "AppData" / "Local")
-        program_files_x86 = Path(os.getenv("ProgramFiles(x86)") or r"C:\Program Files (x86)")
+        local_app_data = PathResolver.local_app_data()
+        program_files_x86 = PathResolver.program_files_x86()
 
         candidates = [
             local_app_data / "Microsoft" / "EdgeUpdate" / "MicrosoftEdgeUpdate.exe",

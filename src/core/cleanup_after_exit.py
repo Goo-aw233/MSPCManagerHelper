@@ -10,6 +10,7 @@ from core.app_logger import AppLogger
 from core.app_metadata import AppMetadata
 from core.app_resources import AppResources
 from core.app_settings import AppSettings
+from core.path_resolver import PathResolver
 
 
 class CleanupAfterExit:
@@ -51,7 +52,7 @@ class CleanupAfterExit:
 
         exe_name_29 = exe_path.name[:29].upper()
         CleanupAfterExit.logger.info(f"EXE Name for Matching: {exe_name_29}")
-        prefetch_dir = Path(os.getenv("SystemRoot", r"C:\Windows")) / "Prefetch"
+        prefetch_dir = PathResolver.system_root() / "Prefetch"
         if not (prefetch_dir.exists() and prefetch_dir.is_dir()):
             CleanupAfterExit.logger.info("Prefetch directory not found or not a directory.")
             return

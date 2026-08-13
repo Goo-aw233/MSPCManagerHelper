@@ -3,7 +3,8 @@ import subprocess
 
 from core import (
     AppSettings,
-    PrerequisiteChecks
+    PrerequisiteChecks,
+    WindowsUtilities
 )
 
 
@@ -68,7 +69,7 @@ class ViewInstalledSecurityProducts:
         try:
             result = subprocess.run(
                 [
-                    "powershell.exe",
+                    str(WindowsUtilities.powershell()),
                     "-NoProfile",
                     "-Command",
                     final_command

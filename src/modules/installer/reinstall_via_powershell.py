@@ -1,5 +1,7 @@
 import subprocess
 
+from core import WindowsUtilities
+
 
 class ReinstallViaPowerShell:
 
@@ -61,7 +63,7 @@ class ReinstallViaPowerShell:
             )
 
         command = [
-            "powershell.exe",
+            str(WindowsUtilities.powershell()),
             "-NoProfile",
             "-NonInteractive",
             "-Command",
@@ -132,7 +134,7 @@ class ReinstallViaPowerShell:
         )
 
         command = [
-            "powershell.exe",
+            str(WindowsUtilities.powershell()),
             "-NoProfile",
             "-NonInteractive",
             "-Command",
