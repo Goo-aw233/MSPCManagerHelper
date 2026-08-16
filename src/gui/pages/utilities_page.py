@@ -1,3 +1,4 @@
+import queue
 import threading
 import time
 import tkinter
@@ -37,6 +38,12 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             page_title_key="pages.navigation.utilities",
             events_textbox_wrap="none"
         )
+
+        # Create a Thread-Safe Queue for Microsoft PC Manager Version Results.
+        self.result_queue = queue.Queue()
+        self._queue_loop_job = None
+        self._mspcm_version_thread = None
+        self.logger.debug("Initialized result_queue for Microsoft PC Manager versions.")
 
         # Build UI Sections
         self._create_file_management_section()
@@ -758,24 +765,38 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
     # ~ Restart Services ~
     def _load_mspcm_versions_async(self):
         self.logger.debug("UtilitiesPage start async Microsoft PC Manager versions fetch.")
-        threading.Thread(target=self._fetch_mspcm_versions, daemon=True).start()
+        # Skip when a previous background fetch is still running.
+        if self._mspcm_version_thread is not None and self._mspcm_version_thread.is_alive():
+            return
+
+        self._mspcm_version_thread = threading.Thread(
+            target=self._fetch_mspcm_versions,
+            name="fetch-mspcm-versions",
+            daemon=True,
+        )
+        self._mspcm_version_thread.start()
+
+        # Start the main-thread queue loop only once.
+        if self._queue_loop_job is None:
+            self._check_queue_loop()
 
     def _fetch_mspcm_versions(self):
         self.logger.debug("UtilitiesPage fetching Microsoft PC Manager versions in background thread.")
         start_fetch_mspcm_time = time.perf_counter()
-        mspcm_version = GetMSPCMVersion.get_microsoft_pc_manager_version()
-        mspcm_beta_version = GetMSPCMVersion.get_microsoft_pc_manager_beta_version()
-        elapsed = time.perf_counter() - start_fetch_mspcm_time
         try:
+            mspcm_version = GetMSPCMVersion.get_microsoft_pc_manager_version()
+            mspcm_beta_version = GetMSPCMVersion.get_microsoft_pc_manager_beta_version()
+            elapsed = time.perf_counter() - start_fetch_mspcm_time
             self.logger.debug(
                 f"UtilitiesPage Fetch Microsoft PC Manager Versions Complete: Stable: {mspcm_version}, Beta: {mspcm_beta_version}"
             )
             self.logger.info(
                 f"UtilitiesPage Fetch Microsoft PC Manager versions in: {elapsed:.5f} s"
             )
-            self.after(0, lambda: self._apply_mspcm_versions(mspcm_version, mspcm_beta_version))
-        except Exception:
-            pass
+            self.result_queue.put((mspcm_version, mspcm_beta_version))
+        except Exception as e:
+            self.logger.error(f"UtilitiesPage Failed to Fetch Microsoft PC Manager Version: {e}")
+            self.result_queue.put((None, None))
 
     def _apply_mspcm_versions(self, mspcm_version, mspcm_beta_version):
         self.logger.debug("UtilitiesPage apply Microsoft PC Manager versions to UI.")
@@ -793,6 +814,31 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             self.checkbox_beta_version.configure(state="normal")
         else:
             self.checkbox_beta_version.configure(state="disabled")
+
+    def _check_queue_loop(self):
+        if not self.winfo_exists():
+            return
+
+        try:
+            # Try to get data from the queue (non-blocking).
+            while True:
+                mspcm_version, mspcm_beta_version = self.result_queue.get_nowait()
+                self._apply_mspcm_versions(mspcm_version, mspcm_beta_version)
+        except queue.Empty:
+            pass
+        finally:
+            # Every 100 ms, call itself to keep the loop running.
+            if self.winfo_exists():
+                self._queue_loop_job = self.after(100, self._check_queue_loop)
+
+    def destroy(self):
+        if self._queue_loop_job is not None:
+            try:
+                self.after_cancel(self._queue_loop_job)
+            except Exception:
+                pass
+            self._queue_loop_job = None
+        super().destroy()
 
     def _refresh_restart_services_card_state(self):
         if (

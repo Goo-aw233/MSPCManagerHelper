@@ -30,6 +30,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         self.result_queue = queue.Queue()
         self.logger.debug("Initialized result_queue for thread-safe UI updates.")
         self._queue_loop_job = None
+        self._mspcm_version_thread = None
 
         # === Welcome Section ===
         self._create_section_label(self.app_translator.translate("pages.home.welcome"))
@@ -156,6 +157,10 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         self._load_mspcm_version_info()
 
     def _load_mspcm_version_info(self):
+        # Skip when a previous background fetch is still running.
+        if self._mspcm_version_thread is not None and self._mspcm_version_thread.is_alive():
+            return
+
         # Disable Refresh Button While Loading
         if hasattr(self, "refresh_version_button"):
             self.refresh_version_button.configure(state="disabled")
@@ -171,23 +176,28 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
 
         # Start a Thread to Fetch the Version Info
         self.logger.debug("Starting background thread to fetch Microsoft PC Manager versions.")
-        threading.Thread(target=self._fetch_mspcm_versions, daemon=True).start()
+        self._mspcm_version_thread = threading.Thread(
+            target=self._fetch_mspcm_versions,
+            name="fetch-mspcm-versions",
+            daemon=True,
+        )
+        self._mspcm_version_thread.start()
 
     def _fetch_mspcm_versions(self):
-        # Microsoft PC Manager Version Info
-        mspcm_version = GetMSPCMVersion.get_microsoft_pc_manager_version()
-
-        # Microsoft PC Manager Beta Version Info
-        mspcm_beta_version = GetMSPCMVersion.get_microsoft_pc_manager_beta_version()
-
         try:
+            # Microsoft PC Manager Version Info
+            mspcm_version = GetMSPCMVersion.get_microsoft_pc_manager_version()
+
+            # Microsoft PC Manager Beta Version Info
+            mspcm_beta_version = GetMSPCMVersion.get_microsoft_pc_manager_beta_version()
+
             self.logger.debug(
                 f"Background Thread Fetched Versions - Stable: {mspcm_version}, Beta: {mspcm_beta_version}")
             self.result_queue.put((mspcm_version, mspcm_beta_version))
             self.logger.debug("Successfully placed version information into result_queue.")
         except Exception as e:
-            self.logger.debug(f"Failed to Put Data Into result_queue: {e}")
-            pass
+            self.logger.error(f"Failed to Fetch Microsoft PC Manager Version: {e}")
+            self.result_queue.put((None, None))
 
     def _check_queue_loop(self):
         if not self.winfo_exists():
