@@ -51,9 +51,9 @@ class MainWindow(customtkinter.CTk):
 
         app_launch_message = f"{AppMetadata.APP_NAME} {AppMetadata.APP_VERSION}"
         if AdvancedStartup.is_devmode():
-            app_launch_message += " (in DevMode)"
+            app_launch_message += " (in Developer Mode)"
         elif AdvancedStartup.is_debugmode():
-            app_launch_message += " (in DebugMode)"
+            app_launch_message += " (in Debug Mode)"
         app_launch_message += " Launched"
         self.logger.info(app_launch_message)
         self.logger.info(f"Launched From: {Path(sys.argv[0]).resolve()}")
@@ -93,9 +93,9 @@ class MainWindow(customtkinter.CTk):
         elif AdvancedStartup.is_administrator():
             app_title += " [Administrator]"
         if AdvancedStartup.is_devmode():
-            app_title += " [DevMode]"
+            app_title += " [Developer Mode]"
         elif AdvancedStartup.is_debugmode():
-            app_title += " [DebugMode]"
+            app_title += " [Debug Mode]"
         self.title(app_title)
 
         icon_path = AppResources.app_icon()

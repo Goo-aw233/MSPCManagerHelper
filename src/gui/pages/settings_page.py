@@ -1,4 +1,5 @@
 import customtkinter
+from CTkToolTip import CTkToolTip
 from windows_toasts import Toast, WindowsToaster
 
 from core import (
@@ -12,7 +13,10 @@ from gui.components import (
     SettingsPageWidgets,
     task_coordinator
 )
-from handlers.shared import URILauncher
+from handlers.shared import (
+    RestartProgram,
+    URILauncher
+)
 from .base_page_frame import BaseInfoPageFrame
 
 
@@ -111,6 +115,41 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             customtkinter.CTkButton,
             text=self.app_translator.translate("pages.common.refresh"),
             command=self._request_refresh_ui
+        )
+
+        # -- Separator ---
+        self._create_separator(self.reload_group)
+
+        # --- Restart Program ---
+        self.restart_program_map = {
+            self.app_translator.translate("pages.settings.restart_program_option_normal"): None,
+            self.app_translator.translate("pages.settings.restart_program_option_normal_clean"): [],
+            self.app_translator.translate("pages.settings.restart_program_option_devmode"): ["/devmode"],
+            self.app_translator.translate("pages.settings.restart_program_option_debugmode"): ["/debugmode"],
+            self.app_translator.translate("pages.settings.restart_program_option_help"): ["/help"],
+        }
+
+        self.restart_program_optionmenu = self._create_settings_card(
+            self.reload_group,
+            self.app_translator.translate("pages.settings.restart_program"),
+            self.app_translator.translate("pages.settings.restart_program_description"),
+            customtkinter.CTkOptionMenu,
+            values=list(self.restart_program_map.keys()),
+            command=self._restart_program
+        )
+        CTkToolTip(self.restart_program_optionmenu,
+                   self.app_translator.translate("pages.settings.restart_program_tooltip"),
+                   font=(self.font_family, 12))
+        # Show the currently active mode as the default selection.
+        if AdvancedStartup.is_devmode():
+            current_restart_option = "pages.settings.restart_program_option_devmode"
+        elif AdvancedStartup.is_debugmode():
+            current_restart_option = "pages.settings.restart_program_option_debugmode"
+        else:
+            current_restart_option = "pages.settings.restart_program_option_normal"
+
+        self.restart_program_optionmenu.set(
+            self.app_translator.translate(current_restart_option)
         )
         # === End of Reload Section ===
 
@@ -265,6 +304,16 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
 
     def _change_use_internal_viewer(self):
         self._toggle_switch_setting(self.use_internal_viewer_switch, AppSettings.set_use_internal_viewer_enabled)
+
+    def _restart_program(self, selected_option: str):
+        launch_args = self.restart_program_map.get(selected_option)
+        RestartProgram.restart_program(
+            AdvancedStartup, logger=self.logger,
+            app_translator=self.app_translator,
+            log_file_path=self.log_file_path,
+            verb=None,
+            launch_args=launch_args
+        )
 
     def _change_take_ownership(self):
         self._toggle_switch_setting(self.take_ownership_card, AppSettings.set_take_ownership_enabled)

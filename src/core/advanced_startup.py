@@ -1,5 +1,7 @@
 import ctypes
+import os
 import sys
+from pathlib import Path
 
 from .app_translator import AppTranslator
 
@@ -57,8 +59,17 @@ class AdvancedStartup:
     # === Runtime Actions ===
     @staticmethod
     def get_runtime_arguments():
-        # Excluding the program itself.
-        return sys.argv[1:].copy()
+        # Excluding the program itself. Drop a leading token that equals the
+        # executable path, which may otherwise leak into argv[1:] after a
+        # relaunch and accumulate across restarts.
+        args = sys.argv[1:].copy()
+        if args:
+            try:
+                if Path(args[0]).resolve() == Path(sys.executable).resolve():
+                    args.pop(0)
+            except OSError:
+                pass
+        return args
 
     @staticmethod
     def is_administrator():
@@ -91,11 +102,17 @@ class AdvancedStartup:
             return False
 
     @staticmethod
-    def run_as_administrator(args):
-        result = ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, args, None, 0)
-        if result > 32:
+    def restart_program(args, verb=None):
+        # A new instance spawned via sys.executable reuses this process's onefile
+        # temp folder (_MEIxxxx), which is deleted on exit. Force an independent
+        # instance so it extracts its own folder.
+        # Ref: https://pyinstaller.org/en/stable/common-issues-and-pitfalls.html
+        os.environ["PYINSTALLER_RESET_ENVIRONMENT"] = "1"
+
+        return_code = ctypes.windll.shell32.ShellExecuteW(None, verb, sys.executable, args, None, 0)
+        if return_code > 32:
             sys.exit(0)
-        return result
+        return return_code
 
     @staticmethod
     def specify_locale():

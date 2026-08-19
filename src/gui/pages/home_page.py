@@ -12,8 +12,13 @@ from core import (
     PrerequisiteChecks
 )
 from gui.components import HomePageWidgets
-from handlers.private import EnableLongPaths, RestartAsAdministrator
-from handlers.shared import StartMSPCM, StartMSPCMBeta, URILauncher
+from handlers.private import EnableLongPaths
+from handlers.shared import (
+    RestartProgram,
+    StartMSPCM,
+    StartMSPCMBeta,
+    URILauncher
+)
 from .base_page_frame import BaseInfoPageFrame
 
 
@@ -82,10 +87,11 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
             self.app_translator.translate("pages.home.restart_as_administrator_description"),
             customtkinter.CTkButton,
             text=self.app_translator.translate("pages.home.restart_as_administrator"),
-            command=lambda: RestartAsAdministrator.restart_as_administrator(
+            command=lambda: RestartProgram.restart_program(
                 AdvancedStartup, logger=self.logger,
                 app_translator=self.app_translator,
-                log_file_path=self.log_file_path
+                log_file_path=self.log_file_path,
+                verb="runas"
             ),
             state="disabled" if AdvancedStartup.is_administrator() else "normal"
         )
