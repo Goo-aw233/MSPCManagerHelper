@@ -349,7 +349,7 @@
       "install_webview2": "安装 Microsoft Edge WebView2 运行时",
       "install_webview2_desc": "安装 Microsoft Edge WebView2 运行时以确保微软电脑管家正常运行。",
       "license": "许可证",
-      "license_path_placeholder": "选择许可证文件 (License.xml) ",
+      "license_path_placeholder": "选择许可证文件 (License.xml) (可选)",
       "offline_image_path_placeholder": "选择脱机映像目录",
       "offline_install": "脱机安装",
       "offline_installer": "脱机安装程序",

@@ -50,7 +50,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         self.refresh_version_button = self._create_section_label_with_button(
             self.app_translator.translate("pages.home.mspcm_version_info"),
             f"↻    {self.app_translator.translate('pages.common.refresh')}",
-            self._refresh_mspcm_version_info
+            self.refresh_mspcm_version_info
         )
 
         self.mspcm_version_group = self._create_group_frame()
@@ -148,7 +148,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         # === End of After Initialization Tasks ===
 
 
-    def _refresh_mspcm_version_info(self):
+    def refresh_mspcm_version_info(self):
         # Clear existing widgets in the group frame.
         for widget in self.mspcm_version_group.winfo_children():
             widget.destroy()

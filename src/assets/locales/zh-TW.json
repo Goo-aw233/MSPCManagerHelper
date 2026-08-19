@@ -349,7 +349,7 @@
       "install_webview2": "安裝 Microsoft Edge WebView2 執行階段",
       "install_webview2_desc": "安裝 Microsoft Edge WebView2 執行階段以確保 Microsoft 電腦管家正常執行。",
       "license": "授權檔案",
-      "license_path_placeholder": "選擇授權檔案 (License.xml)",
+      "license_path_placeholder": "選擇授權檔案 (License.xml) (可選)",
       "offline_image_path_placeholder": "選擇離線映像目錄",
       "offline_install": "離線安裝",
       "offline_installer": "離線安裝程式",

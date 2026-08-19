@@ -21,13 +21,14 @@ from .base_page_frame import BaseFuncPageFrame
 
 
 class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
-    def __init__(self, parent, app_translator, font_family):
+    def __init__(self, parent, app_translator, font_family, on_mspcm_version_changed=None):
         super().__init__(
             parent=parent,
             app_translator=app_translator,
             font_family=font_family,
             page_title_key="pages.navigation.uninstaller",
-            events_textbox_wrap="none"
+            events_textbox_wrap="none",
+            on_mspcm_version_changed=on_mspcm_version_changed
         )
 
         # Build UI Sections
@@ -942,3 +943,10 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
             on_completion=lambda: self._refresh_uninstall_edge_components_state()
         )
     # ~ End of Uninstall Edge Components ~
+
+    # ~ Operation Completion Hook ~
+    def _on_operation_completed(self):
+        # Refresh the state of Microsoft PC Manager version display on the Home page.
+        if self.on_mspcm_version_changed:
+            self.on_mspcm_version_changed()
+    # ~ End of Operation Completion Hook ~

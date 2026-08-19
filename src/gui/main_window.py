@@ -308,11 +308,15 @@ class MainWindow(customtkinter.CTk):
         self.logger.debug(f"Maintenance Page Creation Completed in: {time.perf_counter() - t_maintenance:.5f} s")
 
         t_installer = time.perf_counter()
-        self.installer_page = InstallerPage(self.main_frame, self.app_translator, self.font_family)
+        self.installer_page = InstallerPage(
+            self.main_frame, self.app_translator, self.font_family,
+            on_mspcm_version_changed=self._refresh_home_mspcm_version_info)
         self.logger.debug(f"Installer Page Creation Completed in: {time.perf_counter() - t_installer:.5f} s")
 
         t_uninstaller = time.perf_counter()
-        self.uninstaller_page = UninstallerPage(self.main_frame, self.app_translator, self.font_family)
+        self.uninstaller_page = UninstallerPage(
+            self.main_frame, self.app_translator, self.font_family,
+            on_mspcm_version_changed=self._refresh_home_mspcm_version_info)
         self.logger.debug(f"Uninstaller Page Creation Completed in: {time.perf_counter() - t_uninstaller:.5f} s")
 
         t_utilities = time.perf_counter()
@@ -407,6 +411,11 @@ class MainWindow(customtkinter.CTk):
     def about_button_event(self):
         self.select_frame_by_page_name("about")
 
+    def _refresh_home_mspcm_version_info(self):
+        """Refresh the Home page's Microsoft PC Manager version display."""
+        if self.home_page is not None and self.home_page.winfo_exists():
+            self.home_page.refresh_mspcm_version_info()
+
     def refresh_ui(self):
         # If a refresh is already running, set a pending flag and return.
         # The pending flag will ensure that another refresh runs immediately after the current one finishes.
@@ -485,8 +494,12 @@ class MainWindow(customtkinter.CTk):
         # Create Page Instances
         self.home_page = HomePage(self.main_frame, self.app_translator, self.font_family)
         self.maintenance_page = MaintenancePage(self.main_frame, self.app_translator, self.font_family)
-        self.installer_page = InstallerPage(self.main_frame, self.app_translator, self.font_family)
-        self.uninstaller_page = UninstallerPage(self.main_frame, self.app_translator, self.font_family)
+        self.installer_page = InstallerPage(
+            self.main_frame, self.app_translator, self.font_family,
+            on_mspcm_version_changed=self._refresh_home_mspcm_version_info)
+        self.uninstaller_page = UninstallerPage(
+            self.main_frame, self.app_translator, self.font_family,
+            on_mspcm_version_changed=self._refresh_home_mspcm_version_info)
         self.utilities_page = UtilitiesPage(self.main_frame, self.app_translator, self.font_family)
         self.toolbox_page = ToolboxPage(self.main_frame, self.app_translator, self.font_family)
         self.settings_page = SettingsPage(self.main_frame, self.app_translator, self.font_family)

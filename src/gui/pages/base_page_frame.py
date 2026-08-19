@@ -105,8 +105,12 @@ class BaseFuncPageFrame(BaseInfoPageFrame):
             )
     """
 
-    def __init__(self, parent, app_translator, font_family, page_title_key, events_textbox_wrap="none"):
+    def __init__(self, parent, app_translator, font_family, page_title_key, events_textbox_wrap="none",
+                 on_mspcm_version_changed=None):
         super().__init__(parent, app_translator, font_family, page_title_key)
+
+        # Refresh Microsoft PC Manager version display on the Home page. (Optional, from MainWindow)
+        self.on_mspcm_version_changed = on_mspcm_version_changed
 
         # Reuse the layout of BaseInfoPageFrame, but destroy its scroll_frame so that a suitable layout can be recreated in BaseFuncPageFrame.
         self.scroll_frame.destroy()
@@ -170,6 +174,7 @@ class BaseFuncPageFrame(BaseInfoPageFrame):
             task_coordinator.restore_all()
             if on_completion:
                 on_completion()
+            self._on_operation_completed()
 
         OperationRunner.run(self, operation_func, operation_name_key, _on_completion)
 
@@ -178,3 +183,10 @@ class BaseFuncPageFrame(BaseInfoPageFrame):
         # disable all cards while one operation runs and restore them after.
         for card, refresh in getattr(self, "_operation_cards", ()):
             task_coordinator.register(self, card, refresh)
+
+    def _on_operation_completed(self):
+        """Hook invoked on the main thread after every operation completes.
+
+        Subclasses override this to react to a finished operation.
+        """
+        pass
