@@ -87,6 +87,12 @@ Please Select Your Language to Continue
 > ```Batch
 > pip install nuitka zstandard
 > ```
+>
+> 若正在使用较新版本或预发布版的 Python，请尝试使用使用 `factory` 分支的 `Nuitka`，以兼容新的 Python 特性，需要先[安装 Git](https://git-scm.com/install)。`Zstandard` 保持稳定版即可：
+>
+> ```Batch
+> pip install "nuitka@git+https://github.com/Nuitka/Nuitka.git@factory" zstandard
+> ``` 
 > 
 > 随后，将 `build_nuitka_.venv.cmd` 脚本从 `scripts\disabled` 文件夹移动到 `scripts\build` 文件夹，并使用脚本构建，构建时推荐使用 `ziglang`。
-> **对于中文用户，请添加 `chcp 65001` 到脚本最顶部，以确保所有字符正确显示。**
+> **对于中文用户，务必先执行 `chcp 65001` 以切换控制台代码页到 `UTF-8`，以确保所有字符正确显示。**

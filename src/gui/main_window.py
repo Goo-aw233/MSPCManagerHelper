@@ -16,6 +16,7 @@ from core import (
     AppTranslator,
     OptionalChecks,
     PrerequisiteChecks,
+    ResourceLocator,
     SetFontFamily
 )
 from gui.pages import (
@@ -45,6 +46,7 @@ class MainWindow(customtkinter.CTk):
         self.toolbox_page = None
         self.settings_page = None
         self.about_page = None
+        self.current_page_name = None
         self._refresh_ui_job = None
         self._refresh_ui_pending = False
         self._refresh_ui_running = False
@@ -60,10 +62,7 @@ class MainWindow(customtkinter.CTk):
         self.logger.info(f"Runtime Arguments: {AdvancedStartup.get_runtime_arguments()}")
         self.logger.info(f"Current Working Directory: {os.getcwd()}")
         self.logger.info(f"Log File Path: {AppLogger.get_log_file_path()}")
-        if hasattr(sys, "_MEIPASS"):
-            self.logger.info(f"PyInstaller Extraction Path: {sys._MEIPASS}")
-        else:
-            self.logger.info("PyInstaller Extraction Path: Not Running from PyInstaller Bundle")
+        self.logger.info(f"Runtime: {ResourceLocator.describe_runtime()}")
         self.logger.info(f"CPython JIT Available: {sys._jit.is_available()}, Enabled: {sys._jit.is_enabled()}")
         self.logger.info(f"Python Version: {sys.version}")
 
@@ -474,9 +473,9 @@ class MainWindow(customtkinter.CTk):
             btn.configure(font=button_font, text=f"{icon}    {self.app_translator.translate(key)}")
 
         # Recreate Pages
-        current_page_name = getattr(self, "current_page_name", "home")
+        current_page_name = self.current_page_name or "home"
         
-        page_map = {
+        page_map: dict[str, customtkinter.CTkFrame | None] = {
             "home": self.home_page,
             "maintenance": self.maintenance_page,
             "installer": self.installer_page,
@@ -488,7 +487,7 @@ class MainWindow(customtkinter.CTk):
         }
 
         for page in page_map.values():
-            if hasattr(page, "winfo_exists") and page.winfo_exists():
+            if page is not None and page.winfo_exists():
                 page.destroy()
 
         # Create Page Instances

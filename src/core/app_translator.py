@@ -1,6 +1,7 @@
 import json
 import locale
-from pathlib import Path
+
+from core.app_resources import ResourceLocator
 
 
 class AppTranslator:
@@ -15,12 +16,19 @@ class AppTranslator:
              "zh-Hant-", "zh-Hant-HK", "zh-Hant-MO", "zh-Hant-TW", "zh-HK", "zh-MO", "zh-TW",): "zh-tw"
         }
 
-    def __init__(self, locale):
-        self.locale = locale
+    def __init__(self, locale_name):
+        self.locale = locale_name
         self.translations = self.load_translations()
 
     def load_translations(self):
-        file_path = (Path(__file__).resolve().parents[1] / "assets" / "locales" / f"{self.locale}.json")
+        file_path = ResourceLocator.locate_asset("locales", f"{self.locale}.json")
+        if file_path is None:
+            # If the current language cannot be found under any
+            # packaging method, fall back to the default language.
+            file_path = ResourceLocator.locate_asset("locales", "en-US.json")
+        if file_path is None:
+            # When the key is missing, only the original key is displayed.
+            return {}
         with file_path.open("r", encoding="utf-8") as file:
             return json.load(file)
 

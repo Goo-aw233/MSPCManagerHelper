@@ -87,5 +87,11 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 > ```Batch
 > pip install nuitka zstandard
 > ```
+>
+> If you are using a newer version or pre-release version of Python, try using the `Nuitka` from the `factory` branch to be compatible with the new Python features. You need to [install Git](https://git-scm.com/install) first. `Zstandard` can remain the stable version:
+>
+> ```Batch
+> pip install "nuitka@git+https://github.com/Nuitka/Nuitka.git@factory" zstandard
+> ``` 
 > 
 > Then, move the `build_nuitka_.venv.cmd` script from the `scripts\disabled` folder to the `scripts\build` folder, and use the script to build. It is recommended to use `ziglang` when building.

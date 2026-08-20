@@ -12,6 +12,7 @@ from core import (
     AppResources,
     AppSettings,
     AppTranslator,
+    ResourceLocator,
     SetFontFamily
 )
 
@@ -27,10 +28,7 @@ class HelpWindow(customtkinter.CTk):
         self.logger.info(f"Runtime Arguments: {AdvancedStartup.get_runtime_arguments()}")
         self.logger.info(f"Current Working Directory: {os.getcwd()}")
         self.logger.info(f"Log File Path: {AppLogger.get_log_file_path()}")
-        if hasattr(sys, "_MEIPASS"):
-            self.logger.info(f"PyInstaller Extraction Path: {sys._MEIPASS}")
-        else:
-            self.logger.info("PyInstaller Extraction Path: Not Running from PyInstaller Bundle")
+        self.logger.info(f"Runtime: {ResourceLocator.describe_runtime()}")
         self.logger.info(f"Python Version: {sys.version}")
 
         self.logger.info("========================= Initializing Help Window =========================")

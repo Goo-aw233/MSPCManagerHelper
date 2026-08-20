@@ -107,7 +107,8 @@ class AdvancedStartup:
         # temp folder (_MEIxxxx), which is deleted on exit. Force an independent
         # instance so it extracts its own folder.
         # Ref: https://pyinstaller.org/en/stable/common-issues-and-pitfalls.html
-        os.environ["PYINSTALLER_RESET_ENVIRONMENT"] = "1"
+        if hasattr(sys, "_MEIPASS"):
+            os.environ["PYINSTALLER_RESET_ENVIRONMENT"] = "1"
 
         return_code = ctypes.windll.shell32.ShellExecuteW(None, verb, sys.executable, args, None, 0)
         if return_code > 32:
