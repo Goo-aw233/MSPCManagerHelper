@@ -1,6 +1,7 @@
 import atexit
 
 from core.advanced_startup import AdvancedStartup
+from core.app_user_model_id import AppUserModelID
 from core.cleanup_after_exit import CleanupAfterExit
 from gui import HelpWindow, MainWindow
 
@@ -10,6 +11,7 @@ def main():
         app = HelpWindow()
     else:
         atexit.register(CleanupAfterExit.cleanup_all)
+        AppUserModelID.register()
         app = MainWindow()
     app.mainloop()
 

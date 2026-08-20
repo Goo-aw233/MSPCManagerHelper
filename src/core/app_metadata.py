@@ -1,6 +1,7 @@
 class AppMetadata:
 
     # Properties
+    APP_AUMID = "GuCATs.MSPCManagerHelper"
     APP_AUTHOR = "GuCATs"
     APP_GITHUB_REPOSITORY_URL = "https://github.com/Goo-aw233/MSPCManagerHelper"
     APP_LICENSE_URL = "https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE"

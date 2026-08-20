@@ -10,6 +10,7 @@ from core.app_logger import AppLogger
 from core.app_metadata import AppMetadata
 from core.app_resources import AppResources
 from core.app_settings import AppSettings
+from core.app_user_model_id import AppUserModelID
 from core.path_resolver import PathResolver
 
 
@@ -21,6 +22,7 @@ class CleanupAfterExit:
         CleanupAfterExit.cleanup_temp_files()
         CleanupAfterExit.cleanup_prefetch()
         CleanupAfterExit.cleanup_toast_notifications()
+        CleanupAfterExit.cleanup_aumid()
         CleanupAfterExit.cleanup_logs()
 
     @staticmethod
@@ -120,10 +122,16 @@ class CleanupAfterExit:
         if not AppSettings.is_cleanup_after_exit_enabled():
             return
         try:
-            toaster = WindowsToaster(AppMetadata.APP_NAME)
+            toaster = WindowsToaster(AppMetadata.APP_AUMID)
             # Clear every toast belonging to this application regardless of tag,
             # so newly added toast tags do not need to be listed here.
             toaster.clear_toasts()
             CleanupAfterExit.logger.info("Toast notifications cleaned up.")
         except Exception as e:
             CleanupAfterExit.logger.warning(f"Failed to Clean Up Toast Notifications: {e}")
+
+    @staticmethod
+    def cleanup_aumid():
+        if not AppSettings.is_cleanup_after_exit_enabled():
+            return
+        AppUserModelID.unregister()

@@ -387,7 +387,7 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
 
     def _notify_refresh_deferred(self):
         try:
-            toaster = WindowsToaster(AppMetadata.APP_NAME)
+            toaster = WindowsToaster(AppMetadata.APP_AUMID)
             refresh_deferred_toast = Toast()
             refresh_deferred_toast.text_fields = [
                 self.app_translator.translate("pages.settings.refresh_deferred_title"),

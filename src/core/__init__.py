@@ -8,6 +8,7 @@ from .app_metadata import AppMetadata
 from .app_resources import AppResources, ResourceLocator
 from .app_settings import AppSettings
 from .app_translator import AppTranslator
+from .app_user_model_id import AppUserModelID
 from .cleanup_after_exit import CleanupAfterExit
 from .get_localization_translators import get_localization_translators
 from .get_mspcm_version import GetMSPCMVersion
@@ -23,6 +24,7 @@ __all__ = [
     "AppResources",
     "AppSettings",
     "AppTranslator",
+    "AppUserModelID",
     "CleanupAfterExit",
     "get_localization_translators",
     "GetMSPCMVersion",

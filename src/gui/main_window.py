@@ -165,7 +165,7 @@ class MainWindow(customtkinter.CTk):
         if not AdvancedStartup.is_administrator():
             found_prerequisite_issue = True
             self.logger.warning("App is not running as administrator.")
-            toaster = WindowsToaster(AppMetadata.APP_NAME)
+            toaster = WindowsToaster(AppMetadata.APP_AUMID)
             run_as_administrator_toast = Toast()
             run_as_administrator_toast.text_fields = [
                 self.app_translator.translate("core.administrator_required_title"),
