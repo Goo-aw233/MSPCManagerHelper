@@ -34,6 +34,21 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
         self._refresh_ui_pending = False
         self._refresh_deferred_toast_shown = False
 
+        # Build UI Sections
+        self._create_personalization_section()
+        self._create_language_section()
+        self._create_reload_section()
+        self._create_preferences_section()
+        self._create_privacy_settings_section()
+        self._create_advanced_section()
+
+        # Operation cards protected by the global operation lock.
+        self._operation_cards = [
+            (self.restart_program_optionmenu, self._refresh_restart_program_state),
+            ]
+        self._register_operation_cards()
+
+    def _create_personalization_section(self):
         # === Personalization Section ===
         self._create_section_label(self.app_translator.translate("pages.settings.personalization"))
 
@@ -75,6 +90,7 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
         self._apply_switch_state(self.follow_system_font_switch, AppSettings.is_follow_system_font_enabled())
         # === End of Personalization Section ===
 
+    def _create_language_section(self):
         # === Language Section ===
         self._create_section_label(self.app_translator.translate("pages.settings.language"))
 
@@ -102,6 +118,7 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             self.language_map_rev.get(current_locale, self.app_translator.translate("metadata.i18n.locales.en-US")))
         # === End of Language Section ===
 
+    def _create_reload_section(self):
         # === Reload Section ===
         self._create_section_label(self.app_translator.translate("pages.settings.reload"))
 
@@ -153,6 +170,7 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
         )
         # === End of Reload Section ===
 
+    def _create_preferences_section(self):
         # === Preferences ===
         self._create_section_label(self.app_translator.translate("pages.settings.preferences"))
 
@@ -221,6 +239,7 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
         self._apply_switch_state(self.use_internal_viewer_switch, AppSettings.is_use_internal_viewer_enabled())
         # === End of Preferences ===
 
+    def _create_privacy_settings_section(self):
         # === Privacy & Security ===
         self._create_section_label(self.app_translator.translate("pages.settings.privacy_settings"))
 
@@ -244,6 +263,7 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
         )
         # === End of Privacy & Security ===
 
+    def _create_advanced_section(self):
         # === Advanced ===
         if AdvancedStartup.is_administrator() and (AdvancedStartup.is_debugmode() or AdvancedStartup.is_devmode()):
             self._create_section_label(self.app_translator.translate("pages.settings.advanced"))
@@ -306,6 +326,13 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
         self._toggle_switch_setting(self.use_internal_viewer_switch, AppSettings.set_use_internal_viewer_enabled)
 
     def _restart_program(self, selected_option: str):
+        # Fail-safe: reject the restart while another operation is running,
+        # even if the menu's disabled state was somehow bypassed.
+        if task_coordinator.is_busy():
+            self.logger.warning(
+                f"Restart Program rejected: another operation "
+                f"('{task_coordinator.current_operation()}') is running.")
+            return
         launch_args = self.restart_program_map.get(selected_option)
         RestartProgram.restart_program(
             AdvancedStartup, logger=self.logger,
@@ -314,6 +341,13 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             verb=None,
             launch_args=launch_args
         )
+
+    def _register_operation_cards(self):
+        for card, refresh in getattr(self, "_operation_cards", ()):
+            task_coordinator.register(self, card, refresh)
+
+    def _refresh_restart_program_state(self):
+        self._set_card_state(self.restart_program_optionmenu, "normal")
 
     def _change_take_ownership(self):
         self._toggle_switch_setting(self.take_ownership_card, AppSettings.set_take_ownership_enabled)

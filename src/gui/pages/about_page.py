@@ -21,6 +21,13 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
             page_title_key="pages.navigation.about"
         )
 
+        # Build UI Sections
+        self._create_app_information_section()
+        self._create_term_of_use_section()
+        self._create_privacy_policy_section()
+        self._create_get_help_section()
+
+    def _create_app_information_section(self):
         # === App Information Section ===
         self._create_section_label(self.app_translator.translate("pages.about.app_info"))
 
@@ -177,6 +184,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         )
         # === End of App Information Section ===
 
+    def _create_term_of_use_section(self):
         # === Term of Use Section ===
         self._create_section_label(self.app_translator.translate("pages.about.term_of_use"))
 
@@ -231,6 +239,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         self.term_of_use_content_textbox.configure(state="disabled")
         # === End of Term of Use Section ===
 
+    def _create_privacy_policy_section(self):
         # === Privacy Policy Section ===
         self._create_section_label(self.app_translator.translate("pages.about.privacy_policy"))
 
@@ -270,6 +279,7 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         self.privacy_policy_content_textbox.configure(state="disabled")
         # === End of Privacy Policy Section ===
 
+    def _create_get_help_section(self):
         # === Get Help Section ===
         self._create_section_label(self.app_translator.translate("pages.about.get_help"))
 

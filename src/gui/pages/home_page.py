@@ -11,7 +11,10 @@ from core import (
     GetMSPCMVersion,
     PrerequisiteChecks
 )
-from gui.components import HomePageWidgets
+from gui.components import (
+    HomePageWidgets,
+    task_coordinator
+)
 from handlers.private import EnableLongPaths
 from handlers.shared import (
     RestartProgram,
@@ -37,6 +40,26 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         self._queue_loop_job = None
         self._mspcm_version_thread = None
 
+        # Build UI Sections
+        self._create_welcome_section()
+        self._create_mspcm_version_info_section()
+        self._create_windows_specifications_section()
+        self._create_advanced_section()
+
+        # Operation cards protected by the global operation lock.
+        self._operation_cards = [
+            (self.run_as_administrator_card, self._refresh_run_as_administrator_state),
+            ]
+        self._register_operation_cards()
+
+        # === After Initialization Tasks ===
+        # Start the Main Thread's Periodic Check Loop
+        # (Place at the end of __init__ to avoid loading before the GUI is ready.)
+        self.logger.debug("Starting the main thread's periodic check loop.")
+        self._check_queue_loop()
+        # === End of After Initialization Tasks ===
+
+    def _create_welcome_section(self):
         # === Welcome Section ===
         self._create_section_label(self.app_translator.translate("pages.home.welcome"))
 
@@ -51,6 +74,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         )
         # === End of Welcome Section ===
 
+    def _create_mspcm_version_info_section(self):
         # === Microsoft PC Manager Version Info Section ===
         self.refresh_version_button = self._create_section_label_with_button(
             self.app_translator.translate("pages.home.mspcm_version_info"),
@@ -63,6 +87,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         self._load_mspcm_version_info()
         # === End of Microsoft PC Manager Version Info Section ===
 
+    def _create_windows_specifications_section(self):
         # === Windows Specifications Section ===
         self._create_section_label(self.app_translator.translate("pages.home.windows_specifications"))
 
@@ -75,24 +100,20 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         self._load_system_checks()
         # === End of Windows Specifications Section ===
 
+    def _create_advanced_section(self):
         # === Advanced Section ===
         self._create_section_label(self.app_translator.translate("pages.home.advanced"))
 
         self.exit_group = self._create_group_frame()
 
         # --- Run as Administrator ---
-        self._create_actions_card(
+        self.run_as_administrator_card = self._create_actions_card(
             self.exit_group,
             self.app_translator.translate("pages.home.run_as_administrator"),
             self.app_translator.translate("pages.home.restart_as_administrator_description"),
             customtkinter.CTkButton,
             text=self.app_translator.translate("pages.home.restart_as_administrator"),
-            command=lambda: RestartProgram.restart_program(
-                AdvancedStartup, logger=self.logger,
-                app_translator=self.app_translator,
-                log_file_path=self.log_file_path,
-                verb="runas"
-            ),
+            command=self._run_as_administrator,
             state="disabled" if AdvancedStartup.is_administrator() else "normal"
         )
 
@@ -145,13 +166,6 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
             state="normal"
         )
         # === End of Advanced Section ===
-
-        # === After Initialization Tasks ===
-        # Start the Main Thread's Periodic Check Loop
-        # (Place at the end of __init__ to avoid loading before the GUI is ready.)
-        self.logger.debug("Starting the main thread's periodic check loop.")
-        self._check_queue_loop()
-        # === End of After Initialization Tasks ===
 
 
     def refresh_mspcm_version_info(self):
@@ -378,6 +392,29 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         self.cleanup_after_exit_checkbox.configure(
             text=self.app_translator.translate("pages.common.on") if is_enabled else self.app_translator.translate(
                 "pages.common.off"))
+
+    def _run_as_administrator(self):
+        if task_coordinator.is_busy():
+            self.logger.warning(
+                f"Run as Administrator rejected: another operation "
+                f"('{task_coordinator.current_operation()}') is running.")
+            return
+        RestartProgram.restart_program(
+            AdvancedStartup, logger=self.logger,
+            app_translator=self.app_translator,
+            log_file_path=self.log_file_path,
+            verb="runas"
+        )
+
+    def _register_operation_cards(self):
+        for card, refresh in getattr(self, "_operation_cards", ()):
+            task_coordinator.register(self, card, refresh)
+
+    def _refresh_run_as_administrator_state(self):
+        self._set_card_state(
+            self.run_as_administrator_card,
+            "disabled" if AdvancedStartup.is_administrator() else "normal",
+        )
 
     def _exit_app(self):
         self.logger.info("The app is exiting via the exit button...")

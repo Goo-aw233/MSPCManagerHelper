@@ -18,6 +18,12 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
             page_title_key="pages.navigation.toolbox",
         )
 
+        # Build UI Sections
+        self._create_app_update_section()
+        self._create_download_mspcm_app_package_section()
+        self._create_download_runtime_section()
+
+    def _create_app_update_section(self):
         # === App Update Section ===
         self._create_section_label(self.app_translator.translate("pages.toolbox.app_update"))
 
@@ -73,6 +79,7 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
         )
         # === End of App Update Section ===
 
+    def _create_download_mspcm_app_package_section(self):
         # === Download Microsoft PC Manager App Package Section ===
         self._create_section_label(self.app_translator.translate("pages.toolbox.download_mspcm_app_package"))
 
@@ -128,6 +135,7 @@ class ToolboxPage(BaseInfoPageFrame, BaseWidgets):
         )
         # === End of Microsoft PC Manager App Package Download Section ===
 
+    def _create_download_runtime_section(self):
         # === Download Runtime Section ===
         self._create_section_label(self.app_translator.translate("pages.toolbox.download_runtime"))
 
