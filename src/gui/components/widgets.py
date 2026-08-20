@@ -2,11 +2,12 @@ import tkinter
 
 import customtkinter
 
+from .scrollable_frame import ScrollableFrame
 from .task_coordinator import task_coordinator
 
 
 class BaseWidgets:
-    scroll_frame: customtkinter.CTkScrollableFrame
+    scroll_frame: ScrollableFrame
     font_family: str
 
     def _create_section_label(self, text):

@@ -5,7 +5,8 @@ import customtkinter
 from CTkToolTip import CTkToolTip
 
 from gui.components import (
-    BaseWidgets
+    BaseWidgets,
+    ScrollableFrame
 )
 from modules.maintenance import (
     CollectMSPCMLogs
@@ -51,7 +52,7 @@ class MaintenancePage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(collect_mspcm_logs_frame)
 
         # - Collect MSPCM Logs Options -
-        self.collect_mspcm_logs_options_frame = customtkinter.CTkScrollableFrame(
+        self.collect_mspcm_logs_options_frame = ScrollableFrame(
             collect_mspcm_logs_frame,
             orientation="horizontal",
             fg_color="transparent",

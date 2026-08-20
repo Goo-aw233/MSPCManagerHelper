@@ -9,7 +9,8 @@ from core import (
     OptionalChecks
 )
 from gui.components import (
-    BaseWidgets
+    BaseWidgets,
+    ScrollableFrame
 )
 from modules.installer import (
     InstallMicrosoftEdgeWebView2Runtime,
@@ -65,7 +66,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(install_via_msstore_frame)
 
         # - Open Options -
-        self.open_msstore_options_frame = customtkinter.CTkScrollableFrame(
+        self.open_msstore_options_frame = ScrollableFrame(
             install_via_msstore_frame,
             orientation="horizontal",
             fg_color="transparent",
@@ -123,7 +124,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(install_webview2_frame)
 
         # - Install Microsoft EdgeWebView2 Runtime Options -
-        self.install_webview2_options_frame = customtkinter.CTkScrollableFrame(
+        self.install_webview2_options_frame = ScrollableFrame(
             install_webview2_frame,
             orientation="horizontal",
             fg_color="transparent",
@@ -202,7 +203,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(install_via_dism_frame)
 
         # - Install via DISM Options -
-        self.install_via_dism_options_frame = customtkinter.CTkScrollableFrame(
+        self.install_via_dism_options_frame = ScrollableFrame(
             install_via_dism_frame,
             orientation="horizontal",
             fg_color="transparent",
@@ -365,7 +366,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(install_via_powershell_current_user_frame)
 
         # - Install via Windows PowerShell Options -
-        self.install_via_powershell_current_user_options_frame = customtkinter.CTkScrollableFrame(
+        self.install_via_powershell_current_user_options_frame = ScrollableFrame(
             install_via_powershell_current_user_frame,
             orientation="horizontal",
             fg_color="transparent",
@@ -463,7 +464,7 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(reinstall_via_powershell_frame)
 
         # - Reinstall via Windows PowerShell Options -
-        self.reinstall_via_powershell_options_frame = customtkinter.CTkScrollableFrame(
+        self.reinstall_via_powershell_options_frame = ScrollableFrame(
             reinstall_via_powershell_frame,
             orientation="horizontal",
             fg_color="transparent",

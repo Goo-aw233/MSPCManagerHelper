@@ -14,7 +14,8 @@ from core import (
     PrerequisiteChecks
 )
 from gui.components import (
-    BaseWidgets
+    BaseWidgets,
+    ScrollableFrame
 )
 from .base_page_frame import BaseFuncPageFrame
 from modules.utilities import (
@@ -82,7 +83,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(file_management_frame)
 
         # - Hash Algorithm Checkboxes -
-        self.hash_checkboxes_frame = customtkinter.CTkScrollableFrame(
+        self.hash_checkboxes_frame = ScrollableFrame(
             file_management_frame,
             orientation="horizontal",
             fg_color="transparent",
@@ -218,7 +219,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(get_dependencies_versions_frame)
 
         # - Dependencies Types Checkboxes -
-        self.dependencies_types_frame = customtkinter.CTkScrollableFrame(
+        self.dependencies_types_frame = ScrollableFrame(
             get_dependencies_versions_frame,
             orientation="horizontal",
             fg_color="transparent",
@@ -281,7 +282,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(repair_edge_webview_2_installation_frame)
 
         # - Microsoft Edge WebView2 Repair Options -
-        self.webview2_repair_options_frame = customtkinter.CTkScrollableFrame(
+        self.webview2_repair_options_frame = ScrollableFrame(
             repair_edge_webview_2_installation_frame,
             orientation="horizontal",
             fg_color="transparent",
@@ -375,7 +376,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(restart_services_frame)
 
         # - Microsoft PC Manager Services Checkboxes -
-        self.mspcm_services_checkboxes_frame = customtkinter.CTkScrollableFrame(
+        self.mspcm_services_checkboxes_frame = ScrollableFrame(
             restart_services_frame,
             orientation="horizontal",
             fg_color="transparent",
@@ -441,7 +442,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(switch_regions_frame)
 
         # - Microsoft PC Manager Version Radio Button -
-        self.mspcm_version_radiobutton_frame = customtkinter.CTkScrollableFrame(switch_regions_frame,
+        self.mspcm_version_radiobutton_frame = ScrollableFrame(switch_regions_frame,
             orientation="horizontal",
             fg_color="transparent",
             height=42
@@ -489,7 +490,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(view_installed_security_products_frame)
 
         # - Security Products Types Checkboxes -
-        self.security_products_types_frame = customtkinter.CTkScrollableFrame(
+        self.security_products_types_frame = ScrollableFrame(
             view_installed_security_products_frame,
             orientation="horizontal",
             fg_color="transparent",

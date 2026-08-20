@@ -4,6 +4,7 @@ from core import AppLogger
 from gui.components import (
     EventsTextbox,
     OperationRunner,
+    ScrollableFrame,
     task_coordinator
 )
 
@@ -59,7 +60,7 @@ class BaseInfoPageFrame(customtkinter.CTkFrame):
         self.page_title_label.grid(row=0, column=0, sticky="w", padx=20, pady=(20, 10))
 
         # Scrollable Content
-        self.scroll_frame = customtkinter.CTkScrollableFrame(self, fg_color="transparent")
+        self.scroll_frame = ScrollableFrame(self, fg_color="transparent")
         self.scroll_frame.grid(row=1, column=0, sticky="nsew", padx=0, pady=0)
         self.scroll_frame.grid_columnconfigure(0, weight=1)
 
@@ -133,7 +134,7 @@ class BaseFuncPageFrame(BaseInfoPageFrame):
         self.tabview.set(self.features_tab_name)
 
         # Scrollable Content (Features Tab)
-        self.scroll_frame = customtkinter.CTkScrollableFrame(
+        self.scroll_frame = ScrollableFrame(
             self.tabview.tab(self.features_tab_name),
             fg_color="transparent"
         )

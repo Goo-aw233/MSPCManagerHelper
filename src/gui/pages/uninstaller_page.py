@@ -8,7 +8,8 @@ from core import (
     OptionalChecks
 )
 from gui.components import (
-    BaseWidgets
+    BaseWidgets,
+    ScrollableFrame
 )
 from modules.uninstaller import (
     UninstallBeta,
@@ -65,7 +66,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(uninstall_via_dism_for_all_users_frame)
 
         # - Uninstall Options -
-        self.dism_uninstall_options_frame = customtkinter.CTkScrollableFrame(
+        self.dism_uninstall_options_frame = ScrollableFrame(
             uninstall_via_dism_for_all_users_frame,
             orientation="horizontal",
             fg_color="transparent",
@@ -209,7 +210,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(uninstall_via_powershell_for_all_users_frame)
 
         # - Uninstall Options -
-        self.powershell_all_uninstall_options_frame = customtkinter.CTkScrollableFrame(
+        self.powershell_all_uninstall_options_frame = ScrollableFrame(
             uninstall_via_powershell_for_all_users_frame,
             orientation="horizontal",
             fg_color="transparent",
@@ -325,7 +326,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(uninstall_via_powershell_for_current_user_frame)
 
         # - Uninstall Options -
-        self.powershell_current_uninstall_options_frame = customtkinter.CTkScrollableFrame(
+        self.powershell_current_uninstall_options_frame = ScrollableFrame(
             uninstall_via_powershell_for_current_user_frame,
             orientation="horizontal",
             fg_color="transparent",
@@ -405,7 +406,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(uninstall_beta_frame)
 
         # - Uninstall Options -
-        self.uninstall_beta_options_frame = customtkinter.CTkScrollableFrame(
+        self.uninstall_beta_options_frame = ScrollableFrame(
             uninstall_beta_frame,
             orientation="horizontal",
             fg_color="transparent",
@@ -485,7 +486,7 @@ class UninstallerPage(BaseFuncPageFrame, BaseWidgets):
         self._create_separator(uninstall_edge_components_frame)
 
         # - Uninstall Options -
-        self.uninstall_edge_components_options_frame = customtkinter.CTkScrollableFrame(
+        self.uninstall_edge_components_options_frame = ScrollableFrame(
             uninstall_edge_components_frame,
             orientation="horizontal",
             fg_color="transparent",
