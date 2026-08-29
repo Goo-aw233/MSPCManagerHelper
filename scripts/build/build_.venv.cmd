@@ -52,6 +52,7 @@ if "%arch%"=="AMD64" (
         --windowed ^
         --name "MSPCManagerHelper_Beta_v0.3.1.0_x64" ^
         --add-data "%~dp0..\\..\\src\\assets\\locales;assets\\locales" ^
+        --add-data "%~dp0..\\..\\src\\assets\\fonts\\FluentSystemIcons-Regular.ttf;assets\\fonts" ^
         --add-data "%~dp0..\\..\\src\\assets\\icons\\MSPCManagerHelper.ico;assets\\icons" ^
         --add-binary "%~dp0..\\..\\src\\assets\\tools\\NSudo\\NSudoLC_x64.exe;assets\\tools\\NSudo" ^
         --clean ^
@@ -66,6 +67,7 @@ if "%arch%"=="AMD64" (
         --windowed ^
         --name "MSPCManagerHelper_Beta_v0.3.1.0_ARM64" ^
         --add-data "%~dp0..\\..\\src\\assets\\locales;assets\\locales" ^
+        --add-data "%~dp0..\\..\\src\\assets\\fonts\\FluentSystemIcons-Regular.ttf;assets\\fonts" ^
         --add-data "%~dp0..\\..\\src\\assets\\icons\\MSPCManagerHelper.ico;assets\\icons" ^
         --add-binary "%~dp0..\\..\\src\\assets\\tools\\NSudo\\NSudoLC_ARM64.exe;assets\\tools\\NSudo" ^
         --clean ^

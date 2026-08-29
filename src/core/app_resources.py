@@ -139,6 +139,11 @@ class AppResources:
         return str(icon_path) if icon_path else None
 
     @staticmethod
+    def fluent_icons_font_path():
+        font_path = ResourceLocator.locate_asset("fonts", "FluentSystemIcons-Regular.ttf")
+        return str(font_path) if font_path else None
+
+    @staticmethod
     def _get_binary_path(tool_folder, x64_binary, arm64_binary):
         from core.system_checks import PrerequisiteChecks
         arch_key = PrerequisiteChecks.check_os_architecture()

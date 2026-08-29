@@ -12,6 +12,7 @@ from core import (
     PrerequisiteChecks
 )
 from gui.components import (
+    FLUENT_ICONS,
     HomePageWidgets,
     task_coordinator
 )
@@ -39,6 +40,9 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         self.logger.debug("Initialized result_queue for thread-safe UI updates.")
         self._queue_loop_job = None
         self._mspcm_version_thread = None
+        # Created later in _create_mspcm_version_info_section; may be consulted
+        # before that section runs, so initialize it here.
+        self.refresh_version_button = None
 
         # Build UI Sections
         self._create_welcome_section()
@@ -78,8 +82,9 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
         # === Microsoft PC Manager Version Info Section ===
         self.refresh_version_button = self._create_section_label_with_button(
             self.app_translator.translate("pages.home.mspcm_version_info"),
-            f"↻    {self.app_translator.translate('pages.common.refresh')}",
-            self.refresh_mspcm_version_info
+            self.app_translator.translate("pages.common.refresh"),
+            self.refresh_mspcm_version_info,
+            icon_char=FLUENT_ICONS["refresh"]
         )
 
         self.mspcm_version_group = self._create_group_frame()
@@ -182,7 +187,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
             return
 
         # Disable Refresh Button While Loading
-        if hasattr(self, "refresh_version_button"):
+        if self.refresh_version_button is not None:
             self.refresh_version_button.configure(state="disabled")
 
         # Show Loading Message
@@ -254,7 +259,7 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
             return
 
         # Enable Refresh Button After Loading
-        if hasattr(self, "refresh_version_button"):
+        if self.refresh_version_button is not None:
             self.refresh_version_button.configure(state="normal")
 
         # Clear Loading Message

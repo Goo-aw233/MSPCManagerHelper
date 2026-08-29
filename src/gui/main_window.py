@@ -19,6 +19,10 @@ from core import (
     ResourceLocator,
     SetFontFamily
 )
+from gui.components import (
+    CTkNavButton,
+    FLUENT_ICONS
+)
 from gui.pages import (
     AboutPage,
     HomePage,
@@ -233,25 +237,22 @@ class MainWindow(customtkinter.CTk):
         self.minsize(800, 600)
         self.logger.info(f"Window Geometry Set to: {width} x {height} (x + {x}, y + {y}), Scaling Factor: {self._get_window_scaling()}")
 
-    def _create_nav_button(self, icon, text_key, command, row):
-        button = customtkinter.CTkButton(
+    def _create_nav_button(self, icon_char, text_key, command, row):
+        button = CTkNavButton(
             self.navigation_frame,
-            corner_radius=4,
-            height=40,
-            border_spacing=10,
-            text=f"{icon}    {self.app_translator.translate(text_key)}",
-            fg_color="transparent",
-            text_color=("gray10", "gray90"),
-            hover_color=("gray70", "gray30"),
-            anchor="w",
-            font=customtkinter.CTkFont(family=self.font_family),
-            command=command
+            icon_char=icon_char,
+            text=self.app_translator.translate(text_key),
+            command=command,
+            font_family=self.font_family
         )
         button.grid(row=row, column=0, sticky="ew", pady=(0, 4))    # Actually displays 6 - 8 physical pixels.
         return button
 
     def _configure_ui(self):
         start_time = time.perf_counter()
+
+        # Register FluentSystemIcons
+        SetFontFamily.register_fluent_icons_font()
 
         # Configure Grid Layout (1x2)
         t1 = time.perf_counter()
@@ -278,15 +279,19 @@ class MainWindow(customtkinter.CTk):
 
         # Create Navigation Buttons
         t4 = time.perf_counter()
-        self.home_button = self._create_nav_button("🏠", "pages.navigation.home", self.home_button_event, 1)
-        self.maintenance_button = self._create_nav_button("🧹", "pages.navigation.maintenance", self.maintenance_button_event, 2)
-        self.installer_button = self._create_nav_button("📥", "pages.navigation.installer", self.installer_button_event, 3)
-        self.uninstaller_button = self._create_nav_button("🗑", "pages.navigation.uninstaller", self.uninstaller_button_event, 4)
-        self.utilities_button = self._create_nav_button("🛠", "pages.navigation.utilities", self.utilities_button_event, 5)
-        self.toolbox_button = self._create_nav_button("🧰", "pages.navigation.toolbox", self.toolbox_button_event, 6)
-        # Leave a row to place the following buttons at the bottom.
-        self.settings_button = self._create_nav_button("⚙️", "pages.navigation.settings", self.settings_button_event, 8)
-        self.about_button = self._create_nav_button("  i", "pages.navigation.about", self.about_button_event, 9)
+        nav_button_specs = [
+            ("home_button", FLUENT_ICONS["home"], "pages.navigation.home", self.home_button_event, 1),
+            ("maintenance_button", FLUENT_ICONS["maintenance"], "pages.navigation.maintenance", self.maintenance_button_event, 2),
+            ("installer_button", FLUENT_ICONS["installer"], "pages.navigation.installer", self.installer_button_event, 3),
+            ("uninstaller_button", FLUENT_ICONS["uninstaller"], "pages.navigation.uninstaller", self.uninstaller_button_event, 4),
+            ("utilities_button", FLUENT_ICONS["utilities"], "pages.navigation.utilities", self.utilities_button_event, 5),
+            ("toolbox_button", FLUENT_ICONS["toolbox"], "pages.navigation.toolbox", self.toolbox_button_event, 6),
+            # Leave a row to place the following buttons at the bottom.
+            ("settings_button", FLUENT_ICONS["settings"], "pages.navigation.settings", self.settings_button_event, 8),
+            ("about_button", FLUENT_ICONS["about"], "pages.navigation.about", self.about_button_event, 9),
+        ]
+        for attr_name, icon_char, text_key, command, row in nav_button_specs:
+            setattr(self, attr_name, self._create_nav_button(icon_char, text_key, command, row))
         self.logger.debug(f"Navigation Buttons Creation Completed in: {time.perf_counter() - t4:.5f} s")
 
         # Create Main Frame
@@ -460,17 +465,17 @@ class MainWindow(customtkinter.CTk):
         # Nav Buttons
         button_font = customtkinter.CTkFont(family=self.font_family)
         nav_buttons = [
-            (self.home_button, "🏠", "pages.navigation.home"),
-            (self.maintenance_button, "🧹", "pages.navigation.maintenance"),
-            (self.installer_button, "📥", "pages.navigation.installer"),
-            (self.uninstaller_button, "🗑", "pages.navigation.uninstaller"),
-            (self.utilities_button, "🛠", "pages.navigation.utilities"),
-            (self.toolbox_button, "🧰", "pages.navigation.toolbox"),
-            (self.settings_button, "⚙️", "pages.navigation.settings"),
-            (self.about_button, "  i", "pages.navigation.about"),
+            (self.home_button, "pages.navigation.home"),
+            (self.maintenance_button, "pages.navigation.maintenance"),
+            (self.installer_button, "pages.navigation.installer"),
+            (self.uninstaller_button, "pages.navigation.uninstaller"),
+            (self.utilities_button, "pages.navigation.utilities"),
+            (self.toolbox_button, "pages.navigation.toolbox"),
+            (self.settings_button, "pages.navigation.settings"),
+            (self.about_button, "pages.navigation.about"),
         ]
-        for btn, icon, key in nav_buttons:
-            btn.configure(font=button_font, text=f"{icon}    {self.app_translator.translate(key)}")
+        for btn, key in nav_buttons:
+            btn.configure(font=button_font, text=self.app_translator.translate(key))
 
         # Recreate Pages
         current_page_name = self.current_page_name or "home"
