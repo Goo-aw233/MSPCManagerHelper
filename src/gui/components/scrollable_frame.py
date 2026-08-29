@@ -36,6 +36,21 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
         super().__init__(master=master, **kwargs)
         self._accelerate_scrollbar_wheel()
 
+        # Harden the base class' <Configure> binding. The base CTkScrollableFrame
+        # registers `self.bind("<Configure>", lambda e: ...)`, but Tk can deliver a
+        # <Configure> event with an empty/incomplete argument list when this frame
+        # is destroyed or recreated inside its canvas (e.g. during a UI refresh /
+        # language switch). tkinter's `_substitute` then short-circuits and the
+        # lambda is called with no event, raising
+        # "missing 1 required positional argument: 'e'". Replace it with a handler
+        # that tolerates a missing event argument.
+        self.unbind("<Configure>")
+        self.bind("<Configure>", self._update_scrollregion)
+
+    def _update_scrollregion(self, *_args):
+        """Refresh the canvas scroll region; tolerates a missing event argument."""
+        self._parent_canvas.configure(scrollregion=self._parent_canvas.bbox("all"))
+
     # ------------------------------------------------------------------ #
     # Wheel Event Handlers
     # ------------------------------------------------------------------ #
