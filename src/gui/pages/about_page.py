@@ -181,13 +181,9 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         ):
             # Bundle: <root>/assets/license/<filename>
             path = ResourceLocator.locate_asset("license", filename)
-            # Source: <root>/<source_dirs>/<filename> (reuse the resource candidate roots)
+            # Source: <root>/<source_dirs>/<filename> (probed via the resource candidate roots)
             if path is None:
-                for _, root in ResourceLocator._candidate_roots():
-                    candidate = root.joinpath(*source_dirs, filename)
-                    if candidate.is_file():
-                        path = candidate
-                        break
+                path = ResourceLocator.locate_root_file(*source_dirs, filename)
             if path is not None:
                 third_party_notice_paths.append(path)
 

@@ -105,6 +105,19 @@ class ResourceLocator:
         return None
 
     @classmethod
+    def locate_root_file(cls, *parts):
+        """Return the first actually existing <candidate root>/<parts>, return None if all are missing."""
+        rel = Path(*parts)
+        logger = cls._get_logger()
+        for source, root in cls._candidate_roots():
+            candidate = root / rel
+            if candidate.is_file():
+                logger.debug(f"Root File Located via [{source}] -> {candidate}")
+                return candidate
+        logger.debug(f"Root File Not Found: {rel}")
+        return None
+
+    @classmethod
     def describe_runtime(cls):
         if hasattr(sys, "_MEIPASS"):
             return f"PyInstaller Bundle (Extraction Path: {sys._MEIPASS})"
