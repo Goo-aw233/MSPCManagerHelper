@@ -9,6 +9,7 @@ from .restart_program import RestartProgram
 from .start_mspcm import StartMSPCM
 from .start_mspcm_beta import StartMSPCMBeta
 from .verify_file_certificate import VerifyFileCertificate
+from .view_text_file import ViewTextFile
 
 
 __all__ = [
@@ -19,4 +20,5 @@ __all__ = [
     "StartMSPCMBeta",
     "URILauncher",
     "VerifyFileCertificate",
+    "ViewTextFile"
 ]

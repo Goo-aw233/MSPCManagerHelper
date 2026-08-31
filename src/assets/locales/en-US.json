@@ -40,7 +40,7 @@
     "open_github_releases_error": "Unable to open the GitHub releases page. Please visit {github_releases_url} in your browser.\nLog File Location: {log_file_path}",
     "open_github_repository_error": "Unable to open the GitHub Repository. Please visit {github_repository_url} in your browser.\nLog File Location: {log_file_path}",
     "open_license_error": "Unable to open the License. Please visit {license_url} in your browser.\nLog File Location: {log_file_path}",
-    "open_log_file_error": "Unable to open the log file. Please navigate to the following path to view the log file: {log_file_path}.",
+    "open_text_file_error": "Unable to open the text file. Please navigate to the following path to view the log file: {log_file_path}.",
     "open_mspcm_error": "Unable to open Microsoft PC Manager. Please start Microsoft PC Manager from the Start menu.\nLog File Location: {log_file_path}",
     "open_mspcm_app_package_azure_blob_error": "Unable to open the Microsoft PC Manager application package Azure Blob releases page. Please visit {mspcm_app_package_azure_blob_url} in your browser.\nLog File Location: {log_file_path}",
     "open_mspcm_app_package_onedrive_error": "Unable to open the Microsoft PC Manager Application Package OneDrive releases page. Please visit {mspcm_app_package_onedrive_url} in your browser.\nLog File Location: {log_file_path}",
@@ -249,13 +249,14 @@
         "6_title": "6. Privacy Statement",
         "6_body": "Developer fully respects your privacy and is committed to protecting your personal information. For details on how we collect, use, and protect your information, please refer to our Privacy Policy.",
         "7_title": "7. Third-Party Components",
-        "7_body": "This Software uses the following third-party open-source components. Please comply with their respective licenses:\n- NSudo: https://github.com/M2Team/NSudo\nFor the complete third-party license notices, see: https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/ThirdPartyNotices.txt",
+        "7_body": "This Software uses many third-party components, please comply with their respective licensing terms. For the complete third-party license statement, please refer to ThirdPartyNotices.txt and THIRD_PARTY_NOTICES.txt. For details on web archives, please refer to: https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/ThirdPartyNotices.txt.",
         "8_title": "8. Miscellaneous",
         "8_body": "Nothing in these Terms shall be construed to restrict or add additional restrictions to the rights granted by the MIT License. If any conflict exists between these Terms and the MIT License, the MIT License shall prevail. If you have any questions regarding these Terms, please contact Developer.",
-        "modification_date": "Last Revised: July 28, 2026",
+        "modification_date": "Last Revised: August 30, 2026",
         "preface": "Welcome to MSPCManagerHelper (hereinafter referred to as \"the Software\"). Please read the following Terms of Use (hereinafter referred to as \"these Terms\") carefully before using the Software. By downloading, installing, or using the Software, you agree to be bound by these Terms. If you do not agree to these Terms, please exit the Software and delete it. We may update these Terms from time to time, but any updates will not restrict or revoke the rights you have already obtained under the MIT License.",
         "title": "MSPCManagerHelper Terms of Use"
       },
+      "third_party_notices": "Third-Party Notices",
       "translators": "Translators",
       "view_log_file": "View Log File"
     },
@@ -427,7 +428,7 @@
       "take_ownership": "Take Ownership",
       "take_ownership_description": "Take full administrator privileges to execute commands.",
       "use_internal_viewer": "Use Internal Viewer",
-      "use_internal_viewer_description": "Use the application's built-in file viewer to open log files instead of the system's default application."
+      "use_internal_viewer_description": "Use the application's built-in file viewer to open text files instead of the system's default application."
     },
     "toolbox": {
       "app_update": "App Update",

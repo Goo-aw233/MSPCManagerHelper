@@ -4,11 +4,14 @@ import customtkinter
 
 from core import (
     AppMetadata,
+    ResourceLocator,
     get_localization_translators
 )
 from gui.components import AboutPageWidgets
-from handlers.private import ViewLogFile
-from handlers.shared import URILauncher
+from handlers.shared import (
+    URILauncher,
+    ViewTextFile
+)
 from .base_page_frame import BaseInfoPageFrame
 
 
@@ -168,6 +171,66 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
             )
         )
 
+        # --- Third-Party Notices ---
+        # Bundle: packaged into assets/license.
+        # Source: ThirdPartyNotices.txt at repository root, THIRD_PARTY_NOTICES.txt under docs/.
+        third_party_notice_paths = []
+        for filename, source_dirs in (
+            ("ThirdPartyNotices.txt", ()),
+            ("THIRD_PARTY_NOTICES.txt", ("docs",)),
+        ):
+            # Bundle: <root>/assets/license/<filename>
+            path = ResourceLocator.locate_asset("license", filename)
+            # Source: <root>/<source_dirs>/<filename> (reuse the resource candidate roots)
+            if path is None:
+                for _, root in ResourceLocator._candidate_roots():
+                    candidate = root.joinpath(*source_dirs, filename)
+                    if candidate.is_file():
+                        path = candidate
+                        break
+            if path is not None:
+                third_party_notice_paths.append(path)
+
+        if third_party_notice_paths:
+            # --- Separator ---
+            self._create_separator(self.app_info_group)
+
+            # --- Third-Party Notices ---
+            notices_container = customtkinter.CTkFrame(self.app_info_group, fg_color="transparent")
+            notices_container.pack(fill="x", padx=10, pady=8)
+
+            # Text Column
+            notices_text_frame = customtkinter.CTkFrame(notices_container, fg_color="transparent")
+            notices_text_frame.pack(side="left", fill="both", expand=True, padx=5)
+
+            customtkinter.CTkLabel(
+                notices_text_frame,
+                text=self.app_translator.translate("pages.about.third_party_notices"),
+                font=customtkinter.CTkFont(family=self.font_family, size=14),
+                anchor="w"
+            ).pack(fill="x")
+
+            notices_list_frame = customtkinter.CTkFrame(notices_text_frame, fg_color="transparent")
+            notices_list_frame.pack(fill="x", anchor="w")
+
+            for notice_path in third_party_notice_paths:
+                link = customtkinter.CTkLabel(
+                    notices_list_frame,
+                    text=notice_path.name,
+                    font=customtkinter.CTkFont(family=self.font_family, size=12),
+                    text_color=("#1f6aa5", "#3a7ebf"),
+                    cursor="hand2"
+                )
+                link.pack(side="left", padx=(0, 10))
+                link.bind(
+                    "<Button-1>",
+                    lambda e, p=notice_path: ViewTextFile.open_text_file(
+                        logger=self.logger,
+                        text_file_path=str(p),
+                        app_translator=self.app_translator
+                    )
+                )
+
         # --- Separator ---
         self._create_separator(self.app_info_group)
 
@@ -176,9 +239,9 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
             self.app_info_group,
             title=self.app_translator.translate("pages.about.view_log_file"),
             description=self.log_file_path,
-            description_command=lambda: ViewLogFile.open_log_file(
+            description_command=lambda: ViewTextFile.open_text_file(
                 logger=self.logger,
-                log_file_path=self.log_file_path,
+                text_file_path=self.log_file_path,
                 app_translator=self.app_translator
             )
         )

@@ -10,45 +10,37 @@ from core import (
 )
 
 
-class ViewLogFile:
-    _internal_viewer_window = None
-
+class ViewTextFile:
     @staticmethod
-    def open_log_file(logger=None, log_file_path=None, app_translator=None):
-        log_file_path = log_file_path
+    def open_text_file(logger=None, text_file_path=None, app_translator=None):
+        text_file_path = text_file_path
 
         def open_with_startfile():
-            logger.info(f"Opening log file {log_file_path} with os.startfile.")
-            os.startfile(log_file_path)
+            logger.info(f"Opening text file {text_file_path} with os.startfile.")
+            os.startfile(text_file_path)
 
         def open_with_cmd():
-            logger.info(f"Opening log file {log_file_path} via CMD.")
-            subprocess.run([str(WindowsUtilities.cmd()), "/C", "start", "Log File", f"{log_file_path}"],
+            logger.info(f"Opening text file {text_file_path} via CMD.")
+            subprocess.run([str(WindowsUtilities.cmd()), "/C", "start", "Text File", f"{text_file_path}"],
                            check=True, shell=False, text=True, capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_powershell():
-            logger.info(f"Opening log file {log_file_path} via Windows PowerShell.")
-            subprocess.run([str(WindowsUtilities.powershell()), "-NoProfile", "-Command", f"Start-Process '{log_file_path}'"],
+            logger.info(f"Opening text file {text_file_path} via Windows PowerShell.")
+            subprocess.run([str(WindowsUtilities.powershell()), "-NoProfile", "-Command", f"Start-Process '{text_file_path}'"],
                            check=True, shell=False, text=True, capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_explorer():
-            logger.info(f"Opening log file {log_file_path} via File Explorer.")
-            subprocess.run(["explorer.exe", f"/select,{log_file_path}"],
+            logger.info(f"Opening text file {text_file_path} via File Explorer.")
+            subprocess.run(["explorer.exe", f"/select,{text_file_path}"],
                            check=True, shell=False, text=True, capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_internal_viewer():
-            logger.info(f"Opening log file {log_file_path} with internal viewer.")
-
-            if ViewLogFile._internal_viewer_window and ViewLogFile._internal_viewer_window.winfo_exists():
-                ViewLogFile._internal_viewer_window.lift()
-                ViewLogFile._internal_viewer_window.focus_force()
-                return
-
-            ViewLogFile._internal_viewer_window = InternalViewer(
-                file_path=log_file_path,
+            logger.info(f"Opening text file {text_file_path} with internal viewer.")
+            InternalViewer.open(
+                file_path=text_file_path,
                 app_translator=app_translator
             )
 
@@ -72,13 +64,13 @@ class ViewLogFile:
         for method in methods:
             try:
                 method()
-                logger.info(f"Successfully opened the log file {log_file_path} via {method.__name__}.")
+                logger.info(f"Successfully opened the text file {text_file_path} via {method.__name__}.")
                 return
             except Exception as e:
                 last_error = e
-                logger.warning(f"{method.__name__} Failed to Open the log file {log_file_path}: {e}")
+                logger.warning(f"{method.__name__} Failed to Open the text file {text_file_path}: {e}")
                 continue
-        logger.error(f"All methods failed to open the log file {log_file_path}.")
+        logger.error(f"All methods failed to open the text file {text_file_path}.")
 
         error_details = [f"Exception: {last_error}"]
         if hasattr(last_error, "stdout") and last_error.stdout:
@@ -89,5 +81,5 @@ class ViewLogFile:
 
         messagebox.showerror(
             app_translator.translate("common.error"),
-            app_translator.translate("handlers.open_log_file_error").format(log_file_path=log_file_path)
+            app_translator.translate("handlers.open_text_file_error").format(log_file_path=text_file_path)
         )

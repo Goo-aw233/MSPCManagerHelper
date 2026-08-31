@@ -54,6 +54,8 @@ if "%arch%"=="AMD64" (
         --add-data "%~dp0..\\..\\src\\assets\\locales;assets\\locales" ^
         --add-data "%~dp0..\\..\\src\\assets\\fonts\\FluentSystemIcons-Regular.ttf;assets\\fonts" ^
         --add-data "%~dp0..\\..\\src\\assets\\icons\\MSPCManagerHelper.ico;assets\\icons" ^
+        --add-data "%~dp0..\\..\\ThirdPartyNotices.txt;assets\\license" ^
+        --add-data "%~dp0..\\..\\docs\\THIRD_PARTY_NOTICES.txt;assets\\license" ^
         --add-binary "%~dp0..\\..\\src\\assets\\tools\\NSudo\\NSudoLC_x64.exe;assets\\tools\\NSudo" ^
         --clean ^
         --distpath "%~dp0..\\..\\dist" ^
@@ -69,6 +71,8 @@ if "%arch%"=="AMD64" (
         --add-data "%~dp0..\\..\\src\\assets\\locales;assets\\locales" ^
         --add-data "%~dp0..\\..\\src\\assets\\fonts\\FluentSystemIcons-Regular.ttf;assets\\fonts" ^
         --add-data "%~dp0..\\..\\src\\assets\\icons\\MSPCManagerHelper.ico;assets\\icons" ^
+        --add-data "%~dp0..\\..\\ThirdPartyNotices.txt;assets\\license" ^
+        --add-data "%~dp0..\\..\\docs\\THIRD_PARTY_NOTICES.txt;assets\\license" ^
         --add-binary "%~dp0..\\..\\src\\assets\\tools\\NSudo\\NSudoLC_ARM64.exe;assets\\tools\\NSudo" ^
         --clean ^
         --distpath "%~dp0..\\..\\dist" ^

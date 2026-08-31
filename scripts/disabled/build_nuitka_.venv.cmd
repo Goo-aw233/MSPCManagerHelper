@@ -55,6 +55,8 @@ if "%arch%"=="AMD64" (
         --include-data-dir="%~dp0..\..\src\assets\locales=assets\locales" ^
         --include-data-files="%~dp0..\..\src\assets\fonts\FluentSystemIcons-Regular.ttf=assets\fonts\FluentSystemIcons-Regular.ttf" ^
         --include-data-files="%~dp0..\..\src\assets\icons\MSPCManagerHelper.ico=assets\icons\MSPCManagerHelper.ico" ^
+        --include-data-files="%~dp0..\..\ThirdPartyNotices.txt=assets\license\ThirdPartyNotices.txt" ^
+        --include-data-files="%~dp0..\..\docs\THIRD_PARTY_NOTICES.txt=assets\license\THIRD_PARTY_NOTICES.txt" ^
         --include-data-files="%~dp0..\..\src\assets\tools\NSudo\NSudoLC_x64.exe=assets\tools\NSudo\NSudoLC_x64.exe" ^
         --include-module=winrt.windows.foundation ^
         --include-module=winrt.windows.foundation.collections ^
@@ -77,6 +79,8 @@ if "%arch%"=="AMD64" (
         --include-data-dir="%~dp0..\..\src\assets\locales=assets\locales" ^
         --include-data-files="%~dp0..\..\src\assets\fonts\FluentSystemIcons-Regular.ttf=assets\fonts\FluentSystemIcons-Regular.ttf" ^
         --include-data-files="%~dp0..\..\src\assets\icons\MSPCManagerHelper.ico=assets\icons\MSPCManagerHelper.ico" ^
+        --include-data-files="%~dp0..\..\ThirdPartyNotices.txt=assets\license\ThirdPartyNotices.txt" ^
+        --include-data-files="%~dp0..\..\docs\THIRD_PARTY_NOTICES.txt=assets\license\THIRD_PARTY_NOTICES.txt" ^
         --include-data-files="%~dp0..\..\src\assets\tools\NSudo\NSudoLC_ARM64.exe=assets\tools\NSudo\NSudoLC_ARM64.exe" ^
         --include-module=winrt.windows.foundation ^
         --include-module=winrt.windows.foundation.collections ^
