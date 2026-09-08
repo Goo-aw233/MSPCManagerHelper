@@ -296,6 +296,8 @@
       "params_4_body": "使用参数 /bypasschecks 以绕过启动时的系统检查，开启后应用程序将禁用所有的启动检查项目。",
       "params_5_title": "5. 指定语言",
       "params_5_body": "使用参数 /locale=<语言代码> 或 /locale:<语言代码> 以指定应用程序的显示语言，例如 /locale=zh-CN 来指定使用中文 (简体)。如果指定的语言不受支持，应用程序将自动回退到系统语言或 English (United States)。\n支持的语言代码列表：\nen-US: English (United States)\nzh-CN: 中文 (简体)\nzh-TW: 中文 (繁体)",
+      "params_6_title": "6. 以管理员身份运行",
+      "params_6_body": "使用参数 /runas 以管理员身份重新启动应用程序。如果应用程序当前未以管理员权限运行，系统将弹出用户帐户控制 (UAC) 提示以请求提升权限，其他启动参数会传递给提升后的实例。若应用程序已以管理员身份运行，则忽略此参数。",
       "params_preface": "以参数的形式运行应用程序：\n所有的参数均支持 / 或 - 或 -- 的形式，如 /?，-? 和 --?。在以下示例中均使用 /?。\n所有参数均不区分大小写，并且接受组合使用，如 /devmode /locale=zh-CN。",
       "preface": "欢迎使用 MSPCManagerHelper，这是应用程序的帮助窗口。",
       "title": "帮助窗口"

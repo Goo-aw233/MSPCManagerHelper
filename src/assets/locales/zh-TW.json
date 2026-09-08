@@ -296,6 +296,8 @@
       "params_4_body": "使用參數 /bypasschecks 以繞過啟動時的系統檢查，開啟後應用程式將禁用所有的啟動檢查項目。",
       "params_5_title": "5. 指定語言",
       "params_5_body": "使用參數 /locale=<語言代碼> 或 /locale:<語言代碼> 以指定應用程式的顯示語言，例如 /locale=zh-TW 來指定使用中文 (繁體)。如果指定的語言不受支持，應用程式將自動回退至系統語言或 English (United States)。\n支持的語言代碼列表：\nen-US: English (United States)\nzh-CN: 中文 (简体)\nzh-TW: 中文 (繁體)",
+      "params_6_title": "6. 以系統管理員身分執行",
+      "params_6_body": "使用參數 /runas 以系統管理員身分重新啟動應用程式。如果應用程式目前未以系統管理員權限執行，系統會彈出使用者帳戶控制 (UAC) 提示以要求提高權限，其他啟動參數會傳遞給提高權限後的實例。若應用程式已以系統管理員身分執行，則會忽略此參數。",
       "params_preface": "以參數的形式執行應用程式：\n所有的參數均支援 / 或 - 或 -- 的形式，如 /?，-? 和 --?。在以下示例中均使用 /?。\n所有參數均不區分大小寫，並且可以組合使用，如 /devmode /locale=zh-TW。",
       "preface": "歡迎使用 MSPCManagerHelper，這是應用程式的協助視窗。",
       "title": "協助視窗"

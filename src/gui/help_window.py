@@ -70,7 +70,9 @@ class HelpWindow(customtkinter.CTk):
             f"{self.app_translator.translate('pages.help.params_4_title')}\n"
             f"{self.app_translator.translate('pages.help.params_4_body')}\n\n"
             f"{self.app_translator.translate('pages.help.params_5_title')}\n"
-            f"{self.app_translator.translate('pages.help.params_5_body')}\n\n\n"
+            f"{self.app_translator.translate('pages.help.params_5_body')}\n\n"
+            f"{self.app_translator.translate('pages.help.params_6_title')}\n"
+            f"{self.app_translator.translate('pages.help.params_6_body')}\n\n\n"
             f"{self.app_translator.translate('pages.help.get_help_preface')}\n"
             f"{self.app_translator.translate('pages.help.get_help_1_body')}"
         )

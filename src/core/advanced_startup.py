@@ -54,6 +54,20 @@ class AdvancedStartup:
             + AdvancedStartup._build_flag_args("help")
         )
         return any(arg.lower() in open_help_window_args for arg in sys.argv)
+
+    @staticmethod
+    def is_runas():
+        runas_args = AdvancedStartup._build_flag_args("runas")
+        return any(arg.lower() in runas_args for arg in sys.argv)
+
+    @staticmethod
+    def remove_runas_argument(args):
+        """Drop the runas flag from a list of arguments.
+        Used when relaunching elevated so the new instance
+        does not relaunch itself again.
+        """
+        runas_args = AdvancedStartup._build_flag_args("runas")
+        return [arg for arg in args if arg.lower() not in runas_args]
     # === End of Runtime Arguments ===
 
     # === Runtime Actions ===
@@ -73,9 +87,12 @@ class AdvancedStartup:
 
     @staticmethod
     def is_administrator():
-        """
-        CheckTokenMembership:
-        https://learn.microsoft.com/windows/win32/api/securitybaseapi/nf-securitybaseapi-checktokenmembership
+        """Use CheckTokenMembership to check whether the program has an access token.
+        1. In Bypass Checks, is_administrator() will always be True, but it does not have administrator privileges.
+           At this time, /runas /bypasschecks will ignore the elevation request.
+
+        Ref:
+            https://learn.microsoft.com/windows/win32/api/securitybaseapi/nf-securitybaseapi-checktokenmembership
         """
         if AdvancedStartup.is_bypass_checks():
             return True
@@ -102,7 +119,7 @@ class AdvancedStartup:
             return False
 
     @staticmethod
-    def restart_program(args, verb=None):
+    def execute_restart(args, verb=None):
         # A new instance spawned via sys.executable reuses this process's onefile
         # temp folder (_MEIxxxx), which is deleted on exit. Force an independent
         # instance so it extracts its own folder.
@@ -110,10 +127,11 @@ class AdvancedStartup:
         if hasattr(sys, "_MEIPASS"):
             os.environ["PYINSTALLER_RESET_ENVIRONMENT"] = "1"
 
-        return_code = ctypes.windll.shell32.ShellExecuteW(None, verb, sys.executable, args, None, 0)
-        if return_code > 32:
-            sys.exit(0)
-        return return_code
+        # Low-level restart: ask the shell to start a new instance and return
+        # the raw ShellExecuteW result code. Whether the current process should
+        # exit is decided by the higher-level caller, since a successful restart
+        # spawns a new instance that takes over.
+        return ctypes.windll.shell32.ShellExecuteW(None, verb, sys.executable, args, None, 0)
 
     @staticmethod
     def specify_locale():

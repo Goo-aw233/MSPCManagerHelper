@@ -295,6 +295,8 @@
       "params_4_body": "Use the /bypasschecks parameter to bypass startup checks, which will disable all startup check items when enabled.",
       "params_5_title": "5. Specify Language",
       "params_5_body": "Use the /locale=<Language Code> or /locale:<Language Code> parameter to specify the application's display language, for example, /locale=en-US to specify the use of English (United States). If the specified language is not supported, the application will automatically fall back to the system language or English (United States).\nSupported language codes:\nen-US: English (United States)\nzh-CN: 中文 (简体)\nzh-TW: 中文 (繁体)",
+      "params_6_title": "6. Run as Administrator",
+      "params_6_body": "Use the /runas parameter to restart the application as an administrator. If the application is not already running with administrator privileges, a User Account Control (UAC) prompt will appear to request elevation; other startup parameters are forwarded to the elevated instance. When the application is already running as an administrator, this parameter is ignored.",
       "params_preface": "Run the Application with Parameters:\nAll parameters support the /, -, or -- forms, such as /?, -?, and --?. The following examples all use /?.\nAll parameters are not case-sensitive, and can be combined, such as /devmode /locale=en-US.",
       "preface": "Welcome to MSPCManagerHelper, this is the application's help window.",
       "title": "Help Window"

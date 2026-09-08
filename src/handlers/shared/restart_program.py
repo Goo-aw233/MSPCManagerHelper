@@ -55,7 +55,7 @@ class RestartProgram:
         )
 
         try:
-            return_code = AdvancedStartup.restart_program(args_str, verb=verb)
+            return_code = AdvancedStartup.execute_restart(args_str, verb=verb)
             # ShellExecuteW returns > 32 on success. If it returns <= 32, it's an error code.
             # 1223 = ERROR_CANCELLED (User canceled the UAC prompt).
             if not return_code or return_code <= 32:
@@ -68,9 +68,17 @@ class RestartProgram:
                 RestartProgram._show_error(app_translator, error_key, log_file_path)
             else:
                 logger.info(f"Restart request succeeded {restart_label}.")
+                # A successful restart launches a new instance that takes over,
+                # so this process must exit. SystemExit is a BaseException, so
+                # it bypasses the except Exception handler below and propagates
+                # to the caller, terminating the current process.
+                sys.exit(0)
         except Exception as e:
             logger.error(f"An Error Occurred While Attempting to Restart {restart_label}: {e}")
             RestartProgram._show_error(app_translator, error_key, log_file_path)
+            return False
+
+        return False
 
     @staticmethod
     def _show_error(app_translator, error_key, log_file_path):
