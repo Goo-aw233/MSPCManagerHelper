@@ -1,18 +1,21 @@
 @echo off
 setlocal
 
-cd "%~dp0"
+set "venv=%~dp0..\.venv"
+set "python=%venv%\Scripts\python.exe"
 
-echo "Creating .venv"
-py.exe -3.14 -m venv "%~dp0..\.venv"
+echo Creating .venv
+py.exe -3.14 -m venv "%venv%" || exit /b 1
+echo.
 
-echo "Activating .venv"
-call "%~dp0..\.venv\Scripts\activate.bat"
+echo Upgrading pip
+"%python%" -m pip install --upgrade pip || exit /b 1
+echo.
 
-echo "Upgrading pip & Installing requirements.txt"
-python.exe -m pip install --upgrade pip
-pip.exe install -r "%~dp0..\requirements.txt"
+echo Installing requirements.txt
+"%python%" -m pip install -r "%~dp0..\requirements.txt" || exit /b 1
+echo.
 
-pause
-endlocal
-exit
+echo DONE
+echo %cmdcmdline% | find.exe /i "%~nx0" >nul && if not defined CI pause
+exit /b 0

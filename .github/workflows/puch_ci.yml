@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
 
-name: Python App - MSPCManagerHelper
+name: Python Application - MSPCManagerHelper
 
 on:
   push:
@@ -32,12 +32,15 @@ jobs:
     - name: Create .venv & Install Dependencies
       run: |
         ./scripts/install_requirements_.venv.cmd
+    - name: Install PyInstaller
+      run: |
+        ./.venv/Scripts/python.exe -m pip install -r requirements-pyinstaller.txt
     - name: Cleanup Before First Build
       run: |
         ./scripts/build/cleanup-before-first-build.cmd
-    - name: Build EXE in .venv
+    - name: Build EXE with PyInstaller Onefile
       run: |
-        ./scripts/build/build_.venv.cmd
+        ./scripts/build/build.cmd /python=.venv /builder=pyinstaller /type=onefile
     - name: Upload Artifacts
       uses: actions/upload-artifact@v7
       with:

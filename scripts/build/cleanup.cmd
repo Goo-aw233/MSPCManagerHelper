@@ -1,27 +1,34 @@
 @echo off
+setlocal
 
-for /d /r "%~dp0..\..\src" %%d in (__pycache__) do (
-    if exist "%%d" (
-        echo Deleting %%d
-        rmdir /s /q "%%d"
+set "cleaned="
+for %%r in ("src" "scripts") do (
+    for /f "delims=" %%d in ('dir /s /b /ad "%~dp0..\..\%%~r\__pycache__" 2^>nul') do (
+        echo Deleting "%%d"
+        rd /s /q "%%d" 2>nul
+        set "cleaned=1"
     )
 )
+if defined cleaned echo.
 
-if exist "%~dp0..\..\build" (
-    echo Deleting build
-    rmdir /s /q "%~dp0..\..\build"
+set "cleaned="
+for %%d in ("build" "dist") do (
+    if exist "%~dp0..\..\%%~d" (
+        echo Deleting "%~dp0..\..\%%~d"
+        rd /s /q "%~dp0..\..\%%~d" 2>nul
+        set "cleaned=1"
+    )
 )
+if defined cleaned echo.
 
-if exist "%~dp0..\..\dist" (
-    echo Deleting dist
-    rmdir /s /q "%~dp0..\..\dist"
+set "cleaned="
+for %%f in ("%~dp0version_*.txt" "%~dp0*.spec") do (
+    echo Deleting "%%~f"
+    del /f /q "%%~f" 2>nul
+    set "cleaned=1"
 )
-
-for %%f in (*.spec) do (
-    echo Deleting %%f
-    del /f /q "%~dp0%%f"
-)
+if defined cleaned echo.
 
 echo DONE
-pause
-exit
+echo %cmdcmdline% | find.exe /i "%~nx0" >nul && pause
+exit /b 0

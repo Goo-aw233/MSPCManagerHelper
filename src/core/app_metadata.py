@@ -6,8 +6,10 @@ class AppMetadata:
     APP_GITHUB_REPOSITORY_URL = "https://github.com/Goo-aw233/MSPCManagerHelper"
     APP_LICENSE_URL = "https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE"
     APP_NAME = "MSPCManagerHelper"
-    APP_VERSION = "Beta v0.3.1.0"
-    APP_VERSION_WITHOUT_SPACES = "Beta_v0.3.1.0"
+    APP_VERSION_LABEL = "Beta"
+    APP_VERSION_TUPLE: tuple[int, int, int, int] = (0, 3, 1, 0)
+    APP_VERSION = f"{APP_VERSION_LABEL} v{'.'.join(map(str, APP_VERSION_TUPLE))}".strip()
+    APP_VERSION_WITHOUT_SPACES = APP_VERSION.replace(" ", "_")
 
     # Contributors
     APP_CONTRIBUTORS = {

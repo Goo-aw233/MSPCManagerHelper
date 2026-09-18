@@ -1,88 +1,89 @@
 @echo off
 setlocal EnableDelayedExpansion
 
-for /f "tokens=2,*" %%a in ('reg.exe query "HKEY_LOCAL_MACHINE\HARDWARE\DESCRIPTION\System\CentralProcessor\0" /v ProcessorNameString') do set "cpuName=%%b"
-for /f "tokens=3" %%a in ('reg.exe query "HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Session Manager\Environment" /v PROCESSOR_ARCHITECTURE') do set "arch=%%a"
-for /f "tokens=2,*" %%a in ('reg.exe query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v BuildLabEx') do set "buildLabEx=%%b"
-for /f "tokens=2,*" %%a in ('reg.exe query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v LCUVer') do set "lcuVer=%%b"
-for /f "tokens=2,*" %%a in ('reg.exe query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v EditionID') do set "editionID=%%b"
+for %%p in ("%~dp0..\..\.venv\Scripts\python.exe") do set "venv=%%~fp"
 
-echo Environment (NOT .venv)
-ver
-echo %arch%
-echo %cpuName%
-echo %buildLabEx%
+set "arguments=%*"
 
-for /f "tokens=3" %%a in ('reg.exe query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentMajorVersionNumber 2^>nul') do set "maj=%%a"
-for /f "tokens=3" %%a in ('reg.exe query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentMinorVersionNumber 2^>nul') do set "min=%%a"
-for /f "tokens=3" %%a in ('reg.exe query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v CurrentBuildNumber 2^>nul') do set "buildNum=%%a"
-for /f "tokens=3" %%a in ('reg.exe query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v UBR 2^>nul') do set "ubr=%%a"
+:options
+if not defined arguments goto :interactive
+set "padded= !arguments! "
+if not "!padded: /? =!"=="!padded!" set "help=1"
+if not "!padded: /h =!"=="!padded!" set "help=1"
+if not "!padded: /help =!"=="!padded!" set "help=1"
+if /i not "%~1"=="/python" goto :trim_spaces
+set "remainder=!arguments:*%~1=!"
+if not defined remainder goto :trim_spaces
+if not "!remainder:~0,1!"=="=" goto :trim_spaces
+set "python_given=1"
+set "python=%~2"
+set "arguments=!remainder:~1!"
+if defined arguments set "arguments=!arguments:"=!"
+if defined arguments if defined python set "arguments=!arguments:*%python%=!"
 
-REM Convert Hexadecimal or Decimal Strings to Decimal (If Conversion Fails, Retain Original String)
-if defined maj (
-    set /a maj=!maj! 2>nul
-)
-if defined min (
-    set /a min=!min! 2>nul
-)
-if defined buildNum (
-    set /a buildNum=!buildNum! 2>nul
-)
-if defined ubr (
-    set /a ubr=!ubr! 2>nul
-) else (
-    set "ubr=0"
-)
+:trim_spaces
+if not defined arguments goto :interactive
+if not "!arguments:~0,1!"==" " goto :interactive
+set "arguments=!arguments:~1!"
+goto :trim_spaces
 
-if defined maj if defined min if defined buildNum (
-    set "lcuVer=!maj!.!min!.!buildNum!.!ubr!"
-    echo !lcuVer!
-) else (
-    echo (UNKNOWN LCUVer)
-)
+:interactive
+if not defined arguments if not defined CI set "interactive=1"
 
-echo %editionID%
+if defined arguments goto :resolve_python
+if not defined interactive goto :resolve_python
+
+echo No build parameters provided, switching to interactive mode.
+echo Use build.cmd /? to open the script help.
 echo.
-echo ####################
-echo.
+if defined python_given goto :resolve_python
 
-if "%arch%"=="AMD64" (
-    pyinstaller.exe ^
-        --onefile ^
-        --windowed ^
-        --name "MSPCManagerHelper_Beta_v0.3.1.0_x64" ^
-        --add-data "%~dp0..\\..\\src\\assets\\locales;assets\\locales" ^
-        --add-data "%~dp0..\\..\\src\\assets\\fonts\\FluentSystemIcons-Regular.ttf;assets\\fonts" ^
-        --add-data "%~dp0..\\..\\src\\assets\\icons\\MSPCManagerHelper.ico;assets\\icons" ^
-        --add-data "%~dp0..\\..\\ThirdPartyNotices.txt;assets\\license" ^
-        --add-data "%~dp0..\\..\\docs\\THIRD_PARTY_NOTICES.txt;assets\\license" ^
-        --add-binary "%~dp0..\\..\\src\\assets\\tools\\NSudo\\NSudoLC_x64.exe;assets\\tools\\NSudo" ^
-        --clean ^
-        --distpath "%~dp0..\\..\\dist" ^
-        --icon "%~dp0..\\..\\src\\assets\\icons\\MSPCManagerHelper.ico" ^
-        --version-file="%~dp0version_x64.txt" ^
-        --workpath "%~dp0..\\..\\build" ^
-        "%~dp0..\\..\\src\\main.py"
-) else if "%arch%"=="ARM64" (
-    pyinstaller.exe ^
-        --onefile ^
-        --windowed ^
-        --name "MSPCManagerHelper_Beta_v0.3.1.0_ARM64" ^
-        --add-data "%~dp0..\\..\\src\\assets\\locales;assets\\locales" ^
-        --add-data "%~dp0..\\..\\src\\assets\\fonts\\FluentSystemIcons-Regular.ttf;assets\\fonts" ^
-        --add-data "%~dp0..\\..\\src\\assets\\icons\\MSPCManagerHelper.ico;assets\\icons" ^
-        --add-data "%~dp0..\\..\\ThirdPartyNotices.txt;assets\\license" ^
-        --add-data "%~dp0..\\..\\docs\\THIRD_PARTY_NOTICES.txt;assets\\license" ^
-        --add-binary "%~dp0..\\..\\src\\assets\\tools\\NSudo\\NSudoLC_ARM64.exe;assets\\tools\\NSudo" ^
-        --clean ^
-        --distpath "%~dp0..\\..\\dist" ^
-        --icon "%~dp0..\\..\\src\\assets\\icons\\MSPCManagerHelper.ico" ^
-        --version-file="%~dp0version_ARM64.txt" ^
-        --workpath "%~dp0..\\..\\build" ^
-        "%~dp0..\\..\\src\\main.py"
-) else (
-    echo UNKNOWN: %arch%
+echo Python Interpreter [.venv ^| ^<Path to python.exe^> ^| ^<empty^>]:
+echo   .venv                 = %venv%
+echo   ^<empty^> (No Input)    = python.exe from PATH
+set "python="
+set /p "python=Python Path: "
+
+:resolve_python
+if not defined python set "python=python.exe"
+set "python=%python:"=%"
+if /i "%python%"==".venv" set "python=%venv%"
+
+:check
+"%python%" --version >nul 2>&1 || (
+    echo Python Not Found: %python%
+    echo Run "scripts\install_requirements_.venv.cmd" first, or choose another interpreter.
+    set "code=1"
+    goto :done
 )
 
-pause
-endlocal
+if defined help goto :help
+if not defined interactive goto :build
+
+set /p "builder=Builder [nuitka | pyinstaller]: "
+set "arguments=/builder=%builder%"
+
+if /i "%builder%"=="pyinstaller" set "types=onedir | onefile"
+if /i "%builder%"=="nuitka" set "types=onefile | standalone"
+if not defined types goto :build
+
+set /p "type=Type [%types%]: "
+set "arguments=%arguments% /type=%type%"
+
+:build
+"%python%" "%~dp0build.py" %arguments%
+set "code=%errorlevel%"
+
+:done
+if defined interactive pause
+exit /b %code%
+
+:help
+"%python%" "%~dp0build.py" /?
+set "code=%errorlevel%"
+echo.
+echo Exclusive parameters for build.cmd:
+echo   /python=[.venv ^| ^<Path to python.exe^> ^| ^<empty^>]
+echo     Interpreter used to run build.py, only recognized as the first argument.
+echo     Empty or omitted uses python.exe from PATH.
+goto :done

@@ -1,7 +1,8 @@
 <div align=center>
 
 # MSPCManagerHelper
-<img src="./src/assets/icons/MSPCManagerHelper.png" width="140" height="140"/>
+
+<img src="./src/assets/icons/MSPCManagerHelper.png" width="140" height="140" alt="MSPCManagerHelper Logo"/>
 </div>
 
 ## 🖹 Choose Your Language
@@ -18,14 +19,12 @@ Please Select Your Language to Continue
 Visit <https://pcmanager.microsoft.com> to download and experience the latest version of Microsoft PC Manager and join our [User Community](https://mspcmanager.github.io/mspcm-docs/appendix/social-accounts.html)! 😉
 
 > [!IMPORTANT]
-> 
 > This tool is not developed or endorsed by Microsoft Corporation or its subsidiaries. The authors are independent developers with no affiliation to Microsoft or its subsidiaries.
 
 > [!NOTE]
-> 
 > Some features of `MSPCManagerHelper` include references to third-party (non-Microsoft) web pages. While these pages may offer accurate and helpful information, they might also contain advertisements categorized as PUPs (Potentially Unwanted Products). Please exercise caution and thoroughly review any products or files before downloading or installing them.
 
-## 💻 Development
+## 📦 Build from Source
 
 1. Download Python 3.14 from [Python](https://www.python.org/downloads)
 
@@ -38,24 +37,10 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 
 3. Create and Activate a Virtual Environment
 
-    - **Windows**:
-
-        ```Batch
-        py -3.14 -m venv .venv
-        .venv\Scripts\activate
-        ```
-
-    <details>
-    <summary>The <code>install_requirements.sh</code> for macOS and Linux is No Longer Available</summary>
-
-    - **macOS / Linux**:
-
-        ```bash
-        python3 -m venv .venv
-        source .venv/bin/activate
-        ```
-
-    </details>
+    ```Batch
+    py -3.14 -m venv .venv
+    .venv\Scripts\activate
+    ```
 
 4. Install the pip Packages
 
@@ -64,34 +49,76 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
     pip install -r requirements.txt
     ```
 
-    In the `scripts` directory, you can also run `install_requirements.cmd` directly to quickly complete the installation, or run `install_requirements_.venv.cmd` to activate the virtual environment and install the dependencies at the same time.
+    In the `scripts` directory, you can also run `install_requirements_.venv.cmd` to activate the virtual environment and install the dependencies at the same time.
 
-5. Build the EXE
+5. Build
 
-    Run `build.cmd` or `build_.venv.cmd` directly from the `scripts\build` directory to build it yourself.
-    Finally, the built `EXE file` will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_..._v#.#.#.#_<Arch>.exe`.
+    1. Build with `PyInstaller`
 
-> [!NOTE]
-> 
-> If you want to build with Nuitka, install the following components in [Visual Studio](https://visualstudio.microsoft.com/downloads) (or [Visual Studio Build Tools for C++](https://visualstudio.microsoft.com/visual-cpp-build-tools)):
-> - MSBuild Tools
-> - Desktop development with C++ 
->   - `C++ Build Tools core features`
->   - `Visual C++ v14 redistributable updates`
->   - `C++ core desktop features`
->   - `MSVC Build Tools for x64/x86 (latest)`
->   - `Windows SDK`(For example: `Windows 11 SDK (10.0.26100.0)`)
->
-> In a virtual environment, install `Nuitka` and `Zstandard`: 
-> 
-> ```Batch
-> pip install nuitka zstandard
-> ```
->
-> If you are using a newer version or pre-release version of Python, try using the `Nuitka` from the `factory` branch to be compatible with the new Python features. You need to [install Git](https://git-scm.com/install) first. `Zstandard` can remain the stable version:
->
-> ```Batch
-> pip install "nuitka@git+https://github.com/Nuitka/Nuitka.git@factory" zstandard
-> ``` 
-> 
-> Then, move the `build_nuitka_.venv.cmd` script from the `scripts\disabled` folder to the `scripts\build` folder, and use the script to build. It is recommended to use `ziglang` when building.
+        1. Install `PyInstaller`
+
+            ```Batch
+            pip install -r requirements-pyinstaller.txt
+            ```
+
+        2. Once installed, run `scripts\build\build.cmd` and follow the prompts to start building the EXE.
+
+            > Parameters:
+            > - Python: [`.venv` | `<Path to python.exe>` | `<empty>`]
+            > - Builder: [`nuitka` | `pyinstaller`]
+            > - Type: [`onedir` | `onefile`]
+            > - Help: [`/?` | `/h` | `/help`]
+            > `.venv`, `pyinstaller` and `onefile` are recommended.
+
+            You can also invoke it from the command line: `build.cmd /python=<path\to\python.exe> /builder=<builder> /type=<type>`.
+
+            > [!TIP]
+            > `build.cmd` is a Windows command script implemented by calling the functions of `scripts\build\build.py`. You can use `build.py` instead of `build.cmd` in the same way.
+
+            The built binary will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_..._v#.#.#.#_<Arch>.exe`.
+
+    2. Build with `Nuitka`
+
+        > [!IMPORTANT]
+        > Although Nuitka compiles binaries with C, it only allows compilation on the target platform — cross-compilation is not allowed.
+
+        1. Install [Visual Studio](https://visualstudio.microsoft.com/downloads) or [Visual Studio Build Tools for C++](https://visualstudio.microsoft.com/visual-cpp-build-tools)
+
+            In `Visual Studio Installer`, check and install the following workloads:
+            > - MSBuild Tools
+            > - Desktop development with C++
+            >   - `C++ Build Tools core features`
+            >   - `Visual C++ v14 redistributable updates`
+            >   - `C++ core desktop features`
+            >   - `MSVC Build Tools for x64/x86 (latest)` (for the x64/x86 architecture)
+            >   - `MSVC Build Tools for ARM64/ARM64EC (latest)` (for the ARM64 architecture)
+            >   - `Windows SDK` (For example: `Windows 11 SDK (10.0.26100.0)`)
+
+        2. Install `Nuitka` and `Zstandard`
+
+            ```Batch
+            pip install -r requirements-nuitka.txt
+            ```
+
+            > [!NOTE]
+            > If you are using a newer version or pre-release version of Python, try using the `Nuitka` from the `factory` branch to be compatible with the new Python features. You need to [install Git](https://git-scm.com/install) first.
+            > 
+            > ```Batch
+            > pip install "nuitka@git+https://github.com/Nuitka/Nuitka.git@factory"
+            > ```
+
+        3. Once installed, run `scripts\build\build.cmd` and follow the prompts to start building the EXE.
+
+            > Parameters:
+            > - Python: [`.venv` | `<Path to python.exe>` | `<empty>`]
+            > - Builder: [`nuitka` | `pyinstaller`]
+            > - Type: [`onefile` | `standalone`]
+            > - Help: [`/?` | `/h` | `/help`]
+            > `.venv`, `nuitka` and `onefile` are recommended.
+
+            You can also invoke it from the command line: `build.cmd /python=<path\to\python.exe> /builder=<builder> /type=<type>`.
+
+            > [!TIP]
+            > `build.cmd` is a Windows command script implemented by calling the functions of `scripts\build\build.py`. You can use `build.py` instead of `build.cmd` in the same way.
+
+            The built binary will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_..._v#.#.#.#_<Arch>.exe`.
