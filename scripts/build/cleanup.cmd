@@ -22,10 +22,19 @@ for %%d in ("build" "dist") do (
 if defined cleaned echo.
 
 set "cleaned="
-for %%f in ("%~dp0version_*.txt" "%~dp0*.spec") do (
-    echo Deleting "%%~f"
-    del /f /q "%%~f" 2>nul
-    set "cleaned=1"
+for %%f in (
+    "%~dp0version_*.txt"
+    "%~dp0*.spec"
+    "%~dp0MSPCManagerHelper.manifest.rc"
+    "%~dp0MSPCManagerHelper.manifest.res"
+    "%~dp0MSPCManagerHelper.version.rc"
+    "%~dp0MSPCManagerHelper.version.res"
+) do (
+    if exist "%%~f" (
+        echo Deleting "%%~f"
+        del /f /q "%%~f" 2>nul
+        set "cleaned=1"
+    )
 )
 if defined cleaned echo.
 

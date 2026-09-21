@@ -31,7 +31,6 @@ MANIFEST
 #   before PyInstaller builds the exe, so as to inject date/other infos into it.
 *.manifest
 *.spec
-version_*.txt
 
 # Installer logs
 pip-log.txt
@@ -215,3 +214,13 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+
+# !Temp Build Files
+!scripts/build/*.manifest
+scripts/build/*.manifest.rc
+scripts/build/*.manifest.res
+scripts/build/*.version.rc
+scripts/build/*.version.res
+scripts/build/version_*.txt
+scripts/build/resource_hacker/

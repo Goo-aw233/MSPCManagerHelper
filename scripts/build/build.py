@@ -7,8 +7,8 @@ it must be started with the interpreter that has the selected builder
 installed.
 
 Usage:
-    python.exe scripts/build/build.py /builder=pyinstaller /type=[onedir|onefile]
-    python.exe scripts/build/build.py /builder=nuitka /type=[onefile|standalone]
+    python.exe scripts/build/build.py /builder=pyinstaller /type=[onedir | onefile]
+    python.exe scripts/build/build.py /builder=nuitka /type=[onefile | standalone]
 
 PyInstaller builds receive a version file which is generated next to this
 script as version_<arch>.txt, and write their spec file there as well. Pass
@@ -28,6 +28,16 @@ from runpy import run_path
 AppMetadata = run_path(
     str(Path(__file__).resolve().parents[2] / "src" / "core" / "app_metadata.py")
 )["AppMetadata"]
+
+ReplaceEXEInfo = run_path(
+    str(Path(__file__).with_name("replace_exe_info.py"))
+)
+
+REPLACE_STAGES = {
+    # ("builder", "type"): "stages",
+    ("nuitka", "onefile"): "all",
+    ("pyinstaller", "onefile"): "manifest",
+}
 
 
 def _get_arch() -> str:
@@ -117,6 +127,14 @@ def _build_with_nuitka(build_type: str):
         check=True,
     )
 
+def _replace_exe_info(builder: str, build_type: str, stages: str):
+    root = Path(__file__).resolve().parents[2]
+    app_file_name = f"{AppMetadata.APP_NAME}_{AppMetadata.APP_VERSION_WITHOUT_SPACES}_{_get_arch()}"
+    output_path = root / "dist"
+    if builder == "pyinstaller" and build_type == "onedir":
+        output_path /= app_file_name
+    ReplaceEXEInfo["run"](output_path, stages)
+
 def _make_version_file() -> Path:
     arch = _get_arch()
 
@@ -172,16 +190,16 @@ def _get_help() -> str:
     return f"""\
 {AppMetadata.APP_NAME} {AppMetadata.APP_VERSION} Build Helper
 
-Usage: build.py /builder=[nuitka|pyinstaller] /type=[onedir|onefile|standalone]
+Usage: build.py /builder=[nuitka | pyinstaller] /type=[onedir | onefile | standalone]
 
 Every argument needs the /, - or -- prefix, and argument names and values
 are case-insensitive. Name and value may be joined by = or :, so
 /type=onedir and /type:onedir are both accepted.
 
 Arguments:
-  /builder=[nuitka|pyinstaller]   Builder name (required).
-  /type=[onefile|standalone]      Output build type of Nuitka (required).
-  /type=[onedir|onefile]          Output build type of PyInstaller (required).
+  /builder=[nuitka | pyinstaller]   Builder name (required).
+  /type=[onefile | standalone]      Output build type of Nuitka (required).
+  /type=[onedir | onefile]          Output build type of PyInstaller (required).
   /?, /h, /help                   Show this help and exit.
 
 Example: build.py /builder=pyinstaller /type=onedir
@@ -207,6 +225,88 @@ def _get_environment() -> str:
             return version(name)
         except PackageNotFoundError:
             return ""
+
+    def format_line(label: str, value: str) -> str:
+        return f"{label:<16}: {value}"
+
+    def get_processor_count() -> int:
+        relation_processor_package = 3
+        buffer_length = ctypes.c_ulong(0)
+        ctypes.windll.kernel32.GetLogicalProcessorInformationEx(
+            relation_processor_package,
+            None,
+            ctypes.byref(buffer_length),
+        )
+        buffer = ctypes.create_string_buffer(buffer_length.value)
+        if not ctypes.windll.kernel32.GetLogicalProcessorInformationEx(
+            relation_processor_package,
+            buffer,
+            ctypes.byref(buffer_length),
+        ):
+            return 1
+
+        package_count = 0
+        offset = 0
+        while offset < buffer_length.value:
+            relation = ctypes.c_uint.from_buffer(buffer, offset).value
+            record_size = ctypes.c_uint.from_buffer(buffer, offset + 4).value
+            if relation == relation_processor_package:
+                package_count += 1
+            offset += record_size
+        return package_count or 1
+
+    class DisplayDevice(ctypes.Structure):
+        _fields_ = [
+            ("cb", ctypes.c_ulong),
+            ("DeviceName", ctypes.c_wchar * 32),
+            ("DeviceString", ctypes.c_wchar * 128),
+            ("StateFlags", ctypes.c_ulong),
+            ("DeviceID", ctypes.c_wchar * 128),
+            ("DeviceKey", ctypes.c_wchar * 128),
+        ]
+
+    def get_gpu_memory(device_key: str) -> str:
+        registry_prefix = "\\Registry\\Machine\\"
+        if not device_key.startswith(registry_prefix):
+            return "Unknown"
+        try:
+            with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, device_key[len(registry_prefix):]) as registry_key:
+                try:
+                    memory_size = winreg.QueryValueEx(
+                        registry_key,
+                        "HardwareInformation.qwMemorySize",
+                    )[0]
+                except OSError:
+                    memory_size = winreg.QueryValueEx(
+                        registry_key,
+                        "HardwareInformation.MemorySize",
+                    )[0]
+        except OSError:
+            return "Unknown"
+        if isinstance(memory_size, bytes):
+            memory_size = int.from_bytes(memory_size, byteorder="little")
+        if not isinstance(memory_size, int) or not memory_size:
+            return "Unknown"
+        memory_gb: float = float(memory_size) / 2**30
+        return f"{memory_gb:.1f} GB"
+
+    def get_gpu() -> str:
+        display_devices = []
+        index = 0
+        while True:
+            display_device = DisplayDevice()
+            display_device.cb = ctypes.sizeof(display_device)
+            if not ctypes.windll.user32.EnumDisplayDevicesW(None, index, ctypes.byref(display_device), 0):
+                break
+            if display_device.DeviceString:
+                gpu_info = f"{display_device.DeviceString} ({get_gpu_memory(display_device.DeviceKey)})"
+                if gpu_info not in display_devices:
+                    display_devices.append(gpu_info)
+            index += 1
+        return "\n".join(
+            format_line(f"GPU{index}", gpu_info)
+            for index, gpu_info in enumerate(display_devices)
+        )
 
     class MemoryStatus(ctypes.Structure):
         _fields_ = [
@@ -240,15 +340,26 @@ def _get_environment() -> str:
         if part
     )
 
+    build_lab_ex = read(current_version, "BuildLabEx")
+
     cpu_path = r"HARDWARE\DESCRIPTION\System\CentralProcessor\0"
-    cpu = read(cpu_path, "ProcessorNameString")
+    cpu_name = read(cpu_path, "ProcessorNameString")
     cpu_mhz: int = read(cpu_path, "~MHz")
     cpu_ghz = f"~{cpu_mhz / 1000:.2f} GHz" if cpu_mhz else ""
+    processor_count = get_processor_count()
+    logical_processor_count = os.cpu_count() or 1
+    cores_per_processor = max(1, logical_processor_count // processor_count)
     cpu_spec = " / ".join(
         part
-        for part in (read(cpu_path, "Identifier"), f"{os.cpu_count()} Cores", cpu_ghz)
+        for part in (read(cpu_path, "Identifier"), f"{cores_per_processor} Cores", cpu_ghz)
         if part
     )
+    cpu = "\n".join(
+        format_line(f"CPU{index}", f"{cpu_name} ({cpu_spec})")
+        for index in range(processor_count)
+    )
+
+    gpu = get_gpu()
 
     memory = MemoryStatus()
     memory.dwLength = ctypes.sizeof(memory)
@@ -263,20 +374,19 @@ def _get_environment() -> str:
     disk_free: float = disk.free / 2**30
     rom = f"{root.drive} {disk_total:.1f} GB ({disk_free:.1f} GB Available)"
 
-    build_lab_ex = read(current_version, "BuildLabEx")
-
     return (
         "\n=== Machine Information ===\n"
-        f"Environment     : Python {platform.python_version()} @ {sys.executable}\n"
-        f"Python          : {platform.python_implementation()} {platform.python_compiler()}\n"
-        f"Builder         : {builder}\n"
-        f"OS              : {os_info}\n"
-        f"Device Name     : {platform.node()}\n"
-        f"Arch            : {platform.machine()}\n"
-        f"CPU             : {cpu} ({cpu_spec})\n"
-        f"RAM             : {ram}\n"
-        f"ROM             : {rom}\n"
-        f"BuildLabEx      : {build_lab_ex}\n\n"
+        f"{format_line('Environment', f'Python {platform.python_version()} @ {sys.executable}')}\n"
+        f"{format_line('Python', f'{platform.python_implementation()} {platform.python_compiler()}')}\n"
+        f"{format_line('Builder', builder)}\n"
+        f"{format_line('OS', os_info)}\n"
+        f"{format_line('BuildLabEx', build_lab_ex)}\n"
+        f"{format_line('Arch', platform.machine())}\n"
+        f"{format_line('Device Name', platform.node())}\n"
+        f"{cpu}\n"
+        f"{gpu}\n"
+        f"{format_line('RAM', ram)}\n"
+        f"{format_line('ROM', rom)}\n\n"
         f"{'#' * 20}\n"
     )
 
@@ -323,9 +433,9 @@ if __name__ == "__main__":
     allowed_types = ("onedir", "onefile") if selected_builder == "pyinstaller" else ("onefile", "standalone")
 
     if not selected_builder:
-        sys.exit("Missing Argument: builder=[nuitka|pyinstaller] is required.")
+        sys.exit("Missing Argument: builder=[nuitka | pyinstaller] is required.")
     elif selected_builder not in ("nuitka", "pyinstaller"):
-        sys.exit(f"Invalid Value: builder={selected_builder}\nExpected Value: builder=[nuitka|pyinstaller]")
+        sys.exit(f"Invalid Value: builder={selected_builder}\nExpected Value: builder=[nuitka | pyinstaller]")
 
     if not selected_type:
         sys.exit(f"Missing Argument: type=[{'|'.join(allowed_types)}] is required.")
@@ -340,3 +450,7 @@ if __name__ == "__main__":
         _build_with_nuitka(selected_type)
     else:
         raise RuntimeError(f"Unsupported Builder: {selected_builder}")
+
+    selected_stages = REPLACE_STAGES.get((selected_builder, selected_type))
+    if selected_stages:
+        _replace_exe_info(selected_builder, selected_type, selected_stages)
