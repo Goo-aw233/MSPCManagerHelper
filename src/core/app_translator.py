@@ -1,7 +1,7 @@
 import json
 import locale
 
-from core.app_resources import ResourceLocator
+from .app_resources import ResourceLocator
 
 
 class AppTranslator:

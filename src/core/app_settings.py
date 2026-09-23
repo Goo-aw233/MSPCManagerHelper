@@ -1,4 +1,4 @@
-from core.app_logger import AppLogger
+from .app_logger import AppLogger
 
 
 class AppSettings:

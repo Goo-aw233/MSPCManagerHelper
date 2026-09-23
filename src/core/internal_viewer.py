@@ -5,13 +5,13 @@ from pathlib import Path
 
 import customtkinter
 
-from core.advanced_startup import AdvancedStartup
-from core.app_logger import AppLogger
-from core.app_metadata import AppMetadata
-from core.app_resources import AppResources
-from core.app_settings import AppSettings
-from core.app_translator import AppTranslator
-from core.set_font_family import SetFontFamily
+from .advanced_startup import AdvancedStartup
+from .app_logger import AppLogger
+from .app_metadata import AppMetadata
+from .app_resources import AppResources
+from .app_settings import AppSettings
+from .app_translator import AppTranslator
+from .set_font_family import SetFontFamily
 
 
 class InternalViewer(customtkinter.CTkToplevel):

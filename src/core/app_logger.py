@@ -3,9 +3,9 @@ import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from core.advanced_startup import AdvancedStartup
-from core.app_metadata import AppMetadata
-from core.app_resources import AppResources
+from .advanced_startup import AdvancedStartup
+from .app_metadata import AppMetadata
+from .app_resources import AppResources
 
 
 class AppLogger:

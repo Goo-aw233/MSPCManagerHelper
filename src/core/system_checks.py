@@ -9,8 +9,8 @@ from ctypes import wintypes
 
 import pefile
 
-from core.app_logger import AppLogger
-from core.path_resolver import PathResolver, WindowsUtilities
+from .app_logger import AppLogger
+from .path_resolver import PathResolver, WindowsUtilities
 
 
 class PrerequisiteChecks:

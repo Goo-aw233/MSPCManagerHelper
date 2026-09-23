@@ -2,7 +2,7 @@ import sys
 import tempfile
 from pathlib import Path
 
-from core.path_resolver import PathResolver
+from .path_resolver import PathResolver
 
 
 class ResourceLocator:
@@ -24,7 +24,7 @@ class ResourceLocator:
     @classmethod
     def _get_logger(cls):
         if cls._logger is None:
-            from core.app_logger import AppLogger
+            from .app_logger import AppLogger
             cls._logger = AppLogger.get_logger()
         return cls._logger
 
@@ -158,7 +158,7 @@ class AppResources:
 
     @staticmethod
     def _get_binary_path(tool_folder, x64_binary, arm64_binary):
-        from core.system_checks import PrerequisiteChecks
+        from .system_checks import PrerequisiteChecks
         arch_key = PrerequisiteChecks.check_os_architecture()
 
         if arch_key == "ARM64":

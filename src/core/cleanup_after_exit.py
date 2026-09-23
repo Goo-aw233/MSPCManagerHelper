@@ -5,13 +5,13 @@ from pathlib import Path
 
 from windows_toasts import WindowsToaster
 
-from core.advanced_startup import AdvancedStartup
-from core.app_logger import AppLogger
-from core.app_metadata import AppMetadata
-from core.app_resources import AppResources
-from core.app_settings import AppSettings
-from core.app_user_model_id import AppUserModelID
-from core.path_resolver import PathResolver
+from .advanced_startup import AdvancedStartup
+from .app_logger import AppLogger
+from .app_metadata import AppMetadata
+from .app_resources import AppResources
+from .app_settings import AppSettings
+from .app_user_model_id import AppUserModelID
+from .path_resolver import PathResolver
 
 
 class CleanupAfterExit:

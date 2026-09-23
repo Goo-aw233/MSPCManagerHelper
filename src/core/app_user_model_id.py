@@ -1,7 +1,7 @@
 import winreg
 
-from core.app_metadata import AppMetadata
-from core.app_resources import AppResources
+from .app_metadata import AppMetadata
+from .app_resources import AppResources
 
 
 class AppUserModelID:
@@ -18,7 +18,7 @@ class AppUserModelID:
     @classmethod
     def _get_logger(cls):
         if cls._logger is None:
-            from core.app_logger import AppLogger
+            from .app_logger import AppLogger
 
             cls._logger = AppLogger.get_logger()
         return cls._logger

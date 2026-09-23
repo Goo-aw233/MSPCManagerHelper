@@ -2,7 +2,7 @@ import ctypes
 import tkinter
 import tkinter.font
 
-from core.app_logger import AppLogger
+from .app_logger import AppLogger
 
 
 FLUENT_ICONS_FONT_FAMILY = "FluentSystemIcons-Regular"
@@ -25,7 +25,7 @@ class SetFontFamily:
         if SetFontFamily._fluent_font_registered:
             return True
 
-        from core.app_resources import AppResources
+        from .app_resources import AppResources
 
         logger = AppLogger.get_logger()
         font_path = AppResources.fluent_icons_font_path()

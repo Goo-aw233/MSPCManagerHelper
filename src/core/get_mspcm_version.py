@@ -4,8 +4,8 @@ import winreg
 
 import pefile
 
-from core.advanced_startup import AdvancedStartup
-from core.path_resolver import PathResolver, WindowsUtilities
+from .advanced_startup import AdvancedStartup
+from .path_resolver import PathResolver, WindowsUtilities
 
 
 class GetMSPCMVersion:
