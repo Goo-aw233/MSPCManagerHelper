@@ -1,8 +1,12 @@
+from datetime import datetime
+
+
 class AppMetadata:
 
     # Properties
     APP_AUMID = "GuCATs.MSPCManagerHelper"
     APP_AUTHOR = "GuCATs"
+    APP_COPYRIGHT = f"\u00a9 2024 - {datetime.now().year} {APP_AUTHOR} All rights reserved."
     APP_GITHUB_REPOSITORY_URL = "https://github.com/Goo-aw233/MSPCManagerHelper"
     APP_LICENSE_URL = "https://github.com/Goo-aw233/MSPCManagerHelper/blob/main/LICENSE"
     APP_NAME = "MSPCManagerHelper"

@@ -47,4 +47,4 @@ jobs:
         name: ${{ github.ref == 'refs/heads/main' && 'MSPCManagerHelper_Beta' || 'MSPCManagerHelper_Beta_Preview' }}_${{ matrix.os }}_${{ matrix.architecture }}
         path: |
           ./dist/
-          !./dist/*_origin.exe
+          !./dist/**/*_backup.exe

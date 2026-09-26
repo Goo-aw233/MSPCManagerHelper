@@ -216,11 +216,13 @@ __marimo__/
 .streamlit/secrets.toml
 
 
-# !Temp Build Files
+# !Temp Build Files & Directories
+dist.bak/
+scripts/build/resource_hacker/
 !scripts/build/*.manifest
 scripts/build/*.manifest.rc
 scripts/build/*.manifest.res
 scripts/build/*.version.rc
 scripts/build/*.version.res
+scripts/build/resource_hacker.zip
 scripts/build/version_*.txt
-scripts/build/resource_hacker/

@@ -12,7 +12,7 @@ for %%r in ("src" "scripts") do (
 if defined cleaned echo.
 
 set "cleaned="
-for %%d in ("build" "dist") do (
+for %%d in ("build" "dist" "dist.bak") do (
     if exist "%~dp0..\..\%%~d" (
         echo Deleting "%~dp0..\..\%%~d"
         rd /s /q "%~dp0..\..\%%~d" 2>nul

@@ -19,7 +19,6 @@ import importlib.util
 import platform
 import subprocess
 import sys
-from datetime import datetime
 from pathlib import Path
 from runpy import run_path
 
@@ -36,8 +35,10 @@ ReplaceEXEInfo = run_path(
 REPLACE_STAGES = {
     # ("builder", "type"): "stages",
     ("nuitka", "onefile"): "all",
-    ("pyinstaller", "onefile"): "manifest",
+    ("nuitka", "standalone"): "all",
 }
+
+NUITKA_STANDALONE_OUTPUT_DIR = "main.dist"
 
 
 def _get_arch() -> str:
@@ -58,6 +59,7 @@ def _build_with_pyinstaller(build_type: str):
     src = root / "src"
     icon = src / "assets" / "icons" / "MSPCManagerHelper.ico"
     nsudo = src / "assets" / "tools" / "NSudo" / f"NSudoLC_{arch}.exe"
+    manifest = Path(__file__).with_name(f"{AppMetadata.APP_NAME}.manifest")
     app_file_name = f"{AppMetadata.APP_NAME}_{AppMetadata.APP_VERSION_WITHOUT_SPACES}_{arch}"
 
     subprocess.run(
@@ -73,6 +75,7 @@ def _build_with_pyinstaller(build_type: str):
             "--add-data", f"{root / 'docs' / 'THIRD_PARTY_NOTICES.txt'};assets/license",
             "--add-binary", f"{nsudo};assets/tools/NSudo",
             "--clean",
+            "--manifest", str(manifest),
             "--noconfirm",  # Overwrite Existing build/dist Folders Without Asking
             "--distpath", str(root / "dist"),
             "--specpath", str(Path(__file__).resolve().parent),
@@ -121,7 +124,7 @@ def _build_with_nuitka(build_type: str):
             f"--file-description={AppMetadata.APP_NAME}",
             f"--product-name={AppMetadata.APP_NAME}",
             f"--company-name={AppMetadata.APP_AUTHOR}",
-            f"--copyright=© 2024 - {datetime.now().year} {AppMetadata.APP_AUTHOR} All rights reserved.",
+            f"--copyright={AppMetadata.APP_COPYRIGHT}",
             f"--main={src / 'main.py'}",
         ],
         check=True,
@@ -133,6 +136,8 @@ def _replace_exe_info(builder: str, build_type: str, stages: str):
     output_path = root / "dist"
     if builder == "pyinstaller" and build_type == "onedir":
         output_path /= app_file_name
+    elif builder == "nuitka" and build_type == "standalone":
+        output_path /= NUITKA_STANDALONE_OUTPUT_DIR
     ReplaceEXEInfo["run"](output_path, stages)
 
 def _make_version_file() -> Path:
@@ -163,13 +168,13 @@ VSVersionInfo(
     StringFileInfo(
       [
       StringTable(
-        '040904B0',
+        '000004B0',
         [
         StringStruct('CompanyName', '{AppMetadata.APP_AUTHOR}'),
         StringStruct('FileDescription', '{AppMetadata.APP_NAME}'),
         StringStruct('FileVersion', '{app_version}'),
         StringStruct('InternalName', '{app_file_name}'),
-        StringStruct('LegalCopyright', '© 2024 - {datetime.now().year} {AppMetadata.APP_AUTHOR} All rights reserved.'),
+        StringStruct('LegalCopyright', '{AppMetadata.APP_COPYRIGHT}'),
         StringStruct('OriginalFilename', '{app_file_name}.exe'),
         StringStruct('ProductName', '{AppMetadata.APP_NAME}'),
         StringStruct('ProductVersion', '{app_version}')
@@ -177,7 +182,7 @@ VSVersionInfo(
       )
       ]
     ),
-    VarFileInfo([VarStruct('Translation', [1033, 1200])])
+    VarFileInfo([VarStruct('Translation', [0, 1200])])
   ]
 )
 """
