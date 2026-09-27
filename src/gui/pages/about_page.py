@@ -7,7 +7,11 @@ from core import (
     ResourceLocator,
     get_localization_translators
 )
-from gui.components import AboutPageWidgets
+from gui.components import (
+    AboutPageWidgets,
+    CTkIconButton,
+    FLUENT_ICONS
+)
 from handlers.shared import (
     URILauncher,
     ViewTextFile
@@ -349,8 +353,10 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
             self.get_help_group,
             title=self.app_translator.translate("pages.about.get_help"),
             description=self.app_translator.translate("pages.about.get_help_description"),
-            widget_constructor=customtkinter.CTkButton,
+            widget_constructor=CTkIconButton,
             text=self.app_translator.translate("pages.about.get_help"),
+            icon_char=FLUENT_ICONS["help"],
+            icon_size=16,
             command=lambda: (
                 messagebox.showinfo(
                     title=self.app_translator.translate("common.info"),
@@ -376,8 +382,10 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
             self.get_help_group,
             title=self.app_translator.translate("pages.about.official_website"),
             description=self.app_translator.translate("pages.about.official_website_description"),
-            widget_constructor=customtkinter.CTkButton,
+            widget_constructor=CTkIconButton,
             text=self.app_translator.translate("pages.about.official_website"),
+            icon_char=FLUENT_ICONS["website"],
+            icon_size=16,
             command=lambda: URILauncher.launch_url(
                 url=AppMetadata.MICROSOFT_PC_MANAGER_URL,
                 official_website_url=AppMetadata.MICROSOFT_PC_MANAGER_URL,

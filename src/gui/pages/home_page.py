@@ -12,6 +12,7 @@ from core import (
     PrerequisiteChecks
 )
 from gui.components import (
+    CTkIconButton,
     FLUENT_ICONS,
     HomePageWidgets,
     task_coordinator
@@ -116,8 +117,10 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
             self.exit_group,
             self.app_translator.translate("pages.home.run_as_administrator"),
             self.app_translator.translate("pages.home.restart_as_administrator_description"),
-            customtkinter.CTkButton,
+            CTkIconButton,
             text=self.app_translator.translate("pages.home.restart_as_administrator"),
+            icon_char=FLUENT_ICONS["administrator"],
+            icon_size=16,
             command=self._run_as_administrator,
             state="disabled" if AdvancedStartup.is_administrator() else "normal"
         )
@@ -165,8 +168,10 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
             self.exit_group,
             self.app_translator.translate("pages.home.exit_title"),
             self.app_translator.translate("pages.home.exit_description"),
-            customtkinter.CTkButton,
+            CTkIconButton,
             text=self.app_translator.translate("pages.home.exit"),
+            icon_char=FLUENT_ICONS["power"],
+            icon_size=16,
             command=self._exit_app,
             state="normal"
         )
@@ -321,8 +326,10 @@ class HomePage(BaseInfoPageFrame, HomePageWidgets):
                 self.windows_specifications_group,
                 self.app_translator.translate("pages.home.windows_installation_info"),
                 windows_info,
-                customtkinter.CTkButton,
+                CTkIconButton,
                 text=self.app_translator.translate("pages.home.about"),
+                icon_char=FLUENT_ICONS["about"],
+                icon_size=16,
                 command=lambda: URILauncher.launch_uri(
                     uri="ms-settings:about",
                     target_name="About Windows",

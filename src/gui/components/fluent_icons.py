@@ -15,8 +15,13 @@ Ref: https://github.com/microsoft/fluentui-system-icons/blob/main/fonts/FluentSy
 from typing import Final
 
 FLUENT_ICONS: Final = {
-    # ===== Common =====
+    # ===== Icon Button =====
+    "administrator": chr(63680), # ic_fluent_window_shield_24_regular
+    "help": chr(63038),          # ic_fluent_question_circle_24_regular
+    "power": chr(62991),         # ic_fluent_power_24_regular
+    "privacy": chr(63167),       # ic_fluent_shield_24_regular
     "refresh": chr(61758),       # ic_fluent_arrow_clockwise_24_regular
+    "website": chr(62555),       # ic_fluent_globe_24_regular
 
     # ===== Navigation =====
     "about": chr(62628),         # ic_fluent_info_24_regular

@@ -10,6 +10,8 @@ from core import (
     PrerequisiteChecks
 )
 from gui.components import (
+    CTkIconButton,
+    FLUENT_ICONS,
     SettingsPageWidgets,
     task_coordinator
 )
@@ -129,8 +131,10 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             self.reload_group,
             self.app_translator.translate("pages.settings.reload_ui"),
             self.app_translator.translate("pages.settings.reload_ui_description"),
-            customtkinter.CTkButton,
+            CTkIconButton,
             text=self.app_translator.translate("pages.common.refresh"),
+            icon_char=FLUENT_ICONS["refresh"],
+            icon_size=16,
             command=self._request_refresh_ui
         )
 
@@ -250,8 +254,10 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             self.privacy_settings_group,
             self.app_translator.translate("pages.settings.privacy_settings"),
             self.app_translator.translate("pages.settings.privacy_settings_description"),
-            customtkinter.CTkButton,
+            CTkIconButton,
             text=self.app_translator.translate("pages.settings.privacy_and_security"),
+            icon_char=FLUENT_ICONS["privacy"],
+            icon_size=16,
             command=lambda: URILauncher.launch_uri(
                 uri="ms-settings:privacy",
                 target_name="Privacy & Security Settings",

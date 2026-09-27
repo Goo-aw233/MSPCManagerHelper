@@ -5,7 +5,7 @@ from .ctk_icon_button import CTkIconButton
 
 
 class HomePageWidgets(BaseWidgets):
-    def _create_section_label_with_button(self, text, button_text, command, icon_char="", icon_size=14):
+    def _create_section_label_with_button(self, text, button_text, command, icon_char="", icon_size=16):
         container = customtkinter.CTkFrame(self.scroll_frame, fg_color="transparent")
         container.pack(fill="x", padx=25, pady=(20, 10))
 
