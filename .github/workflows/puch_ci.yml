@@ -17,9 +17,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: windows-latest
+          - os: windows-2025-vs2026
             architecture: x64
-          - os: windows-11-arm
+          - os: windows-11-vs2026-arm
             architecture: ARM64
     runs-on: ${{ matrix.os }}
 
@@ -32,19 +32,37 @@ jobs:
     - name: Create .venv & Install Dependencies
       run: |
         ./scripts/install_requirements_.venv.cmd
-    - name: Install PyInstaller
-      run: |
-        ./.venv/Scripts/python.exe -m pip install -r requirements-pyinstaller.txt
     - name: Cleanup Before First Build
       run: |
         ./scripts/build/cleanup-before-first-build.cmd
+
+    # === Build with PyInstaller ===
+
+    - name: Install PyInstaller
+      run: |
+        ./.venv/Scripts/python.exe -m pip install -r requirements-pyinstaller.txt
     - name: Build EXE with PyInstaller Onefile
       run: |
         ./scripts/build/build.cmd /python=.venv /builder=pyinstaller /type=onefile
+
+    # === Build with Nuitka ===
+
+    - name: Check Visual Studio Installed Workloads
+      id: check_vs_workloads
+      continue-on-error: true
+      run: |
+        ./.venv/Scripts/python.exe ./scripts/build/check_vs_workload.py
+    - name: Install Nuitka and Zstandard
+      if: steps.check_vs_workloads.outcome == 'success'
+      run: |
+        ./.venv/Scripts/python.exe -m pip install -r requirements-nuitka.txt
+    - name: Build EXE with Nuitka Onefile
+      if: steps.check_vs_workloads.outcome == 'success'
+      run: |
+        ./scripts/build/build.cmd /python=.venv /builder=nuitka /type=onefile
+
     - name: Upload Artifacts
       uses: actions/upload-artifact@v7
       with:
         name: ${{ github.ref == 'refs/heads/main' && 'MSPCManagerHelper_Beta' || 'MSPCManagerHelper_Beta_Preview' }}_${{ matrix.os }}_${{ matrix.architecture }}
-        path: |
-          ./dist/
-          !./dist/**/*_backup.exe
+        path: ./dist/

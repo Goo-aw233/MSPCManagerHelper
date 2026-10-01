@@ -75,7 +75,7 @@ Please Select Your Language to Continue
             > [!TIP]
             > `build.cmd` 是通过调用 `scripts\build\build.py` 的函数所实现的 Windows 命令脚本。您可以使用相同的方法使用 `build.py` 而不是使用 `build.cmd`。
 
-            构建好的二进制文件，将会存放在根目录的 `dist` 目录下，并命名为 `MSPCManagerHelper_..._v#.#.#.#_<架构>.exe`。
+            构建好的二进制文件，将会存放在根目录的 `dist\<构建方式>_<构建类型>` 目录下，并命名为 `MSPCManagerHelper_..._v#.#.#.#_<架构>.exe`。
 
     2. 使用 `Nuitka` 构建
 
@@ -121,4 +121,4 @@ Please Select Your Language to Continue
             > [!TIP]
             > `build.cmd` 是通过调用 `scripts\build\build.py` 的函数所实现的 Windows 命令脚本。您可以使用相同的方法使用 `build.py` 而不是使用 `build.cmd`。
 
-            构建好的二进制文件，将会存放在根目录的 `dist` 目录下，并命名为 `MSPCManagerHelper_..._v#.#.#.#_<架构>.exe`。
+            构建好的二进制文件，将会存放在根目录的 `dist\<构建方式>_<构建类型>` 目录下，并命名为 `MSPCManagerHelper_..._v#.#.#.#_<架构>.exe`。

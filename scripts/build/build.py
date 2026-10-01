@@ -49,6 +49,9 @@ def _get_arch() -> str:
         return "ARM64"
     raise RuntimeError(f"Unsupported Architecture: {machine}")
 
+def _get_output_path(builder: str, build_type: str) -> Path:
+    return Path(__file__).resolve().parents[2] / "dist" / f"{builder}_{build_type}"
+
 def _build_with_pyinstaller(build_type: str):
     if importlib.util.find_spec("PyInstaller") is None:
         sys.exit(f"PyInstaller is not installed in {sys.executable}.")
@@ -77,7 +80,7 @@ def _build_with_pyinstaller(build_type: str):
             "--clean",
             "--manifest", str(manifest),
             "--noconfirm",  # Overwrite Existing build/dist Folders Without Asking
-            "--distpath", str(root / "dist"),
+            "--distpath", str(_get_output_path("pyinstaller", build_type)),
             "--specpath", str(Path(__file__).resolve().parent),
             "--icon", str(icon),
             "--version-file", str(_make_version_file()),
@@ -106,7 +109,7 @@ def _build_with_nuitka(build_type: str):
             f"--{build_type}",
             "--windows-console-mode=disable",
             "--assume-yes-for-downloads",   # Automatically Download Required Dependencies
-            f"--output-dir={root / 'dist'}",
+            f"--output-dir={_get_output_path('nuitka', build_type)}",
             f"--output-filename={app_file_name}.exe",
             f"--include-data-dir={src / 'assets' / 'locales'}=assets/locales",
             f"--include-data-files={src / 'assets' / 'fonts' / 'FluentSystemIcons-Regular.ttf'}=assets/fonts/FluentSystemIcons-Regular.ttf",
@@ -131,9 +134,8 @@ def _build_with_nuitka(build_type: str):
     )
 
 def _replace_exe_info(builder: str, build_type: str, stages: str):
-    root = Path(__file__).resolve().parents[2]
     app_file_name = f"{AppMetadata.APP_NAME}_{AppMetadata.APP_VERSION_WITHOUT_SPACES}_{_get_arch()}"
-    output_path = root / "dist"
+    output_path = _get_output_path(builder, build_type)
     if builder == "pyinstaller" and build_type == "onedir":
         output_path /= app_file_name
     elif builder == "nuitka" and build_type == "standalone":
@@ -397,6 +399,11 @@ def _get_environment() -> str:
 
 
 if __name__ == "__main__":
+    # Reconfigure the standard output stream (sys.stdout) to 'line buffering' mode.
+    # Automatically flush the buffer whenever the output contains a newline character (n),
+    # so that content from print and other functions is immediately displayed in the CI terminal or logs.
+    sys.stdout.reconfigure(line_buffering=True)
+
     prefixes = ("/", "-", "--")
     separators = ("=", ":")
 

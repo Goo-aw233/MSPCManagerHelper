@@ -227,7 +227,7 @@ def _replace_version(output_path, target_path=None, new_target_path=None):
 def _get_backup_dir(output_path):
     for parent in (output_path, *output_path.parents):
         if parent.name == "dist":
-            return parent.with_name(f"{parent.name}.bak")
+            return parent.with_name(f"{parent.name}.bak") / output_path.relative_to(parent)
     return output_path.with_name(f"{output_path.name}.bak")
 
 def _rename_files(output_path, replacement_path):

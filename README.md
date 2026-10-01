@@ -75,7 +75,7 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
             > [!TIP]
             > `build.cmd` is a Windows command script implemented by calling the functions of `scripts\build\build.py`. You can use `build.py` instead of `build.cmd` in the same way.
 
-            The built binary will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_..._v#.#.#.#_<Arch>.exe`.
+            The built binary will be stored in the `dist\<builder>_<type>` directory of the root directory and named `MSPCManagerHelper_..._v#.#.#.#_<Arch>.exe`.
 
     2. Build with `Nuitka`
 
@@ -121,4 +121,4 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
             > [!TIP]
             > `build.cmd` is a Windows command script implemented by calling the functions of `scripts\build\build.py`. You can use `build.py` instead of `build.cmd` in the same way.
 
-            The built binary will be stored in the `dist` directory of the root directory and named `MSPCManagerHelper_..._v#.#.#.#_<Arch>.exe`.
+            The built binary will be stored in the `dist\<builder>_<type>` directory of the root directory and named `MSPCManagerHelper_..._v#.#.#.#_<Arch>.exe`.

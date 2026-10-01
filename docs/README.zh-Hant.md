@@ -75,7 +75,7 @@ Please Select Your Language to Continue
             > [!TIP]
             > `build.cmd` 是透過呼叫 `scripts\build\build.py` 的函式所實作的 Windows 命令指令碼。您可以使用相同的方法使用 `build.py` 而不是使用 `build.cmd`。
 
-            建置好的二進位檔案，將會存放在根目錄的 `dist` 目錄下，並命名為 `MSPCManagerHelper_..._v#.#.#.#_<架構>.exe`。
+            建置好的二進位檔案，將會存放在根目錄的 `dist\<建置方式>_<建置類型>` 目錄下，並命名為 `MSPCManagerHelper_..._v#.#.#.#_<架構>.exe`。
 
     2. 使用 `Nuitka` 建置
 
@@ -121,4 +121,4 @@ Please Select Your Language to Continue
             > [!TIP]
             > `build.cmd` 是透過呼叫 `scripts\build\build.py` 的函式所實作的 Windows 命令指令碼。您可以使用相同的方法使用 `build.py` 而不是使用 `build.cmd`。
 
-            建置好的二進位檔案，將會存放在根目錄的 `dist` 目錄下，並命名為 `MSPCManagerHelper_..._v#.#.#.#_<架構>.exe`。
+            建置好的二進位檔案，將會存放在根目錄的 `dist\<建置方式>_<建置類型>` 目錄下，並命名為 `MSPCManagerHelper_..._v#.#.#.#_<架構>.exe`。
