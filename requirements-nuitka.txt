@@ -1,2 +1,2 @@
-nuitka==4.2.1
+nuitka==4.2.2
 zstandard==0.25.0
