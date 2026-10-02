@@ -84,15 +84,22 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
 
         1. Install [Visual Studio](https://visualstudio.microsoft.com/downloads) or [Visual Studio Build Tools for C++](https://visualstudio.microsoft.com/visual-cpp-build-tools)
 
-            In `Visual Studio Installer`, check and install the following workloads:
-            > - MSBuild Tools
-            > - Desktop development with C++
+            If you are using `Visual Studio Build Tools for C++`, in `Visual Studio Installer`, check and install the following workloads:
+            > - `MSBuild Tools`
+            > - `Desktop development with C++`
             >   - `C++ Build Tools core features`
             >   - `Visual C++ v14 redistributable updates`
             >   - `C++ core desktop features`
             >   - `MSVC Build Tools for x64/x86 (latest)` (for the x64/x86 architecture)
             >   - `MSVC Build Tools for ARM64/ARM64EC (latest)` (for the ARM64 architecture)
-            >   - `Windows SDK` (For example: `Windows 11 SDK (10.0.26100.0)`)
+            >   - `Windows SDK` (At least `10.0.26100.0`, for example: `Windows 11 SDK (10.0.26100.0)`)
+
+            If you are using `Visual Studio`, in `Visual Studio Installer`, check and install the following workloads:
+            > - `Desktop development with C++`
+            >   - `C++ core desktop features`
+            >   - `MSVC Build Tools for x64/x86 (latest)` (for the x64/x86 architecture)
+            >   - `MSVC Build Tools for ARM64/ARM64EC (latest)` (for the ARM64 architecture)
+            >   - `Windows SDK` (At least `10.0.26100.0`, for example: `Windows 11 SDK (10.0.26100.0)`)
 
         2. Install `Nuitka` and `Zstandard`
 

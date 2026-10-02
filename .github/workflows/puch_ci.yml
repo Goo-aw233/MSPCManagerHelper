@@ -23,6 +23,9 @@ jobs:
             architecture: ARM64
     runs-on: ${{ matrix.os }}
 
+    env:
+      ARTIFACT_PREFIX: ${{ github.ref == 'refs/heads/main' && 'MSPCManagerHelper_Beta' || 'MSPCManagerHelper_Beta_Preview' }}
+
     steps:
     - uses: actions/checkout@v7
     - name: Set Up Python 3.14
@@ -61,8 +64,16 @@ jobs:
       run: |
         ./scripts/build/build.cmd /python=.venv /builder=nuitka /type=onefile
 
-    - name: Upload Artifacts
+    - name: Upload PyInstaller Onefile Artifact
       uses: actions/upload-artifact@v7
       with:
-        name: ${{ github.ref == 'refs/heads/main' && 'MSPCManagerHelper_Beta' || 'MSPCManagerHelper_Beta_Preview' }}_${{ matrix.os }}_${{ matrix.architecture }}
-        path: ./dist/
+        name: ${{ env.ARTIFACT_PREFIX }}_PyInstaller_Onefile_${{ matrix.os }}_${{ matrix.architecture }}
+        path: ./dist/pyinstaller_onefile/*.exe
+        if-no-files-found: error
+    - name: Upload Nuitka Onefile Artifact
+      if: steps.check_vs_workloads.outcome == 'success'
+      uses: actions/upload-artifact@v7
+      with:
+        name: ${{ env.ARTIFACT_PREFIX }}_Nuitka_Onefile_${{ matrix.os }}_${{ matrix.architecture }}
+        path: ./dist/nuitka_onefile/*.exe
+        if-no-files-found: error

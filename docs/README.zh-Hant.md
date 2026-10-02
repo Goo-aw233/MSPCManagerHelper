@@ -84,7 +84,7 @@ Please Select Your Language to Continue
 
         1. 安裝 [Visual Studio](https://visualstudio.microsoft.com/downloads) 或[適用於 C++ 的 Visual Studio 建置工具](https://visualstudio.microsoft.com/visual-cpp-build-tools)
 
-            在 `Visual Studio Installer` 中，勾選並安裝以下工作負載：
+            若正在使用「適用於 C++ 的 Visual Studio 建置工具」，在 `Visual Studio Installer` 中，勾選並安裝以下工作負載：
             > - MSBuild 工具
             > - 使用 C++ 的桌面開發
             >   - C++ 建置工具核心功能
@@ -92,7 +92,14 @@ Please Select Your Language to Continue
             >   - C++ 核心桌面功能
             >   - 適用於 x64/x86 的 MSVC 建置工具 (最新版)（x64/x86 架構）
             >   - 適用於 ARM64/ARM64EC 的 MSVC 建置工具 (最新版)（ARM64 架構）
-            >   - Windows SDK（例如：`Windows 11 SDK (10.0.26100.0)`）
+            >   - Windows SDK（至少 `10.0.26100.0`，例如：`Windows 11 SDK (10.0.26100.0)`）
+
+            若正在使用 `Visual Studio`，在 `Visual Studio Installer` 中，勾選並安裝以下工作負載：
+            > - 使用 C++ 的桌面開發
+            >   - C++ 核心桌面功能
+            >   - 適用於 x64/x86 的 MSVC 建置工具 (最新版)（x64/x86 架構）
+            >   - 適用於 ARM64/ARM64EC 的 MSVC 建置工具 (最新版)（ARM64 架構）
+            >   - Windows SDK（至少 `10.0.26100.0`，例如：`Windows 11 SDK (10.0.26100.0)`）
 
         2. 安裝 `Nuitka` 及 `Zstandard`
 

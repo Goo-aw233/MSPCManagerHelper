@@ -21,19 +21,37 @@ DEFAULT_VSWHERE_PATH = (
 )
 
 TARGETS = {
-    "MSBuild Tools": "Microsoft.Component.MSBuild",
-    "Desktop development with C++": "Microsoft.VisualStudio.Workload.NativeDesktop",
-    "C++ Build Tools core features": "Microsoft.VisualStudio.Component.VC.Tools.Core",
-    "Visual C++ v14 redistributable updates": "Microsoft.VisualStudio.Component.VC.Redist.14.Latest",
-    "C++ core desktop features": "Microsoft.VisualStudio.ComponentGroup.NativeDesktop.Core",
+    "MSBuild Tools": ["Microsoft.Component.MSBuild"],
+    "Desktop development with C++": [
+        # Visual Studio
+        "Microsoft.VisualStudio.Workload.NativeDesktop",
+        # VS Build Tools
+        "Microsoft.VisualStudio.Workload.VCTools",
+    ],
+    "C++ Build Tools core features": [
+        # Visual Studio
+        "Microsoft.VisualStudio.Component.VC.CoreIde",
+        # VS Build Tools
+        "Microsoft.VisualStudio.Component.VC.CoreBuildTools",
+    ],
+    "Visual C++ v14 redistributable updates": [
+        "Microsoft.VisualStudio.Component.VC.Redist.14.Latest",
+    ],
+    "C++ core desktop features": [
+        "Microsoft.VisualStudio.ComponentGroup.NativeDesktop.Core",
+    ],
 }
 
 ARCH_TARGETS = {
     "x64": {
-        "MSVC Build Tools for x64/x86 (latest)": "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
+        "MSVC Build Tools for x64/x86 (latest)": [
+            "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
+        ],
     },
     "ARM64": {
-        "MSVC Build Tools for ARM64/ARM64EC (latest)": "Microsoft.VisualStudio.Component.VC.Tools.ARM64",
+        "MSVC Build Tools for ARM64/ARM64EC (latest)": [
+            "Microsoft.VisualStudio.Component.VC.Tools.ARM64",
+        ],
     },
 }
 
@@ -59,7 +77,7 @@ def _find_vswhere():
 def _query_instances(vswhere_path):
     cmd = [
         str(vswhere_path),
-        "-latest",
+        "-all",
         "-products", "*",
         "-include", "packages",
         "-format", "json",
@@ -83,22 +101,41 @@ def _find_windows_sdks(installed_packages):
             sdks.append((match.group(1), int(match.group(2) or 0), package))
     return sorted(sdks)
 
+def _check_any(installed_packages, candidate_ids):
+    for cid in candidate_ids:
+        if cid in installed_packages:
+            return cid
+    return None
+
 def check_vs_workload():
+    instances = _query_instances(_find_vswhere())
+
     installed_packages = {
         package["id"]
-        for instance in _query_instances(_find_vswhere())
+        for instance in instances
         for package in instance.get("packages", [])
         if "id" in package
     }
 
-    print("=== Visual Studio Core Components ===")
+    installed_products = {
+        instance.get("productId", "Unknown")
+        for instance in instances
+    }
+
+    print("=== Installed Products ===")
+    for pid in sorted(installed_products):
+        print(f"[INFO] {pid}")
+
+    print("\n=== Visual Studio Core Components ===")
     targets = {**TARGETS, **ARCH_TARGETS[_get_arch()]}
     ok = True
-    for name, component_id in targets.items():
-        installed = component_id in installed_packages
+    for name, candidate_ids in targets.items():
+        matched = _check_any(installed_packages, candidate_ids)
+        installed = matched is not None
         ok = ok and installed
         status = "[ OK ]" if installed else "[MISS]"
-        print(f"{status} {name:<45} -> {component_id}")
+        detail = matched if matched else " / ".join(candidate_ids)
+        print(f"{status} {name:<45} -> {detail}")
 
     sdks = _find_windows_sdks(installed_packages)
     qualified = {
