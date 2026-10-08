@@ -1,6 +1,5 @@
 import customtkinter
 from CTkToolTip import CTkToolTip
-from windows_toasts import Toast, WindowsToaster
 
 from core import (
     AdvancedStartup,
@@ -392,7 +391,11 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
             main_window.after(0, main_window.refresh_ui)
 
     def _notify_refresh_deferred(self):
+        if AdvancedStartup.is_bypass_checks():
+            return
         try:
+            from windows_toasts import Toast, WindowsToaster
+
             toaster = WindowsToaster(AppMetadata.APP_AUMID)
             refresh_deferred_toast = Toast()
             refresh_deferred_toast.text_fields = [

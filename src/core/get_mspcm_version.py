@@ -164,10 +164,13 @@ class GetMSPCMVersion:
         PowerShell, or ``None`` when it cannot be determined.
 
         ``-AllUsers`` requires administrator privileges and is only tried when
-        the process is running elevated; otherwise it is skipped.
+        the process is running elevated; otherwise it is skipped. Bypass checks
+        reports the process as elevated without granting the privileges, so it
+        is treated as non-elevated here.
         """
+        is_elevated = AdvancedStartup.is_administrator() and not AdvancedStartup.is_bypass_checks()
         for use_all_users in (True, False):
-            if use_all_users and not AdvancedStartup.is_administrator():
+            if use_all_users and not is_elevated:
                 continue
 
             all_users_arg = " -AllUsers" if use_all_users else ""

@@ -81,7 +81,9 @@ class HelpWindow(customtkinter.CTk):
 
     def _configure_window(self):
         app_title = f"{AppMetadata.APP_NAME} {AppMetadata.APP_VERSION} {self.app_translator.translate('pages.help.title')}"
-        if AdvancedStartup.is_administrator():
+        if AdvancedStartup.is_bypass_checks():
+            app_title += " [Bypass Checks]"
+        elif AdvancedStartup.is_administrator():
             app_title += " [Administrator]"
         self.title(app_title)
 

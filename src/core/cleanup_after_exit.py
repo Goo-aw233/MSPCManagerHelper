@@ -3,8 +3,6 @@ import shutil
 import sys
 from pathlib import Path
 
-from windows_toasts import WindowsToaster
-
 from .advanced_startup import AdvancedStartup
 from .app_logger import AppLogger
 from .app_metadata import AppMetadata
@@ -42,6 +40,9 @@ class CleanupAfterExit:
     @staticmethod
     def cleanup_prefetch():
         if not AppSettings.is_cleanup_after_exit_enabled():
+            return
+        if AdvancedStartup.is_bypass_checks():
+            CleanupAfterExit.logger.info("Skip Prefetch Clean Up: Bypass Checks")
             return
         if not AdvancedStartup.is_administrator():
             CleanupAfterExit.logger.info("Skip Prefetch Clean Up: Not Running as Administrator")
@@ -121,7 +122,12 @@ class CleanupAfterExit:
     def cleanup_toast_notifications():
         if not AppSettings.is_cleanup_after_exit_enabled():
             return
+        if AdvancedStartup.is_bypass_checks():
+            CleanupAfterExit.logger.info("Skip Toast Notification Clean Up: Bypass Checks")
+            return
         try:
+            from windows_toasts import WindowsToaster
+
             toaster = WindowsToaster(AppMetadata.APP_AUMID)
             # Clear every toast belonging to this application regardless of tag,
             # so newly added toast tags do not need to be listed here.

@@ -92,6 +92,8 @@ class PrerequisiteChecks:
 
     @staticmethod
     def check_windows_minimum_requirements():
+        if PrerequisiteChecks._suppressed:
+            return True
         try:
             # Check if Windows meets Microsoft PC Manager Minimum Requirements
             with winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE,

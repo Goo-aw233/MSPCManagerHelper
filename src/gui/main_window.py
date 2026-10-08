@@ -5,7 +5,6 @@ from pathlib import Path
 from tkinter import messagebox
 
 import customtkinter
-from windows_toasts import Toast, WindowsToaster
 
 from core import (
     AdvancedStartup,
@@ -169,14 +168,17 @@ class MainWindow(customtkinter.CTk):
         if not AdvancedStartup.is_administrator():
             found_prerequisite_issue = True
             self.logger.warning("App is not running as administrator.")
-            toaster = WindowsToaster(AppMetadata.APP_AUMID)
-            run_as_administrator_toast = Toast()
-            run_as_administrator_toast.text_fields = [
-                self.app_translator.translate("core.administrator_required_title"),
-                self.app_translator.translate("core.administrator_required_message")
-            ]
-            run_as_administrator_toast.tag = "administrator_required_toast"
-            toaster.show_toast(run_as_administrator_toast)
+            if not AdvancedStartup.is_bypass_checks():
+                from windows_toasts import Toast, WindowsToaster
+
+                toaster = WindowsToaster(AppMetadata.APP_AUMID)
+                run_as_administrator_toast = Toast()
+                run_as_administrator_toast.text_fields = [
+                    self.app_translator.translate("core.administrator_required_title"),
+                    self.app_translator.translate("core.administrator_required_message")
+                ]
+                run_as_administrator_toast.tag = "administrator_required_toast"
+                toaster.show_toast(run_as_administrator_toast)
 
         if not PrerequisiteChecks.check_if_long_paths_enabled():
             found_prerequisite_issue = True
