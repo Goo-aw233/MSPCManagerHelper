@@ -50,10 +50,7 @@ class ResourceLocator:
         # 2) cx_Freeze / Nuitka standalone / py2exe / other generic frozen:
         #    When the application is frozen, sys.frozen is True, but no _MEIPASS.
         #    resources and executable files are in the same directory.
-        is_bundled = bool(getattr(sys, "frozen", False)) or (
-            getattr(sys.modules.get("__main__", None), "__compiled__", None) is not None
-        )
-        if is_bundled:
+        if ResourceLocator.is_bundled():
             add("EXE_dir", Path(sys.executable).parent)
             add("argv0_dir", Path(sys.argv[0]).parent)
 
@@ -118,14 +115,26 @@ class ResourceLocator:
         return None
 
     @classmethod
+    def is_bundled(cls):
+        """Detect whether the current runtime environment is bundled.
+
+        PyInstaller sets ``sys.frozen`` to ``True``.
+        Nuitka does not set ``sys.frozen``, it marks the compiled modules with
+        __compiled__ instead.
+        """
+        return bool(getattr(sys, "frozen", False)) or (
+            getattr(sys.modules.get("__main__", None), "__compiled__", None) is not None
+        )
+
+    @classmethod
     def describe_runtime(cls):
         if hasattr(sys, "_MEIPASS"):
             return f"PyInstaller Bundle (Extraction Path: {sys._MEIPASS})"
+        if not cls.is_bundled():
+            return "Source Tree (Unbundled)"
         if getattr(sys.modules.get("__main__", None), "__compiled__", None) is not None:
             return "Nuitka Bundle"
-        if getattr(sys, "frozen", False):
-            return "Generic Frozen Bundle (sys.frozen)"
-        return "Source Tree (Unbundled)"
+        return "Generic Frozen Bundle (sys.frozen)"
 
 
 class AppResources:

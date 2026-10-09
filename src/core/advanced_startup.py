@@ -3,6 +3,7 @@ import os
 import sys
 from pathlib import Path
 
+from .app_resources import ResourceLocator
 from .app_translator import AppTranslator
 
 
@@ -119,19 +120,52 @@ class AdvancedStartup:
             return False
 
     @staticmethod
-    def execute_restart(args, verb=None):
-        # A new instance spawned via sys.executable reuses this process's onefile
-        # temp folder (_MEIxxxx), which is deleted on exit. Force an independent
-        # instance so it extracts its own folder.
+    def get_restart_command(launch_args):
+        """Build the executable file and parameters for restarting the application.
+
+        Bundle: launch `argv[0]` and only pass `launch_args`.
+        `sys.executable` under Nuitka Onefile resolves to main.dll rather than the EXE.
+        The EXE should not appear in the arguments, otherwise it will accumulate in `argv[1:]` with each restart.
+
+        Source Tree: launch `sys.executable`, with the first argument being the script path.
+        """
+        boot_file = Path(sys.argv[0]).resolve()
+
+        if ResourceLocator.is_bundled():
+            # Prefer argv[0], but fall back to sys.executable when it is not a
+            # file on disk, which can happen when the app is started through
+            # PATH lookup or with a relative path.
+            executable = boot_file if boot_file.is_file() else Path(sys.executable).resolve()
+            return str(executable), list(launch_args)
+
+        return str(Path(sys.executable).resolve()), [str(boot_file)] + list(launch_args)
+
+    @staticmethod
+    def execute_restart(executable, args, verb=None):
+        # A new instance spawned via the same executable reuses this process's
+        # onefile temp folder (_MEIxxxx), which is deleted on exit. Force an
+        # independent instance so it extracts its own folder.
         # Ref: https://pyinstaller.org/en/stable/common-issues-and-pitfalls.html
         if hasattr(sys, "_MEIPASS"):
             os.environ["PYINSTALLER_RESET_ENVIRONMENT"] = "1"
 
-        # Low-level restart: ask the shell to start a new instance and return
-        # the raw ShellExecuteW result code. Whether the current process should
-        # exit is decided by the higher-level caller, since a successful restart
-        # spawns a new instance that takes over.
-        return ctypes.windll.shell32.ShellExecuteW(None, verb, sys.executable, args, None, 0)
+        # Nuitka onefile exports NUITKA_ONEFILE_* to the running payload. The
+        # relaunched launcher must not inherit them, or it attaches to this
+        # process's extraction directory, which is deleted once we exit.
+        inherited_env = {
+            name: os.environ.pop(name)
+            for name in [name for name in list(os.environ) if name.startswith("NUITKA_ONEFILE_")]
+        }
+
+        try:
+            # Low-level restart: ask the shell to start a new instance and return
+            # the raw ShellExecuteW result code. Whether the current process should
+            # exit is decided by the higher-level caller, since a successful restart
+            # spawns a new instance that takes over. The new instance copies the
+            # environment while the call runs, so restoring it below is safe.
+            return ctypes.windll.shell32.ShellExecuteW(None, verb, executable, args, None, 0)
+        finally:
+            os.environ.update(inherited_env)
 
     @staticmethod
     def specify_locale():

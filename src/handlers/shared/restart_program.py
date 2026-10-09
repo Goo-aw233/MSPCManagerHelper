@@ -1,7 +1,6 @@
 import ctypes
 import subprocess
 import sys
-from pathlib import Path
 from tkinter import messagebox
 
 
@@ -20,32 +19,19 @@ class RestartProgram:
             launch_args: Optional list of command-line arguments to pass to the new
                 instance. If None, the current runtime arguments are forwarded.
         """
-        boot_file_path = str(Path(sys.argv[0]).resolve())
-        executable_path = str(Path(sys.executable).resolve())
-
         if launch_args is None:
             launch_args = AdvancedStartup.get_runtime_arguments()
 
-        if Path(boot_file_path) == Path(executable_path):
-            # Compiled executable (EXE): argv[0] is already the executable
-            # itself, so the OS launches it directly. Passing only the real
-            # arguments keeps argv[1:] clean; re-passing the exe path would
-            # duplicate it into argv[1:] and accumulate on every restart.
-            args_list = list(launch_args)
-        else:
-            # Running from source (.py): sys.executable is the interpreter,
-            # which needs argv[0] (the script path) in the command line to
-            # know which script to run.
-            args_list = [boot_file_path] + list(launch_args)
+        launch_executable, args_list = AdvancedStartup.get_restart_command(launch_args)
 
-        # Build the command line with the same quoting rules as the 
+        # Build the command line with the same quoting rules as the
         # Microsoft C Runtime, so arguments containing spaces, quotes, or special
         # characters survive the round-trip.
         args_str = subprocess.list2cmdline(args_list)
 
         is_elevated = verb == "runas"
         restart_label = "as administrator" if is_elevated else "without elevation"
-        logger.info(f"Attempting to restart {restart_label}... Executable: {boot_file_path}; Args: {args_str}")
+        logger.info(f"Attempting to restart {restart_label}... Executable: {launch_executable}; Args: {args_str}")
 
         # Show the correct error hint depending on how we restarted.
         error_key = (
@@ -55,7 +41,7 @@ class RestartProgram:
         )
 
         try:
-            return_code = AdvancedStartup.execute_restart(args_str, verb=verb)
+            return_code = AdvancedStartup.execute_restart(launch_executable, args_str, verb=verb)
             # ShellExecuteW returns > 32 on success. If it returns <= 32, it's an error code.
             # 1223 = ERROR_CANCELLED (User canceled the UAC prompt).
             if not return_code or return_code <= 32:
