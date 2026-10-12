@@ -169,7 +169,8 @@ class InstallMicrosoftEdgeWebView2Runtime:
                 args,
                 check=False,
                 shell=False,
-                text=True,
+                encoding="oem",
+                errors="replace",
                 capture_output=True,
                 creationflags=subprocess.CREATE_NO_WINDOW,
             )

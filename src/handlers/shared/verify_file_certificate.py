@@ -30,7 +30,7 @@ class VerifyFileCertificate:
         try:
             result = subprocess.run(
                 [str(WindowsUtilities.powershell()), "-NoProfile", "-Command", cmd],
-                capture_output=True, text=True, shell=False,
+                capture_output=True, encoding="oem", errors="replace", shell=False,
                 creationflags=subprocess.CREATE_NO_WINDOW
             )
         except Exception:

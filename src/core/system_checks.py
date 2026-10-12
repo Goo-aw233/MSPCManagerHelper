@@ -329,9 +329,10 @@ class OptionalChecks:
         # Ignored Not Found Utilities
         for utility, path in found_utilities.items():
             try:
-                is_text = utility not in {"sfc.exe"}
-
-                result = subprocess.run([path, "/?"], text=is_text, shell=False, capture_output=True,
+                # Capture in bytes (not text=True).
+                # Python 3.15 uses UTF-8 output by default,
+                # and non-UTF-8 bytes will cause stdout to be None.
+                result = subprocess.run([path, "/?"], shell=False, capture_output=True,
                                         creationflags=subprocess.CREATE_NO_WINDOW, timeout=5.0)
 
                 if not result.stdout and not result.stderr:

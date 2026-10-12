@@ -117,7 +117,8 @@ class UninstallViaDISMForAllUsers:
                 [str(WindowsUtilities.dism()), image_status, "/Get-ProvisionedAppxPackages"],
                 check=False,
                 shell=False,
-                text=True,
+                encoding="oem",
+                errors="replace",
                 capture_output=True,
                 creationflags=subprocess.CREATE_NO_WINDOW
             )
@@ -173,7 +174,8 @@ class UninstallViaDISMForAllUsers:
                     [str(WindowsUtilities.dism()), image_status, "/Remove-ProvisionedAppxPackage", f"/PackageName:{pkg_name}"],
                     check=False,
                     shell=False,
-                    text=True,
+                    encoding="oem",
+                    errors="replace",
                     capture_output=True,
                     creationflags=subprocess.CREATE_NO_WINDOW
                 )
@@ -236,7 +238,8 @@ class UninstallViaDISMForAllUsers:
                     [str(WindowsUtilities.powershell()), "-NoProfile", "-Command", command],
                     check=False,
                     shell=False,
-                    text=True,
+                    encoding="oem",
+                    errors="replace",
                     capture_output=True,
                     creationflags=subprocess.CREATE_NO_WINDOW
                 )
@@ -362,7 +365,8 @@ class UninstallViaDISMForAllUsers:
                 result = subprocess.run(
                     remove_cmd,
                     shell=False,
-                    text=True,
+                    encoding="oem",
+                    errors="replace",
                     capture_output=True,
                     creationflags=subprocess.CREATE_NO_WINDOW
                 )
@@ -470,7 +474,8 @@ class UninstallViaDISMForAllUsers:
                     del_cmd,
                     check=False,
                     shell=False,
-                    text=True,
+                    encoding="oem",
+                    errors="replace",
                     capture_output=True,
                     creationflags=subprocess.CREATE_NO_WINDOW
                 )
@@ -600,7 +605,8 @@ class UninstallViaDISMForAllUsers:
                         result = subprocess.run(
                             del_cmd,
                             shell=False,
-                            text=True,
+                            encoding="oem",
+                            errors="replace",
                             capture_output=True,
                             creationflags=subprocess.CREATE_NO_WINDOW
                         )
@@ -715,7 +721,8 @@ class UninstallViaDISMForAllUsers:
                     result = subprocess.run(
                         remove_cmd,
                         shell=False,
-                        text=True,
+                        encoding="oem",
+                        errors="replace",
                         capture_output=True,
                         creationflags=subprocess.CREATE_NO_WINDOW
                     )
@@ -890,7 +897,8 @@ class UninstallViaDISMForAllUsers:
                                     del_cmd,
                                     check=False,
                                     shell=False,
-                                    text=True,
+                                    encoding="oem",
+                                    errors="replace",
                                     capture_output=True,
                                     creationflags=subprocess.CREATE_NO_WINDOW
                                 )
@@ -927,7 +935,8 @@ class UninstallViaDISMForAllUsers:
                                     del_cmd,
                                     check=False,
                                     shell=False,
-                                    text=True,
+                                    encoding="oem",
+                                    errors="replace",
                                     capture_output=True,
                                     creationflags=subprocess.CREATE_NO_WINDOW
                                 )

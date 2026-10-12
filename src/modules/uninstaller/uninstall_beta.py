@@ -180,8 +180,7 @@ class UninstallBeta:
 
             result = subprocess.Popen([uninstaller_path], 
                                       stdout=subprocess.PIPE, 
-                                      stderr=subprocess.PIPE, 
-                                      text=True)
+                                      stderr=subprocess.PIPE)
 
             ppid = result.pid
             self._log(self.app_translator.translate("modules.uninstaller.waiting_for_uninstaller"))
@@ -276,7 +275,8 @@ class UninstallBeta:
                 result = subprocess.run(
                     remove_cmd,
                     shell=False,
-                    text=True,
+                    encoding="oem",
+                    errors="replace",
                     capture_output=True,
                     creationflags=subprocess.CREATE_NO_WINDOW
                 )
@@ -401,7 +401,8 @@ class UninstallBeta:
                     del_cmd,
                     check=False,
                     shell=False,
-                    text=True,
+                    encoding="oem",
+                    errors="replace",
                     capture_output=True,
                     creationflags=subprocess.CREATE_NO_WINDOW
                 )
@@ -549,7 +550,8 @@ class UninstallBeta:
                         result = subprocess.run(
                             del_cmd,
                             shell=False,
-                            text=True,
+                            encoding="oem",
+                            errors="replace",
                             capture_output=True,
                             creationflags=subprocess.CREATE_NO_WINDOW
                         )

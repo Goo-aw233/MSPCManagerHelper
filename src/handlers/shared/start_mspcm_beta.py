@@ -22,13 +22,13 @@ class StartMSPCMBeta:
         def open_with_cmd():
             logger.info("Opening Microsoft PC Manager Public Beta via CMD with registered class.")
             subprocess.run([str(WindowsUtilities.cmd()), "/C", "start", "Microsoft PC Manager Public Beta", f"{registered_class_beta}"],
-                           check=True, shell=False, text=True, capture_output=True,
+                           check=True, shell=False, encoding="oem", errors="replace", capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_powershell():
             logger.info("Opening Microsoft PC Manager Public Beta via Windows PowerShell with registered class.")
             subprocess.run([str(WindowsUtilities.powershell()), "-NoProfile", "-Command", f"Start-Process '{registered_class_beta}'"],
-                           check=True, shell=False, text=True, capture_output=True,
+                           check=True, shell=False, encoding="oem", errors="replace", capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
         # --- End of Registered Class Methods ---
 
@@ -40,13 +40,13 @@ class StartMSPCMBeta:
         def exe_with_cmd():
             logger.info(f"Opening Microsoft PC Manager Public Beta via CMD with EXE Path: {beta_exe_path}")
             subprocess.run([str(WindowsUtilities.cmd()), "/C", "start", "Microsoft PC Manager Public Beta", str(beta_exe_path)],
-                           check=True, shell=False, text=True, capture_output=True,
+                           check=True, shell=False, encoding="oem", errors="replace", capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
         def exe_with_powershell():
             logger.info(f"Opening Microsoft PC Manager Public Beta via Windows PowerShell with EXE Path: {beta_exe_path}")
             subprocess.run([str(WindowsUtilities.powershell()), "-NoProfile", "-Command", f"Start-Process '{beta_exe_path}'"],
-                           check=True, shell=False, text=True, capture_output=True,
+                           check=True, shell=False, encoding="oem", errors="replace", capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
         # --- End of EXE Path Methods ---
 

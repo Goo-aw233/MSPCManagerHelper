@@ -22,19 +22,19 @@ class ViewTextFile:
         def open_with_cmd():
             logger.info(f"Opening text file {text_file_path} via CMD.")
             subprocess.run([str(WindowsUtilities.cmd()), "/C", "start", "Text File", f"{text_file_path}"],
-                           check=True, shell=False, text=True, capture_output=True,
+                           check=True, shell=False, encoding="oem", errors="replace", capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_powershell():
             logger.info(f"Opening text file {text_file_path} via Windows PowerShell.")
             subprocess.run([str(WindowsUtilities.powershell()), "-NoProfile", "-Command", f"Start-Process '{text_file_path}'"],
-                           check=True, shell=False, text=True, capture_output=True,
+                           check=True, shell=False, encoding="oem", errors="replace", capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_explorer():
             logger.info(f"Opening text file {text_file_path} via File Explorer.")
             subprocess.run(["explorer.exe", f"/select,{text_file_path}"],
-                           check=True, shell=False, text=True, capture_output=True,
+                           check=True, shell=False, encoding="oem", errors="replace", capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_internal_viewer():

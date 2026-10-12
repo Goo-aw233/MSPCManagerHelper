@@ -25,7 +25,8 @@ def _get_curl_version(curl_exe):
         version = subprocess.run(
             [curl_exe, "--version"],
             capture_output=True,
-            text=True,
+            encoding="oem",
+            errors="replace",
             check=True,
         ).stdout.split()[1]
         major, minor = (int(part) for part in version.split(".")[:2])

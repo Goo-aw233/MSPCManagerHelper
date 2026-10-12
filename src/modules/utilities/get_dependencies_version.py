@@ -139,7 +139,8 @@ class GetDependenciesVersion:
         try:
             completed = subprocess.run(
                 [str(WindowsUtilities.powershell()), "-NoProfile","-Command", get_windows_app_runtime_versions],
-                check=True, text=True, capture_output=True, shell=False, creationflags=subprocess.CREATE_NO_WINDOW
+                check=True, encoding="oem", errors="replace", capture_output=True, shell=False,
+                creationflags=subprocess.CREATE_NO_WINDOW
             )
             raw_output = completed.stdout.strip()
             if raw_output:

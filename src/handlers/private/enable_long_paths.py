@@ -34,7 +34,7 @@ class EnableLongPaths:
                 "/v", value_name
             ]
             try:
-                subprocess.run(check_cmd, check=True, shell=False, text=True, capture_output=True,
+                subprocess.run(check_cmd, check=True, shell=False, encoding="oem", errors="replace", capture_output=True,
                                creationflags=subprocess.CREATE_NO_WINDOW)
                 logger.info(f"{value_name} exists, will set to 1.")
             except subprocess.CalledProcessError:
@@ -49,7 +49,7 @@ class EnableLongPaths:
                 "/f"
             ]
             try:
-                subprocess.run(set_cmd, check=True, shell=False, text=True, capture_output=True,
+                subprocess.run(set_cmd, check=True, shell=False, encoding="oem", errors="replace", capture_output=True,
                             creationflags=subprocess.CREATE_NO_WINDOW)
                 logger.info(f"Successfully set {value_name} to 1 via reg.exe.")
             except subprocess.CalledProcessError as e:

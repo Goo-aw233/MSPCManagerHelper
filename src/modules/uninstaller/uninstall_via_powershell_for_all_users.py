@@ -107,7 +107,8 @@ class UninstallViaPowerShellForAllUsers:
                     [str(WindowsUtilities.powershell()), "-NoProfile", "-Command", command],
                     check=False,
                     shell=False,
-                    text=True,
+                    encoding="oem",
+                    errors="replace",
                     capture_output=True,
                     creationflags=subprocess.CREATE_NO_WINDOW
                 )
@@ -233,7 +234,8 @@ class UninstallViaPowerShellForAllUsers:
                 result = subprocess.run(
                     remove_cmd,
                     shell=False,
-                    text=True,
+                    encoding="oem",
+                    errors="replace",
                     capture_output=True,
                     creationflags=subprocess.CREATE_NO_WINDOW
                 )
@@ -339,7 +341,8 @@ class UninstallViaPowerShellForAllUsers:
                     del_cmd,
                     check=False,
                     shell=False,
-                    text=True,
+                    encoding="oem",
+                    errors="replace",
                     capture_output=True,
                     creationflags=subprocess.CREATE_NO_WINDOW
                 )
@@ -469,7 +472,8 @@ class UninstallViaPowerShellForAllUsers:
                         result = subprocess.run(
                             del_cmd,
                             shell=False,
-                            text=True,
+                            encoding="oem",
+                            errors="replace",
                             capture_output=True,
                             creationflags=subprocess.CREATE_NO_WINDOW
                         )
@@ -579,7 +583,8 @@ class UninstallViaPowerShellForAllUsers:
                     result = subprocess.run(
                         remove_cmd,
                         shell=False,
-                        text=True,
+                        encoding="oem",
+                        errors="replace",
                         capture_output=True,
                         creationflags=subprocess.CREATE_NO_WINDOW
                     )
@@ -750,7 +755,8 @@ class UninstallViaPowerShellForAllUsers:
                                     del_cmd,
                                     check=False,
                                     shell=False,
-                                    text=True,
+                                    encoding="oem",
+                                    errors="replace",
                                     capture_output=True,
                                     creationflags=subprocess.CREATE_NO_WINDOW
                                 )
@@ -787,7 +793,8 @@ class UninstallViaPowerShellForAllUsers:
                                     del_cmd,
                                     check=False,
                                     shell=False,
-                                    text=True,
+                                    encoding="oem",
+                                    errors="replace",
                                     capture_output=True,
                                     creationflags=subprocess.CREATE_NO_WINDOW
                                 )

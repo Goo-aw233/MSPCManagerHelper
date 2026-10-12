@@ -139,7 +139,8 @@ class RepairEdgeWebView2Installation:
                 del_cmd,
                 check=False,
                 shell=False,
-                text=True,
+                encoding="oem",
+                errors="replace",
                 capture_output=True,
                 creationflags=subprocess.CREATE_NO_WINDOW
             )
@@ -193,7 +194,8 @@ class RepairEdgeWebView2Installation:
                 add_cmd,
                 check=False,
                 shell=False,
-                text=True,
+                encoding="oem",
+                errors="replace",
                 capture_output=True,
                 creationflags=subprocess.CREATE_NO_WINDOW
             )
@@ -274,7 +276,8 @@ class RepairEdgeWebView2Installation:
                 del_cmd,
                 check=False,
                 shell=False,
-                text=True,
+                encoding="oem",
+                errors="replace",
                 capture_output=True,
                 creationflags=subprocess.CREATE_NO_WINDOW
             )
@@ -380,7 +383,8 @@ class RepairEdgeWebView2Installation:
                 result = subprocess.run(
                     remove_cmd,
                     shell=False,
-                    text=True,
+                    encoding="oem",
+                    errors="replace",
                     capture_output=True,
                     creationflags=subprocess.CREATE_NO_WINDOW
                 )
@@ -494,7 +498,8 @@ class RepairEdgeWebView2Installation:
                 result = subprocess.run(
                     remove_cmd,
                     shell=False,
-                    text=True,
+                    encoding="oem",
+                    errors="replace",
                     capture_output=True,
                     creationflags=subprocess.CREATE_NO_WINDOW
                 )
@@ -594,7 +599,8 @@ class RepairEdgeWebView2Installation:
                 result = subprocess.run(
                     cmd,
                     shell=False,
-                    text=True,
+                    encoding="oem",
+                    errors="replace",
                     capture_output=True, 
                     creationflags=subprocess.CREATE_NO_WINDOW
                 )

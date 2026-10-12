@@ -17,13 +17,13 @@ class StartMSPCM:
         def open_with_cmd():
             logger.info("Opening Microsoft PC Manager via CMD.")
             subprocess.run([str(WindowsUtilities.cmd()), "/C", "start", "Microsoft PC Manager", f"{registered_class}"],
-                           check=True, shell=False, text=True, capture_output=True,
+                           check=True, shell=False, encoding="oem", errors="replace", capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_powershell():
             logger.info("Opening Microsoft PC Manager via Windows PowerShell.")
             subprocess.run([str(WindowsUtilities.powershell()), "-NoProfile", "-Command", f"Start-Process '{registered_class}'"],
-                           check=True, shell=False, text=True, capture_output=True,
+                           check=True, shell=False, encoding="oem", errors="replace", capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
         methods = [

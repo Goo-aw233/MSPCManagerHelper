@@ -40,12 +40,12 @@ class URILauncher:
         def open_with_cmd():
             logger.info(f"Opening {target_name} via CMD.")
             subprocess.run([str(WindowsUtilities.cmd()), "/C", "start", target_name, f"{uri}"], check=True,
-                           shell=False, text=True, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                           shell=False, encoding="oem", errors="replace", capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_powershell():
             logger.info(f"Opening {target_name} via Windows PowerShell.")
             subprocess.run([str(WindowsUtilities.powershell()), "-NoProfile", "-Command", f"Start-Process '{uri}'"],
-                           check=True, shell=False, text=True, capture_output=True,
+                           check=True, shell=False, encoding="oem", errors="replace", capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
         methods = [
@@ -92,12 +92,12 @@ class URILauncher:
         def open_with_cmd():
             logger.info(f"Opening {target_name} ({url}) via CMD.")
             subprocess.run([str(WindowsUtilities.cmd()), "/C", "start", target_name, f"{url}"], check=True,
-                           shell=False, text=True, capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
+                           shell=False, encoding="oem", errors="replace", capture_output=True, creationflags=subprocess.CREATE_NO_WINDOW)
 
         def open_with_powershell():
             logger.info(f"Opening {target_name} ({url}) via Windows PowerShell.")
             subprocess.run([str(WindowsUtilities.powershell()), "-NoProfile", "-Command", f"Start-Process '{url}'"],
-                           check=True, shell=False, text=True, capture_output=True,
+                           check=True, shell=False, encoding="oem", errors="replace", capture_output=True,
                            creationflags=subprocess.CREATE_NO_WINDOW)
 
         methods = [
