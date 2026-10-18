@@ -1,6 +1,6 @@
-import tkinter
-
 import customtkinter
+
+from .widgets.content_menu import ContentMenu
 
 
 class EventsTextbox:
@@ -26,14 +26,19 @@ class EventsTextbox:
         self.textbox._textbox.configure(tabs=("5c",))
         self.textbox.pack(fill="both", expand=True, padx=10, pady=10)
 
-        self.right_click_menu = tkinter.Menu(self.textbox, tearoff=0)
-        self.right_click_menu.add_command(label=self.app_translator.translate("pages.common.copy"),
-                                          command=self.copy_events)
-        self.right_click_menu.add_separator()
-        self.right_click_menu.add_command(label=self.app_translator.translate("pages.common.clear"),
-                                          command=self.clear_events)
-
-        self.textbox.bind("<Button-3>", self.show_right_click_menu)
+        self.content_menu = ContentMenu(
+            parent=self.textbox,
+            textbox=self.textbox,
+            app_translator=self.app_translator,
+            font_family=self.font_family,
+            actions=[
+                ContentMenu.CLEAR,
+                ContentMenu.COPY,
+                None,
+                ContentMenu.SELECT_ALL
+            ],
+        )
+        self.content_menu.bind_to()
 
     """
     USAGE EXAMPLE:
@@ -59,49 +64,8 @@ class EventsTextbox:
             self.events_textbox.clear_events()
     """
 
-    def show_right_click_menu(self, event):
-        if hasattr(self.parent, "winfo_toplevel"):
-            root = self.parent.winfo_toplevel()
-            if hasattr(root, "_apply_appearance_mode"):
-                bg = root._apply_appearance_mode(["#e3e3e3", "#333333"])
-                fg = root._apply_appearance_mode(["#191919", "#e2e2e2"])
-                active_bg = root._apply_appearance_mode(["#bebebe", "#464646"])
-                active_fg = root._apply_appearance_mode(["#191919", "#e2e2e2"])
-            else:
-                bg = "#e3e3e3" if customtkinter.get_appearance_mode() == "Light" else "#333333"
-                fg = "#191919" if customtkinter.get_appearance_mode() == "Light" else "#e2e2e2"
-                active_bg = "#bebebe" if customtkinter.get_appearance_mode() == "Light" else "#464646"
-                active_fg = "#191919" if customtkinter.get_appearance_mode() == "Light" else "#e2e2e2"
-        else:
-            bg = "#e3e3e3" if customtkinter.get_appearance_mode() == "Light" else "#333333"
-            fg = "#191919" if customtkinter.get_appearance_mode() == "Light" else "#e2e2e2"
-            active_bg = "#bebebe" if customtkinter.get_appearance_mode() == "Light" else "#464646"
-            active_fg = "#191919" if customtkinter.get_appearance_mode() == "Light" else "#e2e2e2"
-
-        self.right_click_menu.configure(
-            bg=bg,
-            fg=fg,
-            activebackground=active_bg,
-            activeforeground=active_fg,
-            font=(self.font_family, 10)
-        )
-        self.right_click_menu.tk_popup(event.x_root, event.y_root)
-
-    def copy_events(self):
-        try:
-            selected_text = self.textbox.get("sel.first", "sel.last")
-            self.parent.clipboard_clear()
-            self.parent.clipboard_append(selected_text)
-        except tkinter.TclError:
-            all_text = self.textbox.get("1.0", "end-1c")
-            if all_text:
-                self.parent.clipboard_clear()
-                self.parent.clipboard_append(all_text)
-
     def clear_events(self):
-        self.textbox.configure(state="normal")
-        self.textbox.delete("1.0", "end")
-        self.textbox.configure(state="disabled")
+        self.content_menu.clear_content()
 
     def log_to_events(self, message):
         self.parent.after(0, self._append_to_events_textbox, message)
@@ -111,6 +75,3 @@ class EventsTextbox:
         self.textbox.insert("end", message + "\n")
         self.textbox.see("end")
         self.textbox.configure(state="disabled")
-
-    def get_textbox(self):
-        return self.textbox

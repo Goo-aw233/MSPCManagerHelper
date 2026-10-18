@@ -1,5 +1,4 @@
 import time
-import tkinter
 
 from pathlib import Path
 
@@ -83,21 +82,32 @@ class InternalViewer(customtkinter.CTkToplevel):
         self.content_textbox = customtkinter.CTkTextbox(
             self,
             font=(self.font_family, 13),
+            # Set the default state to read-only.
+            state="disabled",
             wrap="none"
         )
         self.content_textbox.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
-        content = self._read_content()
-        self._load_content(content if content is not None else "")
 
         # Right-Click Menu
-        self.right_click_menu = tkinter.Menu(self, tearoff=0)
-        self.right_click_menu.add_command(label=self.app_translator.translate("pages.common.copy"),
-                                          command=self._copy_content)
-        self.right_click_menu.add_separator()
-        self.right_click_menu.add_command(label=self.app_translator.translate("pages.common.refresh"),
-                                          command=self.refresh_content)
+        # Avoid a core -> gui import cycle while packages initialize.
+        from gui.components.widgets.content_menu import ContentMenu
 
-        self.content_textbox.bind("<Button-3>", self._show_right_click_menu)
+        self.content_menu = ContentMenu(
+            parent=self,
+            textbox=self.content_textbox,
+            app_translator=self.app_translator,
+            font_family=self.font_family,
+            actions=[
+                ContentMenu.REFRESH,
+                None,
+                ContentMenu.COPY,
+                None,
+                ContentMenu.SELECT_ALL
+            ],
+            content_provider=self._read_content,
+        )
+        self.content_menu.bind_to()
+        self.content_menu.load_content(self._read_content() or "")
 
         # Keyboard Shortcuts
         self.content_textbox.bind("<Control-r>", lambda e: self.refresh_content())
@@ -170,33 +180,6 @@ class InternalViewer(customtkinter.CTkToplevel):
         self.logger.info(
             f"Window Geometry Set to: {width} x {height} (x + {x}, y + {y}), Scaling Factor: {self._get_window_scaling()}")
 
-    def _show_right_click_menu(self, event):
-        bg = self._apply_appearance_mode(["#e3e3e3", "#333333"])
-        fg = self._apply_appearance_mode(["#191919", "#e2e2e2"])
-        active_bg = self._apply_appearance_mode(["#bebebe", "#464646"])
-        active_fg = self._apply_appearance_mode(["#191919", "#e2e2e2"])
-
-        self.right_click_menu.configure(
-            bg=bg,
-            fg=fg,
-            activebackground=active_bg,
-            activeforeground=active_fg,
-            font=(self.font_family, 10)
-        )
-        self.right_click_menu.tk_popup(event.x_root, event.y_root)
-
-    def _copy_content(self):
-        try:
-            selected_text = self.content_textbox.get("sel.first", "sel.last")
-            self.clipboard_clear()
-            self.clipboard_append(selected_text)
-        except tkinter.TclError:
-            # Copy All Text If No Selection
-            all_text = self.content_textbox.get("1.0", "end-1c")
-            if all_text:
-                self.clipboard_clear()
-                self.clipboard_append(all_text)
-
     def _read_content(self):
         if not self.file_path or not self.file_path.exists():
             return None
@@ -207,33 +190,8 @@ class InternalViewer(customtkinter.CTkToplevel):
             self.logger.error(f"Error Reading File {self.file_path}: {e}")
             return None
 
-    def _load_content(self, content):
-        self.content_textbox.configure(state="normal")
-        self.content_textbox.delete("0.0", "end")
-        self.content_textbox.insert("0.0", content)
-        self.content_textbox.configure(state="disabled")
-
     def refresh_content(self):
-        if not self.file_path or not self.file_path.exists():
-            return
-
-        content = self._read_content()
-        if content is None:
-            # Keep the current content when the file cannot be read.
-            return
-
-        # Restore by line number, not by fraction: log files grow, and a fraction would drift down the file.
-        top_line = self.content_textbox.index("@0,0")
-        was_at_bottom = self.content_textbox.yview()[1] >= 0.999
-        horizontal_position = self.content_textbox.xview()[0]
-
-        self._load_content(content)
-
-        if was_at_bottom:
-            self.content_textbox.see("end")
-        else:
-            self.content_textbox.yview(top_line)
-        self.content_textbox.xview_moveto(horizontal_position)
+        self.content_menu.refresh_content()
 
     def destroy(self):
         if InternalViewer._open_viewers.get(self._viewer_key) is self:
