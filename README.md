@@ -80,7 +80,7 @@ Visit <https://pcmanager.microsoft.com> to download and experience the latest ve
     2. Build with `Nuitka`
 
         > [!IMPORTANT]
-        > Although Nuitka compiles binaries with C, it only allows compilation on the target platform — cross-compilation is not allowed.
+        > Although Nuitka uses the C to build binary files, it only allows compilation on the target platform and does not allow cross-compilation.
 
         1. Install [Visual Studio](https://visualstudio.microsoft.com/downloads) or [Visual Studio Build Tools for C++](https://visualstudio.microsoft.com/visual-cpp-build-tools)
 

@@ -334,7 +334,7 @@ https://github.com/DatGuy1/Windows-Toasts
    limitations under the License.
 
 certifi
-2026.7.22
+2026.10.19
 Mozilla Public License 2.0 (MPL 2.0)
 Kenneth Reitz
 https://github.com/certifi/python-certifi
