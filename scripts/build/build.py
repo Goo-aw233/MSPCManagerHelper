@@ -286,7 +286,7 @@ VSVersionInfo(
     prodvers={AppMetadata.APP_VERSION_TUPLE},
     mask=0x3f,
     flags=0x0,
-    OS=0x4,
+    OS=0x40004,
     fileType=0x1,
     subtype=0x0,
     date=(0, 0)

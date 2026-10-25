@@ -120,7 +120,7 @@ def _make_version_rc():
     content = f'''1 VERSIONINFO
 FILEVERSION {app_version.replace(".", ",")}
 PRODUCTVERSION {app_version.replace(".", ",")}
-FILEOS 0x4
+FILEOS 0x40004
 FILETYPE 0x1
 {{
 BLOCK "StringFileInfo"
