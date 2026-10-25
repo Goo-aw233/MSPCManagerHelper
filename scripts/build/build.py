@@ -16,6 +16,7 @@ script as version_<arch>.txt, and write their spec file there as well. Pass
 """
 
 import importlib.util
+import os
 import platform
 import subprocess
 import sys
@@ -40,6 +41,92 @@ REPLACE_STAGES = {
 
 NUITKA_STANDALONE_OUTPUT_DIR = "main.dist"
 
+PYINSTALLER_EXCLUDES = [
+    # === Standard Library ===
+    # Documentation and Testing
+    "--exclude-module", "unittest",
+    "--exclude-module", "doctest",
+    "--exclude-module", "test",
+    "--exclude-module", "pydoc",
+
+    # Debugging and Interactive Tools
+    "--exclude-module", "pdb",
+    "--exclude-module", "idlelib",
+    "--exclude-module", "turtle",
+    "--exclude-module", "turtledemo",
+
+    # Code Analysis and Compilation
+    # ('dis' Required By inspect)
+    "--exclude-module", "compileall",
+    "--exclude-module", "py_compile",
+    "--exclude-module", "pyclbr",
+
+    # Unused Network Protocols and Servers
+    # (Keep 'dis' for inspect)
+    "--exclude-module", "xmlrpc",
+    "--exclude-module", "ftplib",
+    "--exclude-module", "smtplib",
+    "--exclude-module", "imaplib",
+    "--exclude-module", "poplib",
+    "--exclude-module", "http.server",
+    "--exclude-module", "socketserver",
+    "--exclude-module", "wsgiref",
+
+    # Terminal UI and Audio
+    "--exclude-module", "curses",
+    "--exclude-module", "wave",
+
+    # Unused Storage and Databases
+    # (Keep 'csv' for importlib.metadata)
+    "--exclude-module", "sqlite3",
+    "--exclude-module", "tarfile",
+
+    # Unused Math and Parallel Process Pools
+    # (Keep threads for asyncio/WinRT)
+    "--exclude-module", "statistics",
+    "--exclude-module", "concurrent.futures.process",
+    "--exclude-module", "concurrent.futures.interpreter",
+    "--exclude-module", "concurrent.interpreters",
+
+    # === Third-Party Optional Backends ===
+    # Unused urllib3 Protocols and Environments
+    "--exclude-module", "urllib3.contrib.emscripten",
+    "--exclude-module", "urllib3.contrib.pyopenssl",
+    "--exclude-module", "urllib3.contrib.socks",
+
+    # Non-Windows Darkdetect Platforms
+    "--exclude-module", "darkdetect._mac_detect",
+    "--exclude-module", "darkdetect._linux_detect",
+
+    # === Third-Party & Build Tools ===
+    # Package Management and Build Utilities
+    "--exclude-module", "setuptools",
+    "--exclude-module", "pip",
+    "--exclude-module", "wheel",
+    "--exclude-module", "altgraph",
+]
+
+
+def _build_env() -> dict:
+    """Return a sanitized environment for builder subprocesses.
+
+    Restricting PATH to Windows and the base Python installation
+    makes the collected runtime DLLs deterministic and prevents
+    PyInstaller from packing duplicated UCRT files.
+    """
+
+    python_root = Path(sys.base_prefix)
+    system_root = os.environ.get("SystemRoot") or os.environ.get("WinDir") or r"C:\Windows"
+
+    safe_path = os.pathsep.join([
+        str(python_root),
+        str(python_root / "Scripts"),
+        str(Path(system_root) / "System32"),
+        str(system_root)
+    ])
+    env = os.environ.copy()
+    env["PATH"] = safe_path
+    return env
 
 def _get_arch() -> str:
     machine = platform.machine()
@@ -68,26 +155,44 @@ def _build_with_pyinstaller(build_type: str):
     subprocess.run(
         [
             sys.executable, "-m", "PyInstaller",
+
+            # === Build Type ===
             f"--{build_type}",
             "--windowed",
+
+            # === Build Options ===
+            "--clean",  # Remove Temporary Build Files Before Packaging
+            "--noconfirm",  # Overwrite Existing build/dist Folders Without Asking
+            "--optimize", "2",  # Strip Asserts & Docstrings For Production Build
+            "--noupx",          # Disable UPX to Avoid AV False Positives & DLL Issues
+
+            # === Build Artifact ===
             "--name", app_file_name,
+            "--distpath", str(_get_output_path("pyinstaller", build_type)),
+            "--workpath", str(root / "build"),
+            "--specpath", str(Path(__file__).resolve().parent),
+
+            # === Static Resources & Subtools ===
             "--add-data", f"{src / 'assets' / 'locales'};assets/locales",
             "--add-data", f"{src / 'assets' / 'fonts' / 'FluentSystemIcons-Regular.ttf'};assets/fonts",
             "--add-data", f"{icon};assets/icons",
             "--add-data", f"{root / 'ThirdPartyNotices.txt'};assets/license",
             "--add-data", f"{root / 'docs' / 'THIRD_PARTY_NOTICES.txt'};assets/license",
             "--add-binary", f"{nsudo};assets/tools/NSudo",
-            "--clean",
-            "--manifest", str(manifest),
-            "--noconfirm",  # Overwrite Existing build/dist Folders Without Asking
-            "--distpath", str(_get_output_path("pyinstaller", build_type)),
-            "--specpath", str(Path(__file__).resolve().parent),
+
+            # === PE Metadata ===
             "--icon", str(icon),
+            "--manifest", str(manifest),
             "--version-file", str(_make_version_file()),
-            "--workpath", str(root / "build"),
+
+            # === Excluded Modules ===
+            *PYINSTALLER_EXCLUDES,
+
+            # === Entry Point ===
             str(src / "main.py"),
         ],
         check=True,
+        env=_build_env(),
     )
 
 def _build_with_nuitka(build_type: str):
@@ -106,21 +211,38 @@ def _build_with_nuitka(build_type: str):
     subprocess.run(
         [
             sys.executable, "-m", "nuitka",
+
+            # === Build Type ===
             f"--{build_type}",
             "--windows-console-mode=disable",
+
+            # === Compiler ===
+            "--msvc=latest",     # Local VS Compiler Only
+            "--disable-ccache",  # Do NOT Download Third-Party Cache Tools
             "--assume-yes-for-downloads",   # Automatically Download Required Dependencies
+            "--deployment",      # Production Deployment Mode (Disable Debug Helpers & Relaunch Tricks)
+            "--lto=yes",         # Enable Link-Time Optimization (MSVC /LTCG)
+
+            # === Build Artifact ===
             f"--output-dir={_get_output_path('nuitka', build_type)}",
             f"--output-filename={app_file_name}.exe",
+            f"--report={_get_output_path('nuitka', build_type)}/compilation-report.xml",
+
+            # === Static Resources & Subtools ===
             f"--include-data-dir={src / 'assets' / 'locales'}=assets/locales",
             f"--include-data-files={src / 'assets' / 'fonts' / 'FluentSystemIcons-Regular.ttf'}=assets/fonts/FluentSystemIcons-Regular.ttf",
             f"--include-data-files={icon}=assets/icons/MSPCManagerHelper.ico",
             f"--include-data-files={root / 'ThirdPartyNotices.txt'}=assets/license/ThirdPartyNotices.txt",
             f"--include-data-files={root / 'docs' / 'THIRD_PARTY_NOTICES.txt'}=assets/license/THIRD_PARTY_NOTICES.txt",
             f"--include-data-files={nsudo}=assets/tools/NSudo/NSudoLC_{arch}.exe",
+
+            # === Runtime ===
+            "--enable-plugin=tk-inter",
             "--include-module=winrt.windows.foundation",
             "--include-module=winrt.windows.foundation.collections",
             "--include-windows-runtime-dlls=yes",
-            "--enable-plugin=tk-inter",
+
+            # === PE Metadata ===
             f"--windows-icon-from-ico={icon}",
             f"--file-version={app_version}",
             f"--product-version={app_version}",
@@ -128,9 +250,12 @@ def _build_with_nuitka(build_type: str):
             f"--product-name={AppMetadata.APP_NAME}",
             f"--company-name={AppMetadata.APP_AUTHOR}",
             f"--copyright={AppMetadata.APP_COPYRIGHT}",
+
+            # === Entry Point ===
             f"--main={src / 'main.py'}",
         ],
         check=True,
+        env=_build_env(),
     )
 
 def _replace_exe_info(builder: str, build_type: str, stages: str):
@@ -207,7 +332,7 @@ Arguments:
   /builder=[nuitka | pyinstaller]   Builder name (required).
   /type=[onefile | standalone]      Output build type of Nuitka (required).
   /type=[onedir | onefile]          Output build type of PyInstaller (required).
-  /?, /h, /help                   Show this help and exit.
+  /?, /h, /help                     Show this help and exit.
 
 Example: build.py /builder=pyinstaller /type=onedir
 """
