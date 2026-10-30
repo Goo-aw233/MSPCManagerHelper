@@ -169,16 +169,17 @@ class MainWindow(customtkinter.CTk):
             found_prerequisite_issue = True
             self.logger.warning("App is not running as administrator.")
             if not AdvancedStartup.is_bypass_checks():
-                from windows_toasts import Toast, WindowsToaster
+                try:
+                    from win11toast import notify
 
-                toaster = WindowsToaster(AppMetadata.APP_AUMID)
-                run_as_administrator_toast = Toast()
-                run_as_administrator_toast.text_fields = [
-                    self.app_translator.translate("core.administrator_required_title"),
-                    self.app_translator.translate("core.administrator_required_message")
-                ]
-                run_as_administrator_toast.tag = "administrator_required_toast"
-                toaster.show_toast(run_as_administrator_toast)
+                    notify(
+                        self.app_translator.translate("core.administrator_required_title"),
+                        self.app_translator.translate("core.administrator_required_message"),
+                        app_id=AppMetadata.APP_AUMID,
+                        tag="administrator_required_toast"
+                    )
+                except Exception as e:
+                    self.logger.warning(f"Failed to Show Administrator-required Toast Notification: {e}")
 
         if not PrerequisiteChecks.check_if_long_paths_enabled():
             found_prerequisite_issue = True

@@ -34,7 +34,7 @@ class AppUserModelID:
         logger = cls._get_logger()
         aumid = aumid or AppMetadata.APP_AUMID
         if not aumid:
-            logger.warning("AppUserModelID: No AUMID provided, skipping registration.")
+            logger.warning("No AUMID provided, skipping registration.")
             return False
 
         reg_path = fr"{cls._REGISTRY_BASE}\{aumid}"
@@ -50,10 +50,10 @@ class AppUserModelID:
 
                 winreg.SetValueEx(key, "ShowInSettings", 0, winreg.REG_DWORD, 1)
         except OSError as exc:
-            logger.error(f"AppUserModelID: Failed to Register AUMID '{aumid}': {exc}")
+            logger.error(f"Failed to Register AUMID '{aumid}': {exc}")
             return False
 
-        logger.info(f"AppUserModelID: Registered AUMID '{aumid}' at HKEY_CURRENT_USER\\{reg_path}")
+        logger.info(f"Successfully registered AUMID '{aumid}' at HKEY_CURRENT_USER\\{reg_path}")
         return True
 
     @classmethod
@@ -66,7 +66,7 @@ class AppUserModelID:
         logger = cls._get_logger()
         aumid = aumid or AppMetadata.APP_AUMID
         if not aumid:
-            logger.warning("AppUserModelID: No AUMID provided, skipping cleanup.")
+            logger.warning("No AUMID provided, skipping cleanup.")
             return False
 
         reg_path = fr"{cls._REGISTRY_BASE}\{aumid}"
@@ -84,11 +84,11 @@ class AppUserModelID:
         try:
             _delete_key_tree(winreg.HKEY_CURRENT_USER, reg_path)
         except FileNotFoundError:
-            logger.info(f"AppUserModelID: AUMID '{aumid}' not present, nothing to clean up.")
+            logger.info(f"No AUMID '{aumid}' found, nothing to clean up.")
             return True
         except OSError as exc:
-            logger.warning(f"AppUserModelID: Failed to Clean Up AUMID '{aumid}': {exc}")
+            logger.warning(f"Failed to Clean Up AUMID '{aumid}': {exc}")
             return False
 
-        logger.info(f"AppUserModelID: Cleaned up AUMID '{aumid}' at HKEY_CURRENT_USER\\{reg_path}.")
+        logger.info(f"Successfully cleaned up AUMID '{aumid}' at HKEY_CURRENT_USER\\{reg_path}.")
         return True

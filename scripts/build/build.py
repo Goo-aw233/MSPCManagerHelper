@@ -110,22 +110,32 @@ PYINSTALLER_EXCLUDES = [
 def _build_env() -> dict:
     """Return a sanitized environment for builder subprocesses.
 
-    Restricting PATH to Windows and the base Python installation
+    Restricting PATH to Windows and Python installation directories
     makes the collected runtime DLLs deterministic and prevents
     PyInstaller from packing duplicated UCRT files.
     """
+    # Installation Root Directory
+    python_base = Path(sys.base_prefix)
+    # Current Python Environment Directory
+    python_current = Path(sys.prefix)
+    system_root = Path(os.environ.get("SystemRoot") or os.environ.get("WinDir") or r"C:\Windows")
 
-    python_root = Path(sys.base_prefix)
-    system_root = os.environ.get("SystemRoot") or os.environ.get("WinDir") or r"C:\Windows"
+    safe_paths = [
+        # Virtual Environment or Python Installation Directories
+        str(python_current),
+        str(python_current / "Scripts"),
+        str(python_base),
+        str(python_base / "Scripts"),
 
-    safe_path = os.pathsep.join([
-        str(python_root),
-        str(python_root / "Scripts"),
-        str(Path(system_root) / "System32"),
-        str(system_root)
-    ])
+        # Windows Standard PATH
+        str(system_root / "System32"),
+        str(system_root),
+        str(system_root / "System32" / "Wbem"),
+        str(system_root / "System32" / "WindowsPowerShell" / "v1.0"),
+    ]
+    
     env = os.environ.copy()
-    env["PATH"] = safe_path
+    env["PATH"] = os.pathsep.join(dict.fromkeys(safe_paths))
     return env
 
 def _get_arch() -> str:
@@ -238,9 +248,9 @@ def _build_with_nuitka(build_type: str):
 
             # === Runtime ===
             "--enable-plugin=tk-inter",
-            "--include-module=winrt.windows.foundation",
-            "--include-module=winrt.windows.foundation.collections",
-            "--include-windows-runtime-dlls=yes",
+            "--include-package-data=winrt.windows.data.xml.dom",
+            "--include-package-data=winrt.windows.ui.notifications",
+            "--include-package-data=winrt.windows.foundation",
 
             # === PE Metadata ===
             f"--windows-icon-from-ico={icon}",

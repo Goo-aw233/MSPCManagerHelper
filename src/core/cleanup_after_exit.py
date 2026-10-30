@@ -126,12 +126,11 @@ class CleanupAfterExit:
             CleanupAfterExit.logger.info("Skip Toast Notification Clean Up: Bypass Checks")
             return
         try:
-            from windows_toasts import WindowsToaster
+            from win11toast import clear_toast
 
-            toaster = WindowsToaster(AppMetadata.APP_AUMID)
             # Clear every toast belonging to this application regardless of tag,
             # so newly added toast tags do not need to be listed here.
-            toaster.clear_toasts()
+            clear_toast(app_id=AppMetadata.APP_AUMID)
             CleanupAfterExit.logger.info("Toast notifications cleaned up.")
         except Exception as e:
             CleanupAfterExit.logger.warning(f"Failed to Clean Up Toast Notifications: {e}")

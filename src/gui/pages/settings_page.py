@@ -394,16 +394,14 @@ class SettingsPage(BaseInfoPageFrame, SettingsPageWidgets):
         if AdvancedStartup.is_bypass_checks():
             return
         try:
-            from windows_toasts import Toast, WindowsToaster
+            from win11toast import notify
 
-            toaster = WindowsToaster(AppMetadata.APP_AUMID)
-            refresh_deferred_toast = Toast()
-            refresh_deferred_toast.text_fields = [
+            notify(
                 self.app_translator.translate("pages.settings.refresh_deferred_title"),
-                self.app_translator.translate("pages.settings.refresh_deferred_message")
-            ]
-            refresh_deferred_toast.tag = "refresh_deferred_toast"
-            toaster.show_toast(refresh_deferred_toast)
+                self.app_translator.translate("pages.settings.refresh_deferred_message"),
+                app_id=AppMetadata.APP_AUMID,
+                tag="refresh_deferred_toast"
+            )
         except Exception as e:
             self.logger.warning(f"Failed to Show Refresh-deferred Toast Notification: {e}")
 
