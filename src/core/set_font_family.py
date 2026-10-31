@@ -52,28 +52,46 @@ class SetFontFamily:
         return False
 
     @staticmethod
-    def apply_font_setting(follow_system_font: bool = False, language: str = None):
+    def apply_font_setting(
+        follow_system_font: bool = False,
+        language: str | None = None,
+        monospaced: bool = False
+    ):
         logger = AppLogger.get_logger()
+
+        # Monospaced Font for Console or Code Display
+        if monospaced:
+            available_fonts = set(tkinter.font.families())
+            candidates = ("Cascadia Mono", "Consolas")
+
+            mapped_font = next(
+                (font for font in candidates if font in available_fonts),
+                tkinter.font.nametofont("TkFixedFont").actual()["family"]
+            )
+
+            logger.info(f"Using Monospaced Font: {mapped_font}")
+            return mapped_font
+
+        # Font for UI
         if follow_system_font:
             system_font = tkinter.font.nametofont("TkDefaultFont").actual().get("family", "")
             logger.info(f"Using System Font: {system_font}")
             return system_font
-        else:
-            # Follow App Font Settings
-            # Each language uses its own font family.
-            # If there is not matching item,
-            # the first item in the list will be used as default,
-            # displayed with Tk default font family.
-            language_font_map = {
-                # Segoe UI Variable Text is Introduced in Build 21376
-                "en-us": ("Segoe UI Variable Text", "Segoe UI"),
-                "zh-cn": ("Microsoft YaHei UI", "微软雅黑"),
-                "zh-tw": ("Microsoft JhengHei UI", "微軟正黑體")
-            }
-            if not language:
-                language = "en-us"
-            available_fonts = set(tkinter.font.families())
-            candidates = language_font_map.get(language.lower(), language_font_map["en-us"])
-            mapped_font = next((font for font in candidates if font in available_fonts), candidates[0])
-            logger.info(f"Using App Font: {mapped_font}")
-            return mapped_font
+
+        # Follow App Font Settings
+        # If there is not matching item, the first item in the list will be used as default,
+        # displayed with Tk default font family.
+        language_font_map = {
+            # Segoe UI Variable Text is Introduced in Build 21376
+            "en-us": ("Segoe UI Variable Text", "Segoe UI"),
+            "zh-cn": ("Microsoft YaHei UI", "微软雅黑"),
+            "zh-tw": ("Microsoft JhengHei UI", "微軟正黑體")
+        }
+
+        target_lang = (language or "en-us").lower()
+        available_fonts = set(tkinter.font.families())
+        candidates = language_font_map.get(target_lang, language_font_map["en-us"])
+        mapped_font = next((font for font in candidates if font in available_fonts), candidates[0])
+
+        logger.info(f"Using App Font: {mapped_font}")
+        return mapped_font

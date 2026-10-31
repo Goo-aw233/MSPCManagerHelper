@@ -81,7 +81,7 @@ class InternalViewer(customtkinter.CTkToplevel):
 
         self.content_textbox = customtkinter.CTkTextbox(
             self,
-            font=(self.font_family, 13),
+            font=(SetFontFamily.apply_font_setting(monospaced=True), 13),
             # Set the default state to read-only.
             state="disabled",
             wrap="none"
