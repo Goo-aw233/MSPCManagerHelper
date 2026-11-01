@@ -61,8 +61,14 @@ class ScrollableFrame(customtkinter.CTkScrollableFrame):
             # CTkTextbox). Intentionally do NOT return "break" here so the
             # focused widget keeps handling the wheel itself.
             return None
+        # Read the modifier from the event itself instead of CTk's cached
+        # `_shift_pressed` flag. While a native popup menu is open, its modal
+        # message loop consumes the Shift key-up, so the cached flag can stay
+        # True after the menu closes and every wheel notch would be treated as
+        # a horizontal scroll.
+        horizontal = bool(event.state & 0x0001)  # ShiftMask
         self._start_smooth_scroll(self._wheel_delta_px(event),
-                                  horizontal=self._shift_pressed)
+                                  horizontal=horizontal)
         return "break"
 
     def _on_scrollbar_mouse_wheel(self, event=None):

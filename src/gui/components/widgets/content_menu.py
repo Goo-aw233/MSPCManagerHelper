@@ -104,8 +104,8 @@ class ContentMenu(tkinter.Menu):
         self._bound = True
         self.textbox.bind("<Button-3>", self._show)
 
-        # Bind to the top-level window. Multiple pages may share the same top-level window,
-        # so each handler checks whether its own text box is currently visible.
+        # Bind to the top-level window so the shortcut works from any widget on
+        # the page. The focused text box wins; otherwise the visible one reacts.
         toplevel = self.textbox.winfo_toplevel()
         toplevel.bind("<Shift-F10>", self._show_from_keyboard, add="+")
         # Windows reports the context-menu key as the "Menu" keysym.
@@ -178,12 +178,24 @@ class ContentMenu(tkinter.Menu):
 
     def _show_from_keyboard(self, _):
         """Open the menu at the insertion cursor, for the keyboard shortcuts."""
-        # Hidden pages and unselected tabs stay unmapped, only the visible textbox reacts.
-        if not self.textbox.winfo_viewable():
-            return None
-
         # CTkTextbox wraps a plain Text widget; bbox() and the root coordinates belong to it.
         widget = getattr(self.textbox, "_textbox", self.textbox)
+
+        # Several menus can share one page, so priority is given to the focused
+        # text box instead of the binding order: when another text box owns the
+        # focus, leave the event to its own menu.
+        focused = self.textbox.winfo_toplevel().focus_get()
+        if (isinstance(focused, tkinter.Text)
+                and focused is not widget
+                and focused.winfo_exists()
+                and focused.winfo_viewable()):
+            return None
+
+        # With no focused text box, keep the original rule: only the visible text
+        # box reacts, so the shortcut still works from any widget on the page.
+        # (If several are visible, the first one registered wins.)
+        if not self.textbox.winfo_viewable():
+            return None
 
         try:
             bbox = widget.bbox(tkinter.INSERT)
