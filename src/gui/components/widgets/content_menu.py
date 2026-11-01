@@ -1,8 +1,23 @@
 import ctypes
+import ctypes.wintypes
 import sys
 import tkinter
 
 import customtkinter
+
+
+_user32 = None
+
+
+def _get_dpi_for_window(hwnd):
+    """Return the DPI of the monitor hosting hwnd (Windows 10 1607 and later)."""
+    global _user32
+    if _user32 is None:
+        user32 = ctypes.WinDLL("user32")
+        user32.GetDpiForWindow.argtypes = (ctypes.wintypes.HWND,)
+        user32.GetDpiForWindow.restype = ctypes.wintypes.UINT
+        _user32 = user32
+    return _user32.GetDpiForWindow(hwnd)
 
 
 class ContentMenu(tkinter.Menu):
@@ -178,6 +193,11 @@ class ContentMenu(tkinter.Menu):
 
     def _show_from_keyboard(self, _):
         """Open the menu at the insertion cursor, for the keyboard shortcuts."""
+        # Page rebuilds leave the old top-level bindings behind; ignore handlers
+        # whose text box has already been destroyed.
+        if not self.textbox.winfo_exists():
+            return None
+
         # CTkTextbox wraps a plain Text widget; bbox() and the root coordinates belong to it.
         widget = getattr(self.textbox, "_textbox", self.textbox)
 
@@ -231,7 +251,7 @@ class ContentMenu(tkinter.Menu):
 
         try:
             # Using the window that received the event, the font size will follow the multi-monitor settings.
-            real_dpi = ctypes.windll.user32.GetDpiForWindow(widget.winfo_toplevel().winfo_id())
+            real_dpi = _get_dpi_for_window(widget.winfo_toplevel().winfo_id())
             tk_dpi = self.winfo_fpixels("1i")
         except (AttributeError, OSError, tkinter.TclError):
             return self._FONT_SIZE
