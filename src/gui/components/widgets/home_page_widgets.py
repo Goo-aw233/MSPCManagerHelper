@@ -1,6 +1,7 @@
 import customtkinter
 
 from .base_page_widgets import BaseWidgets
+from .content_menu import ContentMenu
 from .ctk_icon_button import CTkIconButton
 
 
@@ -66,8 +67,17 @@ class HomePageWidgets(BaseWidgets):
             desc_textbox.pack(fill="x", pady=(0, 5))
             desc_textbox.insert("1.0", description)
             desc_textbox.configure(state="disabled")
-            # Disable Text Selection
-            if not enable_text_selection:
+            if enable_text_selection:
+                desc_textbox.content_menu = ContentMenu(
+                    parent=desc_textbox,
+                    textbox=desc_textbox,
+                    app_translator=self.app_translator,
+                    font_family=self.font_family,
+                    actions=[ContentMenu.COPY, None, ContentMenu.SELECT_ALL]
+                )
+                desc_textbox.content_menu.bind_to()
+            else:
+                # Disable Text Selection
                 desc_textbox.bind("<Button-1>", lambda _: "break")  # Disable Single Click
                 desc_textbox.bind("<B1-Motion>", lambda _: "break")  # Disable Click & Drag
                 desc_textbox.bind("<Double-Button-1>", lambda _: "break")  # Disable Double Click

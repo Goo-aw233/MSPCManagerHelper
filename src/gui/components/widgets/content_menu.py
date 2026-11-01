@@ -60,7 +60,7 @@ class ContentMenu(tkinter.Menu):
     # Design size in points; scaled to the real display DPI in _menu_font_size().
     _FONT_SIZE = 10
 
-    # Text color for actions that are unavailable on an empty text box. It is applied per entry
+    # Text color for unavailable actions. It is applied per entry.
     # rather than through the menu's "-disabledforeground" option; see _update_action_states().
     _DISABLED_FG = ("#737373", "#9a9a9a")
 
@@ -76,8 +76,8 @@ class ContentMenu(tkinter.Menu):
         self.textbox = textbox
         self.font_family = font_family
         self.content_provider = content_provider
-        self._action_indexes = {}
-        self._font_size_by_dpi = {}
+        self._action_indexes: dict[str, int] = {}
+        self._font_size_by_dpi: dict[int, int] = {}
         self._bound = False
 
         position = 0
@@ -121,14 +121,14 @@ class ContentMenu(tkinter.Menu):
         self.textbox.focus_set()
 
     def copy_content(self):
-        """Copy the selection, or the whole content when nothing is selected."""
+        """Copy only the selected text."""
         if not self._has_content():
             return
 
         try:
             selected_text = self.textbox.get("sel.first", "sel.last")
         except tkinter.TclError:
-            selected_text = self.textbox.get("1.0", "end-1c")
+            return
 
         if selected_text:
             self.textbox.clipboard_clear()
@@ -180,7 +180,7 @@ class ContentMenu(tkinter.Menu):
         """Open the menu at the insertion cursor, for the keyboard shortcuts."""
         # Hidden pages and unselected tabs stay unmapped, only the visible textbox reacts.
         if not self.textbox.winfo_viewable():
-            return
+            return None
 
         # CTkTextbox wraps a plain Text widget; bbox() and the root coordinates belong to it.
         widget = getattr(self.textbox, "_textbox", self.textbox)
@@ -190,11 +190,11 @@ class ContentMenu(tkinter.Menu):
         except tkinter.TclError:
             bbox = None
 
-        if bbox:
+        if isinstance(bbox, tuple):
             x_root = widget.winfo_rootx() + bbox[0]
             y_root = widget.winfo_rooty() + bbox[1] + bbox[3]
         else:
-            # When the insertion cursor is not visible, place it at the top left corner of the widget.
+            # When the insertion cursor is not visible, place it in the top left corner of the widget.
             x_root = widget.winfo_rootx()
             y_root = widget.winfo_rooty()
 
@@ -235,26 +235,33 @@ class ContentMenu(tkinter.Menu):
 
     def _update_action_states(self, colors, disabled_fg):
         has_content = self._has_content()
-
-        if has_content:
-            entry_colors = {
-                "foreground": colors["fg"],
-                "activeforeground": colors["activeforeground"],
-                "activebackground": colors["activebackground"],
-            }
-        else:
-            # Custom-draw the effect of disabled context menus
-            # to avoid using Tk's default disabled effect in dark mode.
-            entry_colors = {
-                "foreground": disabled_fg,
-                "activeforeground": disabled_fg,
-                "activebackground": colors["bg"],
-            }
+        try:
+            self.textbox.index("sel.first")
+            has_selection = True
+        except tkinter.TclError:
+            has_selection = False
 
         for action in self._CONTENT_DEPENDENT_ACTIONS:
             index = self._action_indexes.get(action)
-            if index is not None:
-                self.entryconfigure(index, state="normal", **entry_colors)
+            if index is None:
+                continue
+
+            if has_content and (action != self.COPY or has_selection):
+                entry_colors = {
+                    "foreground": colors["fg"],
+                    "activeforeground": colors["activeforeground"],
+                    "activebackground": colors["activebackground"],
+                }
+            else:
+                # Custom-draw the effect of disabled context menus
+                # to avoid using Tk's default disabled effect in dark mode.
+                entry_colors = {
+                    "foreground": disabled_fg,
+                    "activeforeground": disabled_fg,
+                    "activebackground": colors["bg"],
+                }
+
+            self.entryconfigure(index, state="normal", **entry_colors)
 
     def _has_content(self):
         # index("end-1c") is "1.0" exactly when the textbox is empty; avoids reading the whole content.

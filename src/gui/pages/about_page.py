@@ -12,6 +12,7 @@ from gui.components import (
     CTkIconButton,
     FLUENT_ICONS
 )
+from gui.components.widgets import ContentMenu
 from handlers.shared import (
     URILauncher,
     ViewTextFile
@@ -300,6 +301,15 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         )
         self.term_of_use_content_textbox.insert("0.0", term_of_use_content)
         self.term_of_use_content_textbox.configure(state="disabled")
+
+        self.term_of_use_content_menu = ContentMenu(
+            parent=self.term_of_use_content_textbox,
+            textbox=self.term_of_use_content_textbox,
+            app_translator=self.app_translator,
+            font_family=self.font_family,
+            actions=[ContentMenu.COPY, None, ContentMenu.SELECT_ALL]
+        )
+        self.term_of_use_content_menu.bind_to()
         # === End of Term of Use Section ===
 
     def _create_privacy_policy_section(self):
@@ -340,6 +350,15 @@ class AboutPage(BaseInfoPageFrame, AboutPageWidgets):
         )
         self.privacy_policy_content_textbox.insert("0.0", privacy_policy_content)
         self.privacy_policy_content_textbox.configure(state="disabled")
+
+        self.privacy_policy_content_menu = ContentMenu(
+            parent=self.privacy_policy_content_textbox,
+            textbox=self.privacy_policy_content_textbox,
+            app_translator=self.app_translator,
+            font_family=self.font_family,
+            actions=[ContentMenu.COPY, None, ContentMenu.SELECT_ALL]
+        )
+        self.privacy_policy_content_menu.bind_to()
         # === End of Privacy Policy Section ===
 
     def _create_get_help_section(self):
