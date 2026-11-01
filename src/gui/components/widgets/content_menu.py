@@ -69,7 +69,7 @@ class ContentMenu(tkinter.Menu):
         SELECT_ALL: "pages.common.select_all",
     }
 
-    # Operations disabled on an empty text box.
+    # Operations disabled on an empty textbox.
     _CONTENT_DEPENDENT_ACTIONS = (CLEAR, COPY, SELECT_ALL)
 
     # Design size in points; scaled to the real display DPI in _menu_font_size().
@@ -118,9 +118,10 @@ class ContentMenu(tkinter.Menu):
 
         self._bound = True
         self.textbox.bind("<Button-3>", self._show)
+        self.textbox.bind("<FocusOut>", self._on_textbox_focus_out, add="+")
 
         # Bind to the top-level window so the shortcut works from any widget on
-        # the page. The focused text box wins; otherwise the visible one reacts.
+        # the page. The focused textbox wins; otherwise the visible one reacts.
         toplevel = self.textbox.winfo_toplevel()
         toplevel.bind("<Shift-F10>", self._show_from_keyboard, add="+")
         # Windows reports the context-menu key as the "Menu" keysym.
@@ -191,10 +192,15 @@ class ContentMenu(tkinter.Menu):
     def _show(self, event):
         self._popup(event.x_root, event.y_root, event.widget)
 
+    def _on_textbox_focus_out(self, _event):
+        """Drop the selection when the textbox loses focus."""
+        if self.textbox.winfo_exists():
+            self.textbox.tag_remove(tkinter.SEL, "1.0", "end")
+
     def _show_from_keyboard(self, _):
         """Open the menu at the insertion cursor, for the keyboard shortcuts."""
         # Page rebuilds leave the old top-level bindings behind; ignore handlers
-        # whose text box has already been destroyed.
+        # whose textbox has already been destroyed.
         if not self.textbox.winfo_exists():
             return None
 
@@ -202,7 +208,7 @@ class ContentMenu(tkinter.Menu):
         widget = getattr(self.textbox, "_textbox", self.textbox)
 
         # Several menus can share one page, so priority is given to the focused
-        # text box instead of the binding order: when another text box owns the
+        # textbox instead of the binding order: when another textbox owns the
         # focus, leave the event to its own menu.
         focused = self.textbox.winfo_toplevel().focus_get()
         if (isinstance(focused, tkinter.Text)
@@ -211,7 +217,7 @@ class ContentMenu(tkinter.Menu):
                 and focused.winfo_viewable()):
             return None
 
-        # With no focused text box, keep the original rule: only the visible text
+        # With no focused textbox, keep the original rule: only the visible text
         # box reacts, so the shortcut still works from any widget on the page.
         # (If several are visible, the first one registered wins.)
         if not self.textbox.winfo_viewable():
