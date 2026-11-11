@@ -941,7 +941,8 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
             selected_mspcm_version=self.mspcm_version_var.get(),
-            region_code=region_code
+            region_code=region_code,
+            run_on_ui_thread=self._run_on_ui_thread
         )
 
         self._run_operation(

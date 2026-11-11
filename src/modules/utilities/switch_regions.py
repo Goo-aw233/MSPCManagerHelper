@@ -13,12 +13,14 @@ from handlers.shared.launch_uri import URILauncher
 
 
 class SwitchRegions:
-    def __init__(self, logger, app_translator, log_callback, selected_mspcm_version, region_code):
+    def __init__(self, logger, app_translator, log_callback, selected_mspcm_version, region_code,
+                 run_on_ui_thread=None):
         self.logger = logger
         self.app_translator = app_translator
         self.log_callback = log_callback
         self.selected_mspcm_version = selected_mspcm_version
         self.region_code = region_code
+        self.run_on_ui_thread = run_on_ui_thread
         self.nsudo_path = AppResources.nsudo_path()
         self.log_file_path = AppLogger.get_log_file_path()
 
@@ -46,7 +48,8 @@ class SwitchRegions:
             messagebox_error_message="handlers.open_region_settings_error",
             logger=self.logger,
             log_file_path=self.log_file_path,
-            app_translator=self.app_translator
+            app_translator=self.app_translator,
+            run_on_ui_thread=self.run_on_ui_thread
         )
 
     def _lower_than_v3_14_0_0(self):

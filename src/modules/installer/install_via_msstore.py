@@ -21,11 +21,12 @@ class InstallViaMicrosoftStore:
         "L=Redmond, S=Washington, C=US"
     )
 
-    def __init__(self, logger, app_translator, log_callback, open_method="open_msstore"):
+    def __init__(self, logger, app_translator, log_callback, open_method="open_msstore", run_on_ui_thread=None):
         self.logger = logger
         self.app_translator = app_translator
         self.log_callback = log_callback
         self.open_method = open_method
+        self.run_on_ui_thread = run_on_ui_thread
         self.log_file_path = AppLogger.get_log_file_path()
 
     def _log(self, message):
@@ -63,6 +64,7 @@ class InstallViaMicrosoftStore:
             logger=self.logger,
             log_file_path=self.log_file_path,
             app_translator=self.app_translator,
+            run_on_ui_thread=self.run_on_ui_thread,
         )
 
     def _open_msstore_web(self):
@@ -74,6 +76,7 @@ class InstallViaMicrosoftStore:
             logger=self.logger,
             log_file_path=self.log_file_path,
             app_translator=self.app_translator,
+            run_on_ui_thread=self.run_on_ui_thread,
             msstore_web_url=url,
         )
 

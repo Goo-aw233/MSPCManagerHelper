@@ -552,7 +552,8 @@ class InstallerPage(BaseFuncPageFrame, BaseWidgets):
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
-            open_method=self.open_msstore_var.get()
+            open_method=self.open_msstore_var.get(),
+            run_on_ui_thread=self._run_on_ui_thread
         )
 
         self._run_operation(

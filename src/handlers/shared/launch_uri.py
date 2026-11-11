@@ -1,9 +1,18 @@
 import os
 import subprocess
+import threading
 import webbrowser
 from tkinter import messagebox
 
 from core import WindowsUtilities
+
+
+def _show_error(title, message, run_on_ui_thread):
+    # Run the dialog on Tk's main thread; off-thread callers wait for a response.
+    if run_on_ui_thread is None or threading.current_thread() is threading.main_thread():
+        messagebox.showerror(title, message)
+        return
+    run_on_ui_thread(lambda: messagebox.showerror(title, message))
 
 
 class URILauncher:
@@ -32,7 +41,8 @@ class URILauncher:
     """
 
     @staticmethod
-    def launch_uri(uri, target_name, messagebox_error_message, logger=None, log_file_path=None, app_translator=None):
+    def launch_uri(uri, target_name, messagebox_error_message, logger=None, log_file_path=None, app_translator=None,
+                   run_on_ui_thread=None):
         def open_with_startfile():
             logger.info(f"Opening {target_name} via os.startfile.")
             os.startfile(uri)
@@ -73,14 +83,15 @@ class URILauncher:
             error_details.append(f"{'=' * 20} Stderr {'=' * 20}\n{last_error.stderr.strip()}")
         logger.error("\n".join(error_details))
 
-        messagebox.showerror(
+        _show_error(
             app_translator.translate("common.error"),
-            app_translator.translate(messagebox_error_message).format(log_file_path=log_file_path)
+            app_translator.translate(messagebox_error_message).format(log_file_path=log_file_path),
+            run_on_ui_thread
         )
 
     @staticmethod
     def launch_url(url, target_name, messagebox_error_message, logger=None, log_file_path=None, app_translator=None,
-                   **format_kwargs):
+                   run_on_ui_thread=None, **format_kwargs):
         def open_with_webbrowser():
             logger.info(f"Opening {target_name} ({url}) via webbrowser.")
             webbrowser.open(url)
@@ -126,7 +137,8 @@ class URILauncher:
             error_details.append(f"{'=' * 20} Stderr {'=' * 20}\n{last_error.stderr.strip()}")
         logger.error("\n".join(error_details))
 
-        messagebox.showerror(
+        _show_error(
             app_translator.translate("common.error"),
-            app_translator.translate(messagebox_error_message).format(log_file_path=log_file_path, **format_kwargs)
+            app_translator.translate(messagebox_error_message).format(log_file_path=log_file_path, **format_kwargs),
+            run_on_ui_thread
         )
