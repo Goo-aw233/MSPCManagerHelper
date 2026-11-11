@@ -1,3 +1,5 @@
+import threading
+
 import customtkinter
 
 from core import AppLogger
@@ -178,6 +180,33 @@ class BaseFuncPageFrame(BaseInfoPageFrame):
             self._on_operation_completed()
 
         OperationRunner.run(self, operation_func, operation_name_key, _on_completion)
+
+    def _run_on_ui_thread(self, func):
+        """Run a callable on Tk's main thread and return its result.
+
+        Calls from worker threads wait until the callable finishes. Any
+        exception it raises is re-raised in the calling thread.
+        """
+        if threading.current_thread() is threading.main_thread():
+            return func()
+
+        result = {}
+        finished = threading.Event()
+
+        def _invoke():
+            try:
+                result["value"] = func()
+            except Exception as e:
+                result["error"] = e
+            finally:
+                finished.set()
+
+        self.after(0, _invoke)
+        finished.wait()
+
+        if "error" in result:
+            raise result["error"]
+        return result.get("value")
 
     def _register_operation_cards(self):
         # Register every (card, refresh) pair so the global operation lock can

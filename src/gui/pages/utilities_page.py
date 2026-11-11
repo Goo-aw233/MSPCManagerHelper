@@ -779,7 +779,8 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             logger=self.logger,
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
-            selected_edge_webview2_repair_options=selected_edge_webview2_repair_options
+            selected_edge_webview2_repair_options=selected_edge_webview2_repair_options,
+            run_on_ui_thread=self._run_on_ui_thread
         )
 
         self._run_operation(

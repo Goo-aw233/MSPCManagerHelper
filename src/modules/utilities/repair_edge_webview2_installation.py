@@ -14,16 +14,24 @@ from core import (
 
 
 class RepairEdgeWebView2Installation:
-    def __init__(self, logger, app_translator, log_callback, selected_edge_webview2_repair_options):
+    def __init__(self, logger, app_translator, log_callback, selected_edge_webview2_repair_options, run_on_ui_thread):
         self.logger = logger
         self.app_translator = app_translator
         self.log_callback = log_callback
         self.selected_edge_webview2_repair_options = selected_edge_webview2_repair_options
+        self.run_on_ui_thread = run_on_ui_thread
         self.nsudo_path = AppResources.nsudo_path()
 
     def _log(self, message):
         if self.log_callback:
             self.log_callback(message)
+
+    def _ask_yes_no(self, title, message):
+        # Run the dialog on Tk's main thread; off-thread callers wait for a response.
+        return self.run_on_ui_thread(lambda: messagebox.askyesno(title, message))
+
+    def _ask_retry_cancel(self, title, message):
+        return self.run_on_ui_thread(lambda: messagebox.askretrycancel(title, message))
 
     def execute(self):
         self.logger.debug(f"Selected Microsoft Edge WebView2 Repair Options: {self.selected_edge_webview2_repair_options}")
@@ -317,7 +325,7 @@ class RepairEdgeWebView2Installation:
             return
         if any(webview2_dir_path.iterdir()):
             self.logger.warning("Microsoft Edge WebView2 directory is not empty.")
-            result = messagebox.askyesno(
+            result = self._ask_yes_no(
                 self.app_translator.translate("modules.utilities.confirm_remove_webview2_dir_title"),
                 self.app_translator.translate("modules.utilities.confirm_remove_webview2_dir_message")
             )
@@ -334,7 +342,7 @@ class RepairEdgeWebView2Installation:
                 break
             except Exception as e:
                 self.logger.error(f"An Error Occurred While Removing Microsoft Edge WebView2 Directory: {e}")
-                if not messagebox.askretrycancel(
+                if not self._ask_retry_cancel(
                     self.app_translator.translate("common.error"),
                     self.app_translator.translate("modules.utilities.remove_webview2_dir_error").format(
                         error=str(e)
@@ -356,7 +364,7 @@ class RepairEdgeWebView2Installation:
             return
         if any(webview2_dir_path.iterdir()):
             self.logger.warning("Microsoft Edge WebView2 directory is not empty.")
-            result = messagebox.askyesno(
+            result = self._ask_yes_no(
                 self.app_translator.translate("modules.utilities.confirm_remove_webview2_dir_title"),
                 self.app_translator.translate("modules.utilities.confirm_remove_webview2_dir_message")
             )
@@ -411,7 +419,7 @@ class RepairEdgeWebView2Installation:
                 break
             except Exception as e:
                 self.logger.error(f"An Error Occurred While Removing Microsoft Edge WebView2 Directory: {e}")
-                if not messagebox.askretrycancel(
+                if not self._ask_retry_cancel(
                     self.app_translator.translate("common.error"),
                     self.app_translator.translate("modules.utilities.remove_webview2_dir_error").format(
                         error=str(e)
@@ -433,7 +441,7 @@ class RepairEdgeWebView2Installation:
             return
         if any(edge_components_dir_path.iterdir()):
             self.logger.warning("Microsoft Edge components directory is not empty.")
-            result = messagebox.askyesno(
+            result = self._ask_yes_no(
                 self.app_translator.translate("modules.utilities.confirm_remove_edge_components_dir_title"),
                 self.app_translator.translate("modules.utilities.confirm_remove_edge_components_dir_message")
             )
@@ -449,7 +457,7 @@ class RepairEdgeWebView2Installation:
                 break
             except Exception as e:
                 self.logger.error(f"An Error Occurred While Removing Microsoft Edge Components Directory: {e}")
-                if not messagebox.askretrycancel(
+                if not self._ask_retry_cancel(
                     self.app_translator.translate("common.error"),
                     self.app_translator.translate("modules.utilities.remove_edge_components_dir_error").format(
                         error=str(e)
@@ -471,7 +479,7 @@ class RepairEdgeWebView2Installation:
             return
         if any(edge_components_dir_path.iterdir()):
             self.logger.warning("Microsoft Edge components directory is not empty.")
-            result = messagebox.askyesno(
+            result = self._ask_yes_no(
                 self.app_translator.translate("modules.utilities.confirm_remove_edge_components_dir_title"),
                 self.app_translator.translate("modules.utilities.confirm_remove_edge_components_dir_message")
             )
@@ -526,7 +534,7 @@ class RepairEdgeWebView2Installation:
                 break
             except Exception as e:
                 self.logger.error(f"An Error Occurred While Removing Microsoft Edge Components Directory: {e}")
-                if not messagebox.askretrycancel(
+                if not self._ask_retry_cancel(
                     self.app_translator.translate("common.error"),
                     self.app_translator.translate("modules.utilities.remove_edge_components_dir_error").format(
                         error=str(e)
