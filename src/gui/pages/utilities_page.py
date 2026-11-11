@@ -15,7 +15,8 @@ from core import (
 )
 from gui.components import (
     BaseWidgets,
-    ScrollableFrame
+    ScrollableFrame,
+    task_coordinator
 )
 from .base_page_frame import BaseFuncPageFrame
 from modules.utilities import (
@@ -445,15 +446,23 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
         self.mspcm_version_radiobutton_frame = ScrollableFrame(switch_regions_frame,
             orientation="horizontal",
             fg_color="transparent",
-            height=42
+            height=77
         )
         self.mspcm_version_radiobutton_frame.pack(fill="x", padx=10, pady=5)
 
         self.mspcm_version_var = tkinter.StringVar(value="at_least_v3_14_0_0")
 
+        # Each radiobutton occupies its own line independently. Their spacing cannot be adjusted
+        # using the wide input box below and must be controlled individually at the layout level.
+        self.mspcm_version_radiobutton_row = customtkinter.CTkFrame(
+            self.mspcm_version_radiobutton_frame,
+            fg_color="transparent"
+        )
+        self.mspcm_version_radiobutton_row.grid(row=0, column=0, columnspan=2, sticky="w")
+
         # ≥ 3.14.0.0
         self.radiobutton_at_least_v3_14_0_0 = customtkinter.CTkRadioButton(
-            self.mspcm_version_radiobutton_frame,
+            self.mspcm_version_radiobutton_row,
             text=self.app_translator.translate("pages.utilities.at_least_v3_14_0_0"),
             variable=self.mspcm_version_var,
             value="at_least_v3_14_0_0",
@@ -464,7 +473,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
 
         # < 3.14.0.0
         self.radiobutton_lower_than_v3_14_0_0 = customtkinter.CTkRadioButton(
-            self.mspcm_version_radiobutton_frame,
+            self.mspcm_version_radiobutton_row,
             text=self.app_translator.translate("pages.utilities.lower_than_v3_14_0_0"),
             variable=self.mspcm_version_var,
             value="lower_than_v3_14_0_0",
@@ -472,6 +481,23 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             command=self._refresh_switch_regions_card_state
         )
         self.radiobutton_lower_than_v3_14_0_0.grid(row=0, column=1, sticky="w", padx=10, pady=5)
+
+        # - Region Code Entry (< 3.14.0.0) -
+        self.region_code_entry = customtkinter.CTkEntry(
+            self.mspcm_version_radiobutton_frame,
+            placeholder_text=self.app_translator.translate("pages.utilities.region_code_placeholder"),
+            font=customtkinter.CTkFont(family=self.font_family)
+        )
+        self.region_code_entry.grid(row=1, column=0, columnspan=2, sticky="ew", padx=10, pady=5)
+        self.region_code_entry.bind("<KeyRelease>", lambda _: self._refresh_switch_regions_card_state())
+
+        # Due to the limitation of ScrollableFrame only expanding content vertically, the entry cannot directly
+        # fill the visible width through sticky and needs its width to be controlled separately in the layout.
+        self.mspcm_version_radiobutton_frame._parent_canvas.bind(
+            "<Configure>",
+            self._sync_region_code_entry_width,
+            add="+"
+        )
 
         # Apply Initial State
         self._refresh_switch_regions_card_state()
@@ -876,18 +902,37 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
     # ~ End of Restart Services ~
 
     # ~ Switch Regions ~
+    def _sync_region_code_entry_width(self, event):
+        # Based on the available width of the container, deduct 10px padding on both sides
+        # and convert according to the current scaling factor, ensuring that the fields remain
+        # aligned at different scaling multiples, and retain a minimum width to prevent compression.
+        scaling = customtkinter.ScalingTracker.get_widget_scaling(self.region_code_entry)
+        width = max(120, int(event.width / scaling) - 20)
+        if width != self.region_code_entry.cget("width"):
+            self.region_code_entry.configure(width=width)
+
     def _refresh_switch_regions_card_state(self):
         value = self.mspcm_version_var.get()
+        can_run = value == "lower_than_v3_14_0_0" and AdvancedStartup.is_administrator()
+
         if value == "at_least_v3_14_0_0":
             state = "normal"
-        elif value == "lower_than_v3_14_0_0":
-            state = "normal" if AdvancedStartup.is_administrator() else "disabled"
+        elif can_run and self.region_code_entry.get().strip():
+            state = "normal"
         else:
             state = "disabled"
         self._set_card_state(self.switch_regions_card, state)
 
+        # The region code entry stays editable for versions lower than 3.14.0.0,
+        # but must not be usable while any operation is running.
+        entry_enabled = can_run and not task_coordinator.is_busy()
+        self._set_entry_group_state(entry_enabled, self.region_code_entry)
+
     def _run_switch_regions(self):
+        region_code = self.region_code_entry.get().strip().upper()
+
         self.switch_regions_card.configure(state="disabled")
+        self._set_entry_group_state(False, self.region_code_entry)
         self.update_idletasks()
 
         worker = SwitchRegions(
@@ -895,7 +940,7 @@ class UtilitiesPage(BaseFuncPageFrame, BaseWidgets):
             app_translator=self.app_translator,
             log_callback=self.events_textbox.log_to_events,
             selected_mspcm_version=self.mspcm_version_var.get(),
-            font_family=self.font_family
+            region_code=region_code
         )
 
         self._run_operation(

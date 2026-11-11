@@ -1,9 +1,7 @@
 import subprocess
 import winreg
 
-import customtkinter
 import iso3166
-from customtkinter import CTkInputDialog
 
 from core import (
     AppLogger,
@@ -15,12 +13,12 @@ from handlers.shared.launch_uri import URILauncher
 
 
 class SwitchRegions:
-    def __init__(self, logger, app_translator, log_callback, selected_mspcm_version, font_family):
+    def __init__(self, logger, app_translator, log_callback, selected_mspcm_version, region_code):
         self.logger = logger
         self.app_translator = app_translator
         self.log_callback = log_callback
         self.selected_mspcm_version = selected_mspcm_version
-        self.font_family = font_family
+        self.region_code = region_code
         self.nsudo_path = AppResources.nsudo_path()
         self.log_file_path = AppLogger.get_log_file_path()
 
@@ -52,23 +50,7 @@ class SwitchRegions:
         )
 
     def _lower_than_v3_14_0_0(self):
-        dialog = CTkInputDialog(
-            title=self.app_translator.translate("pages.utilities.switch_regions"),
-            text=self.app_translator.translate("modules.utilities.enter_region_code_message"),
-            font=customtkinter.CTkFont(family=self.font_family, size=13)
-        )
-
-        dialog.update_idletasks()
-        x = (dialog.winfo_screenwidth() - dialog.winfo_width()) // 2
-        y = (dialog.winfo_screenheight() - dialog.winfo_height()) // 2
-        dialog.geometry(f"+{x}+{y}")
-        self.logger.debug("Dialog Window Geometry Set to: " + f"+{x}+{y}")
-
-        app_icon = AppResources.app_icon()
-        if app_icon:
-            dialog.after(200, lambda: dialog.iconbitmap(app_icon))
-
-        user_input = dialog.get_input()
+        user_input = self.region_code or ""
 
         if not user_input:
             self._log(self.app_translator.translate("modules.utilities.invalid_region_code"))
@@ -78,8 +60,12 @@ class SwitchRegions:
         user_input = user_input.strip().upper()
 
         if user_input not in iso3166.countries_by_alpha2:
-            self._log(self.app_translator.translate("modules.utilities.invalid_region_code"))
-            self.logger.error("Invalid Region Code: Region Code Not Found")
+            self._log(
+                self.app_translator.translate("modules.utilities.invalid_region_code_with_input").format(
+                    region_code=user_input
+                )
+            )
+            self.logger.error(f"Invalid Region Code: Region Code Not Found: {user_input}")
             return
 
         reg_path = r"SOFTWARE\WOW6432Node\MSPCManager Store"
@@ -101,23 +87,7 @@ class SwitchRegions:
             self.logger.error(f"An Error Occurred While Modifying Microsoft PC Manager Region Registry: {e}")
 
     def _lower_than_v3_14_0_0_with_ownership(self):
-        dialog = CTkInputDialog(
-            title=self.app_translator.translate("pages.utilities.switch_regions"),
-            text=self.app_translator.translate("modules.utilities.enter_region_code_message"),
-            font=customtkinter.CTkFont(family=self.font_family, size=13)
-        )
-
-        dialog.update_idletasks()
-        x = (dialog.winfo_screenwidth() - dialog.winfo_width()) // 2
-        y = (dialog.winfo_screenheight() - dialog.winfo_height()) // 2
-        dialog.geometry(f"+{x}+{y}")
-        self.logger.debug("Dialog Window Geometry Set to: " + f"+{x}+{y}")
-
-        app_icon = AppResources.app_icon()
-        if app_icon:
-            dialog.after(200, lambda: dialog.iconbitmap(app_icon))
-
-        user_input = dialog.get_input()
+        user_input = self.region_code or ""
 
         if not user_input:
             self._log(self.app_translator.translate("modules.utilities.invalid_region_code"))
@@ -127,8 +97,12 @@ class SwitchRegions:
         user_input = user_input.strip().upper()
 
         if user_input not in iso3166.countries_by_alpha2:
-            self._log(self.app_translator.translate("modules.utilities.invalid_region_code"))
-            self.logger.error("Invalid Region Code: Region Code Not Found")
+            self._log(
+                self.app_translator.translate("modules.utilities.invalid_region_code_with_input").format(
+                    region_code=user_input
+                )
+            )
+            self.logger.error(f"Invalid Region Code: Region Code Not Found: {user_input}")
             return
 
         reg_path = r"HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\MSPCManager Store"
