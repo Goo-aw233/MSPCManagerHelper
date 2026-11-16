@@ -26,9 +26,23 @@ class OperationRunner:
                 page_instance.logger.info(f"Completed Operation: {operation_name}")
             except Exception as e:
                 page_instance.logger.error(f"Error Executing {operation_name}: {e}")
-                page_instance.events_textbox.log_to_events(f"Error: {e}")
+                try:
+                    page_instance.events_textbox.log_to_events(f"Error: {e}")
+                except Exception:
+                    # The page may have been destroyed, and the error prompt
+                    # failed to prevent the completion callback from being dispatched.
+                    pass
             finally:
                 if on_completion:
-                    page_instance.after(0, on_completion)
+                    try:
+                        page_instance.after(0, on_completion)
+                    except Exception:
+                        # The page may have been destroyed, and the completion callback
+                        # failed to be dispatched to the main thread. Execute the callback
+                        # directly to ensure the global operation lock is always released.
+                        try:
+                            on_completion()
+                        except Exception:
+                            pass
 
         threading.Thread(target=_thread_target, daemon=True).start()
