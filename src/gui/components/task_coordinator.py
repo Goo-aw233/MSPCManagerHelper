@@ -1,19 +1,24 @@
 import threading
 
+from core import AppLogger
+
 
 class TaskCoordinator:
     """Global operation lock ensuring only one operation runs at a time.
 
     The coordinator is a process-wide singleton. Functional pages register
     their executable action cards (along with the state-refresh callback that
-    recomputes the card's enabled/disabled state) via ``register``.
+    recomputes the card's enabled/disabled state) via ``register``. Entries
+    are removed via ``unregister_page`` when a page is destroyed
+    (``BaseFuncPageFrame.destroy``). The registry holds no references to
+    destroyed pages.
 
     While an operation is running:
       - every registered card is disabled via ``disable_all`` so no second
         operation can be started from the UI;
       - any refresh callback (e.g. triggered by an option change) is forced to
-        keep cards disabled, because ``BaseWidgets._set_card_state`` short-
-        circuits to ``"disabled"`` while the coordinator is busy.
+        keep cards disabled, because ``BaseWidgets._set_card_state`` short-circuits
+        to ``"disabled"`` while the coordinator is busy.
 
     When the operation finishes, ``restore_all`` re-runs every registered
     refresh callback so each card recomputes its correct state.
@@ -88,14 +93,20 @@ class TaskCoordinator:
         with self._lock:
             self._registry.append((page, card, refresh))
 
+    def unregister_page(self, page):
+        # Remove all its registered entries when the page is destroyed
+        # to prevent the registry from strongly referencing the destroyed page.
+        with self._lock:
+            self._registry = [entry for entry in self._registry if entry[0] is not page]
+
     def disable_all(self):
         with self._lock:
             registry = list(self._registry)
         for _page, card, _refresh in registry:
             try:
                 card.configure(state="disabled")
-            except Exception:
-                pass
+            except Exception as e:
+                AppLogger.get_logger().warning(f"Failed to Disable Registered Card: {e}")
 
     def restore_all(self):
         with self._lock:
@@ -103,8 +114,8 @@ class TaskCoordinator:
         for _page, _card, refresh in registry:
             try:
                 refresh()
-            except Exception:
-                pass
+            except Exception as e:
+                AppLogger.get_logger().warning(f"Failed to Refresh Registered Card State: {e}")
 
 
 task_coordinator = TaskCoordinator()

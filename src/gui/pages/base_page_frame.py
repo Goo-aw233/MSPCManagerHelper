@@ -214,6 +214,12 @@ class BaseFuncPageFrame(BaseInfoPageFrame):
         for card, refresh in getattr(self, "_operation_cards", ()):
             task_coordinator.register(self, card, refresh)
 
+    def destroy(self):
+        # First unregister and then destroy, to ensure that the registry
+        # does not strongly reference a page that has been destroyed.
+        task_coordinator.unregister_page(self)
+        super().destroy()
+
     def _on_operation_completed(self):
         """Hook invoked on the main thread after every operation completes.
 
